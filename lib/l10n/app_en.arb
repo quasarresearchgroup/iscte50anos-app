@@ -1,0 +1,9 @@
+{
+    "scanCodeButton": "Scan Code",
+    "createCode": "Create Code",
+    "scanACode": "Scan a code",
+    "mainMenu": "Main Menu",
+    "pointsScreen":"View Points",
+    "visitedPagesScreen":"View Visited Pages",
+    "timelineScreen":"Timeline"
+}

@@ -1,0 +1,9 @@
+{
+    "scanCodeButton": "Digitalizar Código",
+    "createCode": "Criar Código",
+    "scanACode": "Digitalize um código",
+    "mainMenu": "Menu principal",
+    "pointsScreen":"Ver Points",
+    "visitedPagesScreen":"Ver Páginas Visitadas",
+    "timelineScreen":"Linha do Tempo"
+}
