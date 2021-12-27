@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:qr_code_reader/helper/database_helper.dart';
 import 'package:qr_code_reader/models/page.dart';
 
 class VisitedPagesPage extends StatefulWidget {
@@ -40,15 +41,15 @@ class _VisitedPagesPageState extends State<VisitedPagesPage> {
                       )
                     : ListView(
                         children: snapshot.data!.map((page) {
-                        return Center(
-                            child: ListTile(
+                        return ListTile(
                           title: Text(page.content),
+                          subtitle: Text(page.dateTimeParsed().toString()),
                           onLongPress: () {
                             setState(() {
                               DatabaseHelper.instance.remove(page.id!);
                             });
                           },
-                        ));
+                        );
                       }).toList());
               }
             },

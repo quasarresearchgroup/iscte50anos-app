@@ -3,6 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:html/parser.dart' as parser;
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
+import 'package:qr_code_reader/helper/database_helper.dart';
 import 'package:qr_code_reader/models/page.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:synchronized/synchronized.dart';
@@ -10,6 +11,8 @@ import 'package:url_launcher/url_launcher.dart';
 
 class QRScanPage extends StatefulWidget {
   const QRScanPage({Key? key}) : super(key: key);
+
+  static String TITLEHTMLTAG = 'CGqCRe';
 
   @override
   State<StatefulWidget> createState() => QRScanPageState();
@@ -42,10 +45,62 @@ class QRScanPageState extends State<QRScanPage> {
     controller!.resumeCamera();
   }
 
-  void addPage(String pageContent) async {
+  void addPage({required String pageContent, required int date}) async {
     setState(() async {
-      DatabaseHelper.instance.add(VisitedPage(content: pageContent));
+      DatabaseHelper.instance
+          .add(VisitedPage(content: pageContent, dateTime: date));
     });
+  }
+
+  void onQRViewCreated(QRViewController controller) {
+    setState(() => this.controller = controller);
+
+    controller.scannedDataStream
+        .listen((scanData) => setState(() => barcode = scanData));
+  }
+
+  _launchURL(String url) async {
+    //if (await   (url)) {
+    logger.d("-------------------url---------------------");
+    logger.d(url);
+    await launch(url);
+    //} else {
+    //  throw 'Could not launch $url';
+    //}
+  }
+
+  Future<void> extractData(final String url) async {
+    logger.d("-------------------url---------------------");
+    logger.d(url);
+    try {
+      final response = await http.Client().get(Uri.parse(url));
+      //Status Code 200 means response has been received successfully
+      if (response.statusCode == 200) {
+        var lock = Lock();
+        int millisecondsSinceEpoch2 = DateTime.now().millisecondsSinceEpoch;
+        var title = parser
+            .parse(response.body)
+            .getElementsByClassName(QRScanPage.TITLEHTMLTAG);
+        String name = title.map((e) => e.text).join("");
+
+        await lock.synchronized(() async {
+          addPage(pageContent: name, date: millisecondsSinceEpoch2);
+          setState(() {
+            qrScanResult = name;
+          });
+        });
+        logger.d("-----------------title-----------------------\n" +
+            name +
+            "\n" +
+            millisecondsSinceEpoch2.toString());
+      } else {
+        setState(() {
+          qrScanResult = 'ERROR: ${response.statusCode}.';
+        });
+      }
+    } catch (e) {
+      logger.e(e);
+    }
   }
 
   @override
@@ -59,7 +114,7 @@ class QRScanPageState extends State<QRScanPage> {
         ),
         Positioned(
           top: 10,
-          child: buildControlButtons(),
+          child: ControlButtons(),
         ),
       ])));
 
@@ -73,13 +128,6 @@ class QRScanPageState extends State<QRScanPage> {
           borderRadius: 10,
           cutOutSize: MediaQuery.of(context).size.width * 0.8));
 
-  void onQRViewCreated(QRViewController controller) {
-    setState(() => this.controller = controller);
-
-    controller.scannedDataStream
-        .listen((scanData) => setState(() => barcode = scanData));
-  }
-
   Container buildResult() => Container(
       padding: const EdgeInsets.all(12),
       decoration: controlsDecoration,
@@ -91,6 +139,7 @@ class QRScanPageState extends State<QRScanPage> {
 
             _launchURL(barcode!.code);
             extractData(barcode!.code);
+
             return Text(
               //'Result : ${barcode!.code}',
               'Result : $qrScanResult',
@@ -104,50 +153,8 @@ class QRScanPageState extends State<QRScanPage> {
           }
         },
       ));
-  String titleHtmlTag = 'CGqCRe';
 
-  Future<void> extractData(final String url) async {
-    logger.d("-------------------url---------------------");
-    logger.d(url);
-    try {
-      final response = await http.Client().get(Uri.parse(url));
-      //Status Code 200 means response has been received successfully
-      if (response.statusCode == 200) {
-        var lock = Lock();
-        await lock.synchronized(() async {
-          logger.d("-----------------title-----------------------");
-
-          var title = parser
-              .parse(response.body)
-              .getElementsByClassName("${titleHtmlTag}");
-          String name = title.map((e) => e.text).join("");
-          addPage(name);
-          setState(() {
-            qrScanResult = name;
-          });
-          logger.d(name);
-        });
-      } else {
-        setState(() {
-          qrScanResult = 'ERROR: ${response.statusCode}.';
-        });
-      }
-    } catch (e) {
-      logger.e(e);
-    }
-  }
-
-  _launchURL(String url) async {
-    //if (await   (url)) {
-    logger.d("-------------------url---------------------");
-    logger.d(url);
-    await launch(url);
-    //} else {
-    //  throw 'Could not launch $url';
-    //}
-  }
-
-  Widget buildControlButtons() => Container(
+  Widget ControlButtons() => Container(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       decoration: controlsDecoration,
       child: Row(
