@@ -5,5 +5,7 @@
     "mainMenu": "Menu principal",
     "pointsScreen":"Ver Points",
     "visitedPagesScreen":"Ver Páginas Visitadas",
-    "timelineScreen":"Linha do Tempo"
+    "timelineScreen":"Linha do Tempo",
+    "noPages":"Ainda não visitou páginas",
+    "loading":"A carregar"
 }

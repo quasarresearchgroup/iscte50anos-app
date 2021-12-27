@@ -5,5 +5,8 @@
     "mainMenu": "Main Menu",
     "pointsScreen":"View Points",
     "visitedPagesScreen":"View Visited Pages",
-    "timelineScreen":"Timeline"
+    "timelineScreen":"Timeline",
+    "noPages":"No Pages visited yet.",
+    "loading":"Loading..."
+
 }

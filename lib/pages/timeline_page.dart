@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:qr_code_reader/widgets/timeline/events_timeline.dart';
 import 'package:qr_code_reader/widgets/timeline/year_timeline.dart';
 import 'package:timeline_tile/timeline_tile.dart';
@@ -52,26 +53,27 @@ class _TimelinePageState extends State<TimelinePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Column(children: [
-          Expanded(
-            flex: 2,
-            child: YearTimeline(
-              lineStyle: lineStyle,
-              changeYearFunction: changeChosenYear,
-              yearsList: yearsList,
-            ),
-          ),
-          Expanded(
-            flex: 8,
-            child: EventsTimeline(
-              lineStyle: lineStyle,
-              timelineYear: chosenYear,
-              timeLineMap: timeLineMap,
-            ),
-          ),
-        ]),
+      appBar: AppBar(
+        title: Text(AppLocalizations.of(context)!.timelineScreen),
       ),
+      body: Column(children: [
+        Expanded(
+          flex: 2,
+          child: YearTimeline(
+            lineStyle: lineStyle,
+            changeYearFunction: changeChosenYear,
+            yearsList: yearsList,
+          ),
+        ),
+        Expanded(
+          flex: 8,
+          child: EventsTimeline(
+            lineStyle: lineStyle,
+            timelineYear: chosenYear,
+            timeLineMap: timeLineMap,
+          ),
+        ),
+      ]),
     );
   }
 }

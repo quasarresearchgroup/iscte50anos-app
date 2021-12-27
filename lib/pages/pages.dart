@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:qr_code_reader/models/page.dart';
 
 class VisitedPagesPage extends StatefulWidget {
@@ -22,19 +23,21 @@ class _VisitedPagesPageState extends State<VisitedPagesPage> {
             },
           ),
           appBar: AppBar(
-            title: const Text('Visited Pages'),
+            title: Text(AppLocalizations.of(context)!.timelineScreen),
           ),
           body: FutureBuilder<List<VisitedPage>>(
             future: DatabaseHelper.instance.getPages(),
             builder: (BuildContext context,
                 AsyncSnapshot<List<VisitedPage>> snapshot) {
               if (!snapshot.hasData) {
-                return const Center(
-                  child: Text('Loading...'),
+                return Center(
+                  child: Text(AppLocalizations.of(context)!.loading),
                 );
               } else {
                 return snapshot.data!.isEmpty
-                    ? const Center(child: Text('No Pages visited yet.'))
+                    ? Center(
+                        child: Text(AppLocalizations.of(context)!.noPages),
+                      )
                     : ListView(
                         children: snapshot.data!.map((page) {
                         return Center(
