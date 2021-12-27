@@ -1,35 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:logger/logger.dart';
 import 'package:qr_code_reader/widgets/timeline/events_timeline.dart';
 import 'package:qr_code_reader/widgets/timeline/year_timeline.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
 class TimelinePage extends StatefulWidget {
-  const TimelinePage({Key? key}) : super(key: key);
+  TimelinePage({Key? key}) : super(key: key);
 
-  @override
-  State<TimelinePage> createState() => _TimelinePageState();
-}
+  static const String TIMELINEENTRIESFILE = 'Resources/timeline.csv';
+  Logger logger = Logger();
 
-class _TimelinePageState extends State<TimelinePage> {
-  int chosenYear = 1972;
-
-  final Map<String, String> timeLineMap = {
-    "31-10-1972": "296 estudantes",
-    "15-12-1972": "Criação do ISCTE",
-    "21-12-1972": "	Estudante nº 1 Abel dos Santos Alves, licenciatura OGE",
-    "01-01-1973": "	CEE: adesão da Dinamarca, Irlanda, Reino Unido",
-    "11-08-1973":
-        "	Integração do ISCTE na Universidade Nova de Lisboa recém-criada",
-    "11-09-1973": "	Chile: Derrube do governo de Salvador Allende",
-    "24-09-1973": "	Guiné-Bissau: declaração unilateral de independência",
-    "25-04-1974": "	Portugal: Revolução dos Cravos",
-    "24-07-1974": "	Grécia: Queda da ditadura dos Coronéis",
-    "26-08-1974": "	Independência de Cabo Verde",
-    "01-01-1975":
-        "	Constituição do Centro de Estudos de História Contemporânea Portuguesa (CEHCP)",
-    "30-04-1975": "	Rendição de Saigão. Fim da Guerra do Vietname",
-  };
   final List<int> yearsList = <int>[
     1972,
     1973,
@@ -43,6 +25,34 @@ class _TimelinePageState extends State<TimelinePage> {
   ];
   final lineStyle = const LineStyle(color: Colors.black, thickness: 6);
 
+  @override
+  State<TimelinePage> createState() => _TimelinePageState();
+
+  Future<Map<String, String>> getTimeLineEntries() async {
+    final Map<String, String> timeLineMap = {};
+
+    try {
+      final String file = await rootBundle.loadString(TIMELINEENTRIESFILE);
+
+      logger.d(file.split("\n").length);
+      file.split("\n").forEach((e) {
+        var e_split = e.split(",");
+        logger.d(e_split);
+        timeLineMap.addEntries([MapEntry(e_split.first, e_split.last)]);
+      });
+
+      logger.d(timeLineMap);
+      return timeLineMap;
+    } catch (e) {
+      // If encountering an error, return 0
+      return timeLineMap;
+    }
+  }
+}
+
+class _TimelinePageState extends State<TimelinePage> {
+  int chosenYear = 1972;
+
   void changeChosenYear(int year) {
     setState(() {
       chosenYear = year;
@@ -51,23 +61,36 @@ class _TimelinePageState extends State<TimelinePage> {
 
   @override
   Widget build(BuildContext context) {
+    Map<String, String> map;
+
     return Scaffold(
       body: SafeArea(
         child: Column(children: [
           Expanded(
             flex: 2,
             child: YearTimeline(
-              lineStyle: lineStyle,
+              lineStyle: widget.lineStyle,
               changeYearFunction: changeChosenYear,
-              yearsList: yearsList,
+              yearsList: widget.yearsList,
             ),
           ),
           Expanded(
             flex: 8,
-            child: EventsTimeline(
-              lineStyle: lineStyle,
-              timelineYear: chosenYear,
-              timeLineMap: timeLineMap,
+            child: FutureBuilder<Map<String, String>>(
+              future: widget.getTimeLineEntries(),
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return const Center(child: Text("Error"));
+                } else if (snapshot.hasData) {
+                  return EventsTimeline(
+                    lineStyle: widget.lineStyle,
+                    timelineYear: chosenYear,
+                    timeLineMap: snapshot.data!,
+                  );
+                } else {
+                  return const Center(child: Center(child: Text("Loading")));
+                }
+              },
             ),
           ),
         ]),

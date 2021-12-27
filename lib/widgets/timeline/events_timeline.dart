@@ -51,15 +51,13 @@ class _EventsTimelineState extends State<EventsTimeline> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        child: ListView.builder(
-            itemCount: chosenTimelineList.length,
-            itemBuilder: (BuildContext context, int index) {
-              return EventTimelineTile(
-                  data: chosenTimelineList[index],
-                  isFirst: index == 0,
-                  isLast: index == chosenTimelineList.length - 1,
-                  lineStyle: widget.lineStyle);
-            }));
+        child: ListView.builder(itemBuilder: (BuildContext context, int index) {
+      return EventTimelineTile(
+          data: chosenTimelineList[index],
+          isFirst: index == 0,
+          isLast: index == chosenTimelineList.length - 1,
+          lineStyle: widget.lineStyle);
+    }));
   }
 }
 
