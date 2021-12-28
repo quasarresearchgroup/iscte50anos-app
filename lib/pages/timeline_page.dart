@@ -1,9 +1,9 @@
+import 'package:ISCTE_50_Anos/widgets/timeline/events_timeline.dart';
+import 'package:ISCTE_50_Anos/widgets/timeline/year_timeline.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:logger/logger.dart';
-import 'package:qr_code_reader/widgets/timeline/events_timeline.dart';
-import 'package:qr_code_reader/widgets/timeline/year_timeline.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
 class TimelinePage extends StatefulWidget {
@@ -68,6 +68,9 @@ class _TimelinePageState extends State<TimelinePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text("Timeline"),
+      ),
       body: SafeArea(
         child: Column(children: [
           Expanded(

@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.qr_code_reader">
+    package="com.example.ISCTE_50_Anos">
    <application
-        android:label="qr_code_reader"
+        android:label="ISCTE_50_Anos"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

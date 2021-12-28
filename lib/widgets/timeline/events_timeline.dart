@@ -1,7 +1,7 @@
+import 'package:ISCTE_50_Anos/models/timeline_item.dart';
+import 'package:ISCTE_50_Anos/widgets/timeline/timeline_details_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:qr_code_reader/models/timeline_item.dart';
-import 'package:qr_code_reader/widgets/timeline/timeline_details_page.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
 class EventsTimeline extends StatefulWidget {
@@ -51,15 +51,16 @@ class _EventsTimelineState extends State<EventsTimeline> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        child: ListView.builder(
-            itemCount: chosenTimelineList.length,
-            itemBuilder: (BuildContext context, int index) {
-              return EventTimelineTile(
-                  data: chosenTimelineList[index],
-                  isFirst: index == 0,
-                  isLast: index == chosenTimelineList.length - 1,
-                  lineStyle: widget.lineStyle);
-            }));
+      child: ListView.builder(
+          itemCount: chosenTimelineList.length,
+          itemBuilder: (BuildContext context, int index) {
+            return EventTimelineTile(
+                data: chosenTimelineList[index],
+                isFirst: index == 0,
+                isLast: index == chosenTimelineList.length - 1,
+                lineStyle: widget.lineStyle);
+          }),
+    );
   }
 }
 
@@ -93,7 +94,8 @@ class EventTimelineTile extends StatelessWidget {
         beforeLineStyle: lineStyle,
         afterLineStyle: lineStyle,
         axis: TimelineAxis.vertical,
-        alignment: TimelineAlign.center,
+        alignment: TimelineAlign.manual,
+        lineXY: 0.15,
         isFirst: isFirst,
         isLast: isLast,
         indicatorStyle: const IndicatorStyle(
@@ -102,7 +104,7 @@ class EventTimelineTile extends StatelessWidget {
           padding: EdgeInsets.symmetric(vertical: 8),
           drawGap: true,
           indicator: Center(
-            child: Icon(Icons.event_available),
+            child: Icon(Icons.mic),
           ),
         ),
         endChild: Padding(
@@ -118,7 +120,7 @@ class EventTimelineTile extends StatelessWidget {
             ],
           ),
         ),
-        startChild: Center(child: Text(data.year.toString())),
+        startChild: Center(child: const Icon(Icons.map)),
       ),
     );
   }

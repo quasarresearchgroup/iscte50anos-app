@@ -1,6 +1,6 @@
 {
-    "name": "qr_code_reader",
-    "short_name": "qr_code_reader",
+    "name": "ISCTE_50_Anos",
+    "short_name": "ISCTE_50_Anos",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
