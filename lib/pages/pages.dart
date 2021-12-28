@@ -24,7 +24,7 @@ class _VisitedPagesPageState extends State<VisitedPagesPage> {
             },
           ),
           appBar: AppBar(
-            title: Text(AppLocalizations.of(context)!.timelineScreen),
+            title: Text(AppLocalizations.of(context)!.visitedPagesScreen),
           ),
           body: FutureBuilder<List<VisitedPage>>(
             future: DatabaseHelper.instance.getPages(),
