@@ -11,6 +11,7 @@ class TimelinePage extends StatefulWidget {
 
   static const String TIMELINEENTRIESFILE = 'Resources/timeline.csv';
   Logger logger = Logger();
+  late Future<Map<String, String>> mapdata;
 
   final List<int> yearsList = <int>[
     1972,
@@ -24,9 +25,6 @@ class TimelinePage extends StatefulWidget {
     1980
   ];
   final lineStyle = const LineStyle(color: Colors.black, thickness: 6);
-
-  @override
-  State<TimelinePage> createState() => _TimelinePageState();
 
   Future<Map<String, String>> getTimeLineEntries() async {
     final Map<String, String> timeLineMap = {};
@@ -48,10 +46,18 @@ class TimelinePage extends StatefulWidget {
       return timeLineMap;
     }
   }
+
+  @override
+  State<TimelinePage> createState() => _TimelinePageState();
 }
 
 class _TimelinePageState extends State<TimelinePage> {
   int chosenYear = 1972;
+
+  @override
+  void initState() {
+    widget.mapdata = widget.getTimeLineEntries();
+  }
 
   void changeChosenYear(int year) {
     setState(() {
@@ -61,8 +67,6 @@ class _TimelinePageState extends State<TimelinePage> {
 
   @override
   Widget build(BuildContext context) {
-    Map<String, String> map;
-
     return Scaffold(
       body: SafeArea(
         child: Column(children: [
@@ -77,15 +81,15 @@ class _TimelinePageState extends State<TimelinePage> {
           Expanded(
             flex: 8,
             child: FutureBuilder<Map<String, String>>(
-              future: widget.getTimeLineEntries(),
+              future: widget.mapdata,
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
                   return const Center(child: Text("Error"));
                 } else if (snapshot.hasData) {
                   return EventsTimeline(
-                    lineStyle: widget.lineStyle,
-                    timelineYear: chosenYear,
                     timeLineMap: snapshot.data!,
+                    timelineYear: chosenYear,
+                    lineStyle: widget.lineStyle,
                   );
                 } else {
                   return const Center(child: Center(child: Text("Loading")));

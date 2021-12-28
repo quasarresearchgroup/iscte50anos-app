@@ -40,7 +40,7 @@ class _EventsTimelineState extends State<EventsTimeline> {
   void initState() {
     super.initState();
     for (final entry in widget.timeLineMap.entries) {
-      var timeLineData = TimeLineData(entry.value, entry.key);
+      TimeLineData timeLineData = TimeLineData(entry.value, entry.key);
       originalTimelineList.add(timeLineData);
       if (timeLineData.year == widget.timelineYear) {
         chosenTimelineList.add(timeLineData);
