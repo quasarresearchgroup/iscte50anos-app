@@ -69,7 +69,9 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
-          title: Title(color: Colors.black, child: const Text("ISCTE_50_Anos")),
+          title: Title(
+              color: Colors.black,
+              child: Text(AppLocalizations.of(context)!.appName)),
         ),
         body: _appScreens[_currentIndex],
         bottomNavigationBar: MyBottomBar(

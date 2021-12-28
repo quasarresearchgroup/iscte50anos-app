@@ -1,4 +1,5 @@
 {
+    "appName":"ISCTE_50_Anos",
     "scanCodeButton": "Digitalizar Código",
     "createCode": "Criar Código",
     "scanACode": "Digitalize um código",
