@@ -23,6 +23,9 @@ dependencies:
   timeline_tile: ^2.0.0
   sqflite: ^2.0.0+4
   path_provider: ^2.0.7
+  country_icons: ^2.0.2
+  flutter_svg: ^1.0.0
+  fluttericon: ^2.0.0
   
 
 dev_dependencies:
@@ -36,3 +39,4 @@ flutter:
   uses-material-design: true
   assets:
     - Resources/
+    - Resources/Img/Logo/

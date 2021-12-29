@@ -20,6 +20,9 @@ class _TimeLineDetailsPageState extends State<TimeLineDetailsPage> {
     int textweight = 2;
 
     return Scaffold(
+      appBar: AppBar(
+        title: const Text("Details"),
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
@@ -28,15 +31,7 @@ class _TimeLineDetailsPageState extends State<TimeLineDetailsPage> {
               child: Column(
                 children: [
                   Text(
-                    widget.data.day.toString(),
-                    textScaleFactor: textweight.toDouble(),
-                  ),
-                  Text(
-                    widget.data.month.toString(),
-                    textScaleFactor: textweight.toDouble(),
-                  ),
-                  Text(
-                    widget.data.year.toString(),
+                    widget.data.getDateString(),
                     textScaleFactor: textweight.toDouble(),
                   ),
                   Flexible(

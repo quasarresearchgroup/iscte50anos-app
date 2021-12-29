@@ -1,12 +1,63 @@
+import 'package:flutter/material.dart';
+import 'package:fluttericon/font_awesome_icons.dart';
 import 'package:logger/logger.dart';
 
 class TimeLineData {
-  TimeLineData(this.data, String date) {
+  TimeLineData(
+      {required this.data,
+      required String date,
+      String? scope,
+      String? contentType,
+      String? contentLink}) {
+    switch (scope?.toLowerCase()) {
+      case "portugal":
+        {
+          scopeIcon =
+              Image.asset('icons/flags/png/pt.png', package: 'country_icons');
+        }
+        break;
+      case "world":
+        {
+          scopeIcon = Icon(FontAwesome.globe);
+        }
+        break;
+      case "iscte":
+        {
+          scopeIcon = Image.asset('Resources/Img/Logo/logo_50_anos_main.jpg');
+        }
+        break;
+      default:
+        {
+          scopeIcon = Icon(FontAwesome.globe);
+        }
+        break;
+    }
+    switch (contentType?.toLowerCase()) {
+      case "interview":
+        {
+          contentIcon = const Icon(Icons.mic);
+        }
+        break;
+      case "link":
+        {
+          contentIcon = const Icon(Icons.link);
+        }
+        break;
+      case "doc":
+        {
+          contentIcon = const Icon(Icons.document_scanner);
+        }
+        break;
+      default:
+        {
+          contentIcon = const Icon(Icons.event);
+        }
+        break;
+    }
+
     if (date.isNotEmpty) {
-      logger.d("date:" + date);
       List<String> dateSplit = date.split("-");
       if (dateSplit.isNotEmpty) {
-        logger.d("dateSplit:" + dateSplit.toString());
         day = int.parse(dateSplit[0]);
         month = int.parse(dateSplit[1]);
         year = int.parse(dateSplit[2]);
@@ -27,6 +78,10 @@ class TimeLineData {
   late final int day;
   String? location;
   late final String data;
+  late final String contentLink;
+  late final Widget? scopeIcon;
+  late final Icon? contentIcon;
+
   static Logger logger = Logger();
 
   String getDateString() {
