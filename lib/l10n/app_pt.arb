@@ -1,0 +1,12 @@
+{
+    "appName":"ISCTE_50_Anos",
+    "scanCodeButton": "Digitalizar Código",
+    "createCode": "Criar Código",
+    "scanACode": "Digitalize um código",
+    "mainMenu": "Menu principal",
+    "pointsScreen":"Ver Points",
+    "visitedPagesScreen":"Ver Páginas Visitadas",
+    "timelineScreen":"Linha do Tempo",
+    "noPages":"Ainda não visitou páginas",
+    "loading":"A carregar"
+}
