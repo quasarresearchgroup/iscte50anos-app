@@ -4,6 +4,7 @@ import 'package:ISCTE_50_Anos/widgets/timeline/events_timeline.dart';
 import 'package:ISCTE_50_Anos/widgets/timeline/year_timeline.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:logger/logger.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
@@ -53,7 +54,7 @@ class _TimelinePageState extends State<TimelinePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Timeline"),
+        title: Text(AppLocalizations.of(context)!.timelineScreen),
       ),
       body: SafeArea(
         child: Column(children: [

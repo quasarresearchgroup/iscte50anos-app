@@ -1,5 +1,7 @@
+import 'package:ISCTE_50_Anos/helper/database_helper.dart';
 import 'package:ISCTE_50_Anos/models/page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class VisitedPagesPage extends StatefulWidget {
   const VisitedPagesPage({Key? key}) : super(key: key);
@@ -22,30 +24,32 @@ class _VisitedPagesPageState extends State<VisitedPagesPage> {
             },
           ),
           appBar: AppBar(
-            title: const Text('Visited Pages'),
+            title: Text(AppLocalizations.of(context)!.visitedPagesScreen),
           ),
           body: FutureBuilder<List<VisitedPage>>(
             future: DatabaseHelper.instance.getPages(),
             builder: (BuildContext context,
                 AsyncSnapshot<List<VisitedPage>> snapshot) {
               if (!snapshot.hasData) {
-                return const Center(
-                  child: Text('Loading...'),
+                return Center(
+                  child: Text(AppLocalizations.of(context)!.loading),
                 );
               } else {
                 return snapshot.data!.isEmpty
-                    ? const Center(child: Text('No Pages visited yet.'))
+                    ? Center(
+                        child: Text(AppLocalizations.of(context)!.noPages),
+                      )
                     : ListView(
                         children: snapshot.data!.map((page) {
-                        return Center(
-                            child: ListTile(
+                        return ListTile(
                           title: Text(page.content),
+                          subtitle: Text(page.dateTimeParsed().toString()),
                           onLongPress: () {
                             setState(() {
                               DatabaseHelper.instance.remove(page.id!);
                             });
                           },
-                        ));
+                        );
                       }).toList());
               }
             },
