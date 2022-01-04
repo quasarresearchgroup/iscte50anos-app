@@ -1,8 +1,8 @@
 import 'dart:io';
 
+import 'package:ISCTE_50_Anos/models/page.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:qr_code_reader/models/page.dart';
 import 'package:sqflite/sqflite.dart';
 
 class DatabaseHelper {

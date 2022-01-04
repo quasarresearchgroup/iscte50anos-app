@@ -1,10 +1,10 @@
+import 'package:ISCTE_50_Anos/helper/database_helper.dart';
+import 'package:ISCTE_50_Anos/models/page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:html/parser.dart' as parser;
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
-import 'package:qr_code_reader/helper/database_helper.dart';
-import 'package:qr_code_reader/models/page.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:synchronized/synchronized.dart';
 import 'package:url_launcher/url_launcher.dart';
