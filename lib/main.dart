@@ -1,10 +1,10 @@
+import 'package:ISCTE_50_Anos/pages/menu.dart';
+import 'package:ISCTE_50_Anos/pages/pages.dart';
+import 'package:ISCTE_50_Anos/pages/qr_scan_page.dart';
+import 'package:ISCTE_50_Anos/pages/timeline_page.dart';
+import 'package:ISCTE_50_Anos/widgets/my_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:qr_code_reader/pages/menu.dart';
-import 'package:qr_code_reader/pages/pages.dart';
-import 'package:qr_code_reader/pages/qr_scan_page.dart';
-import 'package:qr_code_reader/pages/timeline_page.dart';
-import 'package:qr_code_reader/widgets/my_bottom_bar.dart';
 
 const String appTitle = "";
 void main() {
@@ -69,7 +69,9 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
-          title: Title(color: Colors.black, child: const Text("QR Code App")),
+          title: Title(
+              color: Colors.black,
+              child: Text(AppLocalizations.of(context)!.appName)),
         ),
         body: _appScreens[_currentIndex],
         bottomNavigationBar: MyBottomBar(

@@ -1,5 +1,5 @@
+import 'package:ISCTE_50_Anos/models/page.dart';
 import 'package:flutter/material.dart';
-import 'package:qr_code_reader/models/page.dart';
 
 class VisitedPagesPage extends StatefulWidget {
   const VisitedPagesPage({Key? key}) : super(key: key);

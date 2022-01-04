@@ -1,47 +1,47 @@
+import 'package:ISCTE_50_Anos/loader/timeline_loader.dart';
+import 'package:ISCTE_50_Anos/models/timeline_item.dart';
+import 'package:ISCTE_50_Anos/widgets/timeline/events_timeline.dart';
+import 'package:ISCTE_50_Anos/widgets/timeline/year_timeline.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:qr_code_reader/widgets/timeline/events_timeline.dart';
-import 'package:qr_code_reader/widgets/timeline/year_timeline.dart';
+import 'package:logger/logger.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
 class TimelinePage extends StatefulWidget {
-  const TimelinePage({Key? key}) : super(key: key);
+  TimelinePage({Key? key}) : super(key: key);
+
+  Logger logger = Logger();
+  late Future<List<TimeLineData>> mapdata;
+  late final Future<List<int>> yearsList;
+
+  final lineStyle = const LineStyle(color: Colors.black, thickness: 6);
 
   @override
   State<TimelinePage> createState() => _TimelinePageState();
+
+  Future<List<int>> createYearsList(Future<List<TimeLineData>> mapdata) async {
+    List<int> yearsList = [DateTime.now().year];
+    mapdata.then((value) {
+      for (TimeLineData value in value) {
+        int year = value.year;
+        if (!yearsList.contains(year)) {
+          yearsList.add(year);
+        }
+      }
+    });
+    yearsList.sort();
+    return yearsList;
+  }
 }
 
 class _TimelinePageState extends State<TimelinePage> {
-  int chosenYear = 1972;
+  int chosenYear = DateTime.now().year;
 
-  final Map<String, String> timeLineMap = {
-    "31-10-1972": "296 estudantes",
-    "15-12-1972": "Criação do ISCTE",
-    "21-12-1972": "	Estudante nº 1 Abel dos Santos Alves, licenciatura OGE",
-    "01-01-1973": "	CEE: adesão da Dinamarca, Irlanda, Reino Unido",
-    "11-08-1973":
-        "	Integração do ISCTE na Universidade Nova de Lisboa recém-criada",
-    "11-09-1973": "	Chile: Derrube do governo de Salvador Allende",
-    "24-09-1973": "	Guiné-Bissau: declaração unilateral de independência",
-    "25-04-1974": "	Portugal: Revolução dos Cravos",
-    "24-07-1974": "	Grécia: Queda da ditadura dos Coronéis",
-    "26-08-1974": "	Independência de Cabo Verde",
-    "01-01-1975":
-        "	Constituição do Centro de Estudos de História Contemporânea Portuguesa (CEHCP)",
-    "30-04-1975": "	Rendição de Saigão. Fim da Guerra do Vietname",
-  };
-  final List<int> yearsList = <int>[
-    1972,
-    1973,
-    1974,
-    1975,
-    1976,
-    1977,
-    1978,
-    1979,
-    1980
-  ];
-  final lineStyle = const LineStyle(color: Colors.black, thickness: 6);
+  @override
+  void initState() {
+    widget.mapdata = TimelineLoader.getTimeLineEntries();
+    widget.yearsList = widget.createYearsList(widget.mapdata);
+  }
 
   void changeChosenYear(int year) {
     setState(() {
@@ -52,22 +52,47 @@ class _TimelinePageState extends State<TimelinePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text("Timeline"),
+      ),
       body: SafeArea(
         child: Column(children: [
           Expanded(
             flex: 2,
-            child: YearTimeline(
-              lineStyle: lineStyle,
-              changeYearFunction: changeChosenYear,
-              yearsList: yearsList,
+            child: FutureBuilder<List<int>>(
+              future: widget.yearsList,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return YearTimeline(
+                    lineStyle: widget.lineStyle,
+                    yearsList: snapshot.data!,
+                    changeYearFunction: changeChosenYear,
+                  );
+                } else if (snapshot.hasError) {
+                  return const Center(child: Text("Error"));
+                } else {
+                  return const Center(child: Center(child: Text("Loading")));
+                }
+              },
             ),
           ),
           Expanded(
             flex: 8,
-            child: EventsTimeline(
-              lineStyle: lineStyle,
-              timelineYear: chosenYear,
-              timeLineMap: timeLineMap,
+            child: FutureBuilder<List<TimeLineData>>(
+              future: widget.mapdata,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return EventsTimeline(
+                    timeLineMap: snapshot.data!,
+                    timelineYear: chosenYear,
+                    lineStyle: widget.lineStyle,
+                  );
+                } else if (snapshot.hasError) {
+                  return const Center(child: Text("Error"));
+                } else {
+                  return const Center(child: Center(child: Text("Loading")));
+                }
+              },
             ),
           ),
         ]),

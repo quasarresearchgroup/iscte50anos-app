@@ -28,6 +28,7 @@ class _YearTimelineState extends State<YearTimeline> {
       child: ListView.builder(
           scrollDirection: Axis.horizontal,
           itemCount: widget.yearsList.length,
+          shrinkWrap: true,
           itemBuilder: (BuildContext context, int index) {
             return YearTimelineTile(
                 changeYearFunction: widget.changeYearFunction,
