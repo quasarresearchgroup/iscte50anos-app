@@ -37,20 +37,20 @@ class Result extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Text(
-            resultPhrase,
+            "Quiz 1 concluído",
             style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,
           ), //Text
-          Text(
+          /*Text(
             'Pontos: ' '$resultScore',
             style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,
-          ), //Text
+          ), //Text*/
           ElevatedButton(
             child: Text(
-              'Reiniciar Quiz',
+              'Voltar ao menu',
             ), //Te
-            onPressed: resetHandler,
+            onPressed: () => Navigator.of(context).pop(),
           ), //FlatButton
         ], //<Widget>[]
       ), //Column
