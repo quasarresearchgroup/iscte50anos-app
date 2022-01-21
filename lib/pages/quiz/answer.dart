@@ -20,7 +20,7 @@ class Answer extends StatelessWidget {
      // width: double.infinity,
       height: 50,
       //padding: const EdgeInsets.all(5.0),
-      child: isMultipleChoice ?
+      child: !isMultipleChoice ?
         Card(
           child: RadioListTile(
             title: Text(answerText),

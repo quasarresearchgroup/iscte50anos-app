@@ -28,7 +28,7 @@ class _QuizScreenState extends State<QuizScreen> {
     {
       'questionText': 'Juan Mozzicafreddo foi diretor de que escola do Iscte?',
       'imageUrl':'https://aps.pt/wp-content/uploads/2019/07/juan-m.jpg',
-      'isMultipleChoice': true,
+      'isMultipleChoice': false,
       'answers': [
         {'text': 'ISTA', 'score': -2},
         {'text': 'ESPP', 'score': 10},

@@ -50,7 +50,7 @@ class Result extends StatelessWidget {
             child: Text(
               'Voltar ao menu',
             ), //Te
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () => Navigator.of(context, rootNavigator: true).pop(context),
           ), //FlatButton
         ], //<Widget>[]
       ), //Column
