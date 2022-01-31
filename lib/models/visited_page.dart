@@ -3,14 +3,14 @@ import 'package:ISCTE_50_Anos/helper/database_helper.dart';
 class VisitedPage {
   final int? id;
   final String content;
-  final String url;
+  final String? url;
   final int dateTime;
 
   VisitedPage({
     this.id,
     required this.content,
     required this.dateTime,
-    required this.url,
+    this.url,
   });
 
   String get parsed_time {

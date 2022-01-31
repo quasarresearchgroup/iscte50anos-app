@@ -51,7 +51,9 @@ class _VisitedPagesPageState extends State<VisitedPagesPage> {
                             });
                           },
                           onTap: () {
-                            HelperMethods.launchURL(page.url);
+                            if (page.url != null) {
+                              HelperMethods.launchURL(page.url!);
+                            }
                           },
                         );
                       }).toList());
