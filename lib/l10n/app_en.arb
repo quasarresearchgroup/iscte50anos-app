@@ -3,11 +3,15 @@
     "scanCodeButton": "Scan Code",
     "createCode": "Create Code",
     "scanACode": "Scan a code",
-    "mainMenu": "Main Menu",
-    "pointsScreen":"View Points",
-    "visitedPagesScreen":"View Visited Pages",
-    "timelineScreen":"Timeline",
     "noPages":"No Pages visited yet.",
-    "loading":"Loading..."
+    "loading":"Loading...",
+
+
+
+    "mainMenu": "Main Menu",
+    "pointsScreen":"Points",
+    "visitedPagesScreen":"Visited Pages",
+    "timelineScreen":"Timeline",
+    "puzzleScreen":"Puzzle"
 
 }

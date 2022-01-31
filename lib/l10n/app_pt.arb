@@ -3,10 +3,14 @@
     "scanCodeButton": "Digitalizar Código",
     "createCode": "Criar Código",
     "scanACode": "Digitalize um código",
+    "noPages":"Ainda não visitou páginas",
+    "loading":"A carregar",
+
     "mainMenu": "Menu principal",
     "pointsScreen":"Ver Points",
-    "visitedPagesScreen":"Ver Páginas Visitadas",
+    "visitedPagesScreen":"Páginas Visitadas",
     "timelineScreen":"Linha do Tempo",
-    "noPages":"Ainda não visitou páginas",
-    "loading":"A carregar"
+    "puzzleScreen":"Puzzle"
+
 }
+

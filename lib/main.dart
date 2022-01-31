@@ -1,5 +1,6 @@
 import 'package:ISCTE_50_Anos/pages/menu.dart';
 import 'package:ISCTE_50_Anos/pages/pages.dart';
+import 'package:ISCTE_50_Anos/pages/puzzle_page.dart';
 import 'package:ISCTE_50_Anos/pages/qr_scan_page.dart';
 import 'package:ISCTE_50_Anos/pages/timeline_page.dart';
 import 'package:ISCTE_50_Anos/widgets/my_bottom_bar.dart';
@@ -27,6 +28,7 @@ class MyApp extends StatelessWidget {
         '/': (context) => Home(),
         '/timeline': (context) => TimelinePage(),
         '/pages': (context) => const VisitedPagesPage(),
+        '/puzzle': (context) => const PuzzlePage(),
       },
     );
   }

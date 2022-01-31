@@ -35,6 +35,11 @@ class MyMenu extends StatelessWidget {
             onTap: () => Navigator.pushNamed(context, '/pages'),
           ),
           ListTile(
+            leading: const Icon(Icons.assignment_turned_in),
+            title: Text(AppLocalizations.of(context)!.puzzleScreen),
+            onTap: () => Navigator.pushNamed(context, '/puzzle'),
+          ),
+          ListTile(
             leading: const Icon(Icons.score),
             title: Text(AppLocalizations.of(context)!.pointsScreen),
             onTap: () => updateIndex(1),

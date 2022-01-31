@@ -137,8 +137,8 @@ class QRScanPageState extends State<QRScanPage> {
             //setState(() => barcodeold = barcode);
             barcodeold = barcode;
 
-            _launchURL(barcode!.code);
-            extractData(barcode!.code);
+            _launchURL(barcode!.code!);
+            extractData(barcode!.code!);
 
             return Text(
               //'Result : ${barcode!.code}',
