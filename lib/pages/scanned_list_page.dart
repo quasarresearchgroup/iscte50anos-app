@@ -1,5 +1,6 @@
 import 'package:ISCTE_50_Anos/helper/database_helper.dart';
-import 'package:ISCTE_50_Anos/models/page.dart';
+import 'package:ISCTE_50_Anos/helper/helper_methods.dart';
+import 'package:ISCTE_50_Anos/models/visited_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -43,11 +44,14 @@ class _VisitedPagesPageState extends State<VisitedPagesPage> {
                         children: snapshot.data!.map((page) {
                         return ListTile(
                           title: Text(page.content),
-                          subtitle: Text(page.dateTimeParsed().toString()),
+                          subtitle: Text(page.parsed_time),
                           onLongPress: () {
                             setState(() {
                               DatabaseHelper.instance.remove(page.id!);
                             });
+                          },
+                          onTap: () {
+                            HelperMethods.launchURL(page.url);
                           },
                         );
                       }).toList());
