@@ -21,6 +21,7 @@ class _PuzzlePageState extends State<PuzzlePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey,
       body: FutureBuilder(
           future: imageList,
           builder: (BuildContext context, AsyncSnapshot<List<Image>> snapshot) {
