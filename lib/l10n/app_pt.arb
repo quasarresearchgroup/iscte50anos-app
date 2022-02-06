@@ -1,5 +1,5 @@
 {
-    "appName":"ISCTE_50_Anos",
+    "appName":"ISCTE 50 Anos",
     "scanCodeButton": "Digitalizar Código",
     "createCode": "Criar Código",
     "scanACode": "Digitalize um código",
@@ -13,4 +13,3 @@
     "puzzleScreen":"Puzzle"
 
 }
-

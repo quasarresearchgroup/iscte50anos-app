@@ -1,4 +1,3 @@
-import 'package:ISCTE_50_Anos/pages/menu.dart';
 import 'package:ISCTE_50_Anos/pages/pages.dart';
 import 'package:ISCTE_50_Anos/pages/puzzle_page.dart';
 import 'package:ISCTE_50_Anos/pages/qr_scan_page.dart';
@@ -50,11 +49,11 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
     _appScreens = [
-      MyMenu(
+      const PuzzlePage(),
+      /*MyMenu(
         updateIndex: updateIndex,
-        changeScreen: changeScreen,
-      ),
-      QRScanPage(),
+      ),*/
+      const QRScanPage(),
     ];
   }
 
@@ -69,15 +68,63 @@ class _HomeState extends State<Home> {
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          title: Title(
-              color: Colors.black,
-              child: Text(AppLocalizations.of(context)!.appName)),
+  Widget build(BuildContext context) {
+    List<Widget> menuWidgetList = [
+      const DrawerHeader(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+              image: AssetImage("Resources/Img/Logo/logo_50_anos_main.jpg"),
+              fit: BoxFit.cover),
         ),
-        body: _appScreens[_currentIndex],
-        bottomNavigationBar: MyBottomBar(
-          updateIndex: updateIndex,
+        child: null,
+      ),
+      ListTile(
+        leading: const Icon(Icons.home),
+        title: Text(AppLocalizations.of(context)!.mainMenu),
+        onTap: () {
+          updateIndex(0);
+          Navigator.pop(context);
+        },
+      ),
+      ListTile(
+        leading: const Icon(Icons.timeline),
+        title: Text(AppLocalizations.of(context)!.timelineScreen),
+        onTap: () {
+          Navigator.pushNamed(context, '/timeline');
+          //Navigator.pop(context);
+        },
+        //onTap: () => updateIndex(2),
+      ),
+      ListTile(
+        leading: const Icon(Icons.web_sharp),
+        title: Text(AppLocalizations.of(context)!.visitedPagesScreen),
+        onTap: () {
+          Navigator.pushNamed(context, '/pages');
+          //Navigator.pop(context);
+        },
+      ),
+      ListTile(
+        leading: const Icon(Icons.score),
+        title: Text(AppLocalizations.of(context)!.pointsScreen),
+        onTap: () {},
+      ),
+    ];
+
+    return Scaffold(
+      drawer: Drawer(
+        child: ListView(
+          children: menuWidgetList,
         ),
-      );
+      ),
+      appBar: AppBar(
+        title: Title(
+            color: Colors.black,
+            child: Text(AppLocalizations.of(context)!.appName)),
+      ),
+      body: _appScreens[_currentIndex],
+      bottomNavigationBar: MyBottomBar(
+        updateIndex: updateIndex,
+      ),
+    );
+  }
 }
