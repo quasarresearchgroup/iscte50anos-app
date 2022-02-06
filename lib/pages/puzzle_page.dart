@@ -1,99 +1,82 @@
-import 'dart:typed_data';
+import 'dart:async';
 
+import 'package:ISCTE_50_Anos/widgets/puzzle/puzzle_piece.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:image/image.dart' as imageLib;
-import 'package:logger/logger.dart';
-import 'package:path_provider/path_provider.dart';
 
 class PuzzlePage extends StatefulWidget {
   const PuzzlePage({Key? key}) : super(key: key);
-  static Logger logger = Logger();
 
-  static const page_route = "/puzzle";
+  final int rows = 3;
+  final int cols = 3;
 
   @override
   _PuzzlePageState createState() => _PuzzlePageState();
 }
 
 class _PuzzlePageState extends State<PuzzlePage> {
-  late Future<List<Image>> imageList;
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: imageList,
-      builder: (BuildContext context, AsyncSnapshot<List<Image>> snapshot) {
-        if (!snapshot.hasData) {
-          return Center(
-            child: Text(AppLocalizations.of(context)!.loading),
-          );
-        } else {
-          PuzzlePage.logger.i(snapshot.data);
-          return GridView.builder(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                mainAxisSpacing: 0,
-                crossAxisSpacing: 0,
-              ),
-              itemCount: snapshot.data!.length,
-              itemBuilder: (BuildContext context, int index) {
-                return snapshot.data![index];
-                //List.generate(9, (index) => snapshot.data![index],growable: false));
-              });
-        }
-      },
-    );
-  }
+  late Image _image;
+  late Future<List<Widget>> pieces;
 
   @override
   void initState() {
-    Future<List<Image>> handlevalue() async {
-      ByteData imageData =
-          await rootBundle.load('Resources/Img/Logo/logo_50_anos_main.jpg');
-      List<int> bytes = Uint8List.view(imageData.buffer);
-      imageLib.Image? image = imageLib.decodeImage(bytes);
-      return imageTest(
-          inputImage: image!, verticalPieceCount: 3, horizontalPieceCount: 3);
-    }
+    super.initState();
+    _image = const Image(
+        //image: AssetImage('Resources/Img/Logo/logo_50_anos_main.jpg'));
+        image: AssetImage('Resources/Img/campus-iscte-3.jpg'));
 
-    imageList = handlevalue();
+    pieces = splitImage(_image);
   }
 
-  Future<String> get _localPath async {
-    final directory = await getApplicationDocumentsDirectory();
-
-    return directory.path;
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<List<Widget>>(
+        future: pieces,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return Stack(children: snapshot.data!);
+          } else {
+            return Center(child: Text(AppLocalizations.of(context)!.loading));
+          }
+        });
   }
 
-  Future<List<Image>> imageTest(
-      {required imageLib.Image inputImage,
-      required int horizontalPieceCount,
-      required int verticalPieceCount}) async {
-    final int xLength = (inputImage.width / horizontalPieceCount).round();
-    final int yLength = (inputImage.height / verticalPieceCount).round();
-    List<imageLib.Image> pieceList = <imageLib.Image>[];
+  // we need to find out the image size, to be used in the PuzzlePiece widget
+  Future<Size> getImageSize(Image image) async {
+    final Completer<Size> completer = Completer<Size>();
 
-    for (int y = 0; y < verticalPieceCount; y++) {
-      for (int x = 0; x < horizontalPieceCount; x++) {
-        pieceList.add(imageLib.copyCrop(inputImage, x * xLength, y * yLength,
-            (x + 1) * xLength, (y + 1) * yLength));
+    image.image.resolve(const ImageConfiguration()).addListener(
+      ImageStreamListener((ImageInfo info, bool _) {
+        completer.complete(Size(
+          info.image.width.toDouble(),
+          info.image.height.toDouble(),
+        ));
+      }),
+    );
+
+    final Size imageSize = await completer.future;
+
+    return imageSize;
+  }
+
+  // here we will split the image into small pieces using the rows and columns defined above; each piece will be added to a stack
+  Future<List<Widget>> splitImage(Image image) async {
+    Size imageSize = await getImageSize(image);
+    List<Widget> split_pieces = [];
+    for (int x = 0; x < widget.rows; x++) {
+      for (int y = 0; y < widget.cols; y++) {
+        setState(() {
+          split_pieces.add(PuzzlePiece(
+              key: GlobalKey(),
+              image: image,
+              imageSize: imageSize,
+              row: x,
+              col: y,
+              maxRow: widget.rows,
+              maxCol: widget.cols));
+        });
       }
     }
-    //Convert image from image package to Image Widget to display
-    List<Image> outputImageList = <Image>[];
-    for (imageLib.Image img in pieceList) {
-      outputImageList
-          .add(Image.memory(Uint8List.fromList(imageLib.encodeJpg(img))));
-    }
-
-    return outputImageList;
-    // Resize the image to a 120x? thumbnail (maintaining the aspect ratio).
-    //imageLib.Image thumbnail = imageLib.copyResize(image!, width: 120);
-
-    //return Image.memory(Uint8List.fromList(imageLib.encodeJpg(image)));
-    //return Image.memory(Uint8List.fromList(imageLib.encodeJpg(thumbnail)));
+    return split_pieces;
   }
 }
