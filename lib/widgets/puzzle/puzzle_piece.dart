@@ -9,6 +9,8 @@ class PuzzlePiece extends StatefulWidget {
   final int col;
   final int maxRow;
   final int maxCol;
+  final Function bringToTop;
+  final Function sendToBack;
 
   const PuzzlePiece(
       {required Key key,
@@ -17,7 +19,9 @@ class PuzzlePiece extends StatefulWidget {
       required this.row,
       required this.col,
       required this.maxRow,
-      required this.maxCol})
+      required this.maxCol,
+      required this.bringToTop,
+      required this.sendToBack})
       : super(key: key);
 
   @override
@@ -29,6 +33,7 @@ class PuzzlePiece extends StatefulWidget {
 class PuzzlePieceState extends State<PuzzlePiece> {
   double? top;
   double? left;
+  bool isMovable = true;
 
   @override
   Widget build(BuildContext context) {
@@ -49,18 +54,41 @@ class PuzzlePieceState extends State<PuzzlePiece> {
     }
 
     return Positioned(
-      top: top,
-      left: left,
-      width: imageWidth,
-      child: ClipPath(
-        child: CustomPaint(
-            foregroundPainter: PuzzlePiecePainter(
+        top: top,
+        left: left,
+        width: imageWidth,
+        child: GestureDetector(
+          onTap: () {
+            if (isMovable) {
+              widget.bringToTop(widget);
+            }
+          },
+          onPanStart: (_) {
+            if (isMovable) {
+              widget.bringToTop(widget);
+            }
+          },
+          onPanUpdate: (dragUpdateDetails) {
+            if (isMovable) {
+              setState(() {
+                top = top! + dragUpdateDetails.delta.dy;
+                left = left! + dragUpdateDetails.delta.dx;
+
+                if (-10 < top! && top! < 10 && -10 < left! && left! < 10) {
+                  top = 0;
+                  left = 0;
+                  isMovable = false;
+                  widget.sendToBack(widget);
+                }
+              });
+            }
+          },
+          child: ClipPath(
+            child: widget.image,
+            clipper: PuzzlePieceClipper(
                 widget.row, widget.col, widget.maxRow, widget.maxCol),
-            child: widget.image),
-        clipper: PuzzlePieceClipper(
-            widget.row, widget.col, widget.maxRow, widget.maxCol),
-      ),
-    );
+          ),
+        ));
   }
 }
 

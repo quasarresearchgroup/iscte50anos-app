@@ -2,10 +2,11 @@ import 'dart:async';
 
 import 'package:ISCTE_50_Anos/widgets/puzzle/puzzle_piece.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:logger/logger.dart';
 
 class PuzzlePage extends StatefulWidget {
-  const PuzzlePage({Key? key}) : super(key: key);
+  PuzzlePage({Key? key}) : super(key: key);
+  Logger logger = Logger();
 
   final int rows = 3;
   final int cols = 3;
@@ -16,7 +17,7 @@ class PuzzlePage extends StatefulWidget {
 
 class _PuzzlePageState extends State<PuzzlePage> {
   late Image _image;
-  late Future<List<Widget>> pieces;
+  List<Widget> pieces = [];
 
   @override
   void initState() {
@@ -25,21 +26,15 @@ class _PuzzlePageState extends State<PuzzlePage> {
         //image: AssetImage('Resources/Img/Logo/logo_50_anos_main.jpg'));
         image: AssetImage('Resources/Img/campus-iscte-3.jpg'));
 
-    pieces = splitImage(_image);
+    splitImage(_image);
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<Widget>>(
-        future: pieces,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return Stack(children: snapshot.data!);
-          } else {
-            return Center(child: Text(AppLocalizations.of(context)!.loading));
-          }
-        });
+    return Stack(children: pieces);
   }
+
+  //----------------------------------------------------------------------
 
   // we need to find out the image size, to be used in the PuzzlePiece widget
   Future<Size> getImageSize(Image image) async {
@@ -60,23 +55,42 @@ class _PuzzlePageState extends State<PuzzlePage> {
   }
 
   // here we will split the image into small pieces using the rows and columns defined above; each piece will be added to a stack
-  Future<List<Widget>> splitImage(Image image) async {
+  void splitImage(Image image) async {
     Size imageSize = await getImageSize(image);
-    List<Widget> split_pieces = [];
     for (int x = 0; x < widget.rows; x++) {
       for (int y = 0; y < widget.cols; y++) {
         setState(() {
-          split_pieces.add(PuzzlePiece(
+          var puzzlePiece = PuzzlePiece(
               key: GlobalKey(),
               image: image,
               imageSize: imageSize,
               row: x,
               col: y,
               maxRow: widget.rows,
-              maxCol: widget.cols));
+              maxCol: widget.cols,
+              bringToTop: bringToTop,
+              sendToBack: sendToBack);
+          widget.logger.i(puzzlePiece);
+          pieces.add(puzzlePiece);
+          widget.logger.i(pieces.length);
         });
       }
     }
-    return split_pieces;
+  }
+
+  // when the pan of a piece starts, we need to bring it to the front of the stack
+  void bringToTop(Widget widget) {
+    setState(() {
+      pieces.remove(widget);
+      pieces.add(widget);
+    });
+  }
+
+// when a piece reaches its final position, it will be sent to the back of the stack to not get in the way of other, still movable, pieces
+  void sendToBack(Widget widget) {
+    setState(() {
+      pieces.remove(widget);
+      pieces.insert(0, widget);
+    });
   }
 }
