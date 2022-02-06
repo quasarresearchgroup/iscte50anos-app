@@ -1,5 +1,6 @@
 import 'package:ISCTE_50_Anos/helper/database_helper.dart';
-import 'package:ISCTE_50_Anos/models/page.dart';
+import 'package:ISCTE_50_Anos/helper/helper_methods.dart';
+import 'package:ISCTE_50_Anos/models/visited_page.dart';
 import 'package:ISCTE_50_Anos/nav_drawer/navigation_drawer.dart';
 import 'package:ISCTE_50_Anos/nav_drawer/page_routes.dart';
 import 'package:flutter/material.dart';
@@ -44,22 +45,33 @@ class _VisitedPagesPageState extends State<VisitedPagesPage> {
                       child: Text(AppLocalizations.of(context)!.loading),
                     );
                   } else {
-                    return snapshot.data!.isEmpty
-                        ? Center(
-                            child: Text(AppLocalizations.of(context)!.noPages),
-                          )
-                        : ListView(
-                            children: snapshot.data!.map((page) {
-                            return ListTile(
-                              title: Text(page.content),
-                              subtitle: Text(page.dateTimeParsed().toString()),
-                              onLongPress: () {
-                                setState(() {
-                                  DatabaseHelper.instance.remove(page.id!);
-                                });
-                              },
-                            );
-                          }).toList());
+                    List<VisitedPage> list = snapshot.data!;
+                    if (snapshot.data!.isEmpty) {
+                      return Center(
+                        child: Text(AppLocalizations.of(context)!.noPages),
+                      );
+                    } else {
+                      list.sort((VisitedPage a, VisitedPage b) =>
+                          b.dateTime - a.dateTime);
+
+                      return ListView(
+                          children: list.map((page) {
+                        return ListTile(
+                          title: Text(page.content),
+                          subtitle: Text(page.parsed_time),
+                          onLongPress: () {
+                            setState(() {
+                              DatabaseHelper.instance.remove(page.id!);
+                            });
+                          },
+                          onTap: () {
+                            if (page.url != null) {
+                              HelperMethods.launchURL(page.url!);
+                            }
+                          },
+                        );
+                      }).toList());
+                    }
                   }
                 },
               )));

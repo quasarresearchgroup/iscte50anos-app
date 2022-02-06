@@ -1,5 +1,6 @@
 import 'package:ISCTE_50_Anos/helper/database_helper.dart';
-import 'package:ISCTE_50_Anos/models/page.dart';
+import 'package:ISCTE_50_Anos/helper/helper_methods.dart';
+import 'package:ISCTE_50_Anos/models/visited_page.dart';
 import 'package:ISCTE_50_Anos/nav_drawer/navigation_drawer.dart';
 import 'package:ISCTE_50_Anos/nav_drawer/page_routes.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +10,6 @@ import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:synchronized/synchronized.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class QRScanPage extends StatefulWidget {
   QRScanPage({Key? key}) : super(key: key);
@@ -49,11 +49,13 @@ class QRScanPageState extends State<QRScanPage> {
     controller!.resumeCamera();
   }
 
-  void addPage({required String pageContent, required int date}) async {
-    setState(() async {
-      DatabaseHelper.instance
-          .add(VisitedPage(content: pageContent, dateTime: date));
-    });
+  void addPage(
+      {required String pageContent,
+      required int date,
+      required String pageUrl}) async {
+    DatabaseHelper.instance
+        .add(VisitedPage(content: pageContent, dateTime: date, url: pageUrl));
+    setState(() {});
   }
 
   void onQRViewCreated(QRViewController controller) {
@@ -61,16 +63,6 @@ class QRScanPageState extends State<QRScanPage> {
 
     controller.scannedDataStream
         .listen((scanData) => setState(() => barcode = scanData));
-  }
-
-  _launchURL(String url) async {
-    //if (await   (url)) {
-    logger.d("-------------------url---------------------");
-    logger.d(url);
-    await launch(url);
-    //} else {
-    //  throw 'Could not launch $url';
-    //}
   }
 
   Future<void> extractData(final String url) async {
@@ -88,7 +80,8 @@ class QRScanPageState extends State<QRScanPage> {
         String name = title.map((e) => e.text).join("");
 
         await lock.synchronized(() async {
-          addPage(pageContent: name, date: millisecondsSinceEpoch2);
+          addPage(
+              pageContent: name, date: millisecondsSinceEpoch2, pageUrl: url);
           setState(() {
             qrScanResult = name;
           });
@@ -151,7 +144,7 @@ class QRScanPageState extends State<QRScanPage> {
             //setState(() => barcodeold = barcode);
             barcodeold = barcode;
 
-            _launchURL(barcode!.code!);
+            HelperMethods.launchURL(barcode!.code!);
             extractData(barcode!.code!);
 
             return Text(
