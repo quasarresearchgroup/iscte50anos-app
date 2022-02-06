@@ -11,6 +11,9 @@ import 'package:path_provider/path_provider.dart';
 class PuzzlePage extends StatefulWidget {
   const PuzzlePage({Key? key}) : super(key: key);
   static Logger logger = Logger();
+
+  static const page_route = "/puzzle";
+
   @override
   _PuzzlePageState createState() => _PuzzlePageState();
 }
@@ -20,32 +23,28 @@ class _PuzzlePageState extends State<PuzzlePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: FutureBuilder(
-          future: imageList,
-          builder: (BuildContext context, AsyncSnapshot<List<Image>> snapshot) {
-            if (!snapshot.hasData) {
-              return Center(
-                child: Text(AppLocalizations.of(context)!.loading),
-              );
-            } else {
-              PuzzlePage.logger.i(snapshot.data);
-              return GridView.builder(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    mainAxisSpacing: 0,
-                    crossAxisSpacing: 0,
-                  ),
-                  itemCount: snapshot.data!.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return snapshot.data![index];
-                    //List.generate(9, (index) => snapshot.data![index],growable: false));
-                  });
-            }
-          }),
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.puzzleScreen),
-      ),
+    return FutureBuilder(
+      future: imageList,
+      builder: (BuildContext context, AsyncSnapshot<List<Image>> snapshot) {
+        if (!snapshot.hasData) {
+          return Center(
+            child: Text(AppLocalizations.of(context)!.loading),
+          );
+        } else {
+          PuzzlePage.logger.i(snapshot.data);
+          return GridView.builder(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                mainAxisSpacing: 0,
+                crossAxisSpacing: 0,
+              ),
+              itemCount: snapshot.data!.length,
+              itemBuilder: (BuildContext context, int index) {
+                return snapshot.data![index];
+                //List.generate(9, (index) => snapshot.data![index],growable: false));
+              });
+        }
+      },
     );
   }
 
