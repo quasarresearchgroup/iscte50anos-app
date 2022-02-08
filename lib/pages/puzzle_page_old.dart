@@ -6,14 +6,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:image/image.dart' as image_lib;
 import 'package:logger/logger.dart';
-import 'package:path_provider/path_provider.dart';
 
 @Deprecated("new puzzle page is located in pages/puzzle_page")
 class PuzzlePageOld extends StatefulWidget {
   const PuzzlePageOld({Key? key}) : super(key: key);
   static Logger logger = Logger();
 
-  static const page_route = "/puzzle";
+  static const pageRoute = "/puzzle";
 
   @override
   _PuzzlePageOldState createState() => _PuzzlePageOldState();
@@ -63,12 +62,6 @@ class _PuzzlePageOldState extends State<PuzzlePageOld> {
     }
 
     imageList = handlevalue();
-  }
-
-  Future<String> get _localPath async {
-    final directory = await getApplicationDocumentsDirectory();
-
-    return directory.path;
   }
 
   Future<List<Image>> imageTest(

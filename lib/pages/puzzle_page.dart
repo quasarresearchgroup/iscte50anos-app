@@ -6,7 +6,8 @@ import 'package:logger/logger.dart';
 
 class PuzzlePage extends StatefulWidget {
   PuzzlePage({Key? key}) : super(key: key);
-  Logger logger = Logger();
+  final Logger logger = Logger();
+  static const pageRoute = "/puzzle";
 
   final int rows = 3;
   final int cols = 3;

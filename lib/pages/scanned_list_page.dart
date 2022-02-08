@@ -8,7 +8,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class VisitedPagesPage extends StatefulWidget {
   const VisitedPagesPage({Key? key}) : super(key: key);
-  static const page_route = "/pages";
+  static const pageRoute = "/pages";
 
   @override
   _VisitedPagesPageState createState() => _VisitedPagesPageState();
@@ -24,7 +24,7 @@ class _VisitedPagesPageState extends State<VisitedPagesPage> {
             return true;
           },
           child: Scaffold(
-              drawer: NavigationDrawer(),
+              drawer: const NavigationDrawer(),
               appBar: AppBar(
                 title: Text(AppLocalizations.of(context)!.visitedPagesScreen),
               ),
@@ -58,7 +58,7 @@ class _VisitedPagesPageState extends State<VisitedPagesPage> {
                           children: list.map((page) {
                         return ListTile(
                           title: Text(page.content),
-                          subtitle: Text(page.parsed_time),
+                          subtitle: Text(page.parsedTime),
                           onLongPress: () {
                             setState(() {
                               DatabaseHelper.instance.remove(page.id!);

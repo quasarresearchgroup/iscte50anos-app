@@ -1,17 +1,16 @@
 import 'package:IscteSpots/pages/puzzle_page.dart';
 import 'package:IscteSpots/widgets/my_bottom_bar.dart';
 import 'package:IscteSpots/widgets/nav_drawer/navigation_drawer.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Home extends StatefulWidget {
-  Home({
+  const Home({
     Key? key,
   }) : super(key: key);
 
-  static const page_route = "/";
+  static const pageRoute = "/";
 
   @override
   _HomeState createState() => _HomeState();
@@ -33,7 +32,7 @@ class _HomeState extends State<Home> {
                 child: Text(AppLocalizations.of(context)!.appName)),
           ),
           body: PuzzlePage(),
-          bottomNavigationBar: MyBottomBar(selected_index: 0),
+          bottomNavigationBar: MyBottomBar(selectedIndex: 0),
         ));
   }
 }

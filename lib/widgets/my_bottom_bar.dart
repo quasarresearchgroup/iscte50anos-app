@@ -1,13 +1,12 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'nav_drawer/page_routes.dart';
 
 class MyBottomBar extends StatefulWidget {
-  int selected_index;
+  final int selectedIndex;
 
-  MyBottomBar({Key? key, required this.selected_index}) : super(key: key);
+  const MyBottomBar({Key? key, required this.selectedIndex}) : super(key: key);
 
   @override
   _MyBottomBarState createState() => _MyBottomBarState();
@@ -16,7 +15,7 @@ class MyBottomBar extends StatefulWidget {
 class _MyBottomBarState extends State<MyBottomBar> {
   @override
   Widget build(BuildContext context) {
-    void change_page(int index) {
+    void changePage(int index) {
       switch (index) {
         case 0:
           {
@@ -36,8 +35,8 @@ class _MyBottomBarState extends State<MyBottomBar> {
     }
 
     return BottomNavigationBar(
-      currentIndex: widget.selected_index,
-      onTap: change_page,
+      currentIndex: widget.selectedIndex,
+      onTap: changePage,
       type: BottomNavigationBarType.fixed,
       selectedItemColor: Colors.blue[700],
       selectedFontSize: 13,

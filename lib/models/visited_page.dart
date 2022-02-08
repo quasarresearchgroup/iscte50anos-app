@@ -13,7 +13,7 @@ class VisitedPage {
     this.url,
   });
 
-  String get parsed_time {
+  String get parsedTime {
     DateTime timeParsed = dateTimeParsed();
     int year = timeParsed.year;
     int month = timeParsed.month;

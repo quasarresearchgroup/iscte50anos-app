@@ -18,7 +18,7 @@ class TimeLineData {
         break;
       case "world":
         {
-          scopeIcon = Icon(FontAwesome.globe);
+          scopeIcon = const Icon(FontAwesome.globe);
         }
         break;
       case "iscte":
@@ -28,7 +28,7 @@ class TimeLineData {
         break;
       default:
         {
-          scopeIcon = Icon(FontAwesome.globe);
+          scopeIcon = const Icon(FontAwesome.globe);
         }
         break;
     }

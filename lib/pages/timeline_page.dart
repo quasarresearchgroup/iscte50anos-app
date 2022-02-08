@@ -4,7 +4,6 @@ import 'package:IscteSpots/widgets/nav_drawer/navigation_drawer.dart';
 import 'package:IscteSpots/widgets/nav_drawer/page_routes.dart';
 import 'package:IscteSpots/widgets/timeline/events_timeline.dart';
 import 'package:IscteSpots/widgets/timeline/year_timeline.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:logger/logger.dart';
@@ -12,11 +11,11 @@ import 'package:timeline_tile/timeline_tile.dart';
 
 class TimelinePage extends StatefulWidget {
   TimelinePage({Key? key}) : super(key: key);
-  Logger logger = Logger();
+  final Logger logger = Logger();
 
-  static const page_route = "/timeline";
+  static const pageRoute = "/timeline";
 
-  late Future<List<TimeLineData>> mapdata;
+  late final Future<List<TimeLineData>> mapdata;
   late final Future<List<int>> yearsList;
 
   final lineStyle = const LineStyle(color: Colors.black, thickness: 6);
@@ -44,6 +43,7 @@ class _TimelinePageState extends State<TimelinePage> {
 
   @override
   void initState() {
+    super.initState();
     widget.mapdata = TimelineLoader.getTimeLineEntries();
     widget.yearsList = widget.createYearsList(widget.mapdata);
   }

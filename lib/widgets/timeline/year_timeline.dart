@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
@@ -42,7 +41,7 @@ class _YearTimelineState extends State<YearTimeline> {
 }
 
 class YearTimelineTile extends StatefulWidget {
-  YearTimelineTile(
+  const YearTimelineTile(
       {Key? key,
       required this.changeYearFunction,
       required this.year,

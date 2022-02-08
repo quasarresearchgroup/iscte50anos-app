@@ -14,10 +14,10 @@ import 'package:synchronized/synchronized.dart';
 
 class QRScanPage extends StatefulWidget {
   QRScanPage({Key? key}) : super(key: key);
-  Logger logger = Logger();
+  final Logger logger = Logger();
 
-  static const page_route = "/scan";
-  static String TITLEHTMLTAG = 'CGqCRe';
+  static const pageRoute = "/scan";
+  static String titleHtmlTag = 'CGqCRe';
 
   @override
   State<StatefulWidget> createState() => QRScanPageState();
@@ -77,7 +77,7 @@ class QRScanPageState extends State<QRScanPage> {
         int millisecondsSinceEpoch2 = DateTime.now().millisecondsSinceEpoch;
         var title = parser
             .parse(response.body)
-            .getElementsByClassName(QRScanPage.TITLEHTMLTAG);
+            .getElementsByClassName(QRScanPage.titleHtmlTag);
         String name = title.map((e) => e.text).join("");
 
         await lock.synchronized(() async {
@@ -121,10 +121,10 @@ class QRScanPageState extends State<QRScanPage> {
           ),
           Positioned(
             top: 10,
-            child: ControlButtons(),
+            child: controlButtons(),
           ),
         ]),
-        bottomNavigationBar: MyBottomBar(selected_index: 1),
+        bottomNavigationBar: MyBottomBar(selectedIndex: 1),
       ),
     );
   }
@@ -165,7 +165,7 @@ class QRScanPageState extends State<QRScanPage> {
         },
       ));
 
-  Widget ControlButtons() => Container(
+  Widget controlButtons() => Container(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       decoration: controlsDecoration,
       child: Row(
