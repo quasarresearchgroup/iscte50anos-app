@@ -1,7 +1,7 @@
-import 'package:IscteSpots/pages/puzzle_page.dart';
-import 'package:IscteSpots/pages/qr_scan_page.dart';
-import 'package:IscteSpots/pages/scanned_list_page.dart';
-import 'package:IscteSpots/pages/timeline_page.dart';
+import 'package:iscteSpots/pages/puzzle_page.dart';
+import 'package:iscteSpots/pages/qr_scan_page.dart';
+import 'package:iscteSpots/pages/scanned_list_page.dart';
+import 'package:iscteSpots/pages/timeline_page.dart';
 
 class PageRoutes {
   static const String home = PuzzlePage.pageRoute;

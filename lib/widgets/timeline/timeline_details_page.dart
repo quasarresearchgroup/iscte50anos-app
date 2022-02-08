@@ -1,4 +1,4 @@
-import 'package:IscteSpots/models/timeline_item.dart';
+import 'package:iscteSpots/models/timeline_item.dart';
 import 'package:flutter/material.dart';
 
 class TimeLineDetailsPage extends StatefulWidget {

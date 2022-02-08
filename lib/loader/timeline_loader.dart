@@ -1,4 +1,4 @@
-import 'package:IscteSpots/models/timeline_item.dart';
+import 'package:iscteSpots/models/timeline_item.dart';
 import 'package:flutter/services.dart';
 import 'package:logger/logger.dart';
 

@@ -1,6 +1,6 @@
 {
-    "name": "IscteSpots",
-    "short_name": "IscteSpots",
+    "name": "iscteSpots",
+    "short_name": "iscteSpots",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

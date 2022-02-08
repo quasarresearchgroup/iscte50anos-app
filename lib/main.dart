@@ -1,8 +1,8 @@
-import 'package:IscteSpots/pages/home.dart';
-import 'package:IscteSpots/pages/qr_scan_page.dart';
-import 'package:IscteSpots/pages/scanned_list_page.dart';
-import 'package:IscteSpots/pages/timeline_page.dart';
-import 'package:IscteSpots/widgets/nav_drawer/page_routes.dart';
+import 'package:iscteSpots/pages/home.dart';
+import 'package:iscteSpots/pages/qr_scan_page.dart';
+import 'package:iscteSpots/pages/scanned_list_page.dart';
+import 'package:iscteSpots/pages/timeline_page.dart';
+import 'package:iscteSpots/widgets/nav_drawer/page_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 

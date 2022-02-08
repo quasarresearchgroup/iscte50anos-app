@@ -1,6 +1,6 @@
-import 'package:IscteSpots/pages/puzzle_page.dart';
-import 'package:IscteSpots/widgets/my_bottom_bar.dart';
-import 'package:IscteSpots/widgets/nav_drawer/navigation_drawer.dart';
+import 'package:iscteSpots/pages/puzzle_page.dart';
+import 'package:iscteSpots/widgets/my_bottom_bar.dart';
+import 'package:iscteSpots/widgets/nav_drawer/navigation_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -32,7 +32,7 @@ class _HomeState extends State<Home> {
                 child: Text(AppLocalizations.of(context)!.appName)),
           ),
           body: PuzzlePage(),
-          bottomNavigationBar: MyBottomBar(selectedIndex: 0),
+          bottomNavigationBar: const MyBottomBar(selectedIndex: 0),
         ));
   }
 }
