@@ -1,5 +1,5 @@
-import 'package:iscteSpots/models/timeline_item.dart';
 import 'package:flutter/services.dart';
+import 'package:iscte_spots/models/timeline_item.dart';
 import 'package:logger/logger.dart';
 
 class TimelineLoader {

@@ -1,10 +1,10 @@
-import 'package:iscteSpots/helper/database_helper.dart';
-import 'package:iscteSpots/helper/helper_methods.dart';
-import 'package:iscteSpots/models/visited_page.dart';
-import 'package:iscteSpots/widgets/nav_drawer/navigation_drawer.dart';
-import 'package:iscteSpots/widgets/nav_drawer/page_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:iscte_spots/helper/database_helper.dart';
+import 'package:iscte_spots/helper/helper_methods.dart';
+import 'package:iscte_spots/models/visited_page.dart';
+import 'package:iscte_spots/widgets/nav_drawer/navigation_drawer.dart';
+import 'package:iscte_spots/widgets/nav_drawer/page_routes.dart';
 
 class VisitedPagesPage extends StatefulWidget {
   const VisitedPagesPage({Key? key}) : super(key: key);

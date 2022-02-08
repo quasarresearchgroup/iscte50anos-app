@@ -1,10 +1,10 @@
-import 'package:iscteSpots/pages/home.dart';
-import 'package:iscteSpots/pages/qr_scan_page.dart';
-import 'package:iscteSpots/pages/scanned_list_page.dart';
-import 'package:iscteSpots/pages/timeline_page.dart';
-import 'package:iscteSpots/widgets/nav_drawer/page_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:iscte_spots/pages/home.dart';
+import 'package:iscte_spots/pages/qr_scan_page.dart';
+import 'package:iscte_spots/pages/scanned_list_page.dart';
+import 'package:iscte_spots/pages/timeline_page.dart';
+import 'package:iscte_spots/widgets/nav_drawer/page_routes.dart';
 
 const int puzzlePageIndex = 0;
 const int qrPageIndex = 1;

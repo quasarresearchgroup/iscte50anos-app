@@ -1,9 +1,9 @@
-import 'package:iscteSpots/pages/puzzle_page.dart';
-import 'package:iscteSpots/widgets/my_bottom_bar.dart';
-import 'package:iscteSpots/widgets/nav_drawer/navigation_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:iscte_spots/pages/puzzle_page.dart';
+import 'package:iscte_spots/widgets/my_bottom_bar.dart';
+import 'package:iscte_spots/widgets/nav_drawer/navigation_drawer.dart';
 
 class Home extends StatefulWidget {
   const Home({

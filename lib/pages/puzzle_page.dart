@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:iscteSpots/widgets/puzzle/puzzle_piece.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:iscte_spots/widgets/puzzle/puzzle_piece.dart';
 import 'package:logger/logger.dart';
 
 class PuzzlePage extends StatefulWidget {

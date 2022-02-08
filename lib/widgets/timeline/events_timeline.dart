@@ -1,6 +1,6 @@
-import 'package:iscteSpots/models/timeline_item.dart';
-import 'package:iscteSpots/widgets/timeline/timeline_details_page.dart';
 import 'package:flutter/material.dart';
+import 'package:iscte_spots/models/timeline_item.dart';
+import 'package:iscte_spots/widgets/timeline/timeline_details_page.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
 class EventsTimeline extends StatefulWidget {
