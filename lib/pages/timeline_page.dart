@@ -1,9 +1,9 @@
-import 'package:ISCTE_50_Anos/loader/timeline_loader.dart';
-import 'package:ISCTE_50_Anos/models/timeline_item.dart';
-import 'package:ISCTE_50_Anos/widgets/nav_drawer/navigation_drawer.dart';
-import 'package:ISCTE_50_Anos/widgets/nav_drawer/page_routes.dart';
-import 'package:ISCTE_50_Anos/widgets/timeline/events_timeline.dart';
-import 'package:ISCTE_50_Anos/widgets/timeline/year_timeline.dart';
+import 'package:IscteSpots/loader/timeline_loader.dart';
+import 'package:IscteSpots/models/timeline_item.dart';
+import 'package:IscteSpots/widgets/nav_drawer/navigation_drawer.dart';
+import 'package:IscteSpots/widgets/nav_drawer/page_routes.dart';
+import 'package:IscteSpots/widgets/timeline/events_timeline.dart';
+import 'package:IscteSpots/widgets/timeline/year_timeline.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';

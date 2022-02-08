@@ -1,6 +1,6 @@
 {
-    "name": "ISCTE_50_Anos",
-    "short_name": "ISCTE_50_Anos",
+    "name": "IscteSpots",
+    "short_name": "IscteSpots",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

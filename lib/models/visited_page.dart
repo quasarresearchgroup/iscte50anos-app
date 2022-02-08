@@ -1,4 +1,4 @@
-import 'package:ISCTE_50_Anos/helper/database_helper.dart';
+import 'package:IscteSpots/helper/database_helper.dart';
 
 class VisitedPage {
   final int? id;

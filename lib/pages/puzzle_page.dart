@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:ISCTE_50_Anos/widgets/puzzle/puzzle_piece.dart';
+import 'package:IscteSpots/widgets/puzzle/puzzle_piece.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:logger/logger.dart';
 
