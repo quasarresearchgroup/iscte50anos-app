@@ -1,9 +1,9 @@
 import 'package:ISCTE_50_Anos/helper/database_helper.dart';
 import 'package:ISCTE_50_Anos/helper/helper_methods.dart';
 import 'package:ISCTE_50_Anos/models/visited_page.dart';
-import 'package:ISCTE_50_Anos/nav_drawer/navigation_drawer.dart';
-import 'package:ISCTE_50_Anos/nav_drawer/page_routes.dart';
 import 'package:ISCTE_50_Anos/widgets/my_bottom_bar.dart';
+import 'package:ISCTE_50_Anos/widgets/nav_drawer/navigation_drawer.dart';
+import 'package:ISCTE_50_Anos/widgets/nav_drawer/page_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:html/parser.dart' as parser;

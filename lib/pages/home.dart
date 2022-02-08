@@ -1,6 +1,6 @@
-import 'package:ISCTE_50_Anos/nav_drawer/navigation_drawer.dart';
 import 'package:ISCTE_50_Anos/pages/puzzle_page.dart';
 import 'package:ISCTE_50_Anos/widgets/my_bottom_bar.dart';
+import 'package:ISCTE_50_Anos/widgets/nav_drawer/navigation_drawer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
