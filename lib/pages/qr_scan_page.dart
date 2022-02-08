@@ -3,6 +3,7 @@ import 'package:ISCTE_50_Anos/helper/helper_methods.dart';
 import 'package:ISCTE_50_Anos/models/visited_page.dart';
 import 'package:ISCTE_50_Anos/nav_drawer/navigation_drawer.dart';
 import 'package:ISCTE_50_Anos/nav_drawer/page_routes.dart';
+import 'package:ISCTE_50_Anos/widgets/my_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:html/parser.dart' as parser;
@@ -103,26 +104,29 @@ class QRScanPageState extends State<QRScanPage> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-        onWillPop: () async {
-          Navigator.pushReplacementNamed(context, PageRoutes.home);
-          return true;
-        },
-        child: Scaffold(
-            drawer: const NavigationDrawer(),
-            appBar: AppBar(
-              title: Text(AppLocalizations.of(context)!.scanACode),
-            ),
-            body: Stack(alignment: Alignment.center, children: <Widget>[
-              buildQRView(context),
-              Positioned(
-                bottom: 10,
-                child: buildResult(),
-              ),
-              Positioned(
-                top: 10,
-                child: ControlButtons(),
-              ),
-            ])));
+      onWillPop: () async {
+        Navigator.pushReplacementNamed(context, PageRoutes.home);
+        return true;
+      },
+      child: Scaffold(
+        drawer: const NavigationDrawer(),
+        appBar: AppBar(
+          title: Text(AppLocalizations.of(context)!.scanACode),
+        ),
+        body: Stack(alignment: Alignment.center, children: <Widget>[
+          buildQRView(context),
+          Positioned(
+            bottom: 10,
+            child: buildResult(),
+          ),
+          Positioned(
+            top: 10,
+            child: ControlButtons(),
+          ),
+        ]),
+        bottomNavigationBar: MyBottomBar(selected_index: 1),
+      ),
+    );
   }
 
   Widget buildQRView(BuildContext context) => QRView(

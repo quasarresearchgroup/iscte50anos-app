@@ -33,7 +33,7 @@ class _HomeState extends State<Home> {
                 child: Text(AppLocalizations.of(context)!.appName)),
           ),
           body: PuzzlePage(),
-          bottomNavigationBar: MyBottomBar(),
+          bottomNavigationBar: MyBottomBar(selected_index: 0),
         ));
   }
 }

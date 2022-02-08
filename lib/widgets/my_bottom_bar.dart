@@ -3,24 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class MyBottomBar extends StatefulWidget {
-  late Function(int) updateIndex;
+  int selected_index;
 
-  MyBottomBar({
-    Key? key,
-    /*required this.updateIndex*/
-  }) : super(key: key);
+  MyBottomBar({Key? key, required this.selected_index}) : super(key: key);
 
   @override
   _MyBottomBarState createState() => _MyBottomBarState();
 }
 
 class _MyBottomBarState extends State<MyBottomBar> {
-  //int _currentIndex = 0;
-
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
-      //currentIndex: _currentIndex,
+      currentIndex: widget.selected_index,
       //onTap: widget.updateIndex,
       type: BottomNavigationBarType.fixed,
       selectedItemColor: Colors.blue[700],
