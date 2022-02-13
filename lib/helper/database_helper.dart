@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:ISCTE_50_Anos/models/page.dart';
+import 'package:iscte_spots/models/visited_page.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
@@ -8,13 +8,14 @@ import 'package:sqflite/sqflite.dart';
 class DatabaseHelper {
   static Database? _database;
   static const _databaseName = "MyDatabase.db";
-  static const _databaseVersion = 4;
+  static const _databaseVersion = 6;
 
   static const table = 'pagesTable';
 
   static const columnId = '_id';
   static const columnContent = 'content';
   static const columnDate = 'date';
+  static const columnUrl = 'url';
 
   //  singleton class
   DatabaseHelper._privateConstructor();
@@ -36,6 +37,7 @@ class DatabaseHelper {
       CREATE TABLE $table(
       $columnId INTEGER PRIMARY KEY,
       $columnContent TEXT UNIQUE,
+      $columnUrl TEXT,
       $columnDate INTEGER
       )
     ''');

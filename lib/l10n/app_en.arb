@@ -1,13 +1,15 @@
 {
-    "appName":"ISCTE_50_Years",
+    "appName":"IscteSpots",
     "scanCodeButton": "Scan Code",
     "createCode": "Create Code",
     "scanACode": "Scan a code",
+    "noPages":"No Pages visited yet",
+    "loading":"Loading...",
+
     "mainMenu": "Main Menu",
-    "pointsScreen":"View Points",
-    "visitedPagesScreen":"View Visited Pages",
+    "pointsScreen":"Points",
+    "visitedPagesScreen":"Visited Pages",
     "timelineScreen":"Timeline",
-    "noPages":"No Pages visited yet.",
-    "loading":"Loading..."
+    "puzzleScreen":"Puzzle"
 
 }

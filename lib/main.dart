@@ -1,19 +1,23 @@
-import 'package:ISCTE_50_Anos/pages/menu.dart';
-import 'package:ISCTE_50_Anos/pages/pages.dart';
-import 'package:ISCTE_50_Anos/pages/qr_scan_page.dart';
-import 'package:ISCTE_50_Anos/pages/timeline_page.dart';
-import 'package:ISCTE_50_Anos/widgets/my_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:iscte_spots/pages/home.dart';
+import 'package:iscte_spots/pages/qr_scan_page.dart';
+import 'package:iscte_spots/pages/scanned_list_page.dart';
+import 'package:iscte_spots/pages/timeline_page.dart';
+import 'package:iscte_spots/widgets/nav_drawer/page_routes.dart';
 
-const String appTitle = "";
+const int puzzlePageIndex = 0;
+const int qrPageIndex = 1;
+const int timelinePageIndex = 2;
+const int visitedPageIndex = 3;
+
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  MyApp({Key? key}) : super(key: key);
+  const MyApp({Key? key}) : super(key: key);
 
   // This widget is the root of your application.
   @override
@@ -22,60 +26,13 @@ class MyApp extends StatelessWidget {
       title: '',
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      initialRoute: '/',
+      initialRoute: PageRoutes.home,
       routes: {
-        '/': (context) => Home(),
-        '/timeline': (context) => TimelinePage(),
-        '/pages': (context) => const VisitedPagesPage(),
+        PageRoutes.home: (context) => const Home(),
+        PageRoutes.timeline: (context) => TimelinePage(),
+        PageRoutes.visited: (context) => const VisitedPagesPage(),
+        PageRoutes.qrscan: (context) => QRScanPage(),
       },
     );
   }
-}
-
-class Home extends StatefulWidget {
-  Home({
-    Key? key,
-  }) : super(key: key);
-  @override
-  _HomeState createState() => _HomeState();
-}
-
-class _HomeState extends State<Home> {
-  int _currentIndex = 0;
-  late List _appScreens;
-
-  @override
-  void initState() {
-    super.initState();
-    _appScreens = [
-      MyMenu(
-        updateIndex: updateIndex,
-        changeScreen: changeScreen,
-      ),
-      QRScanPage(),
-    ];
-  }
-
-  void changeScreen(Widget newPage, Scaffold scaffold) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => newPage));
-  }
-
-  void updateIndex(int value) {
-    setState(() {
-      _currentIndex = value;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          title: Title(
-              color: Colors.black,
-              child: Text(AppLocalizations.of(context)!.appName)),
-        ),
-        body: _appScreens[_currentIndex],
-        bottomNavigationBar: MyBottomBar(
-          updateIndex: updateIndex,
-        ),
-      );
 }

@@ -1,19 +1,17 @@
-import 'package:ISCTE_50_Anos/models/timeline_item.dart';
-import 'package:ISCTE_50_Anos/widgets/timeline/timeline_details_page.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
+import 'package:iscte_spots/models/timeline_item.dart';
+import 'package:iscte_spots/widgets/timeline/timeline_details_page.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
 class EventsTimeline extends StatefulWidget {
-  EventsTimeline(
+  const EventsTimeline(
       {Key? key,
       required this.timeLineMap,
       required this.timelineYear,
       required this.lineStyle})
       : super(key: key);
-  List<TimeLineData> timeLineMap;
-  int timelineYear;
+  final List<TimeLineData> timeLineMap;
+  final int timelineYear;
   final LineStyle lineStyle;
 
   @override
@@ -77,7 +75,7 @@ class EventTimelineTile extends StatelessWidget {
   final bool isLast;
   final TimeLineData data;
   final LineStyle lineStyle;
-  Color color2 = Colors.white.withOpacity(0.3);
+  final Color color2 = Colors.white.withOpacity(0.3);
 
   @override
   Widget build(BuildContext context) {
