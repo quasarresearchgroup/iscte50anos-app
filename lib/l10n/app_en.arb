@@ -5,11 +5,13 @@
     "scanACode": "Scan a code",
     "noPages":"No Pages visited yet",
     "loading":"Loading...",
+    "quizPageTitle":"Quiz",
 
     "mainMenu": "Main Menu",
     "pointsScreen":"Points",
     "visitedPagesScreen":"Visited Pages",
     "timelineScreen":"Timeline",
-    "puzzleScreen":"Puzzle"
+    "puzzleScreen":"Puzzle",
+    "quizScreen":"Quizzes"
 
 }

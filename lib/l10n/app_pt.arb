@@ -5,11 +5,12 @@
     "scanACode": "Digitalize um código",
     "noPages":"Ainda não visitou páginas",
     "loading":"A carregar",
+    "quizPageTitle":"Quiz",
 
     "mainMenu": "Menu principal",
     "pointsScreen":"Ver Points",
     "visitedPagesScreen":"Páginas Visitadas",
     "timelineScreen":"Linha do Tempo",
-    "puzzleScreen":"Puzzle"
-
+    "puzzleScreen":"Puzzle",
+    "quizScreen":"Quizzes"
 }

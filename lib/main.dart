@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/pages/home.dart';
 import 'package:iscte_spots/pages/qr_scan_page.dart';
+import 'package:iscte_spots/pages/quiz/quiz_page.dart';
 import 'package:iscte_spots/pages/scanned_list_page.dart';
 import 'package:iscte_spots/pages/timeline_page.dart';
 import 'package:iscte_spots/widgets/nav_drawer/page_routes.dart';
@@ -32,6 +33,7 @@ class MyApp extends StatelessWidget {
         PageRoutes.timeline: (context) => TimelinePage(),
         PageRoutes.visited: (context) => const VisitedPagesPage(),
         PageRoutes.qrscan: (context) => QRScanPage(),
+        PageRoutes.quiz: (context) => QuizPage(),
       },
     );
   }
