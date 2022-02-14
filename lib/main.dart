@@ -4,6 +4,7 @@ import 'package:iscte_spots/pages/home.dart';
 import 'package:iscte_spots/pages/qr_scan_page.dart';
 import 'package:iscte_spots/pages/quiz/quiz_page.dart';
 import 'package:iscte_spots/pages/scanned_list_page.dart';
+import 'package:iscte_spots/pages/splash.dart';
 import 'package:iscte_spots/pages/timeline_page.dart';
 import 'package:iscte_spots/widgets/nav_drawer/page_routes.dart';
 
@@ -25,9 +26,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: '',
+      darkTheme: ThemeData.dark(),
+      theme: ThemeData.light(),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      initialRoute: PageRoutes.home,
+      home: const SplashScreen(),
       routes: {
         PageRoutes.home: (context) => const Home(),
         PageRoutes.timeline: (context) => TimelinePage(),
