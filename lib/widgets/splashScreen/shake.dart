@@ -13,6 +13,7 @@ class Shaker extends StatefulWidget {
   final Logger logger = Logger();
   @override
   _ShakerState createState() => _ShakerState();
+  double initialposX = 200, initialposY = 100;
 }
 
 class _ShakerState extends State<Shaker> {
@@ -22,18 +23,30 @@ class _ShakerState extends State<Shaker> {
   double accel_x = 0;
   double accel_y = 0;
   double accel_z = 0;
-  double posX = 200, posY = 100;
+  late double posX;
+  late double posY;
+
+  final int gyroMultiplier = 10;
+  final int accelMultiplier = 5;
+
+  void resetPos() {
+    posX = widget.initialposX;
+    posY = widget.initialposY;
+  }
 
   @override
   void initState() {
     super.initState();
+    posX = widget.initialposX;
+    posY = widget.initialposY;
+
     gyroscopeEvents.listen((GyroscopeEvent event) {
       setState(() {
         gyro_x = event.x;
         gyro_y = event.y;
         gyro_z = event.z;
-        posX = posX + (gyro_y * 20);
-        posY = posY + (gyro_x * 20);
+        posX = posX + (gyro_y * gyroMultiplier);
+        posY = posY + (gyro_x * gyroMultiplier);
         widget.logger.d('posX:' + posX.toString() + 'posY:' + posY.toString());
       });
     });
@@ -42,6 +55,8 @@ class _ShakerState extends State<Shaker> {
         accel_x = event.x;
         accel_y = event.y;
         accel_z = event.z;
+        posX = posX + (accel_x * accelMultiplier);
+        posY = posY + (accel_y * accelMultiplier);
       });
     });
   }
@@ -62,6 +77,9 @@ class _ShakerState extends State<Shaker> {
             child: Text(AppLocalizations.of(context)!.appName)),
       ),
       bottomNavigationBar: const MyBottomBar(selectedIndex: 0),
+      floatingActionButton: FloatingActionButton(
+        onPressed: resetPos,
+      ),
       body: Column(
         children: [
           Flexible(
@@ -76,31 +94,29 @@ class _ShakerState extends State<Shaker> {
           ),
           Flexible(
             flex: 2,
-            child: SizedBox(
-              child: Stack(
-                children: [
-                  Positioned(
-                    left: posX,
-                    top: posY,
-                    child: GestureDetector(
-                      onPanUpdate: (dragUpdateDetails) {
-                        setState(() {
-                          posY = posY + dragUpdateDetails.delta.dy;
-                          posX = posX + dragUpdateDetails.delta.dx;
-                          widget.logger.d('posX:' +
-                              posX.toString() +
-                              'posY:' +
-                              posY.toString());
-                        });
-                      },
-                      child: const CircleAvatar(
-                        radius: 20,
-                        backgroundColor: Colors.red,
-                      ),
+            child: Stack(
+              children: [
+                Positioned(
+                  left: posX,
+                  top: posY,
+                  child: GestureDetector(
+                    onPanUpdate: (dragUpdateDetails) {
+                      setState(() {
+                        posY = posY + dragUpdateDetails.delta.dy;
+                        posX = posX + dragUpdateDetails.delta.dx;
+                        widget.logger.d('posX:' +
+                            posX.toString() +
+                            'posY:' +
+                            posY.toString());
+                      });
+                    },
+                    child: const CircleAvatar(
+                      radius: 20,
+                      backgroundColor: Colors.red,
                     ),
-                  )
-                ],
-              ),
+                  ),
+                )
+              ],
             ),
           ),
         ],
