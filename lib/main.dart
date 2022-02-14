@@ -7,6 +7,7 @@ import 'package:iscte_spots/pages/scanned_list_page.dart';
 import 'package:iscte_spots/pages/splash.dart';
 import 'package:iscte_spots/pages/timeline_page.dart';
 import 'package:iscte_spots/widgets/nav_drawer/page_routes.dart';
+import 'package:iscte_spots/widgets/splashScreen/shake.dart';
 
 const int puzzlePageIndex = 0;
 const int qrPageIndex = 1;
@@ -37,6 +38,7 @@ class MyApp extends StatelessWidget {
         PageRoutes.visited: (context) => const VisitedPagesPage(),
         PageRoutes.qrscan: (context) => QRScanPage(),
         PageRoutes.quiz: (context) => QuizPage(),
+        PageRoutes.shake: (context) => Shaker(),
       },
     );
   }

@@ -54,6 +54,13 @@ class NavigationDrawer extends StatelessWidget {
         },
       ),
       ListTile(
+        leading: const Icon(Icons.touch_app_outlined),
+        title: const Text('Shaker'),
+        onTap: () {
+          Navigator.pushNamed(context, PageRoutes.shake);
+        },
+      ),
+      ListTile(
         leading: const Icon(Icons.score),
         title: Text(AppLocalizations.of(context)!.pointsScreen),
         onTap: () {},

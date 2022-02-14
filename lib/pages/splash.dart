@@ -11,16 +11,14 @@ class SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnimatedSplashScreen(
-      splash: Expanded(
-        child: Column(
-          children: [
-            Image.asset('Resources/logo_50anos_iscte_branco_rgb.png'),
-            const Text(
-              'IscteSpots',
-              style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-            )
-          ],
-        ),
+      splash: Column(
+        children: [
+          Image.asset('Resources/logo_50anos_iscte_branco_rgb.png'),
+          const Text(
+            'IscteSpots',
+            style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+          )
+        ],
       ),
       backgroundColor: Colors.blue,
       nextScreen: const Home(),
