@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/widgets/nav_drawer/navigation_drawer.dart';
+import 'package:iscte_spots/widgets/nav_drawer/page_routes.dart';
 import 'package:logger/logger.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 
@@ -17,160 +20,211 @@ class Shaker extends StatefulWidget {
 }
 
 class _ShakerState extends State<Shaker> {
-  double gyro_x = 0;
-  double gyro_y = 0;
-  double gyro_z = 0;
-  double accel_x = 0;
-  double accel_y = 0;
-  double accel_z = 0;
+  double pitch = 0;
+  double roll = 0;
+  double yaw = 0;
   late double posX;
   late double posY;
+  double accelX = 0;
+  double accelY = 0;
+  final List<StreamSubscription<dynamic>> _streamSubscriptions =
+      <StreamSubscription<dynamic>>[];
 
-  final int gyroMultiplier = 10;
-  final int accelMultiplier = 5;
+  static const double moveMultiplier = 1;
+  late int lastDeltaTime;
+
+  double deltaTime() {
+    int currTime = DateTime.now().millisecondsSinceEpoch;
+    double timeDif = (currTime - lastDeltaTime) / 10;
+    lastDeltaTime = currTime;
+    return timeDif;
+  }
 
   void resetPos() {
     posX = widget.initialposX;
     posY = widget.initialposY;
+    accelX = 0;
+    accelY = 0;
+  }
+
+  void movePos({required double x, required double y}) {
+    double timedif = deltaTime();
+    setState(() {
+      accelX += x * timedif;
+      accelY += y * timedif;
+
+      posX = (posX + accelX).clamp(0, 100);
+      posY = (posY + accelY).clamp(0, 100);
+    });
+  }
+
+  void moveFinger({required double x, required double y}) {
+    setState(() {
+      posX = (posX + x).clamp(0, 100);
+      posY = (posY + y).clamp(0, 100);
+    });
   }
 
   @override
   void initState() {
     super.initState();
+    lastDeltaTime = DateTime.now().millisecondsSinceEpoch;
     posX = widget.initialposX;
     posY = widget.initialposY;
-
-    gyroscopeEvents.listen((GyroscopeEvent event) {
+    _streamSubscriptions.add(gyroscopeEvents.listen((GyroscopeEvent event) {
+      movePos(x: roll, y: pitch);
       setState(() {
-        gyro_x = event.x;
-        gyro_y = event.y;
-        gyro_z = event.z;
-        posX = posX + (gyro_y * gyroMultiplier);
-        posY = posY + (gyro_x * gyroMultiplier);
-        widget.logger.d('posX:' + posX.toString() + 'posY:' + posY.toString());
+        pitch = event.x;
+        roll = event.y;
+        yaw = event.z;
+        print(lastDeltaTime);
       });
-    });
-    userAccelerometerEvents.listen((UserAccelerometerEvent event) {
-      setState(() {
-        accel_x = event.x;
-        accel_y = event.y;
-        accel_z = event.z;
-        posX = posX + (accel_x * accelMultiplier);
-        posY = posY + (accel_y * accelMultiplier);
-      });
-    });
+    }));
+    widget.logger.d("added sensor subscription");
   }
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
+    for (StreamSubscription<dynamic> subscription in _streamSubscriptions) {
+      subscription.cancel();
+      widget.logger.d("canceled sensor subscription");
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      drawer: const NavigationDrawer(),
-      appBar: AppBar(
-        title: Title(
-            color: Colors.black,
-            child: Text(AppLocalizations.of(context)!.appName)),
-      ),
-      bottomNavigationBar: const MyBottomBar(selectedIndex: 0),
-      floatingActionButton: FloatingActionButton(
-        onPressed: resetPos,
-      ),
-      body: Column(
-        children: [
-          Flexible(
-            flex: 2,
-            child: sensorsDisplays(
-                gyro_x: gyro_x,
-                gyro_y: gyro_y,
-                gyro_z: gyro_z,
-                accel_x: accel_x,
-                accel_y: accel_y,
-                accel_z: accel_z),
-          ),
-          Flexible(
-            flex: 2,
-            child: Stack(
-              children: [
-                Positioned(
-                  left: posX,
-                  top: posY,
-                  child: GestureDetector(
-                    onPanUpdate: (dragUpdateDetails) {
-                      setState(() {
-                        posY = posY + dragUpdateDetails.delta.dy;
-                        posX = posX + dragUpdateDetails.delta.dx;
-                        widget.logger.d('posX:' +
-                            posX.toString() +
-                            'posY:' +
-                            posY.toString());
-                      });
-                    },
-                    child: const CircleAvatar(
-                      radius: 20,
-                      backgroundColor: Colors.red,
-                    ),
-                  ),
-                )
-              ],
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.pushReplacementNamed(context, PageRoutes.home);
+        return true;
+      },
+      child: Scaffold(
+        drawer: const NavigationDrawer(),
+        appBar: AppBar(
+          title: Title(
+              color: Colors.black,
+              child: Text(AppLocalizations.of(context)!.appName)),
+        ),
+        bottomNavigationBar: const MyBottomBar(selectedIndex: 0),
+        floatingActionButton: FloatingActionButton(
+          onPressed: resetPos,
+        ),
+        body: Column(
+          children: [
+            Flexible(
+              flex: 2,
+              child: SensorsDisplay(
+                gyroX: pitch,
+                gyroY: roll,
+                gyroZ: yaw,
+                posX: posX,
+                posY: posY,
+                posZ: 0,
+              ),
             ),
-          ),
-        ],
+            Flexible(
+              flex: 2,
+              child: Stack(
+                children: [
+                  Positioned(
+                    left: posX,
+                    top: posY,
+                    child: GestureDetector(
+                      onPanUpdate: (dragUpdateDetails) {
+                        moveFinger(
+                          x: dragUpdateDetails.delta.dx,
+                          y: dragUpdateDetails.delta.dy,
+                        );
+                      },
+                      child: const CircleAvatar(
+                        radius: 20,
+                        backgroundColor: Colors.red,
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
 
-class sensorsDisplays extends StatelessWidget {
-  const sensorsDisplays({
+class SensorsDisplay extends StatelessWidget {
+  const SensorsDisplay({
     Key? key,
-    required this.gyro_x,
-    required this.gyro_y,
-    required this.gyro_z,
-    required this.accel_x,
-    required this.accel_y,
-    required this.accel_z,
+    required this.gyroX,
+    required this.gyroY,
+    required this.gyroZ,
+    required this.posX,
+    required this.posY,
+    required this.posZ,
   }) : super(key: key);
 
-  final double gyro_x;
-  final double gyro_y;
-  final double gyro_z;
-  final double accel_x;
-  final double accel_y;
-  final double accel_z;
+  final double gyroX;
+  final double gyroY;
+  final double gyroZ;
+  final double posX;
+  final double posY;
+  final double posZ;
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        ListTile(
-          title: Text(gyro_x.ceil().toString()),
-          leading: Text('gyro_x'),
+    return DataTable(
+      columns: const <DataColumn>[
+        DataColumn(
+          label: Text(
+            'Name',
+            style: TextStyle(fontStyle: FontStyle.italic),
+          ),
         ),
-        ListTile(
-          title: Text(gyro_y.ceil().toString()),
-          leading: Text('gyro_y'),
+        DataColumn(
+          label: Text(
+            'X',
+            style: TextStyle(fontStyle: FontStyle.italic),
+          ),
         ),
-        ListTile(
-          title: Text(gyro_z.ceil().toString()),
-          leading: Text('gyro_z'),
+        DataColumn(
+          label: Text(
+            'Y',
+            style: TextStyle(fontStyle: FontStyle.italic),
+          ),
         ),
-        ListTile(
-          title: Text(accel_x.ceil().toString()),
-          leading: Text('accel_x'),
+        DataColumn(
+          label: Text(
+            'Z',
+            style: TextStyle(fontStyle: FontStyle.italic),
+          ),
         ),
-        ListTile(
-          title: Text(accel_y.ceil().toString()),
-          leading: Text('accel_y'),
+      ],
+      rows: <DataRow>[
+        DataRow(
+          cells: <DataCell>[
+            const DataCell(Text('Gyro')),
+            DataCell(Text(gyroX.toStringAsFixed(3))),
+            DataCell(Text(gyroY.toStringAsFixed(3))),
+            DataCell(Text(gyroZ.toStringAsFixed(3))),
+          ],
         ),
-        ListTile(
-          title: Text(accel_z.ceil().toString()),
-          leading: Text('accel_z'),
+        DataRow(
+          cells: <DataCell>[
+            const DataCell(Text('Pos')),
+            DataCell(Text(posX.toStringAsFixed(3))),
+            DataCell(Text(posY.toStringAsFixed(3))),
+            DataCell(Text(posZ.toStringAsFixed(3))),
+          ],
         ),
+/*        DataRow(
+          cells: <DataCell>[
+            const DataCell(Text('Accell')),
+            DataCell(Text(accelX.ceil().toString())),
+            DataCell(Text(accelY.ceil().toString())),
+            DataCell(Text(accelZ.ceil().toString())),
+          ],
+        )*/
       ],
     );
   }

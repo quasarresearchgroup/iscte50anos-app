@@ -71,9 +71,8 @@ class _PuzzlePageState extends State<PuzzlePage> {
               maxCol: widget.cols,
               bringToTop: bringToTop,
               sendToBack: sendToBack);
-          widget.logger.i(puzzlePiece);
           pieces.add(puzzlePiece);
-          widget.logger.i(pieces.length);
+          widget.logger.i(pieces.length.toString() + " pieces");
         });
       }
     }
