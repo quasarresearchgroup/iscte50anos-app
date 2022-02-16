@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:iscte_spots/helper/helper_methods.dart';
+import 'package:iscte_spots/helper/image_manipulation.dart';
 import 'package:iscte_spots/widgets/nav_drawer/navigation_drawer.dart';
 import 'package:iscte_spots/widgets/nav_drawer/page_routes.dart';
 import 'package:logger/logger.dart';
@@ -11,6 +13,9 @@ import 'package:sensors_plus/sensors_plus.dart';
 import '../my_bottom_bar.dart';
 
 class Shaker extends StatefulWidget {
+  int rows = 3;
+  int cols = 3;
+
   Shaker({Key? key}) : super(key: key);
   static const pageRoute = "/shake";
   final Logger logger = Logger();
@@ -27,18 +32,13 @@ class _ShakerState extends State<Shaker> {
   late double posY;
   double accelX = 0;
   double accelY = 0;
+
+  List<Widget> pieces = [];
+
   final List<StreamSubscription<dynamic>> _streamSubscriptions =
       <StreamSubscription<dynamic>>[];
 
-  static const double moveMultiplier = 1;
   late int lastDeltaTime;
-
-  double deltaTime() {
-    int currTime = DateTime.now().millisecondsSinceEpoch;
-    double timeDif = (currTime - lastDeltaTime) / 10;
-    lastDeltaTime = currTime;
-    return timeDif;
-  }
 
   void resetPos() {
     posX = widget.initialposX;
@@ -47,21 +47,19 @@ class _ShakerState extends State<Shaker> {
     accelY = 0;
   }
 
-  void movePos({required double x, required double y}) {
-    double timedif = deltaTime();
-    setState(() {
-      accelX += x * timedif;
-      accelY += y * timedif;
-
-      posX = (posX + accelX).clamp(0, 100);
-      posY = (posY + accelY).clamp(0, 100);
-    });
+  void moveWAccell({required double x, required double y}) {
+    double timedif = HelperMethods.deltaTime(lastDeltaTime);
+    accelX += x * timedif;
+    accelY += y * timedif;
+    moveBall(x: accelX, y: accelY);
   }
 
-  void moveFinger({required double x, required double y}) {
+  void moveBall({required double x, required double y}) {
     setState(() {
-      posX = (posX + x).clamp(0, 100);
-      posY = (posY + y).clamp(0, 100);
+      posX = (posX + x).clamp(
+          0, context.size != null ? context.size!.width.toDouble() : 100);
+      posY = (posY + y).clamp(
+          0, context.size != null ? context.size!.height.toDouble() : 100);
     });
   }
 
@@ -72,7 +70,7 @@ class _ShakerState extends State<Shaker> {
     posX = widget.initialposX;
     posY = widget.initialposY;
     _streamSubscriptions.add(gyroscopeEvents.listen((GyroscopeEvent event) {
-      movePos(x: roll, y: pitch);
+      moveWAccell(x: roll, y: pitch);
       setState(() {
         pitch = event.x;
         roll = event.y;
@@ -81,6 +79,25 @@ class _ShakerState extends State<Shaker> {
       });
     }));
     widget.logger.d("added sensor subscription");
+
+    late Image _image;
+    _image = const Image(
+        //image: AssetImage('Resources/Img/Logo/logo_50_anos_main.jpg'));
+        image: AssetImage('Resources/Img/campus-iscte-3.jpg'));
+    List<Widget> tempPieces = [];
+
+    ImageManipulation.splitImagePuzzlePiece(
+            image: _image,
+            bringToTop: bringToTop,
+            sendToBack: sendToBack,
+            rows: widget.rows,
+            cols: widget.cols,
+            animDuration: const Duration(milliseconds: 10))
+        .then((value) {
+      setState(() {
+        pieces = value;
+      });
+    });
   }
 
   @override
@@ -90,6 +107,21 @@ class _ShakerState extends State<Shaker> {
       subscription.cancel();
       widget.logger.d("canceled sensor subscription");
     }
+  }
+
+  void bringToTop(Widget widget) {
+    setState(() {
+      pieces.remove(widget);
+      pieces.add(widget);
+    });
+  }
+
+// when a piece reaches its final position, it will be sent to the back of the stack to not get in the way of other, still movable, pieces
+  void sendToBack(Widget widget) {
+    setState(() {
+      pieces.remove(widget);
+      pieces.insert(0, widget);
+    });
   }
 
   @override
@@ -110,122 +142,28 @@ class _ShakerState extends State<Shaker> {
         floatingActionButton: FloatingActionButton(
           onPressed: resetPos,
         ),
-        body: Column(
+        body: Stack(
           children: [
-            Flexible(
-              flex: 2,
-              child: SensorsDisplay(
-                gyroX: pitch,
-                gyroY: roll,
-                gyroZ: yaw,
-                posX: posX,
-                posY: posY,
-                posZ: 0,
-              ),
-            ),
-            Flexible(
-              flex: 2,
-              child: Stack(
-                children: [
-                  Positioned(
-                    left: posX,
-                    top: posY,
-                    child: GestureDetector(
-                      onPanUpdate: (dragUpdateDetails) {
-                        moveFinger(
-                          x: dragUpdateDetails.delta.dx,
-                          y: dragUpdateDetails.delta.dy,
-                        );
-                      },
-                      child: const CircleAvatar(
-                        radius: 20,
-                        backgroundColor: Colors.red,
-                      ),
-                    ),
-                  )
-                ],
+            AnimatedPositioned(
+              left: posX,
+              top: posY,
+              duration: const Duration(milliseconds: 300),
+              child: GestureDetector(
+                onPanUpdate: (dragUpdateDetails) {
+                  moveBall(
+                    x: dragUpdateDetails.delta.dx,
+                    y: dragUpdateDetails.delta.dy,
+                  );
+                },
+                child: const CircleAvatar(
+                  radius: 20,
+                  backgroundColor: Colors.red,
+                ),
               ),
             ),
           ],
         ),
       ),
-    );
-  }
-}
-
-class SensorsDisplay extends StatelessWidget {
-  const SensorsDisplay({
-    Key? key,
-    required this.gyroX,
-    required this.gyroY,
-    required this.gyroZ,
-    required this.posX,
-    required this.posY,
-    required this.posZ,
-  }) : super(key: key);
-
-  final double gyroX;
-  final double gyroY;
-  final double gyroZ;
-  final double posX;
-  final double posY;
-  final double posZ;
-
-  @override
-  Widget build(BuildContext context) {
-    return DataTable(
-      columns: const <DataColumn>[
-        DataColumn(
-          label: Text(
-            'Name',
-            style: TextStyle(fontStyle: FontStyle.italic),
-          ),
-        ),
-        DataColumn(
-          label: Text(
-            'X',
-            style: TextStyle(fontStyle: FontStyle.italic),
-          ),
-        ),
-        DataColumn(
-          label: Text(
-            'Y',
-            style: TextStyle(fontStyle: FontStyle.italic),
-          ),
-        ),
-        DataColumn(
-          label: Text(
-            'Z',
-            style: TextStyle(fontStyle: FontStyle.italic),
-          ),
-        ),
-      ],
-      rows: <DataRow>[
-        DataRow(
-          cells: <DataCell>[
-            const DataCell(Text('Gyro')),
-            DataCell(Text(gyroX.toStringAsFixed(3))),
-            DataCell(Text(gyroY.toStringAsFixed(3))),
-            DataCell(Text(gyroZ.toStringAsFixed(3))),
-          ],
-        ),
-        DataRow(
-          cells: <DataCell>[
-            const DataCell(Text('Pos')),
-            DataCell(Text(posX.toStringAsFixed(3))),
-            DataCell(Text(posY.toStringAsFixed(3))),
-            DataCell(Text(posZ.toStringAsFixed(3))),
-          ],
-        ),
-/*        DataRow(
-          cells: <DataCell>[
-            const DataCell(Text('Accell')),
-            DataCell(Text(accelX.ceil().toString())),
-            DataCell(Text(accelY.ceil().toString())),
-            DataCell(Text(accelZ.ceil().toString())),
-          ],
-        )*/
-      ],
     );
   }
 }

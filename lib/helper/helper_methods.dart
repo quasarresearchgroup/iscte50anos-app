@@ -13,4 +13,11 @@ class HelperMethods {
     //  throw 'Could not launch $url';
     //}
   }
+
+  static double deltaTime(int lastDeltaTime) {
+    int currTime = DateTime.now().millisecondsSinceEpoch;
+    double timeDif = (currTime - lastDeltaTime) / 10;
+    lastDeltaTime = currTime;
+    return timeDif;
+  }
 }
