@@ -66,9 +66,9 @@ class AnimatedPuzzlePieceState extends State<AnimatedPuzzlePiece> {
 
     widget.top =
         Random().nextInt((imageHeight - pieceHeight).ceil()).toDouble();
-    widget.top = widget.top! - widget.row * pieceHeight;
+    widget.top = widget.top - widget.row * pieceHeight;
     widget.left = Random().nextInt((imageWidth - pieceWidth).ceil()).toDouble();
-    widget.left = widget.left! - widget.col * pieceWidth;
+    widget.left = widget.left - widget.col * pieceWidth;
     super.initState();
   }
 
@@ -88,8 +88,8 @@ class AnimatedPuzzlePieceState extends State<AnimatedPuzzlePiece> {
           },
           onPanUpdate: (dragUpdateDetails) {
             setState(() {
-              widget.top = widget.top! + dragUpdateDetails.delta.dy;
-              widget.left = widget.left! + dragUpdateDetails.delta.dx;
+              widget.top = widget.top + dragUpdateDetails.delta.dy;
+              widget.left = widget.left + dragUpdateDetails.delta.dx;
             });
           },
           child: ClipPath(
