@@ -1,25 +1,26 @@
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
-import 'package:iscte_spots/helper/helper_methods.dart';
 import 'package:logger/logger.dart';
-import 'package:sensors_plus/sensors_plus.dart';
+import 'package:motion_sensors/motion_sensors.dart';
 
 class MovingPiece extends StatefulWidget {
-  MovingPiece(
-      {Key? key,
-      required this.child,
-      required this.maxwidth,
-      required this.maxHeigth})
-      : super(key: key);
+  MovingPiece({
+    Key? key,
+    required this.child,
+    required this.maxwidth,
+    required this.maxHeigth,
+    required this.weight,
+  }) : super(key: key);
   final Logger logger = Logger();
 
   @override
   _MovingPieceState createState() => _MovingPieceState();
 
   Widget child;
-
-  final double maxaccel = 100;
+  final double weight;
+  static const int standartSpeed = 100;
+  final double maxaccel = 50;
   final double initialposX = 200;
   final double initialposY = 100;
   final double maxwidth;
@@ -34,7 +35,9 @@ class _MovingPieceState extends State<MovingPiece> {
   double yaw = 0;
   double accelX = 0;
   double accelY = 0;
-  late int lastDeltaTime;
+  bool isMovable = true;
+  //late DateTime lastDeltaTime;
+  //late Duration lastTimedif;
 
   final List<StreamSubscription<dynamic>> _streamSubscriptions =
       <StreamSubscription<dynamic>>[];
@@ -48,35 +51,66 @@ class _MovingPieceState extends State<MovingPiece> {
     });
   }
 
-  void moveWAccell({required double x, required double y}) {
-    double timedif = HelperMethods.deltaTime(lastDeltaTime);
-    accelX = (accelX + (x * timedif)).clamp(-widget.maxaccel, widget.maxaccel);
-    accelY = (accelY + (y * timedif)).clamp(-widget.maxaccel, widget.maxaccel);
-    //accelX = (accelX + (x * timedif));
-    //accelY = (accelY + (y * timedif));
-    move(x: accelX, y: accelY);
+/*  void deltaTime() {
+    lastDeltaTime = DateTime.now();
+    lastTimedif = HelperMethods.deltaTime(lastDeltaTime);
+    widget.logger.d("lastDeltaTime" +
+        lastDeltaTime.toString() +
+        "lastTimedif" +
+        lastTimedif.toString());
+  }*/
+
+  //region Move
+  void autoMove({required double x, required double y}) {
+    if (isMovable) {
+      move(x: x, y: y);
+    }
+  }
+
+  void fingerMove({required double x, required double y}) {
+    //TODO use variable to stop automatic movement while hand is moving piece
+    move(x: x, y: y);
   }
 
   void move({required double x, required double y}) {
+    //TODO use variable to stop automatic movement while hand is moving piece
     setState(() {
+      //deltaTime();
       posX = (posX + x).clamp(0, widget.maxwidth - 40);
       posY = (posY + y).clamp(0, widget.maxHeigth - 40);
     });
   }
 
+  void moveWAccell({required double x, required double y}) {
+    accelX = (accelX + (x * MovingPiece.standartSpeed * widget.weight))
+        .clamp(-widget.maxaccel, widget.maxaccel);
+    accelY = (accelY + (y * MovingPiece.standartSpeed * widget.weight))
+        .clamp(-widget.maxaccel, widget.maxaccel);
+    autoMove(x: accelX, y: accelY);
+/*    widget.logger.d("accelX:" +
+        accelX.toStringAsFixed(3) +
+        "accelY:" +
+        accelY.toStringAsFixed(3));*/
+  }
+  //endregion
+
   @override
   void initState() {
     super.initState();
-    lastDeltaTime = DateTime.now().millisecondsSinceEpoch;
+    //lastDeltaTime = DateTime.now();
+    //deltaTime();
     posX = widget.initialposX;
     posY = widget.initialposY;
-    _streamSubscriptions.add(gyroscopeEvents.listen((GyroscopeEvent event) {
-      moveWAccell(x: roll, y: pitch);
+    motionSensors.absoluteOrientationUpdateInterval =
+        Duration.microsecondsPerSecond ~/ 10;
+    _streamSubscriptions.add(motionSensors.absoluteOrientation
+        .listen((AbsoluteOrientationEvent event) {
       setState(() {
-        pitch = event.x;
-        roll = event.y;
-        yaw = event.z;
+        pitch = event.pitch;
+        roll = event.roll;
+        yaw = event.yaw;
       });
+      moveWAccell(x: roll, y: pitch);
     }));
     widget.logger.d("added sensor subscription");
   }
@@ -95,13 +129,24 @@ class _MovingPieceState extends State<MovingPiece> {
     return AnimatedPositioned(
       left: posX,
       top: posY,
-      duration: const Duration(milliseconds: 300),
+      duration:
+          const Duration(microseconds: Duration.microsecondsPerSecond ~/ 10),
       child: GestureDetector(
+        onPanStart: (dragUpdateDetails) {
+          setState(() {
+            isMovable = false;
+          });
+        },
         onPanUpdate: (dragUpdateDetails) {
-          move(
+          fingerMove(
             x: dragUpdateDetails.delta.dx,
             y: dragUpdateDetails.delta.dy,
           );
+        },
+        onPanEnd: (dragUpdateDetails) {
+          setState(() {
+            isMovable = true;
+          });
         },
         child: widget.child,
       ),

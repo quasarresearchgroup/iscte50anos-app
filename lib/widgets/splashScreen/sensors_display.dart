@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
-import 'package:sensors_plus/sensors_plus.dart';
+import 'package:motion_sensors/motion_sensors.dart';
 
 class SensorsDisplay extends StatefulWidget {
   SensorsDisplay({
@@ -19,17 +19,18 @@ class _SensorsDisplayState extends State<SensorsDisplay> {
   final List<StreamSubscription<dynamic>> _streamSubscriptions =
       <StreamSubscription<dynamic>>[];
 
-  double gyroX = 0;
-  double gyroY = 0;
-  double gyroZ = 0;
+  double pitch = 0;
+  double roll = 0;
+  double yaw = 0;
 
   @override
   void initState() {
-    _streamSubscriptions.add(gyroscopeEvents.listen((GyroscopeEvent event) {
+    _streamSubscriptions.add(motionSensors.absoluteOrientation
+        .listen((AbsoluteOrientationEvent event) {
       setState(() {
-        gyroX = event.x;
-        gyroY = event.y;
-        gyroZ = event.z;
+        pitch = event.pitch;
+        roll = event.roll;
+        yaw = event.yaw;
       });
     }));
     widget.logger.d("added sensor subscription");
@@ -79,9 +80,9 @@ class _SensorsDisplayState extends State<SensorsDisplay> {
         DataRow(
           cells: <DataCell>[
             const DataCell(Text('Gyro')),
-            DataCell(Text(gyroX.toStringAsFixed(3))),
-            DataCell(Text(gyroY.toStringAsFixed(3))),
-            DataCell(Text(gyroZ.toStringAsFixed(3))),
+            DataCell(Text(pitch.toStringAsFixed(3))),
+            DataCell(Text(roll.toStringAsFixed(3))),
+            DataCell(Text(yaw.toStringAsFixed(3))),
           ],
         ),
 

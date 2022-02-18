@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -65,7 +67,24 @@ class _ShakerState extends State<Shaker> {
 
   List<Widget> getBalls({required double maxWidth, required double maxHeight}) {
     List<Widget> balls = [];
+    for (int i = 0; i < 10; i++) {
+      var maxColorValue = 255;
+      balls.add(MovingPiece(
+        weight: (Random().nextDouble() + 0.5) * 0.5,
+        maxHeigth: maxHeight,
+        maxwidth: maxWidth,
+        child: CircleAvatar(
+          radius: 20,
+          backgroundColor: Color.fromARGB(
+              maxColorValue,
+              Random().nextInt(maxColorValue),
+              Random().nextInt(maxColorValue),
+              Random().nextInt(maxColorValue)),
+        ),
+      ));
+    }
     balls.add(MovingPiece(
+        weight: 0.6,
         child: const CircleAvatar(
           radius: 20,
           backgroundColor: Colors.red,
@@ -73,6 +92,7 @@ class _ShakerState extends State<Shaker> {
         maxwidth: maxWidth,
         maxHeigth: maxHeight));
     balls.add(MovingPiece(
+        weight: 1,
         child: const CircleAvatar(
           radius: 20,
           backgroundColor: Colors.green,

@@ -28,7 +28,7 @@ dependencies:
   fluttericon: ^2.0.0
   image: ^3.1.1
   animated_splash_screen: ^1.2.0
-  sensors_plus: ^1.2.1
+  motion_sensors: ^0.1.0
   
 
 dev_dependencies:

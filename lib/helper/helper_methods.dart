@@ -14,10 +14,9 @@ class HelperMethods {
     //}
   }
 
-  static double deltaTime(int lastDeltaTime) {
-    int currTime = DateTime.now().millisecondsSinceEpoch;
-    double timeDif = (currTime - lastDeltaTime) / 10;
-    lastDeltaTime = currTime;
+  static Duration deltaTime(DateTime lastDeltaTime) {
+    DateTime currTime = DateTime.now();
+    Duration timeDif = currTime.difference(lastDeltaTime);
     return timeDif;
   }
 }
