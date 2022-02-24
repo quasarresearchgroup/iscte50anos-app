@@ -9,6 +9,10 @@ workflows:
       flutter: stable
       xcode: latest
       cocoapods: default
+      vars:
+        FCI_KEYSTORE_PATH: /tmp/keystore.keystore
+        PACKAGE_NAME: 'io.Iscte.IscteSpots' # <-- Put your package name here e.g. "io.codemagic.flutteryaml"
+        GOOGLE_PLAY_TRACK: 'alpha' # <-- Any default or custom track that is not in ‘draft’ status
     triggering:
       events:
         - pull_request
@@ -20,28 +24,33 @@ workflows:
         - pattern: '*'
           include: true
     scripts:
-      - |
-        # set up debug keystore
-        rm -f ~/.android/debug.keystore
-        keytool -genkeypair \
-          -alias androiddebugkey \
-          -keypass android \
-          -keystore ~/.android/debug.keystore \
-          -storepass android \
-          -dname 'CN=Android Debug,O=Android,C=US' \
-          -keyalg 'RSA' \
-          -keysize 2048 \
-          -validity 10000
-      - |
-        # set up local properties
-        echo "flutter.sdk=$HOME/programs/flutter" > "$FCI_BUILD_DIR/android/local.properties"
-      - flutter packages pub get
-      - flutter analyze
-      - flutter build appbundle --debug
-      - find . -name "Podfile" -execdir pod install \;
-      - flutter build ios --debug --no-codesign
+      - name: Set up key properties
+        script: |
+          echo $FCI_KEYSTORE | base64 --decode > /tmp/keystore.keystore
+          cat >> "$FCI_BUILD_DIR/android/key.properties" <<EOF
+          storePassword=$FCI_KEYSTORE_PASSWORD
+          keyPassword=$FCI_KEY_PASSWORD
+          keyAlias=$FCI_KEY_ALIAS
+          storeFile=/tmp/keystore.keystore
+          EOF
+      - name: Set up local.properties
+        script: |
+          echo "flutter.sdk=$HOME/programs/flutter" > "$FCI_BUILD_DIR/android/local.properties"
+      - name: Get Flutter packages
+        script: |
+          cd . && flutter packages pub get
+      - name: Flutter analyze
+        script: |
+          cd . && flutter analyze
+      - name: Flutter unit tests
+        script: |
+          cd . && flutter test
+        ignore_failure: true
+      - name: Build APK with Flutter
+        script: |
+          cd . && flutter build apk --release --build-name=1.0.0 --build-number=$(($(google-play get-latest-build-number --package-name "$PACKAGE_NAME" --tracks="$GOOGLE_PLAY_TRACK") + 1))
 
-    artifacts:
+      artifacts:
       - build/**/outputs/apk/**/*.apk
       - build/**/outputs/bundle/**/*.aab
       - build/**/outputs/**/mapping.txt
@@ -55,29 +64,70 @@ workflows:
       email:
         recipients:
           - joao.ranger@gmail.com
-  simulator-native-ios:
-    name: iOS simulator build
+        notify:
+          success: true # To receive a notification when a build succeeds
+          failure: false
+
+  ios-workflow:
+    name: iOS Workflow
+    # instance_type: mac_mini
     max_build_duration: 120
-    instance_type: mac_mini
     environment:
+      groups:
+        - app_store_credentials # <-- (Includes APP_STORE_CONNECT_ISSUER_ID, APP_STORE_CONNECT_KEY_IDENTIFIER, APP_STORE_CONNECT_PRIVATE_KEY, CERTIFICATE_PRIVATE_KEY) - https://docs.codemagic.io/code-signing-yaml/signing-ios/
+        - ios_config # <-- (Includes APP_STORE_ID)
+        # Add the above group environment variables in Codemagic UI (either in Application/Team variables) - https://docs.codemagic.io/variables/environment-variable-groups/
       vars:
-        #XCODE_WORKSPACE: "your_workspace_name.xcworkspace" # <-- Put the name of your Xcode workspace here
-        XCODE_PROJECT: "IscteSpots.xcodeproj" # <-- Put the name of your Xcode workspace here
-        XCODE_SCHEME: "your_workspace_name" # <-- Put the name of your Xcode scheme here
-      xcode: 13.0
+        XCODE_WORKSPACE: 'Runner.xcworkspace'
+        XCODE_SCHEME: 'Runner'
+        BUNDLE_ID: 'io.Iscte.IscteSpots'
+      flutter: stable
+      xcode: latest
       cocoapods: default
     scripts:
-      - name: Install CocoaPods dependencies
+      - name: Set up keychain to be used for codesigning using Codemagic CLI 'keychain' command
         script: |
-          pod install
-      - name: Build ipa for distribution
+          keychain initialize
+      - name: Fetch signing files
         script: |
-          xcodebuild build -project "XCODE_PROJECT" -scheme "$XCODE_SCHEME" -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 12 Pro,OS=14.5' -configuration Debug CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
+          app-store-connect fetch-signing-files $BUNDLE_ID --type IOS_APP_STORE --create
+        ignore_failure: true
+      - name: Use system default keychain
+        script: |
+          keychain add-certificates
+      - name: Set up code signing settings on Xcode project
+        script: |
+          xcode-project use-profiles
+      - name: Get Flutter packages
+        script: |
+          cd . && flutter packages pub get
+      - name: Flutter analyze
+        script: |
+          cd . && flutter analyze
+        ignore_failure: true
+      - name: Flutter unit tests
+        script: |
+          cd . && flutter test
+        ignore_failure: true
+      - name: Install pods
+        script: |
+          find . -name "Podfile" -execdir pod install \;
+      - name: Flutter build ipa and automatic versioning
+        script: |
+          flutter build ipa --release \
+          --build-name=1.0.0 \
+          --build-number=$(($(app-store-connect get-latest-testflight-build-number "$APP_STORE_ID") + 1)) \
+          --export-options-plist=/Users/builder/export_options.plist
     artifacts:
+      - build/ios/ipa/*.ipa
       - /tmp/xcodebuild_logs/*.log
-      - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.app
-      - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.dSYM
+      - flutter_drive.log
     publishing:
+      # See the following link for details about email publishing - https://docs.codemagic.io/yaml-publishing/email
       email:
         recipients:
-          - joao.ranger@gmail.com
+          - user_1@example.com
+          - user_2@example.com
+        notify:
+          success: true # To receive a notification when a build succeeds
+          failure: false # To not receive a notification when a build fails
