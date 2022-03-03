@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:iscte_spots/models/timeline_item.dart';
 
 class TimeLineDetailsPage extends StatefulWidget {
-  final TimeLineData data;
+  final Content data;
 
   const TimeLineDetailsPage({
     required this.data,
@@ -34,7 +34,7 @@ class _TimeLineDetailsPageState extends State<TimeLineDetailsPage> {
                 ),
                 Flexible(
                   child: Text(
-                    widget.data.data,
+                    widget.data.title,
                     textScaleFactor: textweight.toDouble(),
                   ),
                 ),

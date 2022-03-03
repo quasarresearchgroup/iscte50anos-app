@@ -37,16 +37,16 @@ class _VisitedPagesPageState extends State<VisitedPagesPage> {
                 child: const Icon(Icons.delete),
                 onPressed: () {
                   setState(() {
-                    DatabaseHelper.instance.removeALL();
+                    DatabaseHelper.instance.pagesTable.removeALL();
                   });
                 },
               ),
               body: RefreshIndicator(
                 onRefresh: () {
-                  return DatabaseHelper.instance.getPages();
+                  return DatabaseHelper.instance.pagesTable.getAll();
                 },
                 child: FutureBuilder<List<VisitedPage>>(
-                  future: DatabaseHelper.instance.getPages(),
+                  future: DatabaseHelper.instance.pagesTable.getAll(),
                   builder: (BuildContext context,
                       AsyncSnapshot<List<VisitedPage>> snapshot) {
                     if (!snapshot.hasData) {
@@ -66,7 +66,8 @@ class _VisitedPagesPageState extends State<VisitedPagesPage> {
                                 subtitle: Text(page.parsedTime),
                                 onLongPress: () {
                                   setState(() {
-                                    DatabaseHelper.instance.remove(page.id!);
+                                    DatabaseHelper.instance.pagesTable
+                                        .remove(page.id!);
                                   });
                                 },
                                 onTap: () {

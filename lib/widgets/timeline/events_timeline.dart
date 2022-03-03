@@ -10,7 +10,7 @@ class EventsTimeline extends StatefulWidget {
       required this.timelineYear,
       required this.lineStyle})
       : super(key: key);
-  final List<TimeLineData> timeLineMap;
+  final List<Content> timeLineMap;
   final int timelineYear;
   final LineStyle lineStyle;
 
@@ -19,8 +19,8 @@ class EventsTimeline extends StatefulWidget {
 }
 
 class _EventsTimelineState extends State<EventsTimeline> {
-  List<TimeLineData> chosenTimelineList = <TimeLineData>[];
-  List<TimeLineData> originalTimelineList = <TimeLineData>[];
+  List<Content> chosenTimelineList = <Content>[];
+  List<Content> originalTimelineList = <Content>[];
 
   @override
   void didUpdateWidget(covariant EventsTimeline oldWidget) {
@@ -38,7 +38,7 @@ class _EventsTimelineState extends State<EventsTimeline> {
   @override
   void initState() {
     super.initState();
-    for (final TimeLineData entry in widget.timeLineMap) {
+    for (final Content entry in widget.timeLineMap) {
       originalTimelineList.add(entry);
       if (entry.year == widget.timelineYear) {
         chosenTimelineList.add(entry);
@@ -73,7 +73,7 @@ class EventTimelineTile extends StatelessWidget {
 
   final bool isFirst;
   final bool isLast;
-  final TimeLineData data;
+  final Content data;
   final LineStyle lineStyle;
   final Color color2 = Colors.white.withOpacity(0.3);
 
@@ -115,7 +115,7 @@ class EventTimelineTile extends StatelessWidget {
                     Text(data.getDateString()),
                   ],
                 ),
-                Text(data.data),
+                Text(data.title),
               ],
             ),
           ),

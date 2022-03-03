@@ -54,7 +54,7 @@ class QRScanPageState extends State<QRScanPage> {
       {required String pageContent,
       required int date,
       required String pageUrl}) async {
-    DatabaseHelper.instance
+    DatabaseHelper.instance.pagesTable
         .add(VisitedPage(content: pageContent, dateTime: date, url: pageUrl));
     setState(() {});
   }

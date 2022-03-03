@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:iscte_spots/models/database/tables/database_content_table.dart';
 import 'package:iscte_spots/models/database/tables/pages_table.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -12,8 +13,11 @@ class DatabaseHelper {
 
   //  singleton class
   DatabaseHelper._privateConstructor();
-  static final DatabaseHelper _instance = DatabaseHelper._privateConstructor();
-  static PagesTable pagesTable = PagesTable(instance: _instance);
+  static final DatabaseHelper instance = DatabaseHelper._privateConstructor();
+
+  final DatabasePagesTable pagesTable = DatabasePagesTable(instance: instance);
+  final DatabaseContentsTable contentsTable =
+      DatabaseContentsTable(instance: instance);
 
   // only have a single app-wide reference to the database
   Future<Database> get database async => _database ??= await _initDatabase();

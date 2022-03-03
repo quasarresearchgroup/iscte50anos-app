@@ -16,7 +16,7 @@ class TimelinePage extends StatefulWidget {
 
   static const pageRoute = "/timeline";
 
-  late final Future<List<TimeLineData>> mapdata;
+  late final Future<List<Content>> mapdata;
   late final Future<List<int>> yearsList;
 
   final lineStyle = const LineStyle(color: Colors.black, thickness: 6);
@@ -24,10 +24,10 @@ class TimelinePage extends StatefulWidget {
   @override
   State<TimelinePage> createState() => _TimelinePageState();
 
-  Future<List<int>> createYearsList(Future<List<TimeLineData>> mapdata) async {
+  Future<List<int>> createYearsList(Future<List<Content>> mapdata) async {
     List<int> yearsList = [DateTime.now().year];
     mapdata.then((value) {
-      for (TimeLineData value in value) {
+      for (Content value in value) {
         int year = value.year;
         if (!yearsList.contains(year)) {
           yearsList.add(year);
@@ -45,7 +45,7 @@ class _TimelinePageState extends State<TimelinePage> {
   @override
   void initState() {
     super.initState();
-    widget.mapdata = TimelineLoader.getTimeLineEntries();
+    widget.mapdata = ContentLoader.getTimeLineEntries();
     widget.yearsList = widget.createYearsList(widget.mapdata);
   }
 
@@ -92,7 +92,7 @@ class _TimelinePageState extends State<TimelinePage> {
               ),
               Expanded(
                 flex: 8,
-                child: FutureBuilder<List<TimeLineData>>(
+                child: FutureBuilder<List<Content>>(
                   future: widget.mapdata,
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
@@ -102,7 +102,9 @@ class _TimelinePageState extends State<TimelinePage> {
                         lineStyle: widget.lineStyle,
                       );
                     } else if (snapshot.hasError) {
-                      return Center(child: Text(AppLocalizations.of(context)!.generalError));
+                      return Center(
+                          child:
+                              Text(AppLocalizations.of(context)!.generalError));
                     } else {
                       return LoadingWidget();
                     }

@@ -3,8 +3,8 @@ import 'package:sqflite/sqflite.dart';
 import '../../visited_page.dart';
 import '../database_helper.dart';
 
-class PagesTable {
-  PagesTable({required this.instance});
+class DatabasePagesTable {
+  DatabasePagesTable({required this.instance});
 
   final DatabaseHelper instance;
   static const table = 'pagesTable';
@@ -25,9 +25,10 @@ class PagesTable {
     ''');
   }
 
-  Future<List<VisitedPage>> getPages() async {
+  Future<List<VisitedPage>> getAll() async {
     Database db = await instance.database;
-    var pages = await db.query(table, orderBy: columnContent);
+    List<Map<String, Object?>> pages =
+        await db.query(table, orderBy: columnContent);
     List<VisitedPage> pageList = pages.isNotEmpty
         ? pages.map((e) => VisitedPage.fromMap(e)).toList()
         : [];

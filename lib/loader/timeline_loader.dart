@@ -2,44 +2,40 @@ import 'package:flutter/services.dart';
 import 'package:iscte_spots/models/timeline_item.dart';
 import 'package:logger/logger.dart';
 
-class TimelineLoader {
+class ContentLoader {
   static const String timelineEntriesFile = 'Resources/timeline.csv';
   static Logger logger = Logger();
 
-  static Future<List<TimeLineData>> getTimeLineEntries() async {
-    final List<TimeLineData> timeLineDataList = [];
+  static Future<List<Content>> getTimeLineEntries() async {
+    final List<Content> contentsList = [];
 
     try {
       final String file = await rootBundle.loadString(timelineEntriesFile);
 
       logger.d(file.split("\n").length);
-      file.split("\n").forEach((e) {
-        List<String> eSplit = e.split(";");
-        String date = eSplit[0];
-        String data = eSplit[1];
-        String? scope;
-        String? contentType;
-        try {
-          scope = eSplit[2];
-        } on RangeError {
-          scope = null;
-        }
-        try {
-          contentType = eSplit[3];
-        } on RangeError {
-          contentType = null;
-        }
+      file.split("\n").forEach((line) {
+        List<String> lineSplit = line.split(";");
+        List<String> dateSplit = lineSplit[0].split("-");
+        int dateIntFromEpoch = DateTime(int.parse(dateSplit[2]),
+                int.parse(dateSplit[1]), int.parse(dateSplit[0]))
+            .millisecondsSinceEpoch;
+        String title = lineSplit[1];
+        ContentScope? scope = ContentScopefromString(lineSplit[2]);
+        ContentType? contentType = ContentTypefromString(lineSplit[3]);
 
-        timeLineDataList.add(TimeLineData(
-            data: data, date: date, scope: scope, contentType: contentType));
+        contentsList.add(Content(
+            title: title,
+            date: dateIntFromEpoch,
+            scope: scope,
+            type: contentType));
       });
 
-      logger.d(timeLineDataList);
+      logger.d(contentsList);
 
-      return timeLineDataList;
+      return contentsList;
     } catch (e) {
       // If encountering an error, return 0
-      return timeLineDataList;
+      return contentsList;
     }
   }
 }
