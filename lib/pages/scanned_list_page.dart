@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:iscte_spots/helper/database_helper.dart';
 import 'package:iscte_spots/helper/helper_methods.dart';
+import 'package:iscte_spots/models/database/database_helper.dart';
 import 'package:iscte_spots/models/visited_page.dart';
 import 'package:iscte_spots/widgets/my_bottom_bar.dart';
 import 'package:iscte_spots/widgets/nav_drawer/navigation_drawer.dart';

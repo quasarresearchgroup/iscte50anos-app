@@ -1,4 +1,4 @@
-import 'package:iscte_spots/helper/database_helper.dart';
+import 'package:iscte_spots/models/database/database_helper.dart';
 
 class VisitedPage {
   final int? id;
@@ -24,7 +24,7 @@ class VisitedPage {
   }
 
   factory VisitedPage.fromMap(Map<String, dynamic> json) => VisitedPage(
-      id: json[DatabaseHelper.columnId],
+      id: json[TimeLineData.columnId],
       content: json[DatabaseHelper.columnContent],
       url: json[DatabaseHelper.columnUrl],
       dateTime: json[DatabaseHelper.columnDate]);
