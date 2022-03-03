@@ -36,21 +36,28 @@ class NavigationDrawer extends StatelessWidget {
         leading: const Icon(Icons.timeline),
         title: Text(AppLocalizations.of(context)!.timelineScreen),
         onTap: () {
-          Navigator.pushNamed(context, PageRoutes.timeline);
+          Navigator.pushReplacementNamed(context, PageRoutes.timeline);
         },
       ),
       ListTile(
         leading: const Icon(Icons.web_sharp),
         title: Text(AppLocalizations.of(context)!.visitedPagesScreen),
         onTap: () {
-          Navigator.pushNamed(context, PageRoutes.visited);
+          Navigator.pushReplacementNamed(context, PageRoutes.visited);
         },
       ),
       ListTile(
         leading: const Icon(Icons.help),
         title: Text(AppLocalizations.of(context)!.quizScreen),
         onTap: () {
-          Navigator.pushNamed(context, PageRoutes.quiz);
+          Navigator.pushReplacementNamed(context, PageRoutes.quiz);
+        },
+      ),
+      ListTile(
+        leading: const Icon(Icons.touch_app_outlined),
+        title: const Text('Shaker'),
+        onTap: () {
+          Navigator.pushReplacementNamed(context, PageRoutes.shake);
         },
       ),
       ListTile(

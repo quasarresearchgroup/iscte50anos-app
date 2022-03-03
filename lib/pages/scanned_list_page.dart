@@ -97,9 +97,7 @@ class loadingPages extends StatelessWidget {
     return Center(
       child: Column(
         children: [
-          const CircularProgressIndicator(
-            color: Colors.black,
-          ),
+          const CircularProgressIndicator.adaptive(),
           Text(
             AppLocalizations.of(context)!.loading,
             style: messagesStyle,

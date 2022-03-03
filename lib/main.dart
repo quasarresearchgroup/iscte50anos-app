@@ -4,8 +4,10 @@ import 'package:iscte_spots/pages/home.dart';
 import 'package:iscte_spots/pages/qr_scan_page.dart';
 import 'package:iscte_spots/pages/quiz/quiz_page.dart';
 import 'package:iscte_spots/pages/scanned_list_page.dart';
+import 'package:iscte_spots/pages/splash.dart';
 import 'package:iscte_spots/pages/timeline_page.dart';
 import 'package:iscte_spots/widgets/nav_drawer/page_routes.dart';
+import 'package:iscte_spots/widgets/splashScreen/shake.dart';
 
 const int puzzlePageIndex = 0;
 const int qrPageIndex = 1;
@@ -25,15 +27,18 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: '',
+      theme: ThemeData.light(),
+      darkTheme: ThemeData.dark(),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      initialRoute: PageRoutes.home,
+      home: const SplashScreen(),
       routes: {
         PageRoutes.home: (context) => const Home(),
         PageRoutes.timeline: (context) => TimelinePage(),
         PageRoutes.visited: (context) => const VisitedPagesPage(),
         PageRoutes.qrscan: (context) => QRScanPage(),
         PageRoutes.quiz: (context) => QuizPage(),
+        PageRoutes.shake: (context) => const Shaker(),
       },
     );
   }

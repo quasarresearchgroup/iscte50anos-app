@@ -31,8 +31,8 @@ class _HomeState extends State<Home> {
                 color: Colors.black,
                 child: Text(AppLocalizations.of(context)!.appName)),
           ),
-          body: PuzzlePage(),
           bottomNavigationBar: const MyBottomBar(selectedIndex: 0),
+          body: PuzzlePage(),
         ));
   }
 }

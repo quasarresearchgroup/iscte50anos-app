@@ -13,4 +13,10 @@ class HelperMethods {
     //  throw 'Could not launch $url';
     //}
   }
+
+  static Duration deltaTime(DateTime lastDeltaTime) {
+    DateTime currTime = DateTime.now();
+    Duration timeDif = currTime.difference(lastDeltaTime);
+    return timeDif;
+  }
 }
