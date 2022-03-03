@@ -84,12 +84,38 @@ class PuzzlePieceState extends State<PuzzlePiece> {
               });
             }
           },
-          child: ClipPath(
-            child: widget.image,
-            clipper: PuzzlePieceClipper(
-                widget.row, widget.col, widget.maxRow, widget.maxCol),
-          ),
+          child: ClippedPiece(
+              image: widget.image,
+              row: widget.row,
+              col: widget.col,
+              maxRow: widget.maxRow,
+              maxCol: widget.maxCol),
         ));
+  }
+}
+
+class ClippedPiece extends StatelessWidget {
+  const ClippedPiece({
+    Key? key,
+    required this.image,
+    required this.row,
+    required this.col,
+    required this.maxRow,
+    required this.maxCol,
+  }) : super(key: key);
+
+  final Image image;
+  final int row;
+  final int col;
+  final int maxRow;
+  final int maxCol;
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipPath(
+      child: image,
+      clipper: PuzzlePieceClipper(row, col, maxRow, maxCol),
+    );
   }
 }
 

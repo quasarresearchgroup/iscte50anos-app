@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:iscte_spots/helper/image_manipulation.dart';
 import 'package:iscte_spots/widgets/nav_drawer/navigation_drawer.dart';
 import 'package:iscte_spots/widgets/nav_drawer/page_routes.dart';
 import 'package:logger/logger.dart';
@@ -10,19 +11,42 @@ import 'package:logger/logger.dart';
 import '../my_bottom_bar.dart';
 import 'moving_widget.dart';
 
-class Shaker extends StatefulWidget {
+class Shaker extends StatelessWidget {
+  const Shaker({Key? key}) : super(key: key);
+  static const pageRoute = "/shake";
+
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+        onWillPop: () async {
+          Navigator.pushReplacementNamed(context, PageRoutes.home);
+          return true;
+        },
+        child: Scaffold(
+            drawer: const NavigationDrawer(),
+            appBar: AppBar(
+              title: Title(
+                  color: Colors.black,
+                  child: Text(AppLocalizations.of(context)!.appName)),
+            ),
+            bottomNavigationBar: const MyBottomBar(selectedIndex: 0),
+            body: GravityPlane()));
+  }
+}
+
+class GravityPlane extends StatefulWidget {
   int rows = 3;
   int cols = 3;
 
-  Shaker({Key? key}) : super(key: key);
-  static const pageRoute = "/shake";
+  GravityPlane({Key? key}) : super(key: key);
   final Logger logger = Logger();
   @override
-  _ShakerState createState() => _ShakerState();
-  double initialposX = 200, initialposY = 100;
+  _GravityPlaneState createState() => _GravityPlaneState();
+  double initialposX = 200;
+  double initialposY = 100;
 }
 
-class _ShakerState extends State<Shaker> {
+class _GravityPlaneState extends State<GravityPlane> {
   List<Widget> pieces = [];
   late int lastDeltaTime;
 
@@ -30,24 +54,20 @@ class _ShakerState extends State<Shaker> {
   void initState() {
     super.initState();
 
-    /* late Image _image;
-    _image = const Image(
-        //image: AssetImage('Resources/Img/Logo/logo_50_anos_main.jpg'));
-        image: AssetImage('Resources/Img/campus-iscte-3.jpg'));
-    List<Widget> tempPieces = [];
+    late Image _image;
+    _image = const Image(image: AssetImage('Resources/Img/campus-iscte-3.jpg'));
 
-    ImageManipulation.splitImagePuzzlePiece(
-            image: _image,
-            bringToTop: bringToTop,
-            sendToBack: sendToBack,
-            rows: widget.rows,
-            cols: widget.cols,
-            animDuration: const Duration(milliseconds: 10))
-        .then((value) {
+    ImageManipulation.splitImagePuzzlePieceNotDragable(
+      image: _image,
+      bringToTop: bringToTop,
+      sendToBack: sendToBack,
+      rows: widget.rows,
+      cols: widget.cols,
+    ).then((value) {
       setState(() {
         pieces = value;
       });
-    });*/
+    });
   }
 
   void bringToTop(Widget widget) {
@@ -67,64 +87,37 @@ class _ShakerState extends State<Shaker> {
 
   List<Widget> getBalls({required double maxWidth, required double maxHeight}) {
     List<Widget> balls = [];
-    for (int i = 0; i < 10; i++) {
-      var maxColorValue = 255;
-      balls.add(MovingPiece(
+    CircleAvatar child;
+    for (int i = 0; i < pieces.length; i++) {
+      double radious = (Random().nextInt(10) + 10).toDouble();
+      int maxColorValue = 255;
+      child = CircleAvatar(
+        radius: radious,
+        backgroundColor: Color.fromARGB(
+            maxColorValue,
+            Random().nextInt(maxColorValue),
+            Random().nextInt(maxColorValue),
+            Random().nextInt(maxColorValue)),
+      );
+
+      balls.add(MovingWidget(
         weight: (Random().nextDouble() + 0.5) * 0.5,
-        maxHeigth: maxHeight,
-        maxwidth: maxWidth,
-        child: CircleAvatar(
-          radius: 20,
-          backgroundColor: Color.fromARGB(
-              maxColorValue,
-              Random().nextInt(maxColorValue),
-              Random().nextInt(maxColorValue),
-              Random().nextInt(maxColorValue)),
-        ),
+        maxHeigth: maxHeight - radious * 2,
+        maxwidth: maxWidth - radious * 2,
+        child: pieces[i],
       ));
     }
-    balls.add(MovingPiece(
-        weight: 0.6,
-        child: const CircleAvatar(
-          radius: 20,
-          backgroundColor: Colors.red,
-        ),
-        maxwidth: maxWidth,
-        maxHeigth: maxHeight));
-    balls.add(MovingPiece(
-        weight: 1,
-        child: const CircleAvatar(
-          radius: 20,
-          backgroundColor: Colors.green,
-        ),
-        maxwidth: maxWidth,
-        maxHeigth: maxHeight));
     return balls;
   }
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-        onWillPop: () async {
-          Navigator.pushReplacementNamed(context, PageRoutes.home);
-          return true;
-        },
-        child: Scaffold(
-          drawer: const NavigationDrawer(),
-          appBar: AppBar(
-            title: Title(
-                color: Colors.black,
-                child: Text(AppLocalizations.of(context)!.appName)),
-          ),
-          bottomNavigationBar: const MyBottomBar(selectedIndex: 0),
-          body: LayoutBuilder(
-              builder: (BuildContext context, BoxConstraints constraints) {
-            return Stack(
-              children: getBalls(
-                  maxWidth: constraints.maxWidth,
-                  maxHeight: constraints.maxHeight),
-            );
-          }),
-        ));
+    return LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+      return Stack(
+        children: getBalls(
+            maxWidth: constraints.maxWidth, maxHeight: constraints.maxHeight),
+      );
+    });
   }
 }

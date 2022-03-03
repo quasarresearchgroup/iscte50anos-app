@@ -21,19 +21,15 @@ class _PuzzlePageState extends State<PuzzlePage> {
   @override
   void initState() {
     super.initState();
-    _image = const Image(
-        //image: AssetImage('Resources/Img/Logo/logo_50_anos_main.jpg'));
-        image: AssetImage('Resources/Img/campus-iscte-3.jpg'));
-    List<Widget> tempPieces = [];
+    _image = const Image(image: AssetImage('Resources/Img/campus-iscte-3.jpg'));
 
     ImageManipulation.splitImagePuzzlePiece(
-            image: _image,
-            bringToTop: bringToTop,
-            sendToBack: sendToBack,
-            rows: widget.rows,
-            cols: widget.cols,
-            animDuration: const Duration(milliseconds: 10))
-        .then((value) {
+      image: _image,
+      bringToTop: bringToTop,
+      sendToBack: sendToBack,
+      rows: widget.rows,
+      cols: widget.cols,
+    ).then((value) {
       setState(() {
         pieces = value;
       });

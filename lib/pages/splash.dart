@@ -11,7 +11,9 @@ class SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnimatedSplashScreen(
-      splash: Column(
+      splash:
+          //Scaffold(body: GravityPlane()),
+          Column(
         children: [
           Image.asset('Resources/logo_50anos_iscte_branco_rgb.png'),
           const Text(

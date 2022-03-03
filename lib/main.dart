@@ -27,8 +27,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: '',
-      darkTheme: ThemeData.dark(),
       theme: ThemeData.light(),
+      darkTheme: ThemeData.dark(),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       home: const SplashScreen(),
@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
         PageRoutes.visited: (context) => const VisitedPagesPage(),
         PageRoutes.qrscan: (context) => QRScanPage(),
         PageRoutes.quiz: (context) => QuizPage(),
-        PageRoutes.shake: (context) => Shaker(),
+        PageRoutes.shake: (context) => const Shaker(),
       },
     );
   }

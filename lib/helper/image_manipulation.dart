@@ -3,8 +3,11 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:iscte_spots/widgets/puzzle/puzzle_piece.dart';
+import 'package:logger/logger.dart';
 
 class ImageManipulation {
+  static final Logger logger = Logger();
+
   static Future<Size> getImageSize(Image image) async {
     final Completer<Size> completer = Completer<Size>();
 
@@ -28,9 +31,8 @@ class ImageManipulation {
     required cols,
     required bringToTop,
     required sendToBack,
-    required animDuration,
   }) async {
-    print('started split');
+    logger.d('started split');
     List<Widget> outputList = [];
     Size imageSize = await getImageSize(image);
     for (int x = 0; x < rows; x++) {
@@ -49,7 +51,33 @@ class ImageManipulation {
         outputList.add(puzzlePiece);
       }
     }
-    print('finished split');
+    logger.d('finished split');
+    return outputList;
+  }
+
+  static Future<List<Widget>> splitImagePuzzlePieceNotDragable({
+    required Image image,
+    required rows,
+    required cols,
+    required bringToTop,
+    required sendToBack,
+  }) async {
+    logger.d('started split');
+    List<Widget> outputList = [];
+    Size imageSize = await getImageSize(image);
+    for (int x = 0; x < rows; x++) {
+      for (int y = 0; y < cols; y++) {
+        var puzzlePiece = ClippedPiece(
+          image: image,
+          row: x,
+          col: y,
+          maxRow: rows,
+          maxCol: cols,
+        );
+        outputList.add(puzzlePiece);
+      }
+    }
+    logger.d('finished split');
     return outputList;
   }
 }

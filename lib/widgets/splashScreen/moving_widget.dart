@@ -4,8 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:logger/logger.dart';
 import 'package:motion_sensors/motion_sensors.dart';
 
-class MovingPiece extends StatefulWidget {
-  MovingPiece({
+class MovingWidget extends StatefulWidget {
+  MovingWidget({
     Key? key,
     required this.child,
     required this.maxwidth,
@@ -15,7 +15,7 @@ class MovingPiece extends StatefulWidget {
   final Logger logger = Logger();
 
   @override
-  _MovingPieceState createState() => _MovingPieceState();
+  _MovingWidgetState createState() => _MovingWidgetState();
 
   Widget child;
   final double weight;
@@ -27,7 +27,7 @@ class MovingPiece extends StatefulWidget {
   final double maxHeigth;
 }
 
-class _MovingPieceState extends State<MovingPiece> {
+class _MovingWidgetState extends State<MovingWidget> {
   double posX = 0;
   double posY = 0;
   double pitch = 0;
@@ -76,15 +76,15 @@ class _MovingPieceState extends State<MovingPiece> {
     //TODO use variable to stop automatic movement while hand is moving piece
     setState(() {
       //deltaTime();
-      posX = (posX + x).clamp(0, widget.maxwidth - 40);
-      posY = (posY + y).clamp(0, widget.maxHeigth - 40);
+      posX = (posX + x).clamp(0, widget.maxwidth);
+      posY = (posY + y).clamp(0, widget.maxHeigth);
     });
   }
 
   void moveWAccell({required double x, required double y}) {
-    accelX = (accelX + (x * MovingPiece.standartSpeed * widget.weight))
+    accelX = (accelX + (x * MovingWidget.standartSpeed * widget.weight))
         .clamp(-widget.maxaccel, widget.maxaccel);
-    accelY = (accelY + (y * MovingPiece.standartSpeed * widget.weight))
+    accelY = (accelY + (y * MovingWidget.standartSpeed * widget.weight))
         .clamp(-widget.maxaccel, widget.maxaccel);
     autoMove(x: accelX, y: accelY);
 /*    widget.logger.d("accelX:" +
