@@ -6,6 +6,7 @@ import 'package:iscte_spots/models/visited_page.dart';
 import 'package:iscte_spots/widgets/my_bottom_bar.dart';
 import 'package:iscte_spots/widgets/nav_drawer/navigation_drawer.dart';
 import 'package:iscte_spots/widgets/nav_drawer/page_routes.dart';
+import 'package:iscte_spots/widgets/util/loading.dart';
 
 class VisitedPagesPage extends StatefulWidget {
   const VisitedPagesPage({Key? key}) : super(key: key);
@@ -49,7 +50,7 @@ class _VisitedPagesPageState extends State<VisitedPagesPage> {
                   builder: (BuildContext context,
                       AsyncSnapshot<List<VisitedPage>> snapshot) {
                     if (!snapshot.hasData) {
-                      return loadingPages(messagesStyle: messagesStyle);
+                      return LoadingWidget(messagesStyle: messagesStyle);
                     } else {
                       List<VisitedPage> list = snapshot.data!;
                       if (snapshot.data!.isEmpty) {
@@ -81,30 +82,6 @@ class _VisitedPagesPageState extends State<VisitedPagesPage> {
                 ),
               )));
     });
-  }
-}
-
-class loadingPages extends StatelessWidget {
-  const loadingPages({
-    Key? key,
-    required this.messagesStyle,
-  }) : super(key: key);
-
-  final TextStyle messagesStyle;
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        children: [
-          const CircularProgressIndicator.adaptive(),
-          Text(
-            AppLocalizations.of(context)!.loading,
-            style: messagesStyle,
-          ),
-        ],
-      ),
-    );
   }
 }
 

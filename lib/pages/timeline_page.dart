@@ -6,6 +6,7 @@ import 'package:iscte_spots/widgets/nav_drawer/navigation_drawer.dart';
 import 'package:iscte_spots/widgets/nav_drawer/page_routes.dart';
 import 'package:iscte_spots/widgets/timeline/events_timeline.dart';
 import 'package:iscte_spots/widgets/timeline/year_timeline.dart';
+import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:logger/logger.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
@@ -80,10 +81,11 @@ class _TimelinePageState extends State<TimelinePage> {
                         changeYearFunction: changeChosenYear,
                       );
                     } else if (snapshot.hasError) {
-                      return const Center(child: Text("Error"));
+                      return Center(
+                          child:
+                              Text(AppLocalizations.of(context)!.generalError));
                     } else {
-                      return const Center(
-                          child: Center(child: Text("Loading")));
+                      return LoadingWidget();
                     }
                   },
                 ),
@@ -100,10 +102,9 @@ class _TimelinePageState extends State<TimelinePage> {
                         lineStyle: widget.lineStyle,
                       );
                     } else if (snapshot.hasError) {
-                      return const Center(child: Text("Error"));
+                      return Center(child: Text(AppLocalizations.of(context)!.generalError));
                     } else {
-                      return const Center(
-                          child: Center(child: Text("Loading")));
+                      return LoadingWidget();
                     }
                   },
                 ),
