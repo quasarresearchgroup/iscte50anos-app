@@ -3,14 +3,15 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:html/parser.dart' as parser;
 import 'package:http/http.dart' as http;
 import 'package:iscte_spots/helper/helper_methods.dart';
-import 'package:iscte_spots/models/database/database_helper.dart';
-import 'package:iscte_spots/models/visited_page.dart';
+import 'package:iscte_spots/models/visited_url.dart';
 import 'package:iscte_spots/widgets/my_bottom_bar.dart';
 import 'package:iscte_spots/widgets/nav_drawer/navigation_drawer.dart';
 import 'package:iscte_spots/widgets/nav_drawer/page_routes.dart';
 import 'package:logger/logger.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:synchronized/synchronized.dart';
+
+import '../models/database/tables/pages_table.dart';
 
 class QRScanPage extends StatefulWidget {
   QRScanPage({Key? key}) : super(key: key);
@@ -54,8 +55,8 @@ class QRScanPageState extends State<QRScanPage> {
       {required String pageContent,
       required int date,
       required String pageUrl}) async {
-    DatabaseHelper.instance.pagesTable
-        .add(VisitedPage(content: pageContent, dateTime: date, url: pageUrl));
+    DatabasePagesTable.add(
+        VisitedURL(content: pageContent, dateTime: date, url: pageUrl));
     setState(() {});
   }
 

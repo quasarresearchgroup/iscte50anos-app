@@ -1,21 +1,22 @@
+import 'package:logger/logger.dart';
 import 'package:sqflite/sqflite.dart';
 
-import '../../visited_page.dart';
+import '../../visited_url.dart';
 import '../database_helper.dart';
 
 class DatabasePagesTable {
-  DatabasePagesTable({required this.instance});
+  static final Logger _logger = Logger();
 
-  final DatabaseHelper instance;
   static const table = 'pagesTable';
-
   static const columnId = '_id';
   static const columnContent = 'content';
   static const columnDate = 'date';
   static const columnUrl = 'url';
 
-  Future onCreate(Database db, int version) async {
-    await db.execute('''
+  static Future onCreate(Database db, int version) async {
+    Batch batch = db.batch();
+    batch.execute('''DROP TABLE  IF EXISTS $table''');
+    batch.execute('''
       CREATE TABLE $table(
       $columnId INTEGER PRIMARY KEY,
       $columnContent TEXT UNIQUE,
@@ -23,43 +24,71 @@ class DatabasePagesTable {
       $columnDate INTEGER
       )
     ''');
+    batch.commit();
+    _logger.d("Created $table");
   }
 
-  Future<List<VisitedPage>> getAll() async {
+  static Future<List<VisitedURL>> getAll() async {
+    DatabaseHelper instance = DatabaseHelper.instance;
     Database db = await instance.database;
     List<Map<String, Object?>> pages =
         await db.query(table, orderBy: columnContent);
-    List<VisitedPage> pageList = pages.isNotEmpty
-        ? pages.map((e) => VisitedPage.fromMap(e)).toList()
+    List<VisitedURL> pageList = pages.isNotEmpty
+        ? pages.map((e) => VisitedURL.fromMap(e)).toList()
         : [];
+    _logger.d(pageList);
     return pageList;
   }
 
-  void add(VisitedPage page) async {
+  static void add(VisitedURL page) async {
+    DatabaseHelper instance = DatabaseHelper.instance;
     Database db = await instance.database;
     bool notExists = true;
     db.query(table, where: '$columnContent = ?', whereArgs: [
       page.content
     ]).then((e) => {
-          notExists = e.isEmpty,
-          if (notExists)
+          if (e.isEmpty)
             {
               db.insert(
                 table,
                 page.toMap(),
                 conflictAlgorithm: ConflictAlgorithm.abort,
-              )
+              ),
+              _logger.d("Inserted: $page into $table")
             }
         });
   }
 
-  Future<int> remove(int id) async {
+  static void addBatch(List<VisitedURL> visitedUrls) async {
+    DatabaseHelper instance = DatabaseHelper.instance;
     Database db = await instance.database;
+    Batch batch = db.batch();
+    visitedUrls.forEach((page) {
+      db.query(table, where: '$columnContent = ?', whereArgs: [
+        page.content
+      ]).then((e) => {
+            batch.insert(
+              table,
+              page.toMap(),
+              conflictAlgorithm: ConflictAlgorithm.abort,
+            ),
+            _logger.d("Inserted: $page into $table as batch into $table")
+          });
+    });
+    batch.commit(noResult: true);
+  }
+
+  static Future<int> remove(int id) async {
+    DatabaseHelper instance = DatabaseHelper.instance;
+    Database db = await instance.database;
+    _logger.d("Removed entry with id:$id from $table");
     return await db.delete(table, where: '$columnId = ?', whereArgs: [id]);
   }
 
-  Future<int> removeALL() async {
+  static Future<int> removeALL() async {
+    DatabaseHelper instance = DatabaseHelper.instance;
     Database db = await instance.database;
+    _logger.d("Removed all entries from $table");
     return await db.delete(table);
   }
 }

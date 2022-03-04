@@ -55,6 +55,11 @@ class Content {
 
   static Logger logger = Logger();
 
+  @override
+  String toString() {
+    return 'Content{_title: $_title, date: $date, link: $link, scope: $scope, type: $type}';
+  }
+
   String getDateString() {
     int actualDate = date ?? 0;
     DateTime dateDateTime = DateTime.fromMillisecondsSinceEpoch(actualDate);

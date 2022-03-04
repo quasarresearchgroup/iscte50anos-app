@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:iscte_spots/models/timeline_item.dart';
+import 'package:iscte_spots/models/content.dart';
 
 class TimeLineDetailsPage extends StatefulWidget {
   final Content data;

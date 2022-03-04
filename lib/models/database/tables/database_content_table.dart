@@ -1,13 +1,13 @@
+import 'package:logger/logger.dart';
 import 'package:sqflite/sqflite.dart';
 
-import '../../timeline_item.dart';
+import '../../content.dart';
 import '../database_helper.dart';
 
 class DatabaseContentsTable {
-  DatabaseContentsTable({required this.instance});
+  static final Logger _logger = Logger();
 
-  final DatabaseHelper instance;
-  static const table = 'pagesTable';
+  static const table = 'contentsTable';
 
   static const columnId = '_id';
   static const columnTitle = 'content';
@@ -16,45 +16,74 @@ class DatabaseContentsTable {
   static const columnScope = 'scope';
   static const columnType = 'type';
 
-  Future onCreate(Database db, int version) async {
-    await db.execute('''
+  static Future onCreate(Database db, int version) async {
+    Batch batch = db.batch();
+    batch.execute('''DROP TABLE  IF EXISTS $table''');
+    batch.execute('''
       CREATE TABLE $table(
       $columnId INTEGER PRIMARY KEY,
       $columnTitle TEXT UNIQUE,
       $columnLink TEXT,
       $columnDate INTEGER,
-      $columnScope ENUM('iscte', 'portugal', 'world'),
-      $columnType ENUM('image', 'video', 'web_page', 'social_media', 'doc', 'music')
+      $columnScope TEXT CHECK ( $columnScope IN ('iscte', 'portugal', 'world') ) DEFAULT 'world',
+      $columnType TEXT CHECK ( $columnType IN ('image', 'video', 'web_page', 'social_media', 'doc', 'music')) DEFAULT 'web_page'
       )
     ''');
+    batch.commit();
+    _logger.d("Created $table");
   }
 
-  Future<List<Content>> getAll() async {
+  static Future<List<Content>> getAll() async {
+    DatabaseHelper instance = DatabaseHelper.instance;
     Database db = await instance.database;
     List<Map<String, Object?>> contents =
         await db.query(table, orderBy: columnTitle);
-    List<Content> pageList = contents.isNotEmpty
+    List<Content> contentList = contents.isNotEmpty
         ? contents.map((e) => Content.fromMap(e)).toList()
         : [];
-    return pageList;
+    _logger.d(contentList);
+    return contentList;
   }
 
-  void add(Content content) async {
+  static void add(Content content) async {
+    DatabaseHelper instance = DatabaseHelper.instance;
     Database db = await instance.database;
     db.insert(
       table,
       content.toMap(),
       conflictAlgorithm: ConflictAlgorithm.abort,
     );
+    _logger.d("Inserted: $content into $table");
   }
 
-  Future<int> remove(int id) async {
+  static void addBatch(List<Content> contents) async {
+    DatabaseHelper instance = DatabaseHelper.instance;
     Database db = await instance.database;
+    Batch batch = db.batch();
+    contents.forEach((entry) {
+      batch.insert(
+        table,
+        entry.toMap(),
+        conflictAlgorithm: ConflictAlgorithm.abort,
+      );
+      _logger.d("Inserted: $entry into $table as batch into $table");
+    });
+    batch.commit(noResult: false);
+  }
+
+  static Future<int> remove(int id) async {
+    DatabaseHelper instance = DatabaseHelper.instance;
+    Database db = await instance.database;
+    _logger.d("Removed entry with id:$id from $table");
+
     return await db.delete(table, where: '$columnId = ?', whereArgs: [id]);
   }
 
-  Future<int> removeALL() async {
+  static Future<int> removeALL() async {
+    DatabaseHelper instance = DatabaseHelper.instance;
     Database db = await instance.database;
+    _logger.d("Removed all entries from $table");
+
     return await db.delete(table);
   }
 }

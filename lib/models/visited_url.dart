@@ -1,17 +1,22 @@
 import 'database/tables/pages_table.dart';
 
-class VisitedPage {
+class VisitedURL {
   final int? id;
   final String content;
   final String? url;
   final int dateTime;
 
-  VisitedPage({
+  VisitedURL({
     this.id,
     required this.content,
     required this.dateTime,
     this.url,
   });
+
+  @override
+  String toString() {
+    return 'VisitedURL{id: $id, content: $content, url: $url, dateTime: $dateTime}';
+  }
 
   String get parsedTime {
     DateTime timeParsed = dateTimeParsed();
@@ -23,7 +28,7 @@ class VisitedPage {
     return "$year-$month-$day $hour:$minute";
   }
 
-  factory VisitedPage.fromMap(Map<String, dynamic> json) => VisitedPage(
+  factory VisitedURL.fromMap(Map<String, dynamic> json) => VisitedURL(
       id: json[DatabasePagesTable.columnId],
       content: json[DatabasePagesTable.columnContent],
       url: json[DatabasePagesTable.columnUrl],
