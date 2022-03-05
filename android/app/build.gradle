@@ -48,6 +48,9 @@ android {
         targetSdkVersion 31
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        manifestPlaceholders = [
+                'appAuthRedirectScheme': 'pt.iscteiul.vultos'
+        ]
     }
 
     buildTypes {
