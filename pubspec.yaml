@@ -29,6 +29,8 @@ dependencies:
   image: ^3.1.1
   animated_splash_screen: ^1.2.0
   motion_sensors: ^0.1.0
+  flutter_appauth:
+  flutter_secure_storage:
   
 
 dev_dependencies:
