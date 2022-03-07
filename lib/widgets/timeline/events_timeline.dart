@@ -48,17 +48,26 @@ class _EventsTimelineState extends State<EventsTimeline> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-        itemCount: chosenTimelineList.length,
-        shrinkWrap: true,
-        padding: const EdgeInsets.all(8),
-        itemBuilder: (BuildContext context, int index) {
-          return EventTimelineTile(
-              data: chosenTimelineList[index],
-              isFirst: index == 0,
-              isLast: index == chosenTimelineList.length - 1,
-              lineStyle: widget.lineStyle);
-        });
+    List<Widget> timelineTiles = [
+      ListTile(
+          title: Center(
+              child: Text(
+        widget.timelineYear.toString(),
+        style: TextStyle(fontSize: 30),
+      )))
+    ];
+
+    for (int index = 0; index < chosenTimelineList.length; index++) {
+      timelineTiles.add(EventTimelineTile(
+          data: chosenTimelineList[index],
+          isFirst: index == 0,
+          isLast: index == chosenTimelineList.length - 1,
+          lineStyle: widget.lineStyle));
+    }
+
+    return ListView(
+      children: timelineTiles,
+    );
   }
 }
 

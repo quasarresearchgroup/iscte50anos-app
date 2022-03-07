@@ -18,8 +18,6 @@ class TimelinePage extends StatefulWidget {
 
   static const pageRoute = "/timeline";
 
-  Future<List<Content>>? mapdata;
-
   final lineStyle = const LineStyle(color: Colors.black, thickness: 6);
 
   @override
@@ -27,8 +25,9 @@ class TimelinePage extends StatefulWidget {
 }
 
 class _TimelinePageState extends State<TimelinePage> {
-  int chosenYear = DateTime.now().year;
+  Future<List<Content>>? mapdata;
   List<int> yearsList = [];
+  int? chosenYear;
 
   void createYearsList(Future<List<Content>>? mapdata) async {
     //yearsList = [DateTime.now().year];
@@ -40,16 +39,17 @@ class _TimelinePageState extends State<TimelinePage> {
         }
       }
       yearsList.sort();
+      chosenYear = yearsList.last;
       setState(() {});
     });
-    setState(() {});
   }
 
   @override
   void initState() {
     super.initState();
-    widget.mapdata = ContentLoader.getTimeLineEntries();
-    createYearsList(widget.mapdata);
+    //mapdata = ContentLoader.getTimeLineEntries();
+    mapdata = DatabaseContentsTable.getAll();
+    createYearsList(mapdata);
   }
 
   void changeChosenYear(int year) {
@@ -72,18 +72,18 @@ class _TimelinePageState extends State<TimelinePage> {
           ),
           floatingActionButton: FloatingActionButton(onPressed: () {
             widget.logger.d("Pressed to reload");
-            DatabaseContentsTable.removeALL();
-            widget.logger.d("Removed all content");
+            //DatabaseContentsTable.removeALL();
+            //widget.logger.d("Removed all content");
             ContentLoader.insertContentEntriesFromCSV().then((value) {
               widget.logger.d("Inserted from CSV");
-              DatabaseContentsTable.getAll()
-                  .then((value) => widget.logger.d(value.length));
+              mapdata = DatabaseContentsTable.getAll();
+              mapdata?.then((value) => widget.logger.d(value.length));
               setState(() {});
             });
           }),
           body: Column(children: [
             Expanded(
-                flex: 1,
+                flex: 2,
                 child: YearTimeline(
                   lineStyle: widget.lineStyle,
                   yearsList: yearsList,
@@ -92,12 +92,12 @@ class _TimelinePageState extends State<TimelinePage> {
             Expanded(
               flex: 9,
               child: FutureBuilder<List<Content>>(
-                future: widget.mapdata,
+                future: mapdata,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     return EventsTimeline(
                       timeLineMap: snapshot.data!,
-                      timelineYear: chosenYear,
+                      timelineYear: chosenYear ?? DateTime.now().year,
                       lineStyle: widget.lineStyle,
                     );
                   } else if (snapshot.hasError) {

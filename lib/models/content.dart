@@ -11,8 +11,7 @@ enum ContentScope {
 
 ContentScope? ContentScopefromString(String input) {
   try {
-    return ContentScope.values
-        .firstWhere((element) => element.toString() == input);
+    return ContentScope.values.firstWhere((element) => element.name == input);
   } on StateError {
     return null;
   }
@@ -74,16 +73,16 @@ class Content {
       title: json[DatabaseContentsTable.columnTitle],
       link: json[DatabaseContentsTable.columnLink],
       date: json[DatabaseContentsTable.columnDate],
-      scope: json[DatabaseContentsTable.columnScope],
-      type: json[DatabaseContentsTable.columnType]);
+      scope: ContentScopefromString(json[DatabaseContentsTable.columnScope]),
+      type: ContentTypefromString(json[DatabaseContentsTable.columnType]));
 
   Map<String, dynamic> toMap() {
     return {
       DatabaseContentsTable.columnTitle: _title,
       DatabaseContentsTable.columnLink: link,
       DatabaseContentsTable.columnDate: date,
-      DatabaseContentsTable.columnScope: scope,
-      DatabaseContentsTable.columnType: type
+      DatabaseContentsTable.columnScope: scope != null ? scope!.name : '',
+      DatabaseContentsTable.columnType: type != null ? type!.name : ''
     };
   }
 
