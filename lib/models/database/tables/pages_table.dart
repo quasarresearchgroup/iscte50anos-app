@@ -15,7 +15,6 @@ class DatabasePagesTable {
 
   static Future onCreate(Database db, int version) async {
     Batch batch = db.batch();
-    batch.execute('''DROP TABLE  IF EXISTS $table''');
     batch.execute('''
       CREATE TABLE $table(
       $columnId INTEGER PRIMARY KEY,
@@ -88,7 +87,14 @@ class DatabasePagesTable {
   static Future<int> removeALL() async {
     DatabaseHelper instance = DatabaseHelper.instance;
     Database db = await instance.database;
-    _logger.d("Removed all entries from $table");
+    _logger.d("Removing all entries from $table");
     return await db.delete(table);
+  }
+
+  static Future<void> drop() async {
+    DatabaseHelper instance = DatabaseHelper.instance;
+    Database db = await instance.database;
+    _logger.d("Dropping $table");
+    return await db.execute('DROP TABLE IF EXISTS $table');
   }
 }

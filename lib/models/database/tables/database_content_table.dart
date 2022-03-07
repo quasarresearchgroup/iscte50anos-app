@@ -18,11 +18,10 @@ class DatabaseContentsTable {
 
   static Future onCreate(Database db, int version) async {
     Batch batch = db.batch();
-    batch.execute('''DROP TABLE  IF EXISTS $table''');
     batch.execute('''
       CREATE TABLE $table(
       $columnId INTEGER PRIMARY KEY,
-      $columnTitle TEXT UNIQUE,
+      $columnTitle TEXT,
       $columnLink TEXT,
       $columnDate INTEGER,
       $columnScope TEXT CHECK ( $columnScope IN ('iscte', 'portugal', 'world') ) DEFAULT 'world',
@@ -41,7 +40,6 @@ class DatabaseContentsTable {
     List<Content> contentList = contents.isNotEmpty
         ? contents.map((e) => Content.fromMap(e)).toList()
         : [];
-    _logger.d(contentList);
     return contentList;
   }
 
@@ -66,24 +64,29 @@ class DatabaseContentsTable {
         entry.toMap(),
         conflictAlgorithm: ConflictAlgorithm.abort,
       );
-      _logger.d("Inserted: $entry into $table as batch into $table");
+      //_logger.d("Inserted: $entry into $table as batch into $table");
     });
-    batch.commit(noResult: false);
+    batch.commit();
   }
 
   static Future<int> remove(int id) async {
     DatabaseHelper instance = DatabaseHelper.instance;
     Database db = await instance.database;
-    _logger.d("Removed entry with id:$id from $table");
-
+    _logger.d("Removing entry with id:$id from $table");
     return await db.delete(table, where: '$columnId = ?', whereArgs: [id]);
   }
 
   static Future<int> removeALL() async {
     DatabaseHelper instance = DatabaseHelper.instance;
     Database db = await instance.database;
-    _logger.d("Removed all entries from $table");
-
+    _logger.d("Removing all entries from $table");
     return await db.delete(table);
+  }
+
+  static Future<void> drop() async {
+    DatabaseHelper instance = DatabaseHelper.instance;
+    Database db = await instance.database;
+    _logger.d("Dropping $table");
+    return await db.execute('DROP TABLE IF EXISTS $table');
   }
 }

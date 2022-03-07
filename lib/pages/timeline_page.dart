@@ -74,11 +74,12 @@ class _TimelinePageState extends State<TimelinePage> {
             widget.logger.d("Pressed to reload");
             DatabaseContentsTable.removeALL();
             widget.logger.d("Removed all content");
-            ContentLoader.insertContentEntriesFromCSV();
-            widget.logger.d("Inserted from CSV");
-            DatabaseContentsTable.getAll()
-                .then((value) => widget.logger.d(value));
-            setState(() {});
+            ContentLoader.insertContentEntriesFromCSV().then((value) {
+              widget.logger.d("Inserted from CSV");
+              DatabaseContentsTable.getAll()
+                  .then((value) => widget.logger.d(value.length));
+              setState(() {});
+            });
           }),
           body: Column(children: [
             Expanded(

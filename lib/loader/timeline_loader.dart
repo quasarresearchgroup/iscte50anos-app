@@ -5,7 +5,7 @@ import 'package:logger/logger.dart';
 
 class ContentLoader {
   static const String timelineEntriesFile = 'Resources/timeline.csv';
-  static Logger logger = Logger();
+  static Logger _logger = Logger();
 
   static Future<List<Content>> getTimeLineEntries() async {
     final List<Content> contentsList = [];
@@ -13,7 +13,7 @@ class ContentLoader {
     try {
       final String file = await rootBundle.loadString(timelineEntriesFile);
 
-      logger.d(file.split("\n").length);
+      _logger.d(file.split("\n").length);
       file.split("\n").forEach((line) {
         List<String> lineSplit = line.split(";");
 
@@ -40,21 +40,21 @@ class ContentLoader {
       });
       return contentsList;
     } catch (e) {
-      logger.e(e);
+      _logger.e(e);
       return contentsList;
     } finally {
       //logger.d(contentsList);
-      logger.d("contentsList.length: " + contentsList.length.toString());
+      _logger.d("contentsList.length: " + contentsList.length.toString());
     }
   }
 
-  static void insertContentEntriesFromCSV() async {
+  static Future<void> insertContentEntriesFromCSV() async {
     final List<Content> contentsList = [];
 
     try {
       final String file = await rootBundle.loadString(timelineEntriesFile);
 
-      logger.d(file.split("\n").length);
+      _logger.d(file.split("\n").length);
       file.split("\n").forEach((line) {
         List<String> lineSplit = line.split(";");
 
@@ -75,16 +75,14 @@ class ContentLoader {
             date: dateIntFromEpoch,
             scope: scope,
             type: contentType);
-        //logger.d(content.toString());
-
+        //_logger.d(content.toString());
         contentsList.add(content);
       });
-      DatabaseContentsTable.addBatch(contentsList);
     } catch (e) {
-      logger.e(e);
+      _logger.e(e);
     } finally {
-      //logger.d(contentsList);
-      logger.d("contentsList.length: " + contentsList.length.toString());
+      _logger.d("contentsList.length: " + contentsList.length.toString());
+      DatabaseContentsTable.addBatch(contentsList);
     }
   }
 }
