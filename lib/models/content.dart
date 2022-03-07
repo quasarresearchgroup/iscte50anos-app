@@ -86,26 +86,36 @@ class Content {
   }
 
   Widget get scopeIcon {
+    final Image worldMapImage =
+        Image.asset('Resources/Img/TimelineIcons/world-map-819-595.jpg');
+    final Image iscte50AnosImage =
+        Image.asset('Resources/Img/TimelineIcons/logo_50_anos-819-585.jpg');
+    final Image bandeiraPortugalImage =
+        Image.asset('Resources/Img/TimelineIcons/pt-819-585.png');
+    /*final Image bandeiraPortugalImage =
+        Image.asset('icons/flags/png/pt.png', package: 'country_icons');*/
+
     switch (scope) {
       case ContentScope.portugal:
         {
-          return Image.asset('icons/flags/png/pt.png',
-              package: 'country_icons');
+          return roundedTimelineIcon(child: bandeiraPortugalImage);
         }
         break;
       case ContentScope.world:
         {
-          return const FaIcon(FontAwesomeIcons.globe);
+          return roundedTimelineIcon(child: worldMapImage);
+          //return const FaIcon(FontAwesomeIcons.globe);
         }
         break;
       case ContentScope.iscte:
         {
-          return Image.asset('Resources/Img/Logo/logo_50_anos_main.jpg');
+          return roundedTimelineIcon(child: iscte50AnosImage);
         }
         break;
       default:
         {
-          return const FaIcon(FontAwesomeIcons.globe);
+          return roundedTimelineIcon(child: worldMapImage);
+          //return const FaIcon(FontAwesomeIcons.globe);
         }
         break;
     }
@@ -144,5 +154,25 @@ class Content {
 
   String get title {
     return _title ?? "";
+  }
+}
+
+class roundedTimelineIcon extends StatelessWidget {
+  roundedTimelineIcon({
+    Key? key,
+    required this.child,
+  }) : super(key: key);
+
+  final double borderRadious = 10;
+  final double padding = 10;
+  final Image child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: padding),
+      child: ClipRRect(
+          borderRadius: BorderRadius.circular(borderRadious), child: child),
+    );
   }
 }

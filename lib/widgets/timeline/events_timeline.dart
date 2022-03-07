@@ -49,12 +49,14 @@ class _EventsTimelineState extends State<EventsTimeline> {
   @override
   Widget build(BuildContext context) {
     List<Widget> timelineTiles = [
+/*
       ListTile(
           title: Center(
               child: Text(
         widget.timelineYear.toString(),
         style: TextStyle(fontSize: 30),
       )))
+*/
     ];
 
     for (int index = 0; index < chosenTimelineList.length; index++) {
@@ -102,7 +104,7 @@ class EventTimelineTile extends StatelessWidget {
         afterLineStyle: lineStyle,
         axis: TimelineAxis.vertical,
         alignment: TimelineAlign.manual,
-        lineXY: 0.15,
+        lineXY: 0.20,
         isFirst: isFirst,
         isLast: isLast,
         indicatorStyle: IndicatorStyle(

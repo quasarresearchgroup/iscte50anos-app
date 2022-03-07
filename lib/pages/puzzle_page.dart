@@ -21,7 +21,8 @@ class _PuzzlePageState extends State<PuzzlePage> {
   @override
   void initState() {
     super.initState();
-    _image = const Image(image: AssetImage('Resources/Img/campus-iscte-3.jpg'));
+    _image = const Image(
+        image: AssetImage('Resources/Img/Campus/campus-iscte-3.jpg'));
 
     ImageManipulation.splitImagePuzzlePiece(
       image: _image,

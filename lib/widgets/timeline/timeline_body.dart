@@ -52,14 +52,23 @@ class _TimeLineBodyState extends State<TimeLineBody> {
   Widget build(BuildContext context) {
     return Column(children: [
       Expanded(
-          flex: 2,
-          child: YearTimeline(
-            lineStyle: widget.lineStyle,
-            yearsList: list,
-            changeYearFunction: changeChosenYear,
+          flex: 15,
+          child: Container(
+            decoration: const BoxDecoration(boxShadow: [
+              BoxShadow(
+                color: Colors.black,
+                blurRadius: 15.0,
+              )
+            ]),
+            child: YearTimeline(
+              lineStyle: widget.lineStyle,
+              yearsList: list,
+              changeYearFunction: changeChosenYear,
+              selectedYear: chosenYear != null ? chosenYear! : list.last,
+            ),
           )),
       Expanded(
-          flex: 9,
+          flex: 100,
           child: EventsTimeline(
             timeLineMap: widget.mapdata,
             timelineYear: chosenYear!,
