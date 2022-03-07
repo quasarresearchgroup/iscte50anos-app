@@ -39,7 +39,9 @@ class _TimelinePageState extends State<TimelinePage> {
         }
       }
       yearsList.sort();
-      chosenYear = yearsList.last;
+      yearsList.length > 1
+          ? chosenYear = yearsList.last
+          : chosenYear = DateTime.now().year;
       setState(() {});
     });
   }
@@ -72,8 +74,8 @@ class _TimelinePageState extends State<TimelinePage> {
           ),
           floatingActionButton: FloatingActionButton(onPressed: () {
             widget.logger.d("Pressed to reload");
-            //DatabaseContentsTable.removeALL();
-            //widget.logger.d("Removed all content");
+            DatabaseContentsTable.removeALL();
+            widget.logger.d("Removed all content");
             ContentLoader.insertContentEntriesFromCSV().then((value) {
               widget.logger.d("Inserted from CSV");
               mapdata = DatabaseContentsTable.getAll();

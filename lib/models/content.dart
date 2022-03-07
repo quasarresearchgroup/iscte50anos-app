@@ -9,7 +9,7 @@ enum ContentScope {
   world,
 }
 
-ContentScope? ContentScopefromString(String input) {
+ContentScope? ContentScopefromString(String? input) {
   try {
     return ContentScope.values.firstWhere((element) => element.name == input);
   } on StateError {
@@ -26,10 +26,9 @@ enum ContentType {
   music,
 }
 
-ContentType? ContentTypefromString(String input) {
+ContentType? ContentTypefromString(String? input) {
   try {
-    return ContentType.values
-        .firstWhere((element) => element.toString() == input);
+    return ContentType.values.firstWhere((element) => element.name == input);
   } on StateError {
     return null;
   }
@@ -81,8 +80,8 @@ class Content {
       DatabaseContentsTable.columnTitle: _title,
       DatabaseContentsTable.columnLink: link,
       DatabaseContentsTable.columnDate: date,
-      DatabaseContentsTable.columnScope: scope != null ? scope!.name : '',
-      DatabaseContentsTable.columnType: type != null ? type!.name : ''
+      DatabaseContentsTable.columnScope: scope != null ? scope!.name : null,
+      DatabaseContentsTable.columnType: type != null ? type!.name : null
     };
   }
 
