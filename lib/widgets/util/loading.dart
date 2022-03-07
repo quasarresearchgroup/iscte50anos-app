@@ -8,21 +8,16 @@ class LoadingWidget extends StatelessWidget {
   }) : super(key: key);
 
   TextStyle messagesStyle;
-  Future future = Future.delayed(const Duration(seconds: 30));
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: future,
-        builder: (BuildContext context, snapshot) {
-          return Center(
-            child: Column(children: [
-              const CircularProgressIndicator.adaptive(),
-              Text(
-                AppLocalizations.of(context)!.loading,
-                style: messagesStyle,
-              )
-            ]),
-          );
-        });
+    return Center(
+      child: Column(children: [
+        const CircularProgressIndicator.adaptive(),
+        Text(
+          AppLocalizations.of(context)!.loading,
+          style: messagesStyle,
+        )
+      ]),
+    );
   }
 }
