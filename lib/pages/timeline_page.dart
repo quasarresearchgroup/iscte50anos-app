@@ -127,7 +127,7 @@ class TimelineSearchDelegate extends SearchDelegate {
         builder: (BuildContext context, AsyncSnapshot<List<Content>> snapshot) {
           if (snapshot.hasData) {
             list = snapshot.data!
-                .where((element) => element.title
+                .where((element) => element.description
                     .toLowerCase()
                     .contains(queryString.toLowerCase()))
                 .toList();

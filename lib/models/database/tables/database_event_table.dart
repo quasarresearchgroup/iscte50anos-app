@@ -1,49 +1,45 @@
 import 'package:logger/logger.dart';
 import 'package:sqflite/sqflite.dart';
 
-import '../../content.dart';
+import '../../event.dart';
 import '../database_helper.dart';
 
-class DatabaseContentsTable {
+class DatabaseEventTable {
   static final Logger _logger = Logger();
 
-  static const table = 'contentsTable';
+  static const table = 'eventTable';
 
   static const columnId = '_id';
-  static const columnDescription = 'title';
-  static const columnLink = 'link';
+  static const columnTitle = 'title';
   static const columnDate = 'date';
   static const columnScope = 'scope';
-  static const columnType = 'type';
 
   static Future onCreate(Database db, int version) async {
     Batch batch = db.batch();
     batch.execute('''
       CREATE TABLE $table(
       $columnId INTEGER PRIMARY KEY,
-      $columnDescription TEXT,
-      $columnLink TEXT,
+      $columnTitle TEXT,
       $columnDate INTEGER,
       $columnScope TEXT CHECK ( $columnScope IN ('iscte', 'portugal', 'world') ) DEFAULT 'world',
-      $columnType TEXT CHECK ( $columnType IN ('image', 'video', 'web_page', 'social_media', 'doc', 'music')) DEFAULT 'web_page'
       )
     ''');
     batch.commit();
     _logger.d("Created $table");
   }
 
-  static Future<List<Content>> getAll() async {
+  static Future<List<Event>> getAll() async {
     DatabaseHelper instance = DatabaseHelper.instance;
     Database db = await instance.database;
     List<Map<String, Object?>> contents =
-        await db.query(table, orderBy: columnDescription);
-    List<Content> contentList = contents.isNotEmpty
-        ? contents.map((e) => Content.fromMap(e)).toList()
+        await db.query(table, orderBy: columnTitle);
+    List<Event> contentList = contents.isNotEmpty
+        ? contents.map((e) => Event.fromMap(e)).toList()
         : [];
     return contentList;
   }
 
-  static void add(Content content) async {
+  static void add(Event content) async {
     DatabaseHelper instance = DatabaseHelper.instance;
     Database db = await instance.database;
     db.insert(
@@ -54,7 +50,7 @@ class DatabaseContentsTable {
     _logger.d("Inserted: $content into $table");
   }
 
-  static void addBatch(List<Content> contents) async {
+  static void addBatch(List<Event> contents) async {
     DatabaseHelper instance = DatabaseHelper.instance;
     Database db = await instance.database;
     Batch batch = db.batch();

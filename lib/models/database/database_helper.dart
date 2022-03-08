@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:iscte_spots/models/database/tables/database_content_table.dart';
+import 'package:iscte_spots/models/database/tables/database_event_table.dart';
 import 'package:iscte_spots/models/database/tables/pages_table.dart';
 import 'package:logger/logger.dart';
 import 'package:path/path.dart';
@@ -11,7 +12,7 @@ class DatabaseHelper {
   static final Logger _logger = Logger();
   static Database? _database;
   static const _databaseName = "MyDatabase.db";
-  static const _databaseVersion = 5;
+  static const _databaseVersion = 6;
 
   //  singleton class
   DatabaseHelper._privateConstructor();
@@ -24,6 +25,7 @@ class DatabaseHelper {
     _logger.d('Started OnCreate to the db');
     await DatabasePagesTable.onCreate(db, version);
     await DatabaseContentsTable.onCreate(db, version);
+    await DatabaseEventTable.onCreate(db, version);
     _logger.d('Finished OnCreate to the db');
   }
 
@@ -31,6 +33,7 @@ class DatabaseHelper {
     _logger.d('Started DropAll to the db');
     await DatabasePagesTable.drop();
     await DatabaseContentsTable.drop();
+    await DatabaseEventTable.drop();
     _logger.d('Finished DropAll to the db');
   }
 
@@ -38,6 +41,7 @@ class DatabaseHelper {
     _logger.d('Started removeAll to the db');
     await DatabasePagesTable.removeALL();
     await DatabaseContentsTable.removeALL();
+    await DatabaseEventTable.removeALL();
     _logger.d('Finished removeAll to the db');
   }
 

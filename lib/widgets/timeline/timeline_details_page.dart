@@ -34,7 +34,7 @@ class TimeLineDetailsPage extends StatelessWidget {
               ),
               data.scopeIcon,
               Text(
-                data.title,
+                data.description,
                 textScaleFactor: textweight.toDouble(),
               ),
             ],

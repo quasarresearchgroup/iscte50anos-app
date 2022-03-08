@@ -27,10 +27,10 @@ class ContentLoader {
           dateIntFromEpoch = 0;
         }
         String title = lineSplit[1];
-        ContentScope? scope = ContentScopefromString(lineSplit[2]);
+        EventScope? scope = EventScopefromString(lineSplit[2]);
         ContentType? contentType = ContentTypefromString(lineSplit[3]);
         Content content = Content(
-            title: title,
+            description: title,
             date: dateIntFromEpoch,
             scope: scope,
             type: contentType);
@@ -68,10 +68,10 @@ class ContentLoader {
           dateIntFromEpoch = 0;
         }
         String title = lineSplit[1];
-        ContentScope? scope = ContentScopefromString(lineSplit[2]);
+        EventScope? scope = EventScopefromString(lineSplit[2]);
         ContentType? contentType = ContentTypefromString(lineSplit[3]);
         Content content = Content(
-            title: title,
+            description: title,
             date: dateIntFromEpoch,
             scope: scope,
             type: contentType);
