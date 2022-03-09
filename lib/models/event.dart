@@ -20,11 +20,12 @@ EventScope? EventScopefromString(String? input) {
 
 class Event {
   Event({
+    this.id,
     this.title,
     this.date,
     this.scope,
   });
-
+  final int? id;
   final String? title;
   final int? date;
   final EventScope? scope;
@@ -33,7 +34,7 @@ class Event {
 
   @override
   String toString() {
-    return 'Event{title: $title, date: $date, scope: $scope}';
+    return 'Event{id: $id, title: $title, date: $date, scope: $scope}';
   }
 
   String getDateString() {
@@ -47,16 +48,18 @@ class Event {
   }
 
   factory Event.fromMap(Map<String, dynamic> json) => Event(
-        title: json[DatabaseContentsTable.columnDescription],
-        date: json[DatabaseContentsTable.columnDate],
-        scope: EventScopefromString(json[DatabaseContentsTable.columnScope]),
+        id: json[DatabaseContentTable.columnId],
+        title: json[DatabaseContentTable.columnDescription],
+        date: json[DatabaseContentTable.columnDate],
+        scope: EventScopefromString(json[DatabaseContentTable.columnScope]),
       );
 
   Map<String, dynamic> toMap() {
     return {
-      DatabaseContentsTable.columnDescription: title,
-      DatabaseContentsTable.columnDate: date,
-      DatabaseContentsTable.columnScope: scope != null ? scope!.name : null,
+      DatabaseContentTable.columnId: id,
+      DatabaseContentTable.columnDescription: title,
+      DatabaseContentTable.columnDate: date,
+      DatabaseContentTable.columnScope: scope != null ? scope!.name : null,
     };
   }
 
@@ -72,27 +75,13 @@ class Event {
 
     switch (scope) {
       case EventScope.portugal:
-        {
-          return roundedTimelineIcon(child: bandeiraPortugalImage);
-        }
-        break;
+        return roundedTimelineIcon(child: bandeiraPortugalImage);
       case EventScope.world:
-        {
-          return roundedTimelineIcon(child: worldMapImage);
-          //return const FaIcon(FontAwesomeIcons.globe);
-        }
-        break;
+        return roundedTimelineIcon(child: worldMapImage);
       case EventScope.iscte:
-        {
-          return roundedTimelineIcon(child: iscte50AnosImage);
-        }
-        break;
+        return roundedTimelineIcon(child: iscte50AnosImage);
       default:
-        {
-          return roundedTimelineIcon(child: worldMapImage);
-          //return const FaIcon(FontAwesomeIcons.globe);
-        }
-        break;
+        return roundedTimelineIcon(child: worldMapImage);
     }
   }
 

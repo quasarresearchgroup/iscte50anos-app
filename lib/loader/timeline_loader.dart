@@ -3,9 +3,11 @@ import 'package:iscte_spots/models/content.dart';
 import 'package:iscte_spots/models/database/tables/database_content_table.dart';
 import 'package:logger/logger.dart';
 
+import '../models/event.dart';
+
 class ContentLoader {
   static const String timelineEntriesFile = 'Resources/timeline.csv';
-  static Logger _logger = Logger();
+  static final Logger _logger = Logger();
 
   static Future<List<Content>> getTimeLineEntries() async {
     final List<Content> contentsList = [];
@@ -82,7 +84,7 @@ class ContentLoader {
       _logger.e(e);
     } finally {
       _logger.d("contentsList.length: " + contentsList.length.toString());
-      DatabaseContentsTable.addBatch(contentsList);
+      DatabaseContentTable.addBatch(contentsList);
     }
   }
 }

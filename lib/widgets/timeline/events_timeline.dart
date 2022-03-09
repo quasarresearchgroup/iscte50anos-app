@@ -126,7 +126,9 @@ class EventTimelineTile extends StatelessWidget {
                     Text(data.getDateString()),
                   ],
                 ),
-                Text(data.description),
+                data.description != null
+                    ? Text(data.description!)
+                    : Container(),
               ],
             ),
           ),

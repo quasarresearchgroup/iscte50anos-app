@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/helper/helper_methods.dart';
-import 'package:iscte_spots/models/database/tables/pages_table.dart';
+import 'package:iscte_spots/models/database/tables/database_page_table.dart';
 import 'package:iscte_spots/models/visited_url.dart';
 import 'package:iscte_spots/widgets/my_bottom_bar.dart';
 import 'package:iscte_spots/widgets/nav_drawer/navigation_drawer.dart';
@@ -37,16 +37,16 @@ class _VisitedPagesPageState extends State<VisitedPagesPage> {
                 child: const Icon(Icons.delete),
                 onPressed: () {
                   setState(() {
-                    DatabasePagesTable.removeALL();
+                    DatabasePageTable.removeALL();
                   });
                 },
               ),
               body: RefreshIndicator(
                 onRefresh: () {
-                  return DatabasePagesTable.getAll();
+                  return DatabasePageTable.getAll();
                 },
                 child: FutureBuilder<List<VisitedURL>>(
-                  future: DatabasePagesTable.getAll(),
+                  future: DatabasePageTable.getAll(),
                   builder: (BuildContext context,
                       AsyncSnapshot<List<VisitedURL>> snapshot) {
                     if (!snapshot.hasData) {
@@ -66,7 +66,7 @@ class _VisitedPagesPageState extends State<VisitedPagesPage> {
                                 subtitle: Text(page.parsedTime),
                                 onLongPress: () {
                                   setState(() {
-                                    DatabasePagesTable.remove(page.id!);
+                                    DatabasePageTable.remove(page.id!);
                                   });
                                 },
                                 onTap: () {

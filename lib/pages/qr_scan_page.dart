@@ -11,7 +11,7 @@ import 'package:logger/logger.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:synchronized/synchronized.dart';
 
-import '../models/database/tables/pages_table.dart';
+import '../models/database/tables/database_page_table.dart';
 
 class QRScanPage extends StatefulWidget {
   QRScanPage({Key? key}) : super(key: key);
@@ -55,7 +55,7 @@ class QRScanPageState extends State<QRScanPage> {
       {required String pageContent,
       required int date,
       required String pageUrl}) async {
-    DatabasePagesTable.add(
+    DatabasePageTable.add(
         VisitedURL(content: pageContent, dateTime: date, url: pageUrl));
     setState(() {});
   }

@@ -25,24 +25,27 @@ ContentType? ContentTypefromString(String? input) {
 
 class Content {
   Content({
+    this.id,
     this.description,
     this.link,
     this.date,
     this.scope,
     this.type,
+    this.eventId,
   });
-
+  final int? id;
   final String? description;
   final String? link;
   final int? date;
   final EventScope? scope;
   final ContentType? type;
+  final int? eventId;
 
   static Logger logger = Logger();
 
   @override
   String toString() {
-    return 'Content{_title: $description, date: $date, link: $link, scope: $scope, type: $type}';
+    return 'Content{id: $id, description: $description, link: $link, date: $date, scope: $scope, type: $type, eventId: $eventId}';
   }
 
   String getDateString() {
@@ -56,19 +59,24 @@ class Content {
   }
 
   factory Content.fromMap(Map<String, dynamic> json) => Content(
-      description: json[DatabaseContentsTable.columnDescription],
-      link: json[DatabaseContentsTable.columnLink],
-      date: json[DatabaseContentsTable.columnDate],
-      scope: EventScopefromString(json[DatabaseContentsTable.columnScope]),
-      type: ContentTypefromString(json[DatabaseContentsTable.columnType]));
+        id: json[DatabaseContentTable.columnId],
+        description: json[DatabaseContentTable.columnDescription],
+        link: json[DatabaseContentTable.columnLink],
+        date: json[DatabaseContentTable.columnDate],
+        scope: EventScopefromString(json[DatabaseContentTable.columnScope]),
+        type: ContentTypefromString(json[DatabaseContentTable.columnType]),
+        eventId: json[DatabaseContentTable.columnEventId],
+      );
 
   Map<String, dynamic> toMap() {
     return {
-      DatabaseContentsTable.columnDescription: description,
-      DatabaseContentsTable.columnLink: link,
-      DatabaseContentsTable.columnDate: date,
-      DatabaseContentsTable.columnScope: scope != null ? scope!.name : null,
-      DatabaseContentsTable.columnType: type != null ? type!.name : null
+      DatabaseContentTable.columnId: id,
+      DatabaseContentTable.columnDescription: description,
+      DatabaseContentTable.columnLink: link,
+      DatabaseContentTable.columnDate: date,
+      DatabaseContentTable.columnScope: scope != null ? scope!.name : null,
+      DatabaseContentTable.columnType: type != null ? type!.name : null,
+      DatabaseContentTable.columnEventId: eventId,
     };
   }
 
@@ -84,27 +92,13 @@ class Content {
 
     switch (scope) {
       case EventScope.portugal:
-        {
-          return roundedTimelineIcon(child: bandeiraPortugalImage);
-        }
-        break;
+        return roundedTimelineIcon(child: bandeiraPortugalImage);
       case EventScope.world:
-        {
-          return roundedTimelineIcon(child: worldMapImage);
-          //return const FaIcon(FontAwesomeIcons.globe);
-        }
-        break;
+        return roundedTimelineIcon(child: worldMapImage);
       case EventScope.iscte:
-        {
-          return roundedTimelineIcon(child: iscte50AnosImage);
-        }
-        break;
+        return roundedTimelineIcon(child: iscte50AnosImage);
       default:
-        {
-          return roundedTimelineIcon(child: worldMapImage);
-          //return const FaIcon(FontAwesomeIcons.globe);
-        }
-        break;
+        return roundedTimelineIcon(child: worldMapImage);
     }
   }
 
@@ -112,22 +106,16 @@ class Content {
     switch (type) {
       case ContentType.image:
         return const FaIcon(FontAwesomeIcons.image);
-        break;
       case ContentType.video:
         return const FaIcon(FontAwesomeIcons.video);
-        break;
       case ContentType.web_page:
         return const FaIcon(FontAwesomeIcons.link);
-        break;
       case ContentType.social_media:
         return const FaIcon(FontAwesomeIcons.networkWired);
-        break;
       case ContentType.doc:
         return const FaIcon(FontAwesomeIcons.book);
-        break;
       case ContentType.music:
         return const FaIcon(FontAwesomeIcons.music);
-        break;
       case null:
         return const FaIcon(FontAwesomeIcons.unlink);
     }

@@ -4,18 +4,17 @@ import 'package:sqflite/sqflite.dart';
 import '../../visited_url.dart';
 import '../database_helper.dart';
 
-class DatabasePagesTable {
+class DatabasePageTable {
   static final Logger _logger = Logger();
 
-  static const table = 'pagesTable';
+  static const table = 'pageTable';
   static const columnId = '_id';
   static const columnContent = 'content';
   static const columnDate = 'date';
   static const columnUrl = 'url';
 
   static Future onCreate(Database db, int version) async {
-    Batch batch = db.batch();
-    batch.execute('''
+    db.execute('''
       CREATE TABLE $table(
       $columnId INTEGER PRIMARY KEY,
       $columnContent TEXT UNIQUE,
@@ -23,7 +22,6 @@ class DatabasePagesTable {
       $columnDate INTEGER
       )
     ''');
-    batch.commit();
     _logger.d("Created $table");
   }
 
@@ -91,9 +89,7 @@ class DatabasePagesTable {
     return await db.delete(table);
   }
 
-  static Future<void> drop() async {
-    DatabaseHelper instance = DatabaseHelper.instance;
-    Database db = await instance.database;
+  static Future<void> drop(Database db) async {
     _logger.d("Dropping $table");
     return await db.execute('DROP TABLE IF EXISTS $table');
   }

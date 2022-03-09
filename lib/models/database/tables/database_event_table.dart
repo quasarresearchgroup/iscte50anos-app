@@ -15,16 +15,14 @@ class DatabaseEventTable {
   static const columnScope = 'scope';
 
   static Future onCreate(Database db, int version) async {
-    Batch batch = db.batch();
-    batch.execute('''
+    db.execute('''
       CREATE TABLE $table(
       $columnId INTEGER PRIMARY KEY,
       $columnTitle TEXT,
       $columnDate INTEGER,
-      $columnScope TEXT CHECK ( $columnScope IN ('iscte', 'portugal', 'world') ) DEFAULT 'world',
+      $columnScope TEXT CHECK ( $columnScope IN ('iscte', 'portugal', 'world') ) DEFAULT 'world'
       )
     ''');
-    batch.commit();
     _logger.d("Created $table");
   }
 
@@ -79,9 +77,7 @@ class DatabaseEventTable {
     return await db.delete(table);
   }
 
-  static Future<void> drop() async {
-    DatabaseHelper instance = DatabaseHelper.instance;
-    Database db = await instance.database;
+  static Future<void> drop(Database db) async {
     _logger.d("Dropping $table");
     return await db.execute('DROP TABLE IF EXISTS $table');
   }

@@ -28,11 +28,11 @@ class _TimelinePageState extends State<TimelinePage> {
   void initState() {
     super.initState();
     //mapdata = ContentLoader.getTimeLineEntries();
-    mapdata = DatabaseContentsTable.getAll();
+    mapdata = DatabaseContentTable.getAll();
   }
 
   void resetMapData() {
-    mapdata = DatabaseContentsTable.getAll();
+    mapdata = DatabaseContentTable.getAll();
   }
 
   @override
@@ -58,11 +58,11 @@ class _TimelinePageState extends State<TimelinePage> {
             ),
             floatingActionButton: FloatingActionButton(onPressed: () {
               widget.logger.d("Pressed to reload");
-              DatabaseContentsTable.removeALL();
+              DatabaseContentTable.removeALL();
               widget.logger.d("Removed all content");
               ContentLoader.insertContentEntriesFromCSV().then((value) {
                 widget.logger.d("Inserted from CSV");
-                mapdata = DatabaseContentsTable.getAll();
+                mapdata = DatabaseContentTable.getAll();
                 mapdata.then((value) => widget.logger.d(value.length));
                 setState(() {});
               });
@@ -126,11 +126,15 @@ class TimelineSearchDelegate extends SearchDelegate {
         future: mapdata,
         builder: (BuildContext context, AsyncSnapshot<List<Content>> snapshot) {
           if (snapshot.hasData) {
-            list = snapshot.data!
-                .where((element) => element.description
+            list = snapshot.data!.where((element) {
+              if (element.description != null) {
+                return element.description!
                     .toLowerCase()
-                    .contains(queryString.toLowerCase()))
-                .toList();
+                    .contains(queryString.toLowerCase());
+              } else {
+                return false;
+              }
+            }).toList();
             _logger.d(list);
             return TimeLineBody(mapdata: list);
           } else {

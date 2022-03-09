@@ -1,4 +1,4 @@
-import 'database/tables/pages_table.dart';
+import 'database/tables/database_page_table.dart';
 
 class VisitedURL {
   final int? id;
@@ -29,17 +29,17 @@ class VisitedURL {
   }
 
   factory VisitedURL.fromMap(Map<String, dynamic> json) => VisitedURL(
-      id: json[DatabasePagesTable.columnId],
-      content: json[DatabasePagesTable.columnContent],
-      url: json[DatabasePagesTable.columnUrl],
-      dateTime: json[DatabasePagesTable.columnDate]);
+      id: json[DatabasePageTable.columnId],
+      content: json[DatabasePageTable.columnContent],
+      url: json[DatabasePageTable.columnUrl],
+      dateTime: json[DatabasePageTable.columnDate]);
 
   Map<String, dynamic> toMap() {
     return {
-      DatabasePagesTable.columnId: id,
-      DatabasePagesTable.columnContent: content,
-      DatabasePagesTable.columnDate: dateTime,
-      DatabasePagesTable.columnUrl: url
+      DatabasePageTable.columnId: id,
+      DatabasePageTable.columnContent: content,
+      DatabasePageTable.columnDate: dateTime,
+      DatabasePageTable.columnUrl: url
     };
   }
 

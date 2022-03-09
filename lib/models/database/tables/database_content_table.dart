@@ -3,11 +3,12 @@ import 'package:sqflite/sqflite.dart';
 
 import '../../content.dart';
 import '../database_helper.dart';
+import 'database_event_table.dart';
 
-class DatabaseContentsTable {
+class DatabaseContentTable {
   static final Logger _logger = Logger();
 
-  static const table = 'contentsTable';
+  static const table = 'contentTable';
 
   static const columnId = '_id';
   static const columnDescription = 'title';
@@ -15,22 +16,36 @@ class DatabaseContentsTable {
   static const columnDate = 'date';
   static const columnScope = 'scope';
   static const columnType = 'type';
+  static const columnEventId = 'event_id';
 
   static Future onCreate(Database db, int version) async {
-    Batch batch = db.batch();
-    batch.execute('''
+    String eventTable = DatabaseEventTable.table;
+    String eventTableID = DatabaseEventTable.columnId;
+    db.execute('''
       CREATE TABLE $table(
       $columnId INTEGER PRIMARY KEY,
       $columnDescription TEXT,
       $columnLink TEXT,
       $columnDate INTEGER,
       $columnScope TEXT CHECK ( $columnScope IN ('iscte', 'portugal', 'world') ) DEFAULT 'world',
-      $columnType TEXT CHECK ( $columnType IN ('image', 'video', 'web_page', 'social_media', 'doc', 'music')) DEFAULT 'web_page'
+      $columnType TEXT CHECK ( $columnType IN ('image', 'video', 'web_page', 'social_media', 'doc', 'music')) DEFAULT 'web_page',
+      $columnEventId INTEGER,
+      FOREIGN KEY (`$columnEventId`) REFERENCES `$eventTable` (`$eventTableID`)
       )
     ''');
-    batch.commit();
     _logger.d("Created $table");
   }
+
+/*
+  static Future onFKCreate(Database db) async {
+    String eventTable = DatabaseEventTable.table;
+    String eventTableID = DatabaseEventTable.columnId;
+    db.execute('''
+        ALTER TABLE `$table` ADD FOREIGN KEY (`$columnEventId`) REFERENCES `$eventTable` (`$eventTableID`);
+    ''');
+    _logger.d("Added FK to $table");
+  }
+*/
 
   static Future<List<Content>> getAll() async {
     DatabaseHelper instance = DatabaseHelper.instance;
@@ -64,8 +79,8 @@ class DatabaseContentsTable {
         entry.toMap(),
         conflictAlgorithm: ConflictAlgorithm.abort,
       );
-      //_logger.d("Inserted: $entry into $table as batch into $table");
     });
+    _logger.d("Inserted as batch into $table");
     batch.commit();
   }
 
@@ -83,9 +98,7 @@ class DatabaseContentsTable {
     return await db.delete(table);
   }
 
-  static Future<void> drop() async {
-    DatabaseHelper instance = DatabaseHelper.instance;
-    Database db = await instance.database;
+  static Future<void> drop(Database db) async {
     _logger.d("Dropping $table");
     return await db.execute('DROP TABLE IF EXISTS $table');
   }
