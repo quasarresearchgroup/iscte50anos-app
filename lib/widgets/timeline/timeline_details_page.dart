@@ -6,7 +6,7 @@ class TimeLineDetailsPage extends StatelessWidget {
     required this.data,
     Key? key,
   }) : super(key: key);
-  final int textweight = 2;
+  final double textweight = 2;
   final Content data;
 
   @override
@@ -19,15 +19,15 @@ class TimeLineDetailsPage extends StatelessWidget {
         padding: const EdgeInsets.all(20.0),
         child: Center(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   data.contentIcon,
                   Text(
                     data.getDateString(),
-                    textScaleFactor: textweight.toDouble(),
+                    textScaleFactor: textweight,
                   ),
                   data.contentIcon
                 ],
@@ -35,9 +35,21 @@ class TimeLineDetailsPage extends StatelessWidget {
               data.scopeIcon,
               data.description != null
                   ? Text(
-                      data.description!,
-                      textScaleFactor: textweight.toDouble(),
+                      "Description: " + data.description!,
+                      textScaleFactor: textweight,
                     )
+                  : Container(),
+              data.id != null
+                  ? Text("id: " + data.id!.toString(),
+                      textScaleFactor: textweight)
+                  : Container(),
+              data.eventId != null
+                  ? Text("eventID: " + data.eventId!.toString(),
+                      textScaleFactor: textweight)
+                  : Container(),
+              data.link != null
+                  ? Text("link: " + data.link!.toString(),
+                      textScaleFactor: textweight)
                   : Container(),
             ],
           ),

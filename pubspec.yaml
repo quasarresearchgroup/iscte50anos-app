@@ -29,6 +29,7 @@ dependencies:
   animated_splash_screen: ^1.2.0
   motion_sensors: ^0.1.0
   font_awesome_flutter: ^9.2.0
+  flutter_speed_dial: ^5.0.0+1
 
 
 dev_dependencies:

@@ -44,15 +44,6 @@ class DatabaseHelper {
     _logger.d('Finished OnCreate to the db');
   }
 
-/*
-  Future _createFKs(Database db) async {
-    _logger.d('Started CreateFKs to the db');
-    await DatabaseTopicEventTable.onFKCreate(db);
-    await DatabaseContentTable.onFKCreate(db);
-    _logger.d('Finished CreateFKs to the db');
-  }
-*/
-
   Future _dropAll(db) async {
     _logger.d('Started DropAll to the db');
 /*
