@@ -12,14 +12,15 @@ class Quiz extends StatefulWidget {
   final Function answerQuestion;
   final Logger logger = Logger();
 
-  List<String> selectedAnswers = [];
+  final List<String> selectedAnswers = [];
   String selectedAnswer = "";
 
   Quiz({
+    Key? key,
     required this.questions,
     required this.answerQuestion,
     required this.questionIndex,
-  });
+  }) : super(key: key);
 
   @override
   State<Quiz> createState() => _QuizState();

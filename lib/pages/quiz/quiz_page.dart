@@ -8,6 +8,8 @@ import './result.dart';
 class QuizPage extends StatefulWidget {
   static const pageRoute = "/quiz";
   Logger logger = Logger();
+
+  QuizPage({Key? key}) : super(key: key);
   @override
   State<StatefulWidget> createState() {
     return _QuizPageState();

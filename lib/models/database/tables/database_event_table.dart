@@ -52,14 +52,14 @@ class DatabaseEventTable {
     DatabaseHelper instance = DatabaseHelper.instance;
     Database db = await instance.database;
     Batch batch = db.batch();
-    contents.forEach((entry) {
+    for (var entry in contents) {
       batch.insert(
         table,
         entry.toMap(),
         conflictAlgorithm: ConflictAlgorithm.abort,
       );
       //_logger.d("Inserted: $entry into $table as batch into $table");
-    });
+    }
     batch.commit();
   }
 

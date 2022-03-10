@@ -15,7 +15,7 @@ enum ContentType {
   music,
 }
 
-ContentType? ContentTypefromString(String? input) {
+ContentType? contentTypefromString(String? input) {
   try {
     return ContentType.values.firstWhere((element) => element.name == input);
   } on StateError {
@@ -63,8 +63,8 @@ class Content {
         description: json[DatabaseContentTable.columnDescription],
         link: json[DatabaseContentTable.columnLink],
         date: json[DatabaseContentTable.columnDate],
-        scope: EventScopefromString(json[DatabaseContentTable.columnScope]),
-        type: ContentTypefromString(json[DatabaseContentTable.columnType]),
+        scope: eventScopefromString(json[DatabaseContentTable.columnScope]),
+        type: contentTypefromString(json[DatabaseContentTable.columnType]),
         eventId: json[DatabaseContentTable.columnEventId],
       );
 
@@ -92,13 +92,13 @@ class Content {
 
     switch (scope) {
       case EventScope.portugal:
-        return roundedTimelineIcon(child: bandeiraPortugalImage);
+        return RoundedTimelineIcon(child: bandeiraPortugalImage);
       case EventScope.world:
-        return roundedTimelineIcon(child: worldMapImage);
+        return RoundedTimelineIcon(child: worldMapImage);
       case EventScope.iscte:
-        return roundedTimelineIcon(child: iscte50AnosImage);
+        return RoundedTimelineIcon(child: iscte50AnosImage);
       default:
-        return roundedTimelineIcon(child: worldMapImage);
+        return RoundedTimelineIcon(child: worldMapImage);
     }
   }
 

@@ -107,7 +107,7 @@ class _TimelinePageState extends State<TimelinePage> {
                   return Center(
                       child: Text(AppLocalizations.of(context)!.generalError));
                 } else {
-                  return LoadingWidget();
+                  return const LoadingWidget();
                 }
               },
             )));
@@ -169,7 +169,7 @@ class TimelineSearchDelegate extends SearchDelegate {
             _logger.d(list);
             return TimeLineBody(mapdata: list);
           } else {
-            return LoadingWidget();
+            return const LoadingWidget();
           }
         });
 /*

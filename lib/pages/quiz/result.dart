@@ -1,33 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:iscte_spots/widgets/nav_drawer/page_routes.dart';
+import 'package:logger/logger.dart';
 
 class Result extends StatelessWidget {
+  final Logger _logger = Logger();
   final int resultScore;
   final Function() resetHandler;
 
-  const Result(this.resultScore, this.resetHandler);
+  Result(this.resultScore, this.resetHandler, {Key? key}) : super(key: key);
 
 //Remark Logic
   String get resultPhrase {
     String resultText;
     if (resultScore >= 50) {
       resultText = 'Perfeito!';
-      print(resultScore);
+      _logger.d(resultScore);
     }
     if (resultScore >= 41) {
       resultText = 'Muito bom!';
-      print(resultScore);
+      _logger.d(resultScore);
     } else if (resultScore >= 31) {
       resultText = 'Bom desempenho!';
-      print(resultScore);
+      _logger.d(resultScore);
     } else if (resultScore >= 21) {
       resultText = 'Razoável';
     } else if (resultScore >= 10) {
       resultText = 'Fraco';
-      print(resultScore);
+      _logger.d(resultScore);
     } else {
       resultText = 'Zero';
-      print(resultScore);
+      _logger.d(resultScore);
     }
     return resultText;
   }

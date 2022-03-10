@@ -54,7 +54,7 @@ class _VisitedPagesPageState extends State<VisitedPagesPage> {
                     } else {
                       List<VisitedURL> list = snapshot.data!;
                       if (snapshot.data!.isEmpty) {
-                        return noPagesVisited(messagesStyle: messagesStyle);
+                        return NoPagesVisited(messagesStyle: messagesStyle);
                       } else {
                         list.sort((VisitedURL a, VisitedURL b) =>
                             b.dateTime - a.dateTime);
@@ -85,8 +85,8 @@ class _VisitedPagesPageState extends State<VisitedPagesPage> {
   }
 }
 
-class noPagesVisited extends StatelessWidget {
-  const noPagesVisited({
+class NoPagesVisited extends StatelessWidget {
+  const NoPagesVisited({
     Key? key,
     required this.messagesStyle,
   }) : super(key: key);

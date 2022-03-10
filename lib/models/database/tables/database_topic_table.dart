@@ -49,14 +49,14 @@ class DatabaseTopicTable {
     DatabaseHelper instance = DatabaseHelper.instance;
     Database db = await instance.database;
     Batch batch = db.batch();
-    entries.forEach((entry) {
+    for (var entry in entries) {
       batch.insert(
         table,
         entry.toMap(),
         conflictAlgorithm: ConflictAlgorithm.abort,
       );
       //_logger.d("Inserted: $entry into $table as batch into $table");
-    });
+    }
     batch.commit();
   }
 

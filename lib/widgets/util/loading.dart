@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LoadingWidget extends StatelessWidget {
-  LoadingWidget({
+  const LoadingWidget({
     Key? key,
     this.messagesStyle = const TextStyle(),
   }) : super(key: key);
 
-  TextStyle messagesStyle;
+  final TextStyle messagesStyle;
   @override
   Widget build(BuildContext context) {
     return Center(

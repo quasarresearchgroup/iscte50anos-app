@@ -9,7 +9,10 @@ class TimeLineBody extends StatefulWidget {
   TimeLineBody({
     Key? key,
     required this.mapdata,
+    this.initialchosenYear,
   }) : super(key: key);
+
+  final int? initialchosenYear;
 
   final LineStyle lineStyle =
       const LineStyle(color: Colors.black, thickness: 6);
@@ -44,7 +47,7 @@ class _TimeLineBodyState extends State<TimeLineBody> {
   @override
   void initState() {
     list = createYearsList(widget.mapdata);
-    chosenYear = list.length > 1 ? list.last : 0;
+    chosenYear = widget.initialchosenYear ?? (list.length > 1 ? list.first : 0);
     super.initState();
   }
 

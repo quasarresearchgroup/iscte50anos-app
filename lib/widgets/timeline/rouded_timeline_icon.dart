@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class roundedTimelineIcon extends StatelessWidget {
-  roundedTimelineIcon({
+class RoundedTimelineIcon extends StatelessWidget {
+  const RoundedTimelineIcon({
     Key? key,
     required this.child,
   }) : super(key: key);

@@ -10,7 +10,7 @@ enum EventScope {
   world,
 }
 
-EventScope? EventScopefromString(String? input) {
+EventScope? eventScopefromString(String? input) {
   try {
     return EventScope.values.firstWhere((element) => element.name == input);
   } on StateError {
@@ -51,7 +51,7 @@ class Event {
         id: json[DatabaseContentTable.columnId],
         title: json[DatabaseContentTable.columnDescription],
         date: json[DatabaseContentTable.columnDate],
-        scope: EventScopefromString(json[DatabaseContentTable.columnScope]),
+        scope: eventScopefromString(json[DatabaseContentTable.columnScope]),
       );
 
   Map<String, dynamic> toMap() {
@@ -75,13 +75,13 @@ class Event {
 
     switch (scope) {
       case EventScope.portugal:
-        return roundedTimelineIcon(child: bandeiraPortugalImage);
+        return RoundedTimelineIcon(child: bandeiraPortugalImage);
       case EventScope.world:
-        return roundedTimelineIcon(child: worldMapImage);
+        return RoundedTimelineIcon(child: worldMapImage);
       case EventScope.iscte:
-        return roundedTimelineIcon(child: iscte50AnosImage);
+        return RoundedTimelineIcon(child: iscte50AnosImage);
       default:
-        return roundedTimelineIcon(child: worldMapImage);
+        return RoundedTimelineIcon(child: worldMapImage);
     }
   }
 

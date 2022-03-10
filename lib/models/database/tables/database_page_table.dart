@@ -40,7 +40,6 @@ class DatabasePageTable {
   static void add(VisitedURL page) async {
     DatabaseHelper instance = DatabaseHelper.instance;
     Database db = await instance.database;
-    bool notExists = true;
     db.query(table, where: '$columnContent = ?', whereArgs: [
       page.content
     ]).then((e) => {
@@ -60,7 +59,7 @@ class DatabasePageTable {
     DatabaseHelper instance = DatabaseHelper.instance;
     Database db = await instance.database;
     Batch batch = db.batch();
-    visitedUrls.forEach((page) {
+    for (var page in visitedUrls) {
       db.query(table, where: '$columnContent = ?', whereArgs: [
         page.content
       ]).then((e) => {
@@ -71,7 +70,7 @@ class DatabasePageTable {
             ),
             _logger.d("Inserted: $page into $table as batch into $table")
           });
-    });
+    }
     batch.commit(noResult: true);
   }
 
