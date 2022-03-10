@@ -1,5 +1,4 @@
 // this class is used to draw a border around the clipped image
-import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 

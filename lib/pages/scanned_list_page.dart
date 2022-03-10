@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:iscte_spots/helper/database_helper.dart';
 import 'package:iscte_spots/helper/helper_methods.dart';
-import 'package:iscte_spots/models/visited_page.dart';
+import 'package:iscte_spots/models/database/tables/database_page_table.dart';
+import 'package:iscte_spots/models/visited_url.dart';
 import 'package:iscte_spots/widgets/my_bottom_bar.dart';
 import 'package:iscte_spots/widgets/nav_drawer/navigation_drawer.dart';
 import 'package:iscte_spots/widgets/nav_drawer/page_routes.dart';
+import 'package:iscte_spots/widgets/util/loading.dart';
 
 class VisitedPagesPage extends StatefulWidget {
   const VisitedPagesPage({Key? key}) : super(key: key);
@@ -36,26 +37,26 @@ class _VisitedPagesPageState extends State<VisitedPagesPage> {
                 child: const Icon(Icons.delete),
                 onPressed: () {
                   setState(() {
-                    DatabaseHelper.instance.removeALL();
+                    DatabasePageTable.removeALL();
                   });
                 },
               ),
               body: RefreshIndicator(
                 onRefresh: () {
-                  return DatabaseHelper.instance.getPages();
+                  return DatabasePageTable.getAll();
                 },
-                child: FutureBuilder<List<VisitedPage>>(
-                  future: DatabaseHelper.instance.getPages(),
+                child: FutureBuilder<List<VisitedURL>>(
+                  future: DatabasePageTable.getAll(),
                   builder: (BuildContext context,
-                      AsyncSnapshot<List<VisitedPage>> snapshot) {
+                      AsyncSnapshot<List<VisitedURL>> snapshot) {
                     if (!snapshot.hasData) {
-                      return loadingPages(messagesStyle: messagesStyle);
+                      return LoadingWidget(messagesStyle: messagesStyle);
                     } else {
-                      List<VisitedPage> list = snapshot.data!;
+                      List<VisitedURL> list = snapshot.data!;
                       if (snapshot.data!.isEmpty) {
-                        return noPagesVisited(messagesStyle: messagesStyle);
+                        return NoPagesVisited(messagesStyle: messagesStyle);
                       } else {
-                        list.sort((VisitedPage a, VisitedPage b) =>
+                        list.sort((VisitedURL a, VisitedURL b) =>
                             b.dateTime - a.dateTime);
                         return ListView(
                             physics: const AlwaysScrollableScrollPhysics(),
@@ -65,7 +66,7 @@ class _VisitedPagesPageState extends State<VisitedPagesPage> {
                                 subtitle: Text(page.parsedTime),
                                 onLongPress: () {
                                   setState(() {
-                                    DatabaseHelper.instance.remove(page.id!);
+                                    DatabasePageTable.remove(page.id!);
                                   });
                                 },
                                 onTap: () {
@@ -84,32 +85,8 @@ class _VisitedPagesPageState extends State<VisitedPagesPage> {
   }
 }
 
-class loadingPages extends StatelessWidget {
-  const loadingPages({
-    Key? key,
-    required this.messagesStyle,
-  }) : super(key: key);
-
-  final TextStyle messagesStyle;
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        children: [
-          const CircularProgressIndicator.adaptive(),
-          Text(
-            AppLocalizations.of(context)!.loading,
-            style: messagesStyle,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class noPagesVisited extends StatelessWidget {
-  const noPagesVisited({
+class NoPagesVisited extends StatelessWidget {
+  const NoPagesVisited({
     Key? key,
     required this.messagesStyle,
   }) : super(key: key);

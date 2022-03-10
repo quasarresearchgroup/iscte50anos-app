@@ -3,8 +3,8 @@ import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:image/image.dart' as image_lib;
+import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:logger/logger.dart';
 
 @Deprecated("new puzzle page is located in pages/puzzle_page")
@@ -28,9 +28,7 @@ class _PuzzlePageOldState extends State<PuzzlePageOld> {
       future: imageList,
       builder: (BuildContext context, AsyncSnapshot<List<Image>> snapshot) {
         if (!snapshot.hasData) {
-          return Center(
-            child: Text(AppLocalizations.of(context)!.loading),
-          );
+          return LoadingWidget();
         } else {
           PuzzlePageOld.logger.i(snapshot.data);
           return GridView.builder(

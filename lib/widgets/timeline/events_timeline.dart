@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:iscte_spots/models/timeline_item.dart';
+import 'package:iscte_spots/models/content.dart';
 import 'package:iscte_spots/widgets/timeline/timeline_details_page.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
@@ -10,7 +10,7 @@ class EventsTimeline extends StatefulWidget {
       required this.timelineYear,
       required this.lineStyle})
       : super(key: key);
-  final List<TimeLineData> timeLineMap;
+  final List<Content> timeLineMap;
   final int timelineYear;
   final LineStyle lineStyle;
 
@@ -19,8 +19,8 @@ class EventsTimeline extends StatefulWidget {
 }
 
 class _EventsTimelineState extends State<EventsTimeline> {
-  List<TimeLineData> chosenTimelineList = <TimeLineData>[];
-  List<TimeLineData> originalTimelineList = <TimeLineData>[];
+  List<Content> chosenTimelineList = <Content>[];
+  List<Content> originalTimelineList = <Content>[];
 
   @override
   void didUpdateWidget(covariant EventsTimeline oldWidget) {
@@ -38,7 +38,7 @@ class _EventsTimelineState extends State<EventsTimeline> {
   @override
   void initState() {
     super.initState();
-    for (final TimeLineData entry in widget.timeLineMap) {
+    for (final Content entry in widget.timeLineMap) {
       originalTimelineList.add(entry);
       if (entry.year == widget.timelineYear) {
         chosenTimelineList.add(entry);
@@ -48,17 +48,28 @@ class _EventsTimelineState extends State<EventsTimeline> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-        itemCount: chosenTimelineList.length,
-        shrinkWrap: true,
-        padding: const EdgeInsets.all(8),
-        itemBuilder: (BuildContext context, int index) {
-          return EventTimelineTile(
-              data: chosenTimelineList[index],
-              isFirst: index == 0,
-              isLast: index == chosenTimelineList.length - 1,
-              lineStyle: widget.lineStyle);
-        });
+    List<Widget> timelineTiles = [
+/*
+      ListTile(
+          title: Center(
+              child: Text(
+        widget.timelineYear.toString(),
+        style: TextStyle(fontSize: 30),
+      )))
+*/
+    ];
+
+    for (int index = 0; index < chosenTimelineList.length; index++) {
+      timelineTiles.add(EventTimelineTile(
+          data: chosenTimelineList[index],
+          isFirst: index == 0,
+          isLast: index == chosenTimelineList.length - 1,
+          lineStyle: widget.lineStyle));
+    }
+
+    return ListView(
+      children: timelineTiles,
+    );
   }
 }
 
@@ -73,7 +84,7 @@ class EventTimelineTile extends StatelessWidget {
 
   final bool isFirst;
   final bool isLast;
-  final TimeLineData data;
+  final Content data;
   final LineStyle lineStyle;
   final Color color2 = Colors.white.withOpacity(0.3);
 
@@ -93,7 +104,7 @@ class EventTimelineTile extends StatelessWidget {
         afterLineStyle: lineStyle,
         axis: TimelineAxis.vertical,
         alignment: TimelineAlign.manual,
-        lineXY: 0.15,
+        lineXY: 0.20,
         isFirst: isFirst,
         isLast: isLast,
         indicatorStyle: IndicatorStyle(
@@ -115,7 +126,9 @@ class EventTimelineTile extends StatelessWidget {
                     Text(data.getDateString()),
                   ],
                 ),
-                Text(data.data),
+                data.description != null
+                    ? Text(data.description!)
+                    : Container(),
               ],
             ),
           ),

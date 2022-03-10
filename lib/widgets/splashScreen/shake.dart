@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/helper/image_manipulation.dart';
@@ -85,29 +84,20 @@ class _GravityPlaneState extends State<GravityPlane> {
     });
   }
 
-  List<Widget> getBalls({required double maxWidth, required double maxHeight}) {
-    List<Widget> balls = [];
-    CircleAvatar child;
+  List<Widget> getMovableWidgets(
+      {required double maxWidth, required double maxHeight}) {
+    List<Widget> widgets = [];
     for (int i = 0; i < pieces.length; i++) {
       double radious = (Random().nextInt(10) + 10).toDouble();
-      int maxColorValue = 255;
-      child = CircleAvatar(
-        radius: radious,
-        backgroundColor: Color.fromARGB(
-            maxColorValue,
-            Random().nextInt(maxColorValue),
-            Random().nextInt(maxColorValue),
-            Random().nextInt(maxColorValue)),
-      );
 
-      balls.add(MovingWidget(
+      widgets.add(MovingWidget(
         weight: (Random().nextDouble() + 0.5) * 0.5,
         maxHeigth: maxHeight - radious * 2,
         maxwidth: maxWidth - radious * 2,
         child: pieces[i],
       ));
     }
-    return balls;
+    return widgets;
   }
 
   @override
@@ -115,7 +105,7 @@ class _GravityPlaneState extends State<GravityPlane> {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
       return Stack(
-        children: getBalls(
+        children: getMovableWidgets(
             maxWidth: constraints.maxWidth, maxHeight: constraints.maxHeight),
       );
     });

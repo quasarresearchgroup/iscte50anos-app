@@ -1,5 +1,4 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:iscte_spots/pages/home.dart';
 import 'package:page_transition/page_transition.dart';
@@ -15,7 +14,7 @@ class SplashScreen extends StatelessWidget {
           //Scaffold(body: GravityPlane()),
           Column(
         children: [
-          Image.asset('Resources/logo_50anos_iscte_branco_rgb.png'),
+          Image.asset('Resources/Img/Logo/logo_50anos_iscte_branco_rgb.png'),
           const Text(
             'IscteSpots',
             style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
