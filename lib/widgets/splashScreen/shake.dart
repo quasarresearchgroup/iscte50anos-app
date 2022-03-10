@@ -54,7 +54,7 @@ class _GravityPlaneState extends State<GravityPlane> {
     super.initState();
 
     late Image _image;
-    _image = const Image(image: AssetImage('Resources/Img/campus-iscte-3.jpg'));
+    _image = const Image(image: AssetImage('Resources/Img/Campus/campus-iscte-3.jpg'));
 
     ImageManipulation.splitImagePuzzlePieceNotDragable(
       image: _image,
