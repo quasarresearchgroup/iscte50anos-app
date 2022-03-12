@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:iscte_spots/widgets/puzzle/puzzle_piece_painter.dart';
+import 'package:logger/logger.dart';
 
 class PuzzlePiece extends StatefulWidget {
   final Image image;
@@ -12,8 +13,10 @@ class PuzzlePiece extends StatefulWidget {
   final int maxCol;
   final Function bringToTop;
   final Function sendToBack;
+  final bool snapInPlace;
+  final Logger _logger = Logger();
 
-  const PuzzlePiece(
+  PuzzlePiece(
       {required Key key,
       required this.image,
       required this.imageSize,
@@ -22,7 +25,8 @@ class PuzzlePiece extends StatefulWidget {
       required this.maxRow,
       required this.maxCol,
       required this.bringToTop,
-      required this.sendToBack})
+      required this.sendToBack,
+      this.snapInPlace = true})
       : super(key: key);
 
   @override
@@ -57,7 +61,6 @@ class PuzzlePieceState extends State<PuzzlePiece> {
     return Positioned(
         top: top,
         left: left,
-        width: imageWidth,
         child: GestureDetector(
           onTap: () {
             if (isMovable) {
@@ -78,9 +81,12 @@ class PuzzlePieceState extends State<PuzzlePiece> {
                 if (-10 < top! && top! < 10 && -10 < left! && left! < 10) {
                   top = 0;
                   left = 0;
-                  isMovable = false;
+                  if (widget.snapInPlace) {
+                    isMovable = false;
+                  }
                   widget.sendToBack(widget);
                 }
+                widget._logger.d("top: $top, left: $left");
               });
             }
           },
@@ -89,6 +95,7 @@ class PuzzlePieceState extends State<PuzzlePiece> {
               row: widget.row,
               col: widget.col,
               maxRow: widget.maxRow,
+              width: imageWidth,
               maxCol: widget.maxCol),
         ));
   }
@@ -102,8 +109,10 @@ class ClippedPiece extends StatelessWidget {
     required this.col,
     required this.maxRow,
     required this.maxCol,
+    required this.width,
   }) : super(key: key);
 
+  final double width;
   final Image image;
   final int row;
   final int col;
@@ -112,9 +121,12 @@ class ClippedPiece extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ClipPath(
-      child: image,
-      clipper: PuzzlePieceClipper(row, col, maxRow, maxCol),
+    return SizedBox(
+      width: width,
+      child: ClipPath(
+        child: image,
+        clipper: PuzzlePieceClipper(row, col, maxRow, maxCol),
+      ),
     );
   }
 }

@@ -32,6 +32,7 @@ dependencies:
   flutter_speed_dial: ^5.0.0+1
   flutter_appauth:
   flutter_secure_storage:
+  flutter_native_splash: ^2.1.0
 
 
 dev_dependencies:

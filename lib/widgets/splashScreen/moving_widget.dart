@@ -1,35 +1,36 @@
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
+import 'package:iscte_spots/helper/box_size.dart';
 import 'package:logger/logger.dart';
 import 'package:motion_sensors/motion_sensors.dart';
 
-class MovingWidget extends StatefulWidget {
-  MovingWidget({
+class MovingPiece extends StatefulWidget {
+  Size imageSize;
+  final Logger _logger = Logger();
+
+  MovingPiece({
     Key? key,
     required this.child,
-    required this.maxwidth,
-    required this.maxHeigth,
     required this.weight,
+    required this.imageSize,
+    required this.constraints,
   }) : super(key: key);
   final Logger logger = Logger();
 
   @override
-  _MovingWidgetState createState() => _MovingWidgetState();
+  _MovingPieceState createState() => _MovingPieceState();
 
   Widget child;
+  final BoxSize constraints;
   final double weight;
   static const int standartSpeed = 100;
   final double maxaccel = 50;
-  final double initialposX = 200;
-  final double initialposY = 100;
-  final double maxwidth;
-  final double maxHeigth;
 }
 
-class _MovingWidgetState extends State<MovingWidget> {
-  double posX = 0;
-  double posY = 0;
+class _MovingPieceState extends State<MovingPiece> {
+  double left = 0;
+  double top = 0;
   double pitch = 0;
   double roll = 0;
   double yaw = 0;
@@ -46,8 +47,8 @@ class _MovingWidgetState extends State<MovingWidget> {
     accelX = 0;
     accelY = 0;
     setState(() {
-      posX = widget.initialposX;
-      posY = widget.initialposY;
+      left = 0;
+      top = 0;
     });
   }
 
@@ -76,15 +77,20 @@ class _MovingWidgetState extends State<MovingWidget> {
     //TODO use variable to stop automatic movement while hand is moving piece
     setState(() {
       //deltaTime();
-      posX = (posX + x).clamp(0, widget.maxwidth);
-      posY = (posY + y).clamp(0, widget.maxHeigth);
+      left = (left + x)
+          .clamp(widget.constraints.minWidth, widget.constraints.maxWidth);
+      top = (top + y)
+          .clamp(widget.constraints.minHeight, widget.constraints.maxHeight);
+/*      widget._logger.d(
+          "left:$left x:$x constraints.minWidth:${widget.constraints.minWidth} constraints.maxWidth:${widget.constraints.maxWidth} \n"
+          "top:$top y:$y constraints.minHeight:${widget.constraints.minHeight}  constraints.maxHeight:${widget.constraints.maxHeight}");*/
     });
   }
 
   void moveWAccell({required double x, required double y}) {
-    accelX = (accelX + (x * MovingWidget.standartSpeed * widget.weight))
+    accelX = (accelX + (x * MovingPiece.standartSpeed * widget.weight))
         .clamp(-widget.maxaccel, widget.maxaccel);
-    accelY = (accelY + (y * MovingWidget.standartSpeed * widget.weight))
+    accelY = (accelY + (y * MovingPiece.standartSpeed * widget.weight))
         .clamp(-widget.maxaccel, widget.maxaccel);
     autoMove(x: accelX, y: accelY);
 /*    widget.logger.d("accelX:" +
@@ -99,8 +105,6 @@ class _MovingWidgetState extends State<MovingWidget> {
     super.initState();
     //lastDeltaTime = DateTime.now();
     //deltaTime();
-    posX = widget.initialposX;
-    posY = widget.initialposY;
     motionSensors.absoluteOrientationUpdateInterval =
         Duration.microsecondsPerSecond ~/ 10;
     _streamSubscriptions.add(motionSensors.absoluteOrientation
@@ -127,29 +131,28 @@ class _MovingWidgetState extends State<MovingWidget> {
   @override
   Widget build(BuildContext context) {
     return AnimatedPositioned(
-      left: posX,
-      top: posY,
-      duration:
-          const Duration(microseconds: Duration.microsecondsPerSecond ~/ 10),
-      child: GestureDetector(
-        onPanStart: (dragUpdateDetails) {
-          setState(() {
-            isMovable = false;
-          });
-        },
-        onPanUpdate: (dragUpdateDetails) {
-          fingerMove(
-            x: dragUpdateDetails.delta.dx,
-            y: dragUpdateDetails.delta.dy,
-          );
-        },
-        onPanEnd: (dragUpdateDetails) {
-          setState(() {
-            isMovable = true;
-          });
-        },
-        child: widget.child,
-      ),
-    );
+        left: left,
+        top: top,
+        duration:
+            const Duration(microseconds: Duration.microsecondsPerSecond ~/ 10),
+        child: GestureDetector(
+          onPanStart: (dragUpdateDetails) {
+            setState(() {
+              isMovable = false;
+            });
+          },
+          onPanUpdate: (dragUpdateDetails) {
+            fingerMove(
+              x: dragUpdateDetails.delta.dx,
+              y: dragUpdateDetails.delta.dy,
+            );
+          },
+          onPanEnd: (dragUpdateDetails) {
+            setState(() {
+              isMovable = true;
+            });
+          },
+          child: widget.child,
+        ));
   }
 }

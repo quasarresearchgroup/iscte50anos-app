@@ -1,8 +1,12 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:iscte_spots/widgets/puzzle/puzzle_piece.dart';
 import 'package:logger/logger.dart';
+
+import '../widgets/splashScreen/moving_widget.dart';
+import 'box_size.dart';
 
 class ImageManipulation {
   static final Logger logger = Logger();
@@ -54,29 +58,47 @@ class ImageManipulation {
     return outputList;
   }
 
-  static Future<List<Widget>> splitImagePuzzlePieceNotDragable({
+  static Future<List<MovingPiece>> splitImageMovableWidget({
     required Image image,
     required rows,
     required cols,
     required bringToTop,
     required sendToBack,
+    required BoxConstraints constraints,
   }) async {
-    logger.d('started split');
-    List<Widget> outputList = [];
+    logger.d('started Image split');
+    List<MovingPiece> outputList = [];
     Size imageSize = await getImageSize(image);
+
+    final imageWidth = constraints.maxWidth;
+    final imageHeight =
+        constraints.minHeight * constraints.maxWidth / imageSize.width;
+
     for (int x = 0; x < rows; x++) {
       for (int y = 0; y < cols; y++) {
-        var puzzlePiece = ClippedPiece(
-          image: image,
-          row: x,
-          col: y,
-          maxRow: rows,
-          maxCol: cols,
-        );
-        outputList.add(puzzlePiece);
+        final pieceWidth = imageWidth;
+        final pieceHeight = imageHeight;
+        final BoxSize pieceConstraints = BoxSize(
+            minWidth: 0,
+            minHeight: 0,
+            maxHeight: constraints.maxHeight - pieceHeight,
+            maxWidth: constraints.maxWidth - pieceWidth);
+        outputList.add(MovingPiece(
+          weight: (Random().nextDouble() + 0.5) * 0.5,
+          imageSize: imageSize,
+          constraints: pieceConstraints,
+          child: ClippedPiece(
+            image: image,
+            row: x,
+            col: y,
+            maxRow: rows,
+            maxCol: cols,
+            width: pieceWidth,
+          ),
+        ));
       }
     }
-    logger.d('finished split');
+    logger.d('finished Image split');
     return outputList;
   }
 }
