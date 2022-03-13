@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:iscte_spots/helper/box_size.dart';
@@ -16,7 +17,6 @@ class MovingPiece extends StatefulWidget {
     required this.imageSize,
     required this.constraints,
   }) : super(key: key);
-  final Logger logger = Logger();
 
   @override
   _MovingPieceState createState() => _MovingPieceState();
@@ -26,11 +26,19 @@ class MovingPiece extends StatefulWidget {
   final double weight;
   static const int standartSpeed = 100;
   final double maxaccel = 50;
+} /*
+if (top == null) {
+top = Random().nextInt((imageHeight - pieceHeight).ceil()).toDouble();
+top = top! - widget.row * pieceHeight;
 }
+if (left == null) {
+left = Random().nextInt((imageWidth - pieceWidth).ceil()).toDouble();
+left = left! - widget.col * pieceWidth;
+}*/
 
 class _MovingPieceState extends State<MovingPiece> {
-  double left = 0;
   double top = 0;
+  double left = 0;
   double pitch = 0;
   double roll = 0;
   double yaw = 0;
@@ -52,15 +60,6 @@ class _MovingPieceState extends State<MovingPiece> {
     });
   }
 
-/*  void deltaTime() {
-    lastDeltaTime = DateTime.now();
-    lastTimedif = HelperMethods.deltaTime(lastDeltaTime);
-    widget.logger.d("lastDeltaTime" +
-        lastDeltaTime.toString() +
-        "lastTimedif" +
-        lastTimedif.toString());
-  }*/
-
   //region Move
   void autoMove({required double x, required double y}) {
     if (isMovable) {
@@ -69,21 +68,15 @@ class _MovingPieceState extends State<MovingPiece> {
   }
 
   void fingerMove({required double x, required double y}) {
-    //TODO use variable to stop automatic movement while hand is moving piece
     move(x: x, y: y);
   }
 
   void move({required double x, required double y}) {
-    //TODO use variable to stop automatic movement while hand is moving piece
     setState(() {
-      //deltaTime();
       left = (left + x)
           .clamp(widget.constraints.minWidth, widget.constraints.maxWidth);
       top = (top + y)
           .clamp(widget.constraints.minHeight, widget.constraints.maxHeight);
-/*      widget._logger.d(
-          "left:$left x:$x constraints.minWidth:${widget.constraints.minWidth} constraints.maxWidth:${widget.constraints.maxWidth} \n"
-          "top:$top y:$y constraints.minHeight:${widget.constraints.minHeight}  constraints.maxHeight:${widget.constraints.maxHeight}");*/
     });
   }
 
@@ -93,18 +86,17 @@ class _MovingPieceState extends State<MovingPiece> {
     accelY = (accelY + (y * MovingPiece.standartSpeed * widget.weight))
         .clamp(-widget.maxaccel, widget.maxaccel);
     autoMove(x: accelX, y: accelY);
-/*    widget.logger.d("accelX:" +
-        accelX.toStringAsFixed(3) +
-        "accelY:" +
-        accelY.toStringAsFixed(3));*/
   }
   //endregion
 
   @override
   void initState() {
     super.initState();
-    //lastDeltaTime = DateTime.now();
-    //deltaTime();
+    top =
+        Random().nextInt((widget.constraints.maxHeight).floor() + 1).toDouble();
+    left =
+        Random().nextInt((widget.constraints.maxWidth).floor() + 1).toDouble();
+
     motionSensors.absoluteOrientationUpdateInterval =
         Duration.microsecondsPerSecond ~/ 10;
     _streamSubscriptions.add(motionSensors.absoluteOrientation
@@ -116,7 +108,7 @@ class _MovingPieceState extends State<MovingPiece> {
       });
       moveWAccell(x: roll, y: pitch);
     }));
-    widget.logger.d("added sensor subscription");
+    widget._logger.d("added sensor subscription");
   }
 
   @override
@@ -124,7 +116,7 @@ class _MovingPieceState extends State<MovingPiece> {
     super.dispose();
     for (StreamSubscription<dynamic> subscription in _streamSubscriptions) {
       subscription.cancel();
-      widget.logger.d("canceled sensor subscription");
+      widget._logger.d("canceled sensor subscription");
     }
   }
 

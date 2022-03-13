@@ -22,4 +22,9 @@ class BoxSize {
   double constrainHeight({required double height}) {
     return height.clamp(minHeight, maxHeight);
   }
+
+  @override
+  String toString() {
+    return 'BoxSize{minHeight: $minHeight, minWidth: $minWidth, maxHeight: $maxHeight, maxWidth: $maxWidth}';
+  }
 }

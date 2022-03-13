@@ -72,17 +72,17 @@ class ImageManipulation {
 
     final imageWidth = constraints.maxWidth;
     final imageHeight =
-        constraints.minHeight * constraints.maxWidth / imageSize.width;
+        constraints.maxHeight * constraints.maxWidth / imageSize.width;
 
+    final pieceWidth = imageWidth / rows;
+    final pieceHeight = imageHeight / cols;
     for (int x = 0; x < rows; x++) {
       for (int y = 0; y < cols; y++) {
-        final pieceWidth = imageWidth;
-        final pieceHeight = imageHeight;
         final BoxSize pieceConstraints = BoxSize(
-            minWidth: 0,
-            minHeight: 0,
-            maxHeight: constraints.maxHeight - pieceHeight,
-            maxWidth: constraints.maxWidth - pieceWidth);
+            minWidth: -y * pieceWidth,
+            minHeight: -x * pieceHeight,
+            maxHeight: constraints.maxHeight - 2 * imageHeight,
+            maxWidth: constraints.maxWidth - imageWidth);
         outputList.add(MovingPiece(
           weight: (Random().nextDouble() + 0.5) * 0.5,
           imageSize: imageSize,
@@ -93,7 +93,7 @@ class ImageManipulation {
             col: y,
             maxRow: rows,
             maxCol: cols,
-            width: pieceWidth,
+            width: imageWidth,
           ),
         ));
       }

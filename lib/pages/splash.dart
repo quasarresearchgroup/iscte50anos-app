@@ -1,6 +1,7 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:iscte_spots/pages/home.dart';
+import 'package:page_transition/page_transition.dart';
 
 import '../widgets/splashScreen/shake.dart';
 
@@ -13,8 +14,7 @@ class SplashScreen extends StatelessWidget {
     //return const Home();
 
     return AnimatedSplashScreen(
-      splash: Scaffold(
-          backgroundColor: Theme.of(context).primaryColor, body: GravityPlane())
+      splash: Scaffold(body: GravityPlane())
       /* Column(
         children: [
           Image.asset('Resources/Img/Logo/logo_50anos_iscte_branco_rgb.png'),
@@ -26,8 +26,10 @@ class SplashScreen extends StatelessWidget {
       )*/
       ,
       nextScreen: const Home(),
-      duration: 3000,
+      duration: 5000,
       splashIconSize: 1000,
+      splashTransition: SplashTransition.fadeTransition,
+      pageTransitionType: PageTransitionType.fade,
     );
   }
 }

@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:iscte_spots/helper/image_manipulation.dart';
 import 'package:iscte_spots/widgets/nav_drawer/navigation_drawer.dart';
 import 'package:iscte_spots/widgets/nav_drawer/page_routes.dart';
+import 'package:iscte_spots/widgets/splashScreen/moving_widget.dart';
 import 'package:logger/logger.dart';
 
 import '../my_bottom_bar.dart';
@@ -34,20 +37,17 @@ class Shaker extends StatelessWidget {
 }
 
 class GravityPlane extends StatefulWidget {
-  int rows = 3;
-  int cols = 3;
+  int rows = 7;
+  int cols = 7;
 
   GravityPlane({Key? key}) : super(key: key);
-  final Logger logger = Logger();
+  final Logger _logger = Logger();
   @override
   _GravityPlaneState createState() => _GravityPlaneState();
-  double initialposX = 200;
-  double initialposY = 100;
 }
 
 class _GravityPlaneState extends State<GravityPlane> {
-  Future<List<Widget>>? pieces;
-  List<Widget> movingWidgets = [];
+  Future<List<MovingPiece>>? pieces;
   late int lastDeltaTime;
   late Image _image;
 
@@ -62,7 +62,7 @@ class _GravityPlaneState extends State<GravityPlane> {
     imageSize = ImageManipulation.getImageSize(_image);
   }
 
-  void bringToTop(Widget widget) {
+  void bringToTop(MovingPiece widget) {
     setState(() {
       pieces?.then((value) {
         value.remove(widget);
@@ -72,7 +72,7 @@ class _GravityPlaneState extends State<GravityPlane> {
   }
 
 // when a piece reaches its final position, it will be sent to the back of the stack to not get in the way of other, still movable, pieces
-  void sendToBack(Widget widget) {
+  void sendToBack(MovingPiece widget) {
     setState(() {
       pieces?.then((value) {
         value.remove(widget);
@@ -81,33 +81,8 @@ class _GravityPlaneState extends State<GravityPlane> {
     });
   }
 
-/*
-  void refreshMovableWidgets(
-      {required double maxWidth, required double maxHeight}) {
-    List<Widget> widgets = [];
-    imageSize?.then((value) {
-      for (int i = 0; i < pieces.length; i++) {
-        //double radious = (Random().nextInt(10) + 10).toDouble();
-
-        widgets.add(MovingWidget(
-          weight: (Random().nextDouble() + 0.5) * 0.5,
-          maxHeigth: maxHeight,
-          //- radious * 2,
-          maxwidth: maxWidth,
-          // - radious * 2,
-          imageSize: value,
-          child: pieces[i],
-        ));
-      }
-      movingWidgets = widgets;
-    });
-  }
-*/
-
   @override
   Widget build(BuildContext context) {
-    FlutterNativeSplash.remove();
-
     return LayoutBuilder(
       builder: (context, constraints) {
         pieces = ImageManipulation.splitImageMovableWidget(
@@ -124,11 +99,13 @@ class _GravityPlaneState extends State<GravityPlane> {
             builder:
                 (BuildContext context, AsyncSnapshot<List<Widget>> snapshot) {
               if (snapshot.hasData) {
+                //remove native splash screen is here to allow the GravityPlane to fully load behind the native splash screen
+                FlutterNativeSplash.remove();
                 return Stack(
                   children: snapshot.data!,
                 );
               } else {
-                return const LoadingWidget();
+                return const Center(child: LoadingWidget());
               }
             });
       },

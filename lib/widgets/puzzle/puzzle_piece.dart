@@ -86,7 +86,6 @@ class PuzzlePieceState extends State<PuzzlePiece> {
                   }
                   widget.sendToBack(widget);
                 }
-                widget._logger.d("top: $top, left: $left");
               });
             }
           },

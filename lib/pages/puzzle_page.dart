@@ -7,8 +7,8 @@ class PuzzlePage extends StatefulWidget {
   final Logger logger = Logger();
   static const pageRoute = "/puzzle";
 
-  final int rows = 3;
-  final int cols = 3;
+  final int rows = 10;
+  final int cols = 10;
 
   @override
   _PuzzlePageState createState() => _PuzzlePageState();
@@ -35,13 +35,6 @@ class _PuzzlePageState extends State<PuzzlePage> {
         pieces = value;
       });
     });
-
-    /*for (Widget element in tempPieces) {
-      setState(() {
-        pieces.add(element);
-        widget.logger.d(pieces.length);
-      });
-    }*/
   }
 
   @override
