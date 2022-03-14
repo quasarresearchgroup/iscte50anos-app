@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:iscte_spots/pages/flickr_test_page.dart';
 import 'package:iscte_spots/pages/home.dart';
 import 'package:iscte_spots/pages/qr_scan_page.dart';
 import 'package:iscte_spots/pages/quiz/quiz_page.dart';
@@ -42,6 +43,7 @@ class MyApp extends StatelessWidget {
         PageRoutes.qrscan: (context) => QRScanPage(),
         PageRoutes.quiz: (context) => QuizPage(),
         PageRoutes.shake: (context) => const Shaker(),
+        PageRoutes.flickr: (context) => FlickrTest(),
       },
     );
   }

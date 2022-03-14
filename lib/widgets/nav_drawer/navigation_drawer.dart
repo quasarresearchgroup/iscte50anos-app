@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:iscte_spots/widgets/nav_drawer/page_routes.dart';
 
 class NavigationDrawer extends StatelessWidget {
@@ -64,6 +65,13 @@ class NavigationDrawer extends StatelessWidget {
         leading: const Icon(Icons.score),
         title: Text(AppLocalizations.of(context)!.pointsScreen),
         onTap: () {},
+      ),
+      ListTile(
+        leading: const Icon(FontAwesomeIcons.flickr),
+        title: Text("flickr"),
+        onTap: () {
+          Navigator.pushReplacementNamed(context, PageRoutes.flickr);
+        },
       ),
     ];
 

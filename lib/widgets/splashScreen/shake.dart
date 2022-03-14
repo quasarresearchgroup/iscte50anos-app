@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:iscte_spots/helper/image_manipulation.dart';
 import 'package:iscte_spots/widgets/nav_drawer/navigation_drawer.dart';
@@ -26,9 +25,7 @@ class Shaker extends StatelessWidget {
       child: Scaffold(
           drawer: const NavigationDrawer(),
           appBar: AppBar(
-            title: Title(
-                color: Colors.black,
-                child: Text(AppLocalizations.of(context)!.appName)),
+            title: Title(color: Colors.black, child: Text("Shaker")),
           ),
           bottomNavigationBar: const MyBottomBar(selectedIndex: 0),
           body: GravityPlane()),

@@ -4,7 +4,7 @@ import 'package:logger/logger.dart';
 
 class PuzzlePage extends StatefulWidget {
   PuzzlePage({Key? key}) : super(key: key);
-  final Logger logger = Logger();
+  final Logger _logger = Logger();
   static const pageRoute = "/puzzle";
 
   final int rows = 10;
@@ -12,20 +12,25 @@ class PuzzlePage extends StatefulWidget {
 
   @override
   _PuzzlePageState createState() => _PuzzlePageState();
+  changeImage(Image img) => createState().changeImage(img: img);
 }
 
 class _PuzzlePageState extends State<PuzzlePage> {
-  late Image _image;
   List<Widget> pieces = [];
+  Image? _image;
 
   @override
   void initState() {
     super.initState();
-    _image = const Image(
-        image: AssetImage('Resources/Img/Campus/campus-iscte-3.jpg'));
+    changeImage();
+  }
 
+  void changeImage(
+      {Image img = const Image(
+          image: AssetImage('Resources/Img/Campus/campus-iscte-3.jpg'))}) {
+    _image = img;
     ImageManipulation.splitImagePuzzlePiece(
-      image: _image,
+      image: _image!,
       bringToTop: bringToTop,
       sendToBack: sendToBack,
       rows: widget.rows,
