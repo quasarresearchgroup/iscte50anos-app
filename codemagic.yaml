@@ -39,7 +39,7 @@ workflows:
       - name: Get Flutter packages
         script: |
           cd . && flutter packages pub get
-      - name: Generate SpalshScreen
+      - name: Generate SplashScreen
         script: |
           flutter pub run flutter_native_splash:create
       - name: Flutter analyze
@@ -105,7 +105,7 @@ workflows:
       - name: Get Flutter packages
         script: |
           cd . && flutter packages pub get
-      - name: Generate SpalshScreen
+      - name: Generate SplashScreen
         script: |
           flutter pub run flutter_native_splash:create
       - name: Flutter analyze

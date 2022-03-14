@@ -22,7 +22,7 @@ class _FlickrTestState extends State<FlickrTest> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    imageurls = FlickrService.getnewImage();
+    imageurls = FlickrService.getImageURLS();
   }
 
   @override
@@ -41,7 +41,7 @@ class _FlickrTestState extends State<FlickrTest> {
           floatingActionButton: FloatingActionButton(
             child: const Icon(FontAwesomeIcons.redoAlt),
             onPressed: () {
-              imageurls = FlickrService.getnewImage();
+              imageurls = FlickrService.getImageURLS();
             },
           ),
           body: FutureBuilder(

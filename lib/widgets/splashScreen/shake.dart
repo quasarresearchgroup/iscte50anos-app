@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -8,12 +9,23 @@ import 'package:iscte_spots/widgets/nav_drawer/page_routes.dart';
 import 'package:iscte_spots/widgets/splashScreen/moving_widget.dart';
 import 'package:logger/logger.dart';
 
+import '../../services/flickr.dart';
 import '../my_bottom_bar.dart';
 import '../util/loading.dart';
 
-class Shaker extends StatelessWidget {
-  const Shaker({Key? key}) : super(key: key);
+class Shaker extends StatefulWidget {
+  Shaker({Key? key}) : super(key: key);
   static const pageRoute = "/shake";
+
+  @override
+  State<Shaker> createState() => _ShakerState();
+}
+
+class _ShakerState extends State<Shaker> {
+  List<String> urls = [];
+
+  Image currentPuzzleImage =
+      Image.asset('Resources/Img/Campus/campus-iscte-3.jpg');
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +40,26 @@ class Shaker extends StatelessWidget {
             title: Title(color: Colors.black, child: Text("Shaker")),
           ),
           bottomNavigationBar: const MyBottomBar(selectedIndex: 0),
-          body: GravityPlane()),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              if (urls.isEmpty) {
+                Future<List<String>> imageURLS = FlickrService.getImageURLS();
+                imageURLS.then((value) {
+                  urls = value;
+                  String randomurl = value[Random().nextInt(value.length)];
+                  currentPuzzleImage = (Image.network(randomurl));
+                  setState(() {});
+                });
+              } else {
+                String randomurl = urls[Random().nextInt(urls.length)];
+                currentPuzzleImage = (Image.network(randomurl));
+                setState(() {});
+              }
+            },
+          ),
+          body: GravityPlane(
+            image: currentPuzzleImage,
+          )),
     );
   }
 }
@@ -37,8 +68,10 @@ class GravityPlane extends StatefulWidget {
   int rows = 7;
   int cols = 7;
 
-  GravityPlane({Key? key}) : super(key: key);
+  GravityPlane({Key? key, required this.image}) : super(key: key);
   final Logger _logger = Logger();
+  final Image image;
+
   @override
   _GravityPlaneState createState() => _GravityPlaneState();
 }
@@ -46,17 +79,29 @@ class GravityPlane extends StatefulWidget {
 class _GravityPlaneState extends State<GravityPlane> {
   Future<List<MovingPiece>>? pieces;
   late int lastDeltaTime;
-  late Image _image;
 
   Future<Size>? imageSize;
 
   @override
   void initState() {
     super.initState();
+    imageSize = ImageManipulation.getImageSize(widget.image);
+  }
 
-    _image = const Image(
-        image: AssetImage('Resources/Img/Campus/campus-iscte-3.jpg'));
-    imageSize = ImageManipulation.getImageSize(_image);
+  @override
+  void didUpdateWidget(GravityPlane oldWidget) {
+    if (oldWidget.image != widget.image) {
+      widget._logger.d("changing image");
+/*
+     pieces?.then((value) {
+        for(MovingPiece piece in value){
+          piece.
+        }
+      });
+      */
+      setState(() {});
+    }
+    super.didUpdateWidget(oldWidget);
   }
 
   void bringToTop(MovingPiece widget) {
@@ -83,7 +128,7 @@ class _GravityPlaneState extends State<GravityPlane> {
     return LayoutBuilder(
       builder: (context, constraints) {
         pieces = ImageManipulation.splitImageMovableWidget(
-          image: _image,
+          image: widget.image,
           bringToTop: bringToTop,
           sendToBack: sendToBack,
           rows: widget.rows,

@@ -1,7 +1,10 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/pages/puzzle_page.dart';
+import 'package:iscte_spots/services/flickr.dart';
 import 'package:iscte_spots/widgets/my_bottom_bar.dart';
 import 'package:iscte_spots/widgets/nav_drawer/navigation_drawer.dart';
 
@@ -17,6 +20,11 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  List<String> urls = [];
+  Image currentPuzzleImage =
+      Image.asset('Resources/Img/Campus/campus-iscte-3.jpg');
+  final GlobalKey _puzzleKey = new GlobalKey();
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -32,7 +40,24 @@ class _HomeState extends State<Home> {
                 child: Text(AppLocalizations.of(context)!.appName)),
           ),
           bottomNavigationBar: const MyBottomBar(selectedIndex: 0),
-          body: PuzzlePage(),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              if (urls.isEmpty) {
+                Future<List<String>> imageURLS = FlickrService.getImageURLS();
+                imageURLS.then((value) {
+                  urls = value;
+                  String randomurl = value[Random().nextInt(value.length)];
+                  currentPuzzleImage = (Image.network(randomurl));
+                  setState(() {});
+                });
+              } else {
+                String randomurl = urls[Random().nextInt(urls.length)];
+                currentPuzzleImage = (Image.network(randomurl));
+                setState(() {});
+              }
+            },
+          ),
+          body: PuzzlePage(image: currentPuzzleImage),
         ));
   }
 }

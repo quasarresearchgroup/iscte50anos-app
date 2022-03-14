@@ -3,28 +3,51 @@ import 'package:iscte_spots/helper/image_manipulation.dart';
 import 'package:logger/logger.dart';
 
 class PuzzlePage extends StatefulWidget {
-  PuzzlePage({Key? key}) : super(key: key);
+  PuzzlePage({Key? key, required this.image}) : super(key: key);
   final Logger _logger = Logger();
   static const pageRoute = "/puzzle";
 
   final int rows = 10;
   final int cols = 10;
+  final Image image;
 
   @override
   _PuzzlePageState createState() => _PuzzlePageState();
-  changeImage(Image img) => createState().changeImage(img: img);
+  //changeImage(Image img) => createState().changeImage(img: img);
 }
 
 class _PuzzlePageState extends State<PuzzlePage> {
   List<Widget> pieces = [];
-  Image? _image;
 
   @override
   void initState() {
     super.initState();
-    changeImage();
+    generatePieces(widget.image);
+    //changeImage();
   }
 
+  void generatePieces(Image img) async {
+    pieces = await ImageManipulation.splitImagePuzzlePiece(
+      image: img,
+      bringToTop: bringToTop,
+      sendToBack: sendToBack,
+      rows: widget.rows,
+      cols: widget.cols,
+    );
+    setState(() {});
+  }
+
+  @override
+  void didUpdateWidget(PuzzlePage oldWidget) {
+    if (oldWidget.image != widget.image) {
+      widget._logger.d("changing image");
+      generatePieces(widget.image);
+      setState(() {});
+    }
+    super.didUpdateWidget(oldWidget);
+  }
+
+  /*
   void changeImage(
       {Image img = const Image(
           image: AssetImage('Resources/Img/Campus/campus-iscte-3.jpg'))}) {
@@ -41,6 +64,7 @@ class _PuzzlePageState extends State<PuzzlePage> {
       });
     });
   }
+*/
 
   @override
   Widget build(BuildContext context) {

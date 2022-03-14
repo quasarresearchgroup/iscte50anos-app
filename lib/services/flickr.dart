@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 
 class FlickrService {
-  static Future<List<String>> getnewImage() async {
+  static Future<List<String>> getImageURLS() async {
     final Logger _logger = Logger();
     const String tags = "iscte";
     const String photosetID = "72157719497252192";

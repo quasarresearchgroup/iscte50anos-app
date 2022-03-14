@@ -26,15 +26,7 @@ class MovingPiece extends StatefulWidget {
   final double weight;
   static const int standartSpeed = 100;
   final double maxaccel = 50;
-} /*
-if (top == null) {
-top = Random().nextInt((imageHeight - pieceHeight).ceil()).toDouble();
-top = top! - widget.row * pieceHeight;
 }
-if (left == null) {
-left = Random().nextInt((imageWidth - pieceWidth).ceil()).toDouble();
-left = left! - widget.col * pieceWidth;
-}*/
 
 class _MovingPieceState extends State<MovingPiece> {
   double top = 0;

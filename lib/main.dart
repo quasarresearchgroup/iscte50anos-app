@@ -42,7 +42,7 @@ class MyApp extends StatelessWidget {
         PageRoutes.visited: (context) => const VisitedPagesPage(),
         PageRoutes.qrscan: (context) => QRScanPage(),
         PageRoutes.quiz: (context) => QuizPage(),
-        PageRoutes.shake: (context) => const Shaker(),
+        PageRoutes.shake: (context) => Shaker(),
         PageRoutes.flickr: (context) => FlickrTest(),
       },
     );
