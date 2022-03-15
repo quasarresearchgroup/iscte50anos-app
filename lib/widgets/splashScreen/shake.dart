@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:iscte_spots/helper/image_manipulation.dart';
 import 'package:iscte_spots/widgets/nav_drawer/navigation_drawer.dart';
 import 'package:iscte_spots/widgets/nav_drawer/page_routes.dart';
@@ -41,6 +42,7 @@ class _ShakerState extends State<Shaker> {
           ),
           bottomNavigationBar: const MyBottomBar(selectedIndex: 0),
           floatingActionButton: FloatingActionButton(
+            child: const Icon(FontAwesomeIcons.redoAlt),
             onPressed: () {
               if (urls.isEmpty) {
                 Future<List<String>> imageURLS = FlickrService.getImageURLS();

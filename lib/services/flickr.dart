@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 
@@ -9,7 +10,11 @@ class FlickrService {
     const String tags = "iscte";
     const String photosetID = "72157719497252192";
     const String userID = "45216724@N07";
-    const String key = "c16f27dcc1c8674dd6daa3a26bd24520";
+    String? key = dotenv.env["FLICKR_KEY"];
+    if (key == null) {
+      throw Exception("No API key");
+    }
+
     final http.Response response = await http.get(Uri.parse(
         'https://www.flickr.com/services/rest/?method=flickr.photosets.getPhotos&api_key=$key&photoset_id=$photosetID&user_id=$userID&format=json&nojsoncallback=1'));
 //'https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=$key&tags=$tags&format=json&nojsoncallback=1'));

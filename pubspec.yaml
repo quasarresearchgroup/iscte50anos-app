@@ -33,6 +33,7 @@ dependencies:
   flutter_appauth:
   flutter_secure_storage:
   flutter_native_splash: ^2.1.0
+  flutter_dotenv: ^5.0.2
 
 
 dev_dependencies:
@@ -51,3 +52,4 @@ flutter:
     - Resources/Img/Campus/
     - Resources/Img/TimelineIcons/
     - Resources/QRCodes/NewQrCodes/alternatives/
+    - Resources/keys.env
