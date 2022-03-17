@@ -21,15 +21,30 @@ class PuzzlePage extends StatefulWidget {
   @override
   _PuzzlePageState createState() => _PuzzlePageState();
   fetchFromFlickr() => createState().fetchFromFlickr();
-//  randomMizeImage(Image img) =>
-//      createState().randomizeImage(createState().urls.then((value) => value));
+  randomizeImage() {
+    _PuzzlePageState state = createState();
+    state.urls?.then((value) {
+      state.randomizeImage(value);
+      state.generatePieces(image);
+    });
+  }
+
+  fetchAndRandomizeImage() async {
+    _PuzzlePageState state = createState();
+    state.fetchFromFlickr();
+    state.urls?.then((value) {
+      state.randomizeImage(value);
+      state.generatePieces(image);
+    });
+  }
 }
 
 class _PuzzlePageState extends State<PuzzlePage> {
   List<Widget> pieces = [];
   //make this a future so that previous operations get queued and complete only when this has values
-  late Future<List<String>> urls;
-  final shakerThreshhold = 20;
+  Future<List<String>>? urls;
+  final shakerThreshhold = 8;
+  final FlickrService flickrService = FlickrService();
 
   final List<StreamSubscription<dynamic>> _streamSubscriptions =
       <StreamSubscription<dynamic>>[];
@@ -41,18 +56,17 @@ class _PuzzlePageState extends State<PuzzlePage> {
     fetchFromFlickr();
     generatePieces(widget.image);
     motionSensors.absoluteOrientationUpdateInterval =
-        Duration.secondsPerMinute ~/ 1;
+        Duration.microsecondsPerSecond ~/ (0.25);
     _streamSubscriptions.add(
         motionSensors.userAccelerometer.listen((UserAccelerometerEvent event) {
       _userAaccelerometer.setValues(event.x, event.y, event.z);
-      widget._logger.d(_userAaccelerometer);
       if (event.x > shakerThreshhold ||
           event.x < -shakerThreshhold ||
           event.y > shakerThreshhold ||
           event.y < -shakerThreshhold ||
           event.z > shakerThreshhold ||
           event.z < -shakerThreshhold) {
-        urls.then((value) {
+        urls?.then((value) {
           randomizeImage(value);
           generatePieces(widget.image);
         });
@@ -75,8 +89,9 @@ class _PuzzlePageState extends State<PuzzlePage> {
     widget.image = (Image.network(randomurl));
   }
 
-  void fetchFromFlickr() {
-    urls = FlickrService.getImageURLS();
+  void fetchFromFlickr() async {
+    urls = flickrService.getImageURLS();
+    return;
   }
 
   void generatePieces(Image img) async {

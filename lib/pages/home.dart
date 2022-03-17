@@ -1,20 +1,18 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:iscte_spots/pages/puzzle_page.dart';
-import 'package:iscte_spots/services/flickr.dart';
 import 'package:iscte_spots/widgets/my_bottom_bar.dart';
 import 'package:iscte_spots/widgets/nav_drawer/navigation_drawer.dart';
+import 'package:logger/logger.dart';
 
 class Home extends StatefulWidget {
-  const Home({
+  Home({
     Key? key,
   }) : super(key: key);
-
   static const pageRoute = "/";
+  final Logger _logger = Logger();
 
   @override
   _HomeState createState() => _HomeState();
@@ -27,7 +25,8 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPwopScope(
+    PuzzlePage puzzlePage = PuzzlePage(image: currentPuzzleImage);
+    return WillPopScope(
         onWillPop: () async {
           SystemNavigator.pop();
           return true;
@@ -43,22 +42,15 @@ class _HomeState extends State<Home> {
           floatingActionButton: FloatingActionButton(
             child: const Icon(FontAwesomeIcons.redoAlt),
             onPressed: () {
+              widget._logger.d("Pressed refresh");
               if (urls.isEmpty) {
-                Future<List<String>> imageURLS = FlickrService.getImageURLS();
-                imageURLS.then((value) {
-                  urls = value;
-                  String randomurl = value[Random().nextInt(value.length)];
-                  currentPuzzleImage = (Image.network(randomurl));
-                  setState(() {});
-                });
+                puzzlePage.fetchAndRandomizeImage();
               } else {
-                String randomurl = urls[Random().nextInt(urls.length)];
-                currentPuzzleImage = (Image.network(randomurl));
-                setState(() {});
+                puzzlePage.randomizeImage();
               }
             },
           ),
-          body: PuzzlePage(image: currentPuzzleImage),
+          body: puzzlePage,
         ));
   }
 }

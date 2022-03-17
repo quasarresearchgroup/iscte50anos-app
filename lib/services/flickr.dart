@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -5,18 +6,52 @@ import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 
 class FlickrService {
-  static Future<List<String>> getImageURLS() async {
-    final Logger _logger = Logger();
-    const String tags = "iscte";
-    const String photosetID = "72157719497252192";
-    const String userID = "45216724@N07";
-    String? key = dotenv.env["FLICKR_KEY"];
+  final Logger _logger = Logger();
+  static const String tags = "iscte";
+  static const String photosetID = "72157719497252192";
+  static const String userID = "45216724@N07";
+  String? key;
+  StreamSubscription<http.Response>? streamSubscription;
+  bool fetching = false;
+
+  FlickrService() {
+    key = dotenv.env["FLICKR_KEY"];
     if (key == null) {
       throw Exception("No API key");
     }
+  }
 
-    final http.Response response = await http.get(Uri.parse(
-        'https://www.flickr.com/services/rest/?method=flickr.photosets.getPhotos&api_key=$key&photoset_id=$photosetID&user_id=$userID&format=json&nojsoncallback=1'));
+  http.Response fetch() async {
+    http.Response response;
+    if (fetching) {
+      streamSubscription?.cancel();
+    }
+    fetching = true;
+    streamSubscription = await http
+        .get(Uri.parse(
+            'https://www.flickr.com/services/rest/?method=flickr.photosets.getPhotos&api_key=$key&photoset_id=$photosetID&user_id=$userID&format=json&nojsoncallback=1'))
+        .asStream()
+        .listen((http.Response event) {
+      response = event;
+      fetching = false;
+      return response;
+    });
+  }
+
+  Future<List<String>> getImageURLS() async {
+    http.Response response;
+    if (fetching) {
+      streamSubscription?.cancel();
+    }
+    fetching = true;
+    streamSubscription = await http
+        .get(Uri.parse(
+            'https://www.flickr.com/services/rest/?method=flickr.photosets.getPhotos&api_key=$key&photoset_id=$photosetID&user_id=$userID&format=json&nojsoncallback=1'))
+        .asStream()
+        .listen((http.Response event) {
+      response = event;
+      fetching = false;
+    });
 //'https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=$key&tags=$tags&format=json&nojsoncallback=1'));
 //'https://www.flickr.com/services/feeds/photos_public.gne?tags=$tags&format=json&nojsoncallback=1'));
     final List<String> photoLinks = [];

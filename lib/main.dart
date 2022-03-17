@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
       supportedLocales: AppLocalizations.supportedLocales,
       home: const SplashScreen(),
       routes: {
-        PageRoutes.home: (context) => const Home(),
+        PageRoutes.home: (context) => Home(),
         PageRoutes.timeline: (context) => TimelinePage(),
         PageRoutes.visited: (context) => const VisitedPagesPage(),
         PageRoutes.qrscan: (context) => QRScanPage(),
