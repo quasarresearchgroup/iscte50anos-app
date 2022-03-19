@@ -24,6 +24,7 @@ class Shaker extends StatefulWidget {
 
 class _ShakerState extends State<Shaker> {
   List<String> urls = [];
+  final FlickrService flickrService = FlickrService();
 
   Image currentPuzzleImage =
       Image.asset('Resources/Img/Campus/campus-iscte-3.jpg');
@@ -45,7 +46,7 @@ class _ShakerState extends State<Shaker> {
             child: const Icon(FontAwesomeIcons.redoAlt),
             onPressed: () {
               if (urls.isEmpty) {
-                Future<List<String>> imageURLS = FlickrService.getImageURLS();
+                Future<List<String>> imageURLS = flickrService.getImageURLS();
                 imageURLS.then((value) {
                   urls = value;
                   String randomurl = value[Random().nextInt(value.length)];

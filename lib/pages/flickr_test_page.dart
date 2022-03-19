@@ -18,11 +18,13 @@ class FlickrTest extends StatefulWidget {
 
 class _FlickrTestState extends State<FlickrTest> {
   Future<List<String>>? imageurls;
+  final FlickrService flickrService = FlickrService();
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    imageurls = FlickrService.getImageURLS();
+    imageurls = flickrService.getImageURLS();
   }
 
   @override
@@ -35,13 +37,13 @@ class _FlickrTestState extends State<FlickrTest> {
         child: Scaffold(
           drawer: const NavigationDrawer(),
           appBar: AppBar(
-            title: Title(color: Colors.black, child: Text("Flickr")),
+            title: Title(color: Colors.black, child: const Text("Flickr")),
           ),
           bottomNavigationBar: const MyBottomBar(selectedIndex: 0),
           floatingActionButton: FloatingActionButton(
             child: const Icon(FontAwesomeIcons.redoAlt),
             onPressed: () {
-              imageurls = FlickrService.getImageURLS();
+              imageurls = flickrService.getImageURLS();
             },
           ),
           body: FutureBuilder(

@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -5,7 +8,11 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:iscte_spots/pages/puzzle_page.dart';
 import 'package:iscte_spots/widgets/my_bottom_bar.dart';
 import 'package:iscte_spots/widgets/nav_drawer/navigation_drawer.dart';
+import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:logger/logger.dart';
+import 'package:motion_sensors/motion_sensors.dart';
+
+import '../services/flickr.dart';
 
 class Home extends StatefulWidget {
   Home({
@@ -13,19 +20,85 @@ class Home extends StatefulWidget {
   }) : super(key: key);
   static const pageRoute = "/";
   final Logger _logger = Logger();
-
+  final int shakerTimeThreshhold = 1000;
+  final int shakerThreshhold = 8;
   @override
   _HomeState createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
   List<String> urls = [];
-  Image currentPuzzleImage =
-      Image.asset('Resources/Img/Campus/campus-iscte-3.jpg');
+  Image? currentPuzzleImage;
+  final FlickrService flickrService = FlickrService();
+
+  final List<StreamSubscription<dynamic>> _streamSubscriptions =
+      <StreamSubscription<dynamic>>[];
+  int lastShake = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    currentPuzzleImage = Image.asset('Resources/Img/Campus/campus-iscte-3.jpg');
+    fetchFromFlickr();
+    motionSensors.absoluteOrientationUpdateInterval =
+        Duration.microsecondsPerSecond ~/ (0.25);
+    _streamSubscriptions.add(
+        motionSensors.userAccelerometer.listen((UserAccelerometerEvent event) {
+      if ((event.x > widget.shakerThreshhold ||
+          event.x < -widget.shakerThreshhold ||
+          event.y > widget.shakerThreshhold ||
+          event.y < -widget.shakerThreshhold ||
+          event.z > widget.shakerThreshhold ||
+          event.z < -widget.shakerThreshhold)) {
+        widget._logger.d("Woah slow down there");
+        int currTime = DateTime.now().millisecondsSinceEpoch;
+        if (lastShake - currTime > widget.shakerTimeThreshhold) {
+          lastShake = currTime;
+          randomizeImage(urls);
+          widget._logger.d("Detected Shake");
+        }
+      }
+    }));
+    //changeImage();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    for (StreamSubscription<dynamic> subscription in _streamSubscriptions) {
+      subscription.cancel();
+      widget._logger.d("canceled sensor subscription");
+    }
+  }
+
+  void randomizeImage(List<String> value2) {
+    assert(value2.isNotEmpty);
+    String randomurl =
+        value2[Random().nextInt(value2.isEmpty ? 0 : value2.length)];
+    setState(() {
+      currentPuzzleImage = Image.network(randomurl);
+    });
+
+    widget._logger.d("Randomized puzzle Image");
+  }
+
+  Future<List<String>> fetchFromFlickr() async {
+    List<String> imageURLS = await flickrService.getImageURLS();
+    urls = imageURLS;
+    widget._logger.d("Fetched image URLS from flickr");
+    return imageURLS;
+  }
+
+  void fetchAndRandomize() async {
+    setState(() {
+      currentPuzzleImage = null;
+    });
+    List<String> list = await fetchFromFlickr();
+    randomizeImage(list);
+  }
 
   @override
   Widget build(BuildContext context) {
-    PuzzlePage puzzlePage = PuzzlePage(image: currentPuzzleImage);
     return WillPopScope(
         onWillPop: () async {
           SystemNavigator.pop();
@@ -41,16 +114,18 @@ class _HomeState extends State<Home> {
           bottomNavigationBar: const MyBottomBar(selectedIndex: 0),
           floatingActionButton: FloatingActionButton(
             child: const Icon(FontAwesomeIcons.redoAlt),
-            onPressed: () {
+            onPressed: () async {
               widget._logger.d("Pressed refresh");
-              if (urls.isEmpty) {
-                puzzlePage.fetchAndRandomizeImage();
+              if (urls.isNotEmpty) {
+                randomizeImage(urls);
               } else {
-                puzzlePage.randomizeImage();
+                fetchAndRandomize();
               }
             },
           ),
-          body: puzzlePage,
+          body: (currentPuzzleImage != null)
+              ? PuzzlePage(image: currentPuzzleImage!)
+              : const LoadingWidget(),
         ));
   }
 }

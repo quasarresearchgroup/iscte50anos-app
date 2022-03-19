@@ -35,7 +35,7 @@ class ImageManipulation {
     required bringToTop,
     required sendToBack,
   }) async {
-    logger.d('started split');
+    //logger.d('started split');
     List<Widget> outputList = [];
     Size imageSize = await getImageSize(image);
     for (int x = 0; x < rows; x++) {
@@ -54,7 +54,7 @@ class ImageManipulation {
         outputList.add(puzzlePiece);
       }
     }
-    logger.d('finished split');
+    //logger.d('finished split');
     return outputList;
   }
 
