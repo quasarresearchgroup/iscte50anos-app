@@ -12,7 +12,7 @@ import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:logger/logger.dart';
 import 'package:motion_sensors/motion_sensors.dart';
 
-import '../services/flickr.dart';
+import '../services/flickr_iscte_photos.dart';
 
 class Home extends StatefulWidget {
   Home({
@@ -24,12 +24,15 @@ class Home extends StatefulWidget {
   final int shakerThreshhold = 8;
   @override
   _HomeState createState() => _HomeState();
+  final Image originalImage =
+      Image.asset('Resources/Img/Campus/campus-iscte-3.jpg');
 }
 
 class _HomeState extends State<Home> {
   List<String> urls = [];
   Image? currentPuzzleImage;
-  final FlickrService flickrService = FlickrService();
+
+  final FlickrIsctePhotoService flickrService = FlickrIsctePhotoService();
 
   final List<StreamSubscription<dynamic>> _streamSubscriptions =
       <StreamSubscription<dynamic>>[];
@@ -38,8 +41,20 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    currentPuzzleImage = Image.asset('Resources/Img/Campus/campus-iscte-3.jpg');
-    fetchFromFlickr();
+    currentPuzzleImage = widget.originalImage;
+    try {
+      fetchFromFlickr();
+    } catch (e) {
+      widget._logger.d("Error on Fetch; Resetting image;");
+      /*setState(() {
+      currentPuzzleImage = widget.originalImage;
+
+      });*/
+    }
+    setupMotionSensors();
+  }
+
+  void setupMotionSensors() {
     motionSensors.absoluteOrientationUpdateInterval =
         Duration.microsecondsPerSecond ~/ (0.25);
     _streamSubscriptions.add(
@@ -50,16 +65,16 @@ class _HomeState extends State<Home> {
           event.y < -widget.shakerThreshhold ||
           event.z > widget.shakerThreshhold ||
           event.z < -widget.shakerThreshhold)) {
-        widget._logger.d("Woah slow down there");
         int currTime = DateTime.now().millisecondsSinceEpoch;
-        if (lastShake - currTime > widget.shakerTimeThreshhold) {
+        if ((lastShake - currTime) > widget.shakerTimeThreshhold) {
           lastShake = currTime;
           randomizeImage(urls);
           widget._logger.d("Detected Shake");
+        } else {
+          widget._logger.d("Woah slow down there");
         }
       }
     }));
-    //changeImage();
   }
 
   @override
@@ -73,6 +88,9 @@ class _HomeState extends State<Home> {
 
   void randomizeImage(List<String> value2) {
     assert(value2.isNotEmpty);
+    setState(() {
+      currentPuzzleImage = null;
+    });
     String randomurl =
         value2[Random().nextInt(value2.isEmpty ? 0 : value2.length)];
     setState(() {
@@ -83,22 +101,30 @@ class _HomeState extends State<Home> {
   }
 
   Future<List<String>> fetchFromFlickr() async {
-    List<String> imageURLS = await flickrService.getImageURLS();
+    List<String> imageURLS = await flickrService.fetch();
     urls = imageURLS;
     widget._logger.d("Fetched image URLS from flickr");
     return imageURLS;
   }
 
   void fetchAndRandomize() async {
-    setState(() {
-      currentPuzzleImage = null;
-    });
-    List<String> list = await fetchFromFlickr();
-    randomizeImage(list);
+    try {
+      setState(() {
+        currentPuzzleImage = null;
+      });
+      List<String> list = await fetchFromFlickr();
+      randomizeImage(list);
+    } catch (e) {
+      widget._logger.d("Error on Fetch; Resetting image;");
+      setState(() {
+        currentPuzzleImage = widget.originalImage;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    widget._logger.d("rebuild Home");
     return WillPopScope(
         onWillPop: () async {
           SystemNavigator.pop();

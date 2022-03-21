@@ -9,7 +9,7 @@ import '../widgets/splashScreen/moving_widget.dart';
 import 'box_size.dart';
 
 class ImageManipulation {
-  static final Logger logger = Logger();
+  static final Logger _logger = Logger();
 
   static Future<Size> getImageSize(Image image) async {
     final Completer<Size> completer = Completer<Size>();
@@ -66,7 +66,7 @@ class ImageManipulation {
     required sendToBack,
     required BoxConstraints constraints,
   }) async {
-    logger.d('started Image split');
+    //logger.d('started Image split');
     List<MovingPiece> outputList = [];
     Size imageSize = await getImageSize(image);
 
@@ -98,7 +98,7 @@ class ImageManipulation {
         ));
       }
     }
-    logger.d('finished Image split');
+    //logger.d('finished Image split');
     return outputList;
   }
 }

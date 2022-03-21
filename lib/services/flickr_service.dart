@@ -1,0 +1,25 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:logger/logger.dart';
+
+abstract class FlickrService {
+  @protected
+  final Logger logger = Logger();
+  bool fetching = false;
+  String? key;
+
+  FlickrService() {
+    key = dotenv.env["FLICKR_KEY"];
+    if (key == null) {
+      throw Exception("No API key");
+    }
+  }
+
+  void startFetch() {
+    fetching = true;
+  }
+
+  void stopFetch() {
+    fetching = false;
+  }
+}

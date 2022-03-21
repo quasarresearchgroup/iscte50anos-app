@@ -34,6 +34,7 @@ class _PuzzlePageState extends State<PuzzlePage> {
   void didUpdateWidget(PuzzlePage oldWidget) {
     if (oldWidget.image != widget.image) {
       widget._logger.d("changing image");
+      setState(() {});
       generatePieces(widget.image);
       setState(() {});
     }

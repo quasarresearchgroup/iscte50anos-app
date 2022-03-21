@@ -10,7 +10,7 @@ import 'package:iscte_spots/widgets/nav_drawer/page_routes.dart';
 import 'package:iscte_spots/widgets/splashScreen/moving_widget.dart';
 import 'package:logger/logger.dart';
 
-import '../../services/flickr.dart';
+import '../../services/flickr_iscte_photos.dart';
 import '../my_bottom_bar.dart';
 import '../util/loading.dart';
 
@@ -24,7 +24,7 @@ class Shaker extends StatefulWidget {
 
 class _ShakerState extends State<Shaker> {
   List<String> urls = [];
-  final FlickrService flickrService = FlickrService();
+  final FlickrIsctePhotoService flickrService = FlickrIsctePhotoService();
 
   Image currentPuzzleImage =
       Image.asset('Resources/Img/Campus/campus-iscte-3.jpg');
@@ -46,7 +46,7 @@ class _ShakerState extends State<Shaker> {
             child: const Icon(FontAwesomeIcons.redoAlt),
             onPressed: () {
               if (urls.isEmpty) {
-                Future<List<String>> imageURLS = flickrService.getImageURLS();
+                Future<List<String>> imageURLS = flickrService.fetch();
                 imageURLS.then((value) {
                   urls = value;
                   String randomurl = value[Random().nextInt(value.length)];
