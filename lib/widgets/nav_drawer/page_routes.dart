@@ -6,7 +6,7 @@ import 'package:iscte_spots/pages/splash.dart';
 import 'package:iscte_spots/pages/timeline_page.dart';
 import 'package:iscte_spots/widgets/splashScreen/shake.dart';
 
-import '../../pages/flickr_test_page.dart';
+import '../../pages/flickr/flickr_test_page.dart';
 
 class PageRoutes {
   static const String splash = SplashScreen.pageRoute;

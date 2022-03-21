@@ -2,24 +2,22 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:iscte_spots/models/flickr_photoset.dart';
+import 'package:iscte_spots/models/flickr/flickr_photoset.dart';
 import 'package:iscte_spots/services/flickr_service.dart';
 
 class FlickrIscteAlbumService extends FlickrService {
-  static const String userID = "45216724@N07";
-
-  final StreamController<List<FlickrPhotoset>> _controller =
-      StreamController<List<FlickrPhotoset>>();
-  Stream<List<FlickrPhotoset>> get stream => _controller.stream;
-  List<FlickrPhotoset> photosetsInstanceList = [];
+  final StreamController<FlickrPhotoset> _controller =
+      StreamController<FlickrPhotoset>();
+  Stream<FlickrPhotoset> get stream => _controller.stream;
+  //List<FlickrPhotoset> photosetsInstanceList = [];
   int currentPage = 1;
   final int perPage = 25;
 
-  void fetch() async {
+  Future<void> fetch() async {
     try {
       http.Response response = await http
           .get(Uri.parse(
-              'https://www.flickr.com/services/rest/?method=flickr.photosets.getList&api_key=$key&user_id=$userID&page=$currentPage&per_page=$perPage&format=json&nojsoncallback=1'))
+              'https://www.flickr.com/services/rest/?method=flickr.photosets.getList&api_key=$key&user_id=${FlickrService.userID}&page=$currentPage&per_page=$perPage&format=json&nojsoncallback=1'))
           .timeout(const Duration(minutes: 2));
       if (response.statusCode == 200) {
         logger.d("Started fetching image urls");
@@ -39,9 +37,10 @@ class FlickrIscteAlbumService extends FlickrService {
             primaryphotoURL:
                 "https://farm${photosetEntry["farm"]}.staticflickr.com/${photosetEntry["server"]}/${photosetEntry["primary"]}\_${photosetEntry["secret"]}.jpg",
           );
-          photosetsInstanceList.add(flickrPhotoset);
+          //photosetsInstanceList.add(flickrPhotoset);
           logger.d(flickrPhotoset);
-          _controller.sink.add(photosetsInstanceList);
+          //_controller.sink.add(photosetsInstanceList);
+          _controller.sink.add(flickrPhotoset);
         }
         currentPage++;
 
@@ -53,7 +52,7 @@ class FlickrIscteAlbumService extends FlickrService {
       }
     } on Exception catch (e) {
       _controller.sink.addError(e);
-      _controller.close();
+      //_controller.close();
     }
   }
 }

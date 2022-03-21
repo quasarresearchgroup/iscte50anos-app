@@ -7,6 +7,7 @@ abstract class FlickrService {
   final Logger logger = Logger();
   bool fetching = false;
   String? key;
+  static const String userID = "45216724@N07";
 
   FlickrService() {
     key = dotenv.env["FLICKR_KEY"];
