@@ -67,7 +67,7 @@ class _FlickrTestState extends State<FlickrTest> {
             builder: (BuildContext context,
                 AsyncSnapshot<List<FlickrPhotoset>> snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return const CircularProgressIndicator();
+                return const LoadingWidget();
               } else if (snapshot.connectionState == ConnectionState.done) {
                 return const Text('done');
               } else if (snapshot.hasError) {
@@ -94,52 +94,10 @@ class _FlickrTestState extends State<FlickrTest> {
                               });
                             },
                             itemBuilder: (context, index) {
-                              FlickrPhotoset indexedPhotoset =
-                                  fetchedPhotosets![index];
-                              Widget imageWidget =
-                                  indexedPhotoset.primaryphotoURL != null
-                                      ? ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(20),
-                                          child: Image.network(
-                                              indexedPhotoset.primaryphotoURL!,
-                                              fit: BoxFit.fitHeight),
-                                        )
-                                      : const Icon(FontAwesomeIcons.flickr);
-                              double margin = activePage == index ? 5 : 20;
-                              return AnimatedContainer(
-                                decoration: BoxDecoration(
-                                  color: Colors.white12,
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                padding: const EdgeInsets.all(10),
-                                margin: EdgeInsets.all(margin),
-                                duration: const Duration(milliseconds: 500),
-                                curve: Curves.easeInOutCubic,
-                                child: SingleChildScrollView(
-                                  child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        SizedBox(
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.3,
-                                            child: imageWidget),
-                                        Text(
-                                          indexedPhotoset.title,
-                                          textAlign: TextAlign.center,
-                                          textScaleFactor: 1.5,
-                                        ),
-                                        const SizedBox(
-                                          height: 30,
-                                        ),
-                                        Text(indexedPhotoset.description),
-                                      ]),
-                                ),
+                              return FlickrCard(
+                                isActivePage: activePage == index,
+                                indexedPhotoset: fetchedPhotosets![index],
+                                constraints: constraints,
                               );
                             },
                           ),
@@ -153,6 +111,80 @@ class _FlickrTestState extends State<FlickrTest> {
               }
             },
           )),
+    );
+  }
+}
+
+class FlickrCard extends StatelessWidget {
+  const FlickrCard({
+    Key? key,
+    required this.indexedPhotoset,
+    required this.constraints,
+    required this.isActivePage,
+  }) : super(key: key);
+
+  final bool isActivePage;
+  final FlickrPhotoset indexedPhotoset;
+  final BoxConstraints constraints;
+
+  @override
+  Widget build(BuildContext context) {
+    final Widget imageWidget = indexedPhotoset.primaryphotoURL != null
+        ? ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: Image.network(
+              indexedPhotoset.primaryphotoURL!,
+              fit: BoxFit.fitHeight,
+            ),
+          )
+        : const Icon(FontAwesomeIcons.flickr);
+
+    final double margin = isActivePage ? 0 : 10;
+
+    return AnimatedContainer(
+      decoration: BoxDecoration(
+        color: Theme.of(context).shadowColor.withAlpha(10),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      //padding: const EdgeInsets.all(10),
+      margin: EdgeInsets.all(margin),
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.easeInOutCubic,
+      child: Column(
+        children: [
+          SizedBox(
+              height: MediaQuery.of(context).size.height * 0.4,
+              child: imageWidget),
+          Expanded(
+            child: SizedBox(
+              width:
+                  //MediaQuery.of(context).size.width * 0.7,
+                  constraints.maxWidth * 0.7,
+              child: ListView(
+                children: [
+                  ListTile(
+                    title: Text(
+                      indexedPhotoset.title,
+                      softWrap: true,
+                      textAlign: TextAlign.center,
+                      textScaleFactor: 1.5,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 30,
+                  ),
+                  ListTile(
+                    title: Text(
+                      indexedPhotoset.description,
+                      softWrap: true,
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
