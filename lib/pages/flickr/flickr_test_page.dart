@@ -102,18 +102,21 @@ class _FlickrTestState extends State<FlickrTest> {
                             height: constraints.maxHeight * 0.95,
                             child: PageView.builder(
                               controller: _pageController,
-                              itemCount: fetchedPhotosets.length,
+                              itemCount: fetchedPhotosets.length + 1,
                               onPageChanged: (int page) {
                                 setState(() {
                                   activePage = page;
                                 });
                               },
                               itemBuilder: (context, index) {
-                                return FlickrCard(
-                                  isActivePage: activePage == index,
-                                  indexedPhotoset: fetchedPhotosets[index],
-                                  constraints: constraints,
-                                );
+                                return index == fetchedPhotosets.length
+                                    ? const LoadingWidget()
+                                    : FlickrCard(
+                                        isActivePage: activePage == index,
+                                        indexedPhotoset:
+                                            fetchedPhotosets[index],
+                                        constraints: constraints,
+                                      );
                               },
                             ),
                           ),
