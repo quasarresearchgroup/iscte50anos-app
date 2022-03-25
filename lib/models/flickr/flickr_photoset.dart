@@ -24,6 +24,31 @@ class FlickrPhotoset {
     return 'FlickrPhotoset{title: $title, description: $description, id: $id, farm: $farm, server: $server, photoN: $photoN, primaryphotoID: $primaryphotoID, primaryphotoURL: $primaryphotoURL}';
   }
 
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is FlickrPhotoset &&
+          runtimeType == other.runtimeType &&
+          title == other.title &&
+          description == other.description &&
+          id == other.id &&
+          farm == other.farm &&
+          server == other.server &&
+          photoN == other.photoN &&
+          primaryphotoID == other.primaryphotoID &&
+          primaryphotoURL == other.primaryphotoURL;
+
+  @override
+  int get hashCode =>
+      title.hashCode ^
+      description.hashCode ^
+      id.hashCode ^
+      farm.hashCode ^
+      server.hashCode ^
+      photoN.hashCode ^
+      primaryphotoID.hashCode ^
+      primaryphotoURL.hashCode;
+
   factory FlickrPhotoset.fromMap(Map<String, dynamic> json) => FlickrPhotoset(
         title: json["title"],
         description: json["description"],

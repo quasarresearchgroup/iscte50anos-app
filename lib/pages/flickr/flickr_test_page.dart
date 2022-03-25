@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:iscte_spots/models/flickr/flickr_photoset.dart';
 import 'package:iscte_spots/pages/flickr/flickr_album_page.dart';
 import 'package:iscte_spots/services/flickr_iscte_album_service.dart';
+import 'package:iscte_spots/services/flickr_service.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:logger/logger.dart';
 
@@ -13,6 +14,10 @@ import '../../widgets/nav_drawer/navigation_drawer.dart';
 class FlickrTest extends StatefulWidget {
   static const pageRoute = "/flickr";
   final Logger _logger = Logger();
+  final FlickrIscteAlbumService flickrService = FlickrIscteAlbumService();
+  final PageController _pageController = PageController(viewportFraction: 0.8);
+  final int fetchThreshHold = 1000;
+
   FlickrTest({Key? key}) : super(key: key);
 
   @override
@@ -20,40 +25,56 @@ class FlickrTest extends StatefulWidget {
 }
 
 class _FlickrTestState extends State<FlickrTest> {
-  final FlickrIscteAlbumService flickrService = FlickrIscteAlbumService();
-  final PageController _pageController = PageController(viewportFraction: 0.8);
   List<FlickrPhotoset> fetchedPhotosets = [];
 
-  int activePage = 0;
   bool fetching = false;
   bool hasData = false;
+  int activePage = 0;
+  int lastFetch = 0;
+
+  bool noMoreData = false;
 
   @override
   void initState() {
     super.initState();
     fetchMorePhotosets();
-    _pageController.addListener(() {
-      if (!fetching && fetchedPhotosets.length - 10 == _pageController.page) {
+    widget._pageController.addListener(() {
+      if (!fetching &&
+          widget._pageController.page != null &&
+          fetchedPhotosets.length - 10 <= widget._pageController.page!) {
         widget._logger.d("Should Fetch more photosets");
         fetchMorePhotosets();
       }
     });
-    flickrService.stream.listen((FlickrPhotoset event) {
+    widget.flickrService.stream.listen((FlickrPhotoset event) {
       setState(() {
-        fetchedPhotosets.add(event);
+        if (!fetchedPhotosets.contains(event)) {
+          fetchedPhotosets.add(event);
+        } else {
+          widget._logger.d("duplicated album entry: $event");
+        }
       });
+    }, onError: (error) {
+      widget._logger.d(error);
+      noMoreData = error == FlickrService.NODATAERROR;
     });
   }
 
   void fetchMorePhotosets() async {
-    widget._logger.d("fetching more");
-    setState(() {
-      fetching = true;
-    });
-    await flickrService.fetch();
-    setState(() {
-      fetching = false;
-    });
+    int millisecondsSinceEpoch2 = DateTime.now().millisecondsSinceEpoch;
+    if (millisecondsSinceEpoch2 - lastFetch >= widget.fetchThreshHold) {
+      setState(() {
+        fetching = true;
+      });
+      widget._logger.d("fetching more data");
+      lastFetch = millisecondsSinceEpoch2;
+      await widget.flickrService.fetch();
+      setState(() {
+        fetching = false;
+      });
+    } else {
+      widget._logger.d("wait a bit before fetching againg");
+    }
   }
 
   @override
@@ -74,20 +95,23 @@ class _FlickrTestState extends State<FlickrTest> {
                   child: Center(
                     child: fetching
                         ? const CircularProgressIndicator.adaptive()
-                        : const Icon(FontAwesomeIcons.check),
+                        : const FaIcon(FontAwesomeIcons.check),
                   ),
                 )
               ],
             ),
             bottomNavigationBar: const MyBottomBar(selectedIndex: 0),
             floatingActionButton: FloatingActionButton(
-              child: const Icon(FontAwesomeIcons.redoAlt),
+              child: const FaIcon(FontAwesomeIcons.redoAlt),
               onPressed: () {
                 fetchMorePhotosets();
               },
             ),
             body: !hasData
-                ? const SizedBox.expand(child: LoadingWidget())
+                ? SizedBox.expand(
+                    child: noMoreData
+                        ? const Center(child: Text("No more data!"))
+                        : const LoadingWidget())
                 : LayoutBuilder(
                     builder:
                         (BuildContext context, BoxConstraints constraints) {
@@ -101,7 +125,7 @@ class _FlickrTestState extends State<FlickrTest> {
                           SizedBox(
                             height: constraints.maxHeight * 0.95,
                             child: PageView.builder(
-                              controller: _pageController,
+                              controller: widget._pageController,
                               itemCount: fetchedPhotosets.length + 1,
                               onPageChanged: (int page) {
                                 setState(() {
@@ -149,7 +173,7 @@ class FlickrCard extends StatelessWidget {
               fit: BoxFit.fitHeight,
             ),
           )
-        : const Icon(FontAwesomeIcons.flickr);
+        : const FaIcon(FontAwesomeIcons.flickr);
 
     final double margin = isActivePage ? 0 : 10;
 

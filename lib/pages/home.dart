@@ -21,7 +21,7 @@ class Home extends StatefulWidget {
   static const pageRoute = "/";
   final Logger _logger = Logger();
   final int shakerTimeThreshhold = 1000;
-  final int shakerThreshhold = 8;
+  final int shakerThreshhold = 5;
   @override
   _HomeState createState() => _HomeState();
   final Image originalImage =
@@ -139,7 +139,7 @@ class _HomeState extends State<Home> {
           ),
           bottomNavigationBar: const MyBottomBar(selectedIndex: 0),
           floatingActionButton: FloatingActionButton(
-            child: const Icon(FontAwesomeIcons.redoAlt),
+            child: const FaIcon(FontAwesomeIcons.redoAlt),
             onPressed: () async {
               widget._logger.d("Pressed refresh");
               if (urls.isNotEmpty) {

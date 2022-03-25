@@ -14,45 +14,52 @@ class FlickrIscteAlbumService extends FlickrService {
   final int perPage = 25;
 
   Future<void> fetch() async {
-    try {
-      http.Response response = await http
-          .get(Uri.parse(
-              'https://www.flickr.com/services/rest/?method=flickr.photosets.getList&api_key=$key&user_id=${FlickrService.userID}&page=$currentPage&per_page=$perPage&format=json&nojsoncallback=1'))
-          .timeout(const Duration(minutes: 2));
-      if (response.statusCode == 200) {
-        logger.d("Started fetching image urls");
-        startFetch();
-        final jsonResponse = jsonDecode(response.body);
-        var photosets = jsonResponse["photosets"]["photoset"];
+    assert(!fetching);
+    if (fetching) {
+      logger.e(
+          "Already fetching. Wait for current fetch to finish before making another request!");
+    } else {
+      try {
+        http.Response response = await http
+            .get(Uri.parse(
+                'https://www.flickr.com/services/rest/?method=flickr.photosets.getList&api_key=$key&user_id=${FlickrService.userID}&page=$currentPage&per_page=$perPage&format=json&nojsoncallback=1'))
+            .timeout(const Duration(minutes: 2));
+        if (response.statusCode == 200) {
+          logger.d("Started fetching image urls");
+          startFetch();
+          final jsonResponse = jsonDecode(response.body);
+          var photosets = jsonResponse["photosets"]["photoset"];
 
-        for (var photosetEntry in photosets) {
-          FlickrPhotoset flickrPhotoset = FlickrPhotoset(
-            title: photosetEntry["title"]["_content"],
-            description: photosetEntry["description"]["_content"],
-            id: photosetEntry["id"],
-            farm: photosetEntry["farm"],
-            server: photosetEntry["server"],
-            photoN: photosetEntry["photos"],
-            primaryphotoID: photosetEntry["primary"],
-            primaryphotoURL:
-                "https://farm${photosetEntry["farm"]}.staticflickr.com/${photosetEntry["server"]}/${photosetEntry["primary"]}\_${photosetEntry["secret"]}.jpg",
-          );
-          //photosetsInstanceList.add(flickrPhotoset);
-          logger.d(flickrPhotoset);
-          //_controller.sink.add(photosetsInstanceList);
-          _controller.sink.add(flickrPhotoset);
+          int counter = 0;
+          for (var photosetEntry in photosets) {
+            FlickrPhotoset flickrPhotoset = FlickrPhotoset(
+              title: photosetEntry["title"]["_content"],
+              description: photosetEntry["description"]["_content"],
+              id: photosetEntry["id"],
+              farm: photosetEntry["farm"],
+              server: photosetEntry["server"],
+              photoN: photosetEntry["photos"],
+              primaryphotoID: photosetEntry["primary"],
+              primaryphotoURL:
+                  "https://farm${photosetEntry["farm"]}.staticflickr.com/${photosetEntry["server"]}/${photosetEntry["primary"]}\_${photosetEntry["secret"]}.jpg",
+            );
+            logger.d(flickrPhotoset);
+            _controller.sink.add(flickrPhotoset);
+          }
+          currentPage++;
+          if (counter < perPage) {
+            _controller.sink.addError(FlickrService.NODATAERROR);
+          }
+          stopFetch();
+        } else {
+          logger.d("Error ${response.statusCode}");
+          stopFetch();
+          //return [];
         }
-        currentPage++;
-
-        stopFetch();
-      } else {
-        logger.d("Error ${response.statusCode}");
-        stopFetch();
-        //return [];
+      } on Exception catch (e) {
+        _controller.sink.addError(e);
+        //_controller.close();
       }
-    } on Exception catch (e) {
-      _controller.sink.addError(e);
-      //_controller.close();
     }
   }
 }

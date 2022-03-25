@@ -67,7 +67,7 @@ class NavigationDrawer extends StatelessWidget {
         onTap: () {},
       ),
       ListTile(
-        leading: const Icon(FontAwesomeIcons.flickr),
+        leading: const FaIcon(FontAwesomeIcons.flickr),
         title: Text("flickr"),
         onTap: () {
           Navigator.pushReplacementNamed(context, PageRoutes.flickr);

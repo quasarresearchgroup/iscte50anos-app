@@ -9,11 +9,11 @@ class FLickrPhotosetService extends FlickrService {
   final StreamController<FlickrPhoto> _controller =
       StreamController<FlickrPhoto>();
   Stream<FlickrPhoto> get stream => _controller.stream;
-  static int NODATAERROR = 1;
 
   int currentPage = 1;
   final int perPage = 25;
   Future<void> fetch({required String albumID, required int farm}) async {
+    assert(!fetching);
     if (fetching) {
       logger.e(
           "Already fetching. Wait for current fetch to finish before making another request!");
@@ -46,7 +46,7 @@ class FLickrPhotosetService extends FlickrService {
           }
           currentPage++;
           if (counter < perPage) {
-            _controller.sink.addError(NODATAERROR);
+            _controller.sink.addError(FlickrService.NODATAERROR);
           }
           stopFetch();
         } else {

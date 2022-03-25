@@ -43,7 +43,7 @@ class _ShakerState extends State<Shaker> {
           ),
           bottomNavigationBar: const MyBottomBar(selectedIndex: 0),
           floatingActionButton: FloatingActionButton(
-            child: const Icon(FontAwesomeIcons.redoAlt),
+            child: const FaIcon(FontAwesomeIcons.redoAlt),
             onPressed: () {
               if (urls.isEmpty) {
                 Future<List<String>> imageURLS = flickrService.fetch();

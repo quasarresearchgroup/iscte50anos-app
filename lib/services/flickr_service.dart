@@ -8,6 +8,7 @@ abstract class FlickrService {
   bool fetching = false;
   String? key;
   static const String userID = "45216724@N07";
+  static int NODATAERROR = 1;
 
   FlickrService() {
     key = dotenv.env["FLICKR_KEY"];

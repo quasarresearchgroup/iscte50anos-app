@@ -59,7 +59,7 @@ class _TimelinePageState extends State<TimelinePage> {
                           context: context,
                           delegate: TimelineSearchDelegate(mapdata: mapdata));
                     },
-                    icon: const Icon(FontAwesomeIcons.search))
+                    icon: const FaIcon(FontAwesomeIcons.search))
               ],
             ),
             floatingActionButton: SpeedDial(
@@ -69,7 +69,7 @@ class _TimelinePageState extends State<TimelinePage> {
               elevation: 8.0,
               children: [
                 SpeedDialChild(
-                    child: const Icon(FontAwesomeIcons.trash),
+                    child: const FaIcon(FontAwesomeIcons.trash),
                     backgroundColor: Colors.red,
                     label: 'Delete',
                     onTap: () {
@@ -132,7 +132,7 @@ class TimelineSearchDelegate extends SearchDelegate {
   @override
   List<Widget>? buildActions(BuildContext context) => [
         IconButton(
-          icon: const Icon(FontAwesomeIcons.xbox),
+          icon: const FaIcon(FontAwesomeIcons.xbox),
           onPressed: () {
             if (query.isEmpty) {
               close(context, null);
@@ -145,7 +145,7 @@ class TimelineSearchDelegate extends SearchDelegate {
 
   @override
   Widget? buildLeading(BuildContext context) => IconButton(
-        icon: const Icon(FontAwesomeIcons.backward),
+        icon: const FaIcon(FontAwesomeIcons.backward),
         onPressed: () => close(context, null),
       );
 

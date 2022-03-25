@@ -23,6 +23,27 @@ class FlickrPhoto {
     return 'FlickrPhoto{id: $id, secret: $secret, server: $server, title: $title, isPrimary: $isPrimary}';
   }
 
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is FlickrPhoto &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          secret == other.secret &&
+          server == other.server &&
+          title == other.title &&
+          farm == other.farm &&
+          isPrimary == other.isPrimary;
+
+  @override
+  int get hashCode =>
+      id.hashCode ^
+      secret.hashCode ^
+      server.hashCode ^
+      title.hashCode ^
+      farm.hashCode ^
+      isPrimary.hashCode;
+
   factory FlickrPhoto.fromMap(Map<String, dynamic> json) => FlickrPhoto(
         id: json["id"],
         server: json["server"],
