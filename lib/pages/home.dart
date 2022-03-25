@@ -65,14 +65,8 @@ class _HomeState extends State<Home> {
           event.y < -widget.shakerThreshhold ||
           event.z > widget.shakerThreshhold ||
           event.z < -widget.shakerThreshhold)) {
-        int currTime = DateTime.now().millisecondsSinceEpoch;
-        if ((lastShake - currTime) > widget.shakerTimeThreshhold) {
-          lastShake = currTime;
-          randomizeImage(urls);
-          widget._logger.d("Detected Shake");
-        } else {
-          widget._logger.d("Woah slow down there");
-        }
+        randomizeImage(urls);
+        widget._logger.d("Detected Shake");
       }
     }));
   }
@@ -87,17 +81,24 @@ class _HomeState extends State<Home> {
   }
 
   void randomizeImage(List<String> value2) {
-    assert(value2.isNotEmpty);
-    setState(() {
-      currentPuzzleImage = null;
-    });
-    String randomurl =
-        value2[Random().nextInt(value2.isEmpty ? 0 : value2.length)];
-    setState(() {
-      currentPuzzleImage = Image.network(randomurl);
-    });
+    int currTime = DateTime.now().millisecondsSinceEpoch;
+    if ((currTime - lastShake) > widget.shakerTimeThreshhold) {
+      lastShake = currTime;
 
-    widget._logger.d("Randomized puzzle Image");
+      assert(value2.isNotEmpty);
+      setState(() {
+        currentPuzzleImage = null;
+      });
+      String randomurl =
+          value2[Random().nextInt(value2.isEmpty ? 0 : value2.length)];
+      setState(() {
+        currentPuzzleImage = Image.network(randomurl);
+      });
+
+      widget._logger.d("Randomized puzzle Image");
+    } else {
+      widget._logger.d("Woah slow down there");
+    }
   }
 
   Future<List<String>> fetchFromFlickr() async {
