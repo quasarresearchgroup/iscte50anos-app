@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -26,6 +28,7 @@ class FlickrTest extends StatefulWidget {
 
 class _FlickrTestState extends State<FlickrTest> {
   List<FlickrPhotoset> fetchedPhotosets = [];
+  late StreamSubscription<FlickrPhotoset> _streamSubscription;
 
   bool fetching = false;
   bool hasData = false;
@@ -46,7 +49,8 @@ class _FlickrTestState extends State<FlickrTest> {
         fetchMorePhotosets();
       }
     });
-    widget.flickrService.stream.listen((FlickrPhotoset event) {
+    _streamSubscription =
+        widget.flickrService.stream.listen((FlickrPhotoset event) {
       setState(() {
         if (!fetchedPhotosets.contains(event)) {
           fetchedPhotosets.add(event);
@@ -58,6 +62,12 @@ class _FlickrTestState extends State<FlickrTest> {
       widget._logger.d(error);
       noMoreData = error == FlickrService.NODATAERROR;
     });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _streamSubscription.cancel();
   }
 
   void fetchMorePhotosets() async {

@@ -5,6 +5,8 @@ import 'package:iscte_spots/widgets/puzzle/puzzle_piece_painter.dart';
 import 'package:logger/logger.dart';
 
 class PuzzlePiece extends StatefulWidget {
+  final Logger _logger = Logger();
+
   final Image image;
   final Size imageSize;
   final int row;
@@ -14,20 +16,23 @@ class PuzzlePiece extends StatefulWidget {
   final Function bringToTop;
   final Function sendToBack;
   final bool snapInPlace;
-  final Logger _logger = Logger();
+  final double maxWidth;
+  final double maxHeight;
 
-  PuzzlePiece(
-      {required Key key,
-      required this.image,
-      required this.imageSize,
-      required this.row,
-      required this.col,
-      required this.maxRow,
-      required this.maxCol,
-      required this.bringToTop,
-      required this.sendToBack,
-      this.snapInPlace = true})
-      : super(key: key);
+  PuzzlePiece({
+    required Key key,
+    required this.image,
+    required this.imageSize,
+    required this.row,
+    required this.col,
+    required this.maxRow,
+    required this.maxCol,
+    required this.bringToTop,
+    required this.sendToBack,
+    required this.maxWidth,
+    required this.maxHeight,
+    this.snapInPlace = true,
+  }) : super(key: key);
 
   @override
   PuzzlePieceState createState() {
@@ -42,10 +47,9 @@ class PuzzlePieceState extends State<PuzzlePiece> {
 
   @override
   Widget build(BuildContext context) {
-    final imageWidth = MediaQuery.of(context).size.width;
-    final imageHeight = MediaQuery.of(context).size.height *
-        MediaQuery.of(context).size.width /
-        widget.imageSize.width;
+    final imageWidth = widget.maxWidth;
+    final imageHeight =
+        widget.maxHeight * widget.maxWidth / widget.imageSize.width;
     final pieceWidth = imageWidth / widget.maxCol;
     final pieceHeight = imageHeight / widget.maxRow;
 

@@ -20,20 +20,21 @@ class Home extends StatefulWidget {
   }) : super(key: key);
   static const pageRoute = "/";
   final Logger _logger = Logger();
-  final int shakerTimeThreshhold = 1000;
+  final int shakerTimeThreshhold = 0;
   final int shakerThreshhold = 5;
   @override
   _HomeState createState() => _HomeState();
   final Image originalImage =
       Image.asset('Resources/Img/Campus/campus-iscte-3.jpg');
+  final FlickrIsctePhotoService flickrService = FlickrIsctePhotoService();
 }
 
 class _HomeState extends State<Home> {
-  List<String> urls = [];
-  Image? currentPuzzleImage =
-      Image.asset('Resources/Img/Campus/campus-iscte-3.jpg');
-
-  final FlickrIsctePhotoService flickrService = FlickrIsctePhotoService();
+  List<Image> images = [
+    Image.asset('Resources/Img/Campus/campus-iscte-3.jpg'),
+    Image.asset('Resources/Img/Campus/AulaISCTE_3.jpg')
+  ];
+  Image? currentPuzzleImage;
 
   final List<StreamSubscription<dynamic>> _streamSubscriptions =
       <StreamSubscription<dynamic>>[];
@@ -42,17 +43,30 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    //currentPuzzleImage = widget.originalImage;
     try {
       fetchFromFlickr();
     } catch (e) {
       widget._logger.d("Error on Fetch; Resetting image;");
-      /*setState(() {
-      currentPuzzleImage = widget.originalImage;
-
-      });*/
     }
+    currentPuzzleImage = images.first;
+    setupURLStream();
     setupMotionSensors();
+  }
+
+  void setupURLStream() {
+    StreamSubscription<String> streamSubscription;
+    streamSubscription = widget.flickrService.stream.listen((String event) {
+      if (!images.contains(event)) {
+        setState(() {
+          images.add(Image.network(event));
+        });
+      } else {
+        widget._logger.d("duplicated photo entry: $event");
+      }
+    }, onError: (error) {
+      widget._logger.d(error);
+    });
+    _streamSubscriptions.add(streamSubscription);
   }
 
   void setupMotionSensors() {
@@ -66,7 +80,7 @@ class _HomeState extends State<Home> {
           event.y < -widget.shakerThreshhold ||
           event.z > widget.shakerThreshhold ||
           event.z < -widget.shakerThreshhold)) {
-        randomizeImage(urls);
+        randomizeChosenImage();
         widget._logger.d("Detected Shake");
       }
     }));
@@ -81,32 +95,24 @@ class _HomeState extends State<Home> {
     }
   }
 
-  void randomizeImage(List<String> value2) {
+  void randomizeChosenImage() {
     int currTime = DateTime.now().millisecondsSinceEpoch;
     if ((currTime - lastShake) > widget.shakerTimeThreshhold) {
       lastShake = currTime;
 
-      assert(value2.isNotEmpty);
+      assert(images.isNotEmpty);
       setState(() {
-        currentPuzzleImage = null;
+        currentPuzzleImage =
+            images[Random().nextInt(images.isEmpty ? 0 : images.length)];
       });
-      String randomurl =
-          value2[Random().nextInt(value2.isEmpty ? 0 : value2.length)];
-      setState(() {
-        currentPuzzleImage = Image.network(randomurl);
-      });
-
       widget._logger.d("Randomized puzzle Image");
     } else {
       widget._logger.d("Woah slow down there");
     }
   }
 
-  Future<List<String>> fetchFromFlickr() async {
-    List<String> imageURLS = await flickrService.fetch();
-    urls = imageURLS;
-    widget._logger.d("Fetched image URLS from flickr");
-    return imageURLS;
+  Future<void> fetchFromFlickr() async {
+    widget.flickrService.fetch();
   }
 
   void fetchAndRandomize() async {
@@ -114,8 +120,8 @@ class _HomeState extends State<Home> {
       setState(() {
         currentPuzzleImage = null;
       });
-      List<String> list = await fetchFromFlickr();
-      randomizeImage(list);
+      fetchFromFlickr();
+      randomizeChosenImage();
     } catch (e) {
       widget._logger.d("Error on Fetch; Resetting image;");
       setState(() {
@@ -126,7 +132,6 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    widget._logger.d("rebuild Home");
     return WillPopScope(
         onWillPop: () async {
           SystemNavigator.pop();
@@ -138,22 +143,41 @@ class _HomeState extends State<Home> {
             title: Title(
                 color: Colors.black,
                 child: Text(AppLocalizations.of(context)!.appName)),
+            actions: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Center(
+                    child: Text(
+                  (images.length + 1).toString(),
+                  textScaleFactor: 1.5,
+                )),
+              )
+            ],
           ),
           bottomNavigationBar: const MyBottomBar(selectedIndex: 0),
           floatingActionButton: FloatingActionButton(
             child: const FaIcon(FontAwesomeIcons.redoAlt),
             onPressed: () async {
               widget._logger.d("Pressed refresh");
-              if (urls.isNotEmpty) {
-                randomizeImage(urls);
+              if (images.isNotEmpty) {
+                randomizeChosenImage();
               } else {
                 fetchAndRandomize();
               }
             },
           ),
-          body: (currentPuzzleImage != null)
-              ? PuzzlePage(image: currentPuzzleImage!)
-              : const LoadingWidget(),
+          body: LayoutBuilder(
+              builder: (BuildContext context, BoxConstraints constraints) {
+            return (currentPuzzleImage != null)
+                ? Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: PuzzlePage(
+                      image: currentPuzzleImage!,
+                      constraints: constraints,
+                    ),
+                  )
+                : const LoadingWidget();
+          }),
         ));
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -21,6 +23,7 @@ class FlickAlbumPage extends StatefulWidget {
 }
 
 class _FlickAlbumPageState extends State<FlickAlbumPage> {
+  late StreamSubscription<FlickrPhoto> _streamSubscription;
   List<FlickrPhoto> fetchedPhotos = [];
   bool noMoreData = false;
   int lastFetch = 0;
@@ -29,7 +32,8 @@ class _FlickAlbumPageState extends State<FlickAlbumPage> {
   @override
   void initState() {
     super.initState();
-    widget.fLickrPhotosetService.stream.listen((FlickrPhoto event) {
+    _streamSubscription =
+        widget.fLickrPhotosetService.stream.listen((FlickrPhoto event) {
       setState(() {
         if (!fetchedPhotos.contains(event)) {
           fetchedPhotos.add(event);
@@ -51,6 +55,12 @@ class _FlickAlbumPageState extends State<FlickAlbumPage> {
     });
 
     fetchMorePhotos();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _streamSubscription.cancel();
   }
 
   void fetchMorePhotos() async {

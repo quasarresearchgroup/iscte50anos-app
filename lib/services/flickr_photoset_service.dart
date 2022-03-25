@@ -8,6 +8,7 @@ import 'package:iscte_spots/services/flickr_service.dart';
 class FLickrPhotosetService extends FlickrService {
   final StreamController<FlickrPhoto> _controller =
       StreamController<FlickrPhoto>();
+  @override
   Stream<FlickrPhoto> get stream => _controller.stream;
 
   int currentPage = 1;
@@ -51,6 +52,7 @@ class FLickrPhotosetService extends FlickrService {
           stopFetch();
         } else {
           logger.d("Error ${response.statusCode}");
+          _controller.sink.addError(response.statusCode);
           stopFetch();
           //return [];
         }

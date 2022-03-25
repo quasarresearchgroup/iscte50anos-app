@@ -34,6 +34,8 @@ class ImageManipulation {
     required cols,
     required bringToTop,
     required sendToBack,
+    required maxWidth,
+    required maxHeight,
   }) async {
     //logger.d('started split');
     List<Widget> outputList = [];
@@ -50,6 +52,8 @@ class ImageManipulation {
           maxCol: cols,
           bringToTop: bringToTop,
           sendToBack: sendToBack,
+          maxWidth: maxWidth,
+          maxHeight: maxHeight,
         );
         outputList.add(puzzlePiece);
       }

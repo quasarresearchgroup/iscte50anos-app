@@ -20,14 +20,42 @@ class Shaker extends StatefulWidget {
 
   @override
   State<Shaker> createState() => _ShakerState();
+
+  final Logger _logger = Logger();
+  final FlickrIsctePhotoService flickrService = FlickrIsctePhotoService();
 }
 
 class _ShakerState extends State<Shaker> {
-  List<String> urls = [];
-  final FlickrIsctePhotoService flickrService = FlickrIsctePhotoService();
+  late StreamSubscription<String> _streamSubscription;
+  List<Image> images = [Image.asset('Resources/Img/Campus/campus-iscte-3.jpg')];
 
   Image currentPuzzleImage =
       Image.asset('Resources/Img/Campus/campus-iscte-3.jpg');
+  @override
+  void initState() {
+    super.initState();
+    setupURLStream();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _streamSubscription.cancel();
+  }
+
+  void setupURLStream() {
+    _streamSubscription = widget.flickrService.stream.listen((String event) {
+      if (!images.contains(event)) {
+        setState(() {
+          images.add(Image.network(event));
+        });
+      } else {
+        widget._logger.d("duplicated photo entry: $event");
+      }
+    }, onError: (error) {
+      widget._logger.d(error);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,24 +67,18 @@ class _ShakerState extends State<Shaker> {
       child: Scaffold(
           drawer: const NavigationDrawer(),
           appBar: AppBar(
-            title: Title(color: Colors.black, child: Text("Shaker")),
+            title: Title(color: Colors.black, child: const Text("Shaker")),
           ),
           bottomNavigationBar: const MyBottomBar(selectedIndex: 0),
           floatingActionButton: FloatingActionButton(
             child: const FaIcon(FontAwesomeIcons.redoAlt),
             onPressed: () {
-              if (urls.isEmpty) {
-                Future<List<String>> imageURLS = flickrService.fetch();
-                imageURLS.then((value) {
-                  urls = value;
-                  String randomurl = value[Random().nextInt(value.length)];
-                  currentPuzzleImage = (Image.network(randomurl));
-                  setState(() {});
-                });
+              if (images.isEmpty) {
+                widget.flickrService.fetch();
               } else {
-                String randomurl = urls[Random().nextInt(urls.length)];
-                currentPuzzleImage = (Image.network(randomurl));
-                setState(() {});
+                setState(() {
+                  currentPuzzleImage = images[Random().nextInt(images.length)];
+                });
               }
             },
           ),

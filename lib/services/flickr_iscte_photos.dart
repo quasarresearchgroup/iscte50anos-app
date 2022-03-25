@@ -6,23 +6,24 @@ import 'package:iscte_spots/services/flickr_service.dart';
 
 class FlickrIsctePhotoService extends FlickrService {
   static const String tags = "iscte";
-  static const String photosetID = "72157719497252192";
+  //static const String photosetID = "72157719497252192";
+  static const String photosetID = "72157625777087393";
   static const String userID = "45216724@N07";
 
-  Future<http.Response?> getRequest() async {
-    return await http
-        .get(Uri.parse(
-            'https://www.flickr.com/services/rest/?method=flickr.photosets.getPhotos&api_key=$key&photoset_id=$photosetID&user_id=$userID&format=json&nojsoncallback=1'))
-        .timeout(const Duration(minutes: 2));
-  }
+  final StreamController<String> _controller = StreamController<String>();
+  @override
+  Stream<String> get stream => _controller.stream;
+  int currentPage = 1;
+  final int perPage = 25;
 
-  Future<List<String>> fetch() async {
-    http.Response? response = await getRequest();
-//'https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=$key&tags=$tags&format=json&nojsoncallback=1'));
-//'https://www.flickr.com/services/feeds/photos_public.gne?tags=$tags&format=json&nojsoncallback=1'));
-    final List<String> photoLinks = [];
+  Future<void> fetch() async {
+    http.Response response = await http
+        .get(Uri.parse(
+            'https://www.flickr.com/services/rest/?method=flickr.photosets.getPhotos&api_key=$key&photoset_id=$photosetID&user_id=$userID&page=$currentPage&per_page=$perPage&format=json&nojsoncallback=1'))
+        .timeout(const Duration(minutes: 2));
+
     if (!fetching) {
-      if (response != null && response.statusCode == 200) {
+      if (response.statusCode == 200) {
         logger.d("Started fetching image urls");
         startFetch();
 
@@ -36,26 +37,24 @@ class FlickrIsctePhotoService extends FlickrService {
           if (photoData.statusCode == 200) {
             final jsonPhotoData = jsonDecode(photoData.body)["prevphoto"];
 
+            var farm = jsonPhotoData["farm"];
             var server = jsonPhotoData["server"];
             var photoid = jsonPhotoData["id"];
-            var farm = jsonPhotoData["farm"];
             var photoSecret = jsonPhotoData["secret"];
             var imagesrc =
                 "https://farm$farm.staticflickr.com/$server/$photoid\_$photoSecret.jpg";
             logger.d(imagesrc);
-            photoLinks.add(imagesrc);
+            _controller.sink.add(imagesrc);
           }
         }
         stopFetch();
-        logger.d(photoLinks);
-        return photoLinks;
+        currentPage++;
       } else {
-        fetching = false;
-        throw Exception(response?.statusCode);
+        stopFetch();
+        _controller.sink.addError(response.statusCode);
       }
     } else {
       logger.d("Fetching already in progress, no effect was taken");
     }
-    return photoLinks;
   }
 }

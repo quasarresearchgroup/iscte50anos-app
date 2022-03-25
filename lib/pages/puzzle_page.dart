@@ -1,15 +1,19 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:iscte_spots/helper/image_manipulation.dart';
+import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:logger/logger.dart';
 
 class PuzzlePage extends StatefulWidget {
-  PuzzlePage({Key? key, required this.image}) : super(key: key);
+  PuzzlePage({Key? key, required this.image, required this.constraints})
+      : super(key: key);
   final Logger _logger = Logger();
   static const pageRoute = "/puzzle";
 
-  final int rows = 10;
-  final int cols = 10;
+  final int rows = 5;
+  final int cols = 5;
   final Image image;
+  final BoxConstraints constraints;
 
   @override
   _PuzzlePageState createState() => _PuzzlePageState();
@@ -17,22 +21,47 @@ class PuzzlePage extends StatefulWidget {
 
 class _PuzzlePageState extends State<PuzzlePage> {
   List<Widget> pieces = [];
+  Size? imageSize;
   //make this a future so that previous operations get queued and complete only when this has values
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     generatePieces(widget.image);
   }
 
   void generatePieces(Image img) async {
+    setState(() {
+      pieces = [];
+    });
+    imageSize = await ImageManipulation.getImageSize(img);
     pieces = await ImageManipulation.splitImagePuzzlePiece(
       image: img,
       bringToTop: bringToTop,
       sendToBack: sendToBack,
       rows: widget.rows,
       cols: widget.cols,
+      maxHeight: widget.constraints.maxHeight,
+      maxWidth: widget.constraints.maxWidth,
     );
+    pieces.insert(0, Expanded(child: Container()));
+    pieces.insert(
+        1,
+        Container(
+          decoration: BoxDecoration(
+              border: Border(
+            bottom:
+                BorderSide(color: Theme.of(context).shadowColor.withAlpha(50)),
+            top: BorderSide(color: Theme.of(context).shadowColor.withAlpha(50)),
+            right:
+                BorderSide(color: Theme.of(context).shadowColor.withAlpha(50)),
+            left:
+                BorderSide(color: Theme.of(context).shadowColor.withAlpha(50)),
+          )),
+          child: SizedBox(
+            width: imageSize?.width,
+            height: imageSize?.height,
+          ),
+        ));
     setState(() {});
   }
 
@@ -47,28 +76,9 @@ class _PuzzlePageState extends State<PuzzlePage> {
     super.didUpdateWidget(oldWidget);
   }
 
-  /*
-  void changeImage(
-      {Image img = const Image(
-          image: AssetImage('Resources/Img/Campus/campus-iscte-3.jpg'))}) {
-    _image = img;
-    ImageManipulation.splitImagePuzzlePiece(
-      image: _image!,
-      bringToTop: bringToTop,
-      sendToBack: sendToBack,
-      rows: widget.rows,
-      cols: widget.cols,
-    ).then((value) {
-      setState(() {
-        pieces = value;
-      });
-    });
-  }
-*/
-
   @override
   Widget build(BuildContext context) {
-    return Stack(children: pieces);
+    return pieces.isNotEmpty ? Stack(children: pieces) : LoadingWidget();
   }
 
   void bringToTop(Widget widget) {
@@ -82,7 +92,7 @@ class _PuzzlePageState extends State<PuzzlePage> {
   void sendToBack(Widget widget) {
     setState(() {
       pieces.remove(widget);
-      pieces.insert(0, widget);
+      pieces.insert(1, widget);
     });
   }
 }
