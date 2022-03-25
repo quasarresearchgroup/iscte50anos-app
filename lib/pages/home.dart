@@ -30,7 +30,8 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   List<String> urls = [];
-  Image? currentPuzzleImage;
+  Image? currentPuzzleImage =
+      Image.asset('Resources/Img/Campus/campus-iscte-3.jpg');
 
   final FlickrIsctePhotoService flickrService = FlickrIsctePhotoService();
 
@@ -41,7 +42,7 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    currentPuzzleImage = widget.originalImage;
+    //currentPuzzleImage = widget.originalImage;
     try {
       fetchFromFlickr();
     } catch (e) {

@@ -9,7 +9,7 @@ class PuzzlePage extends StatefulWidget {
 
   final int rows = 10;
   final int cols = 10;
-  Image image;
+  final Image image;
 
   @override
   _PuzzlePageState createState() => _PuzzlePageState();
@@ -18,6 +18,12 @@ class PuzzlePage extends StatefulWidget {
 class _PuzzlePageState extends State<PuzzlePage> {
   List<Widget> pieces = [];
   //make this a future so that previous operations get queued and complete only when this has values
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    generatePieces(widget.image);
+  }
 
   void generatePieces(Image img) async {
     pieces = await ImageManipulation.splitImagePuzzlePiece(
@@ -34,9 +40,9 @@ class _PuzzlePageState extends State<PuzzlePage> {
   void didUpdateWidget(PuzzlePage oldWidget) {
     if (oldWidget.image != widget.image) {
       widget._logger.d("changing image");
-      setState(() {});
-      generatePieces(widget.image);
-      setState(() {});
+      setState(() {
+        generatePieces(widget.image);
+      });
     }
     super.didUpdateWidget(oldWidget);
   }
