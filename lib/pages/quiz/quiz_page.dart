@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:iscte_spots/widgets/nav_drawer/navigation_drawer.dart';
 import 'package:logger/logger.dart';
 
 import './quiz.dart';
@@ -109,12 +110,12 @@ class _QuizPageState extends State<QuizPage> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
+    return Scaffold(
         appBar: AppBar(
           title: Text(AppLocalizations.of(context)!.quizPageTitle),
           //backgroundColor: const Color.fromRGBO(200, 200, 200, 0),
         ),
+        drawer: const NavigationDrawer(),
         body: Padding(
           padding: const EdgeInsets.all(20.0),
           child: _questionIndex < _questions.length
@@ -124,8 +125,6 @@ class _QuizPageState extends State<QuizPage> {
                   questionIndex: _questionIndex)
               : Result(_totalScore, _resetQuiz),
         ), //Padding
-      ), //Scaffold
-      debugShowCheckedModeBanner: false,
-    ); //MaterialApp
+      );
   }
 }

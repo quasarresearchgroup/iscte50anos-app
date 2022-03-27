@@ -43,12 +43,12 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
             ),
           )
       ),
+      darkTheme: ThemeData.dark(),
       home: Scaffold(
         appBar: AppBar(
           title: const Text("Leaderboard"),//AppLocalizations.of(context)!.quizPageTitle)
         ),
         drawer: const NavigationDrawer(),
-
         body: Leaderboard(),
       ), //Scaffold
       debugShowCheckedModeBanner: false,
@@ -92,27 +92,70 @@ class _LeaderboardState extends State<Leaderboard> {
       List<Widget> children;
       if (snapshot.hasData) {
         var items = snapshot.data as List<dynamic>;
-        return ListView.separated(
-          separatorBuilder: (context, index) => const Divider(
-          ),
-          scrollDirection: Axis.vertical,
-          itemCount: items.length,
-          itemBuilder: (context, index) {
-            return ListTile(
-              title: Text(items[index]["username"], style: const TextStyle(fontWeight: FontWeight.bold)),
-              subtitle: Text("Pontos: ${items[index]["points"]}"),
-              dense:true,
-              trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    index == 0 ? Image.asset("Resources/Img/LeaderBoardIcons/gold_medal.png") :
-                    index == 1 ? Image.asset("Resources/Img/LeaderBoardIcons/silver_medal.png") :
-                    index == 2 ? Image.asset("Resources/Img/LeaderBoardIcons/bronze_medal.png") : Container(),
-                    const SizedBox(width:10),
-                    Text("#${index+1}", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
-                  ]),
-            );
-          },
+        return Column(
+          children: [
+            const SizedBox(
+              height: 50,
+              child: Center(
+                child: Text( "Top 10 (Individual)",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18
+                    )
+                ),
+              ),
+            ),
+            Expanded(
+              child: RefreshIndicator(
+                onRefresh: () async{
+                  setState(() {
+                    futureLeaderboard = fetchLeaderboard();
+                  });
+                },
+                child: ListView.builder(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  /*separatorBuilder: (context, index) => const Divider(
+                    thickness: 2,
+                    indent: 50,
+                    endIndent: 50,
+                    height: 0,
+                  ),*/
+                  itemCount: items.length,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.only(left:10.0, right:10.0),
+                      child: Card(
+                        child: ListTile(
+                          title: Text(items[index]["username"],
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18
+                              )
+                          ),
+                          subtitle: Text("Pontos: ${items[index]["points"]}"),
+                          dense:true,
+                          trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                index == 0 ? Image.asset("Resources/Img/LeaderBoardIcons/gold_medal.png") :
+                                index == 1 ? Image.asset("Resources/Img/LeaderBoardIcons/silver_medal.png") :
+                                index == 2 ? Image.asset("Resources/Img/LeaderBoardIcons/bronze_medal.png") : Container(),
+                                const SizedBox(width:10),
+                                Text( "#${index+1}",
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20
+                                    )
+                                ),
+                              ]),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+          ],
         );
       } else if (snapshot.hasError) {
         children = <Widget>[
