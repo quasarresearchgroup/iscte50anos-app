@@ -5,6 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:iscte_spots/models/content.dart';
 import 'package:iscte_spots/widgets/nav_drawer/navigation_drawer.dart';
 import 'package:iscte_spots/widgets/nav_drawer/page_routes.dart';
+import 'package:iscte_spots/widgets/timeline/timeline_search_delegate.dart';
 import 'package:logger/logger.dart';
 
 import '../loader/timeline_loader.dart';
@@ -111,100 +112,5 @@ class _TimelinePageState extends State<TimelinePage> {
                 }
               },
             )));
-  }
-}
-
-class TimelineSearchDelegate extends SearchDelegate {
-  final Logger _logger = Logger();
-  List<String> searchResults = [
-    'Honoris Causa',
-    '80s',
-    '90s',
-    '00s',
-    '10s',
-    '20s',
-  ];
-
-  Future<List<Content>>? mapdata;
-
-  TimelineSearchDelegate({required this.mapdata});
-
-  @override
-  List<Widget>? buildActions(BuildContext context) => [
-        IconButton(
-          icon: const FaIcon(FontAwesomeIcons.xbox),
-          onPressed: () {
-            if (query.isEmpty) {
-              close(context, null);
-            } else {
-              query = '';
-            }
-          },
-        )
-      ];
-
-  @override
-  Widget? buildLeading(BuildContext context) => IconButton(
-        icon: const FaIcon(FontAwesomeIcons.backward),
-        onPressed: () => close(context, null),
-      );
-
-  @override
-  Widget buildResults(BuildContext context) {
-    final String queryString = query;
-    List<Content> list = [];
-    return FutureBuilder(
-        future: mapdata,
-        builder: (BuildContext context, AsyncSnapshot<List<Content>> snapshot) {
-          if (snapshot.hasData) {
-            list = snapshot.data!.where((element) {
-              if (element.description != null) {
-                return element.description!
-                    .toLowerCase()
-                    .contains(queryString.toLowerCase());
-              } else {
-                return false;
-              }
-            }).toList();
-            _logger.d(list);
-            return TimeLineBody(mapdata: list);
-          } else {
-            return const LoadingWidget();
-          }
-        });
-/*
-    if (mapdata != null) {
-      list = mapdata!
-          .where((element) =>
-              element.title.toLowerCase().contains(queryString.toLowerCase()))
-          .toList();
-      _logger.d(list);
-      return TimeLineBody(mapdata: list);
-    } else {
-      return LoadingWidget();
-    }*/
-  }
-
-  @override
-  Widget buildSuggestions(BuildContext context) {
-    List<String> suggestions = searchResults.where((searchResult) {
-      final String result = searchResult.toLowerCase();
-      final String input = query.toLowerCase();
-
-      return result.contains(input);
-    }).toList();
-
-    return ListView.builder(
-        itemCount: suggestions.length,
-        itemBuilder: (context, index) {
-          final String suggestion = suggestions[index];
-          return ListTile(
-            title: Text(suggestion),
-            onTap: () {
-              query = suggestion;
-              showResults(context);
-            },
-          );
-        });
   }
 }
