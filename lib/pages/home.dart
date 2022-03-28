@@ -11,6 +11,7 @@ import 'package:iscte_spots/widgets/nav_drawer/navigation_drawer.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:logger/logger.dart';
 import 'package:motion_sensors/motion_sensors.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../services/flickr_iscte_photos.dart';
 
@@ -30,10 +31,14 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  List<Image> images = [
+  final Future<SharedPreferences> sharedPreferences =
+      SharedPreferences.getInstance();
+  List<Image> notViewedImages = [
     Image.asset('Resources/Img/Campus/campus-iscte-3.jpg'),
     Image.asset('Resources/Img/Campus/AulaISCTE_3.jpg')
   ];
+  List<String> fetchedImagesURL = [];
+  List<Image> viewedImages = [];
   Image? currentPuzzleImage;
 
   final List<StreamSubscription<dynamic>> _streamSubscriptions =
@@ -43,23 +48,44 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
+
+    setupSharedPrefs();
     try {
-      fetchFromFlickr();
+      if (fetchedImagesURL.isEmpty) {
+        fetchFromFlickr();
+      }
     } catch (e) {
       widget._logger.d("Error on Fetch; Resetting image;");
     }
-    currentPuzzleImage = images.first;
+    currentPuzzleImage = notViewedImages.first;
     setupURLStream();
     setupMotionSensors();
   }
 
+  Future<void> setupSharedPrefs() async {
+    SharedPreferences prefs = await sharedPreferences;
+    List<String> prefsFetchedImagesURL =
+        prefs.getStringList('fetchedImagesURL') ?? [];
+    for (String entry in prefsFetchedImagesURL) {
+      if (!fetchedImagesURL.contains(entry)) {
+        fetchedImagesURL.add(entry);
+        notViewedImages.add(Image.network(entry));
+      }
+    }
+    setState(() {});
+  }
+
   void setupURLStream() {
     StreamSubscription<String> streamSubscription;
-    streamSubscription = widget.flickrService.stream.listen((String event) {
-      if (!images.contains(event)) {
+    streamSubscription =
+        widget.flickrService.stream.listen((String event) async {
+      if (!fetchedImagesURL.contains(event)) {
         setState(() {
-          images.add(Image.network(event));
+          notViewedImages.add(Image.network(event));
         });
+        fetchedImagesURL.add(event);
+        SharedPreferences prefs = await sharedPreferences;
+        prefs.setStringList('fetchedImagesURL', fetchedImagesURL);
       } else {
         widget._logger.d("duplicated photo entry: $event");
       }
@@ -100,11 +126,22 @@ class _HomeState extends State<Home> {
     if ((currTime - lastShake) > widget.shakerTimeThreshhold) {
       lastShake = currTime;
 
-      assert(images.isNotEmpty);
+      if (notViewedImages.length < 10) {
+        fetchFromFlickr();
+      }
+      Image newImage;
+      if (notViewedImages.isEmpty) {
+        newImage = viewedImages[Random().nextInt(viewedImages.length)];
+      } else {
+        newImage = notViewedImages[Random().nextInt(notViewedImages.length)];
+        notViewedImages.remove(newImage);
+        viewedImages.add(newImage);
+      }
       setState(() {
-        currentPuzzleImage =
-            images[Random().nextInt(images.isEmpty ? 0 : images.length)];
+        currentPuzzleImage = newImage;
       });
+
+      setState(() {});
       widget._logger.d("Randomized puzzle Image");
     } else {
       widget._logger.d("Woah slow down there");
@@ -155,7 +192,7 @@ class _HomeState extends State<Home> {
                 padding: const EdgeInsets.all(8.0),
                 child: Center(
                     child: Text(
-                  (images.length + 1).toString(),
+                  (notViewedImages.length + 1).toString(),
                   textScaleFactor: 1.5,
                 )),
               )
@@ -166,7 +203,7 @@ class _HomeState extends State<Home> {
             child: const FaIcon(FontAwesomeIcons.redoAlt),
             onPressed: () async {
               widget._logger.d("Pressed refresh");
-              if (images.isNotEmpty) {
+              if (notViewedImages.isNotEmpty) {
                 randomizeChosenImage();
               } else {
                 fetchAndRandomize();
