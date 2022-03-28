@@ -1,8 +1,9 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:iscte_spots/widgets/puzzle/puzzle_piece_painter.dart';
 import 'package:logger/logger.dart';
+
+import 'clipped_piece.dart';
 
 class PuzzlePiece extends StatefulWidget {
   final Logger _logger = Logger();
@@ -106,52 +107,4 @@ class PuzzlePieceState extends State<PuzzlePiece> {
               maxCol: widget.maxCol),
         ));
   }
-}
-
-class ClippedPiece extends StatelessWidget {
-  const ClippedPiece({
-    Key? key,
-    required this.image,
-    required this.row,
-    required this.col,
-    required this.maxRow,
-    required this.maxCol,
-    required this.width,
-  }) : super(key: key);
-
-  final double width;
-  final Image image;
-  final int row;
-  final int col;
-  final int maxRow;
-  final int maxCol;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: width,
-      child: ClipPath(
-        child: image,
-        clipper: PuzzlePieceClipper(row, col, maxRow, maxCol),
-      ),
-    );
-  }
-}
-
-// this class is used to clip the image to the puzzle piece path
-class PuzzlePieceClipper extends CustomClipper<Path> {
-  final int row;
-  final int col;
-  final int maxRow;
-  final int maxCol;
-
-  PuzzlePieceClipper(this.row, this.col, this.maxRow, this.maxCol);
-
-  @override
-  Path getClip(Size size) {
-    return getPiecePath(size, row, col, maxRow, maxCol);
-  }
-
-  @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }

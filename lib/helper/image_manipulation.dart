@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:iscte_spots/widgets/puzzle/puzzle_piece.dart';
 
+import '../widgets/puzzle/clipped_piece.dart';
 import '../widgets/splashScreen/moving_widget.dart';
 import 'box_size.dart';
 
