@@ -3,14 +3,11 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:iscte_spots/widgets/puzzle/puzzle_piece.dart';
-import 'package:logger/logger.dart';
 
 import '../widgets/splashScreen/moving_widget.dart';
 import 'box_size.dart';
 
 class ImageManipulation {
-  static final Logger _logger = Logger();
-
   static Future<Size> getImageSize(Image image) async {
     final Completer<Size> completer = Completer<Size>();
 
@@ -34,8 +31,7 @@ class ImageManipulation {
     required cols,
     required bringToTop,
     required sendToBack,
-    required maxWidth,
-    required maxHeight,
+    required constraints,
   }) async {
     //logger.d('started split');
     List<Widget> outputList = [];
@@ -52,8 +48,7 @@ class ImageManipulation {
           maxCol: cols,
           bringToTop: bringToTop,
           sendToBack: sendToBack,
-          maxWidth: maxWidth,
-          maxHeight: maxHeight,
+          constraints: constraints,
         );
         outputList.add(puzzlePiece);
       }

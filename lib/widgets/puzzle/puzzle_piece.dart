@@ -16,8 +16,7 @@ class PuzzlePiece extends StatefulWidget {
   final Function bringToTop;
   final Function sendToBack;
   final bool snapInPlace;
-  final double maxWidth;
-  final double maxHeight;
+  final BoxConstraints constraints;
 
   PuzzlePiece({
     required Key key,
@@ -29,8 +28,7 @@ class PuzzlePiece extends StatefulWidget {
     required this.maxCol,
     required this.bringToTop,
     required this.sendToBack,
-    required this.maxWidth,
-    required this.maxHeight,
+    required this.constraints,
     this.snapInPlace = true,
   }) : super(key: key);
 
@@ -46,22 +44,27 @@ class PuzzlePieceState extends State<PuzzlePiece> {
   bool isMovable = true;
 
   @override
+  void initState() {
+    super.initState();
+    final imageWidth = widget.constraints.maxWidth;
+    final imageHeight = widget.constraints.maxHeight *
+        widget.constraints.maxWidth /
+        widget.imageSize.width;
+    final double pieceWidth = imageWidth / widget.maxCol;
+    final double pieceHeight = imageHeight / widget.maxRow;
+
+    double maxHeight = widget.maxRow * pieceHeight * 0.5;
+    double minHeight = widget.row * pieceHeight * 0.5;
+    double maxWidth = widget.maxCol * pieceWidth * 0.5;
+    double minWidth = widget.col * pieceWidth * 0.5;
+    top ??= (Random().nextDouble() * maxHeight) - minHeight;
+    left ??= (Random().nextDouble() * maxWidth) - minWidth;
+    widget._logger.d(
+        "col:${widget.col}; row:${widget.row}; pieceHeight:$pieceHeight; pieceWidth:$pieceWidth; top:$top; left:$left;");
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final imageWidth = widget.maxWidth;
-    final imageHeight =
-        widget.maxHeight * widget.maxWidth / widget.imageSize.width;
-    final pieceWidth = imageWidth / widget.maxCol;
-    final pieceHeight = imageHeight / widget.maxRow;
-
-    if (top == null) {
-      top = Random().nextInt((imageHeight - pieceHeight).ceil()).toDouble();
-      top = top! - widget.row * pieceHeight;
-    }
-    if (left == null) {
-      left = Random().nextInt((imageWidth - pieceWidth).ceil()).toDouble();
-      left = left! - widget.col * pieceWidth;
-    }
-
     return Positioned(
         top: top,
         left: left,
@@ -90,6 +93,7 @@ class PuzzlePieceState extends State<PuzzlePiece> {
                   }
                   widget.sendToBack(widget);
                 }
+                widget._logger.d("top:$top; left: $left");
               });
             }
           },
@@ -98,7 +102,7 @@ class PuzzlePieceState extends State<PuzzlePiece> {
               row: widget.row,
               col: widget.col,
               maxRow: widget.maxRow,
-              width: imageWidth,
+              width: widget.constraints.maxWidth,
               maxCol: widget.maxCol),
         ));
   }

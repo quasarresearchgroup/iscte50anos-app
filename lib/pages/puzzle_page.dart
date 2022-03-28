@@ -21,7 +21,6 @@ class PuzzlePage extends StatefulWidget {
 
 class _PuzzlePageState extends State<PuzzlePage> {
   List<Widget> pieces = [];
-  Size? imageSize;
   //make this a future so that previous operations get queued and complete only when this has values
   @override
   void initState() {
@@ -29,51 +28,54 @@ class _PuzzlePageState extends State<PuzzlePage> {
     generatePieces(widget.image);
   }
 
+  @override
+  void didUpdateWidget(PuzzlePage oldWidget) {
+    if (oldWidget.image != widget.image) {
+      widget._logger.d("changing image");
+      generatePieces(widget.image);
+    }
+    super.didUpdateWidget(oldWidget);
+  }
+
   void generatePieces(Image img) async {
     setState(() {
       pieces = [];
     });
-    imageSize = await ImageManipulation.getImageSize(img);
+    Size imageSize = await ImageManipulation.getImageSize(img);
+    final imageWidth = widget.constraints.maxWidth;
+    final imageHeight =
+        widget.constraints.maxWidth * imageSize.height / imageSize.width;
+
     pieces = await ImageManipulation.splitImagePuzzlePiece(
       image: img,
       bringToTop: bringToTop,
       sendToBack: sendToBack,
       rows: widget.rows,
       cols: widget.cols,
-      maxHeight: widget.constraints.maxHeight,
-      maxWidth: widget.constraints.maxWidth,
+      constraints: widget.constraints,
     );
     pieces.insert(0, Expanded(child: Container()));
     pieces.insert(
         1,
         Container(
           decoration: BoxDecoration(
+              color: Colors.brown,
               border: Border(
-            bottom:
-                BorderSide(color: Theme.of(context).shadowColor.withAlpha(50)),
-            top: BorderSide(color: Theme.of(context).shadowColor.withAlpha(50)),
-            right:
-                BorderSide(color: Theme.of(context).shadowColor.withAlpha(50)),
-            left:
-                BorderSide(color: Theme.of(context).shadowColor.withAlpha(50)),
-          )),
+                bottom: BorderSide(
+                    color: Theme.of(context).shadowColor.withAlpha(50)),
+                top: BorderSide(
+                    color: Theme.of(context).shadowColor.withAlpha(50)),
+                right: BorderSide(
+                    color: Theme.of(context).shadowColor.withAlpha(50)),
+                left: BorderSide(
+                    color: Theme.of(context).shadowColor.withAlpha(50)),
+              )),
           child: SizedBox(
-            width: imageSize?.width,
-            height: imageSize?.height,
+            width: imageWidth,
+            height: imageHeight,
           ),
         ));
     setState(() {});
-  }
-
-  @override
-  void didUpdateWidget(PuzzlePage oldWidget) {
-    if (oldWidget.image != widget.image) {
-      widget._logger.d("changing image");
-      setState(() {
-        generatePieces(widget.image);
-      });
-    }
-    super.didUpdateWidget(oldWidget);
   }
 
   @override
@@ -92,7 +94,7 @@ class _PuzzlePageState extends State<PuzzlePage> {
   void sendToBack(Widget widget) {
     setState(() {
       pieces.remove(widget);
-      pieces.insert(1, widget);
+      pieces.insert(2, widget);
     });
   }
 }

@@ -166,18 +166,20 @@ class _HomeState extends State<Home> {
               }
             },
           ),
-          body: LayoutBuilder(
-              builder: (BuildContext context, BoxConstraints constraints) {
-            return (currentPuzzleImage != null)
-                ? Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: PuzzlePage(
-                      image: currentPuzzleImage!,
-                      constraints: constraints,
-                    ),
-                  )
-                : const LoadingWidget();
-          }),
+          body: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(40.0),
+              child: LayoutBuilder(
+                  builder: (BuildContext context, BoxConstraints constraints) {
+                return (currentPuzzleImage != null)
+                    ? PuzzlePage(
+                        image: currentPuzzleImage!,
+                        constraints: constraints,
+                      )
+                    : const LoadingWidget();
+              }),
+            ),
+          ),
         ));
   }
 }
