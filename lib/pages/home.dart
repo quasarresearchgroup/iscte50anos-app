@@ -147,6 +147,13 @@ class _HomeState extends State<Home> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Center(
+                    child: IconButton(
+                        icon: const FaIcon(FontAwesomeIcons.questionCircle),
+                        onPressed: () => showHelpOverlay(context))),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Center(
                     child: Text(
                   (images.length + 1).toString(),
                   textScaleFactor: 1.5,
@@ -181,5 +188,28 @@ class _HomeState extends State<Home> {
             ),
           ),
         ));
+  }
+
+  Future<void> showHelpOverlay(BuildContext context) async {
+    OverlayState? overlayState = Overlay.of(context);
+    OverlayEntry overlayEntry = OverlayEntry(
+      builder: (context) {
+        return Positioned(
+            top: 100,
+            right: 10,
+            child: SizedBox(
+                width: MediaQuery.of(context).size.width * 0.2,
+                child: Container(
+                    decoration: BoxDecoration(border: Border.all()),
+                    child: currentPuzzleImage)));
+      },
+      maintainState: true,
+      opaque: false,
+    );
+    overlayState?.insert(overlayEntry);
+    widget._logger.d("Inserted Help overlay");
+    await Future.delayed(const Duration(seconds: 2));
+    overlayEntry.remove();
+    widget._logger.d("Removed Help overlay");
   }
 }

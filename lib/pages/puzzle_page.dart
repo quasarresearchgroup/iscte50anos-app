@@ -60,16 +60,8 @@ class _PuzzlePageState extends State<PuzzlePage> {
         Container(
           decoration: BoxDecoration(
               color: Colors.brown,
-              border: Border(
-                bottom: BorderSide(
-                    color: Theme.of(context).shadowColor.withAlpha(50)),
-                top: BorderSide(
-                    color: Theme.of(context).shadowColor.withAlpha(50)),
-                right: BorderSide(
-                    color: Theme.of(context).shadowColor.withAlpha(50)),
-                left: BorderSide(
-                    color: Theme.of(context).shadowColor.withAlpha(50)),
-              )),
+              border: Border.all(
+                  color: Theme.of(context).shadowColor.withAlpha(50))),
           child: SizedBox(
             width: imageWidth,
             height: imageHeight,
