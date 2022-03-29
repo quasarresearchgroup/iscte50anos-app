@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import 'package:iscte_spots/pages/puzzle_page.dart';
 import 'package:iscte_spots/widgets/my_bottom_bar.dart';
 import 'package:iscte_spots/widgets/nav_drawer/navigation_drawer.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
+import 'package:iscte_spots/widgets/util/overlays.dart';
 import 'package:logger/logger.dart';
 import 'package:motion_sensors/motion_sensors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -95,6 +97,7 @@ class _HomeState extends State<Home> {
       }
     }, onError: (error) {
       widget._logger.d(error);
+      showNetworkErrorOverlay(context, widget._logger);
     });
     _streamSubscriptions.add(streamSubscription);
   }
@@ -153,7 +156,11 @@ class _HomeState extends State<Home> {
   }
 
   Future<void> fetchFromFlickr() async {
-    widget.flickrService.fetch();
+    try {
+      widget.flickrService.fetch();
+    } on SocketException catch (_) {
+      showNetworkErrorOverlay(context, widget._logger);
+    }
   }
 
   void fetchAndRandomize() async {
@@ -189,8 +196,9 @@ class _HomeState extends State<Home> {
                 padding: const EdgeInsets.all(8.0),
                 child: Center(
                     child: IconButton(
-                        icon: const FaIcon(FontAwesomeIcons.questionCircle),
-                        onPressed: () => showHelpOverlay(context))),
+                        icon: const FaIcon(FontAwesomeIcons.circleQuestion),
+                        onPressed: () =>
+                            showHelpOverlay(context, currentPuzzleImage!))),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -231,7 +239,7 @@ class _HomeState extends State<Home> {
         ));
   }
 
-  Future<void> showHelpOverlay(BuildContext context) async {
+  Future<void> showHelpOverlay(BuildContext context, Widget image) async {
     OverlayState? overlayState = Overlay.of(context);
     OverlayEntry overlayEntry = OverlayEntry(
       builder: (context) {
@@ -242,7 +250,7 @@ class _HomeState extends State<Home> {
                 width: MediaQuery.of(context).size.width * 0.2,
                 child: Container(
                     decoration: BoxDecoration(border: Border.all()),
-                    child: currentPuzzleImage)));
+                    child: image)));
       },
       maintainState: true,
       opaque: false,

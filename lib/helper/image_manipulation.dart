@@ -26,7 +26,7 @@ class ImageManipulation {
     return imageSize;
   }
 
-  static Future<List<Widget>> splitImagePuzzlePiece({
+  static Future<List<PuzzlePiece>> splitImagePuzzlePiece({
     required Image image,
     required rows,
     required cols,
@@ -35,7 +35,7 @@ class ImageManipulation {
     required constraints,
   }) async {
     //logger.d('started split');
-    List<Widget> outputList = [];
+    List<PuzzlePiece> outputList = [];
     Size imageSize = await getImageSize(image);
     for (int x = 0; x < rows; x++) {
       for (int y = 0; y < cols; y++) {

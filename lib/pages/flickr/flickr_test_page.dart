@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import 'package:iscte_spots/pages/flickr/flickr_album_page.dart';
 import 'package:iscte_spots/services/flickr_iscte_album_service.dart';
 import 'package:iscte_spots/services/flickr_service.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
+import 'package:iscte_spots/widgets/util/overlays.dart';
 import 'package:logger/logger.dart';
 
 class FlickrTest extends StatefulWidget {
@@ -58,6 +60,7 @@ class _FlickrTestState extends State<FlickrTest> {
       });
     }, onError: (error) {
       widget._logger.d(error);
+      showNetworkErrorOverlay(context, widget._logger);
       noMoreData = error == FlickrService.NODATAERROR;
     });
   }
@@ -71,15 +74,20 @@ class _FlickrTestState extends State<FlickrTest> {
   void fetchMorePhotosets() async {
     int millisecondsSinceEpoch2 = DateTime.now().millisecondsSinceEpoch;
     if (millisecondsSinceEpoch2 - lastFetch >= widget.fetchThreshHold) {
-      setState(() {
-        fetching = true;
-      });
-      widget._logger.d("fetching more data");
-      lastFetch = millisecondsSinceEpoch2;
-      await widget.flickrService.fetch();
-      setState(() {
-        fetching = false;
-      });
+      try {
+        setState(() {
+          fetching = true;
+        });
+        widget._logger.d("fetching more data");
+        lastFetch = millisecondsSinceEpoch2;
+        await widget.flickrService.fetch();
+        setState(() {
+          fetching = false;
+        });
+      } on SocketException catch (e) {
+        widget._logger.e(e);
+        showNetworkErrorOverlay(context, widget._logger);
+      }
     } else {
       widget._logger.d("wait a bit before fetching againg");
     }
