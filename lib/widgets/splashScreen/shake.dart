@@ -5,13 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:iscte_spots/helper/image_manipulation.dart';
-import 'package:iscte_spots/widgets/nav_drawer/navigation_drawer.dart';
-import 'package:iscte_spots/widgets/nav_drawer/page_routes.dart';
 import 'package:iscte_spots/widgets/splashScreen/moving_widget.dart';
 import 'package:logger/logger.dart';
 
 import '../../services/flickr_iscte_photos.dart';
-import '../my_bottom_bar.dart';
 import '../util/loading.dart';
 
 class Shaker extends StatefulWidget {
@@ -59,33 +56,25 @@ class _ShakerState extends State<Shaker> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        Navigator.pushReplacementNamed(context, PageRoutes.home);
-        return true;
-      },
-      child: Scaffold(
-          drawer: const NavigationDrawer(),
-          appBar: AppBar(
-            title: Title(color: Colors.black, child: const Text("Shaker")),
-          ),
-          bottomNavigationBar: const MyBottomBar(selectedIndex: 0),
-          floatingActionButton: FloatingActionButton(
-            child: const FaIcon(FontAwesomeIcons.redoAlt),
-            onPressed: () {
-              if (images.isEmpty) {
-                widget.flickrService.fetch();
-              } else {
-                setState(() {
-                  currentPuzzleImage = images[Random().nextInt(images.length)];
-                });
-              }
-            },
-          ),
-          body: GravityPlane(
-            image: currentPuzzleImage,
-          )),
-    );
+    return Scaffold(
+        appBar: AppBar(
+          title: Title(color: Colors.black, child: const Text("Shaker")),
+        ),
+        floatingActionButton: FloatingActionButton(
+          child: const FaIcon(FontAwesomeIcons.redoAlt),
+          onPressed: () {
+            if (images.isEmpty) {
+              widget.flickrService.fetch();
+            } else {
+              setState(() {
+                currentPuzzleImage = images[Random().nextInt(images.length)];
+              });
+            }
+          },
+        ),
+        body: GravityPlane(
+          image: currentPuzzleImage,
+        ));
   }
 }
 

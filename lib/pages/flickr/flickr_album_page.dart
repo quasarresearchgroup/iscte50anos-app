@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -7,7 +8,6 @@ import 'package:iscte_spots/models/flickr/flickr_photo.dart';
 import 'package:iscte_spots/models/flickr/flickr_photoset.dart';
 import 'package:iscte_spots/services/flickr_photoset_service.dart';
 import 'package:iscte_spots/services/flickr_service.dart';
-import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:logger/logger.dart';
 
 class FlickAlbumPage extends StatefulWidget {
@@ -102,13 +102,29 @@ class _FlickAlbumPageState extends State<FlickAlbumPage> {
             controller: widget.listViewController,
             itemBuilder: (context, index) {
               return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: index < fetchedPhotos.length
-                    ? Image.network(fetchedPhotos[index].url)
-                    : noMoreData
-                        ? const Center(child: Text("no more data"))
-                        : const LoadingWidget(),
-              );
+                  padding: const EdgeInsets.all(8.0),
+                  child: index < fetchedPhotos.length
+                      ? InteractiveViewer(
+                          child: CachedNetworkImage(
+                              imageUrl: fetchedPhotos[index].url,
+                              fadeOutDuration: const Duration(seconds: 1),
+                              fadeInDuration: const Duration(seconds: 3),
+                              progressIndicatorBuilder: (BuildContext context,
+                                      String url, DownloadProgress progress) =>
+                                  Center(
+                                    child: SizedBox(
+                                      width: 100,
+                                      height: 100,
+                                      child: LinearProgressIndicator(
+                                        value: progress.progress,
+                                      ),
+                                    ),
+                                  )),
+                        )
+                      : noMoreData
+                          ? const Center(child: Text("no more data"))
+                          : const Center(
+                              child: CircularProgressIndicator.adaptive()));
             }));
   }
 }

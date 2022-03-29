@@ -28,13 +28,14 @@ dependencies:
   image: ^3.1.1
   animated_splash_screen: ^1.2.0
   motion_sensors: ^0.1.0
-  font_awesome_flutter: ^9.2.0
+  font_awesome_flutter: ^10.1.0
   flutter_speed_dial: ^5.0.0+1
   flutter_appauth:
   flutter_secure_storage:
   flutter_native_splash: ^2.1.0
   flutter_dotenv: ^5.0.2
   shared_preferences: ^2.0.13
+  cached_network_image: ^3.2.0
 
 
 dev_dependencies:

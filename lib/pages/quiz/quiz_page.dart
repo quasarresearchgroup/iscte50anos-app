@@ -109,23 +109,20 @@ class _QuizPageState extends State<QuizPage> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text(AppLocalizations.of(context)!.quizPageTitle),
-          //backgroundColor: const Color.fromRGBO(200, 200, 200, 0),
-        ),
-        body: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: _questionIndex < _questions.length
-              ? Quiz(
-                  questions: _questions,
-                  answerQuestion: _answerQuestion,
-                  questionIndex: _questionIndex)
-              : Result(_totalScore, _resetQuiz),
-        ), //Padding
-      ), //Scaffold
-      debugShowCheckedModeBanner: false,
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(AppLocalizations.of(context)!.quizPageTitle),
+        //backgroundColor: const Color.fromRGBO(200, 200, 200, 0),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: _questionIndex < _questions.length
+            ? Quiz(
+                questions: _questions,
+                answerQuestion: _answerQuestion,
+                questionIndex: _questionIndex)
+            : Result(_totalScore, _resetQuiz),
+      ), //Padding
     ); //MaterialApp
   }
 }

@@ -19,7 +19,7 @@ class NavigationDrawer extends StatelessWidget {
         ),
         child: null,
       ),
-      ListTile(
+      /*ListTile(
         leading: const Icon(Icons.home),
         title: Text(AppLocalizations.of(context)!.mainMenu),
         onTap: () {
@@ -33,45 +33,46 @@ class NavigationDrawer extends StatelessWidget {
           Navigator.pushReplacementNamed(context, PageRoutes.qrscan);
         },
       ),
+      */
       ListTile(
         leading: const Icon(Icons.timeline),
         title: Text(AppLocalizations.of(context)!.timelineScreen),
         onTap: () {
-          Navigator.pushReplacementNamed(context, PageRoutes.timeline);
+          Navigator.pushNamed(context, PageRoutes.timeline);
         },
       ),
       ListTile(
         leading: const Icon(Icons.web_sharp),
         title: Text(AppLocalizations.of(context)!.visitedPagesScreen),
         onTap: () {
-          Navigator.pushReplacementNamed(context, PageRoutes.visited);
+          Navigator.pushNamed(context, PageRoutes.visited);
         },
       ),
       ListTile(
         leading: const Icon(Icons.help),
         title: Text(AppLocalizations.of(context)!.quizScreen),
         onTap: () {
-          Navigator.pushReplacementNamed(context, PageRoutes.quiz);
+          Navigator.pushNamed(context, PageRoutes.quiz);
         },
       ),
       ListTile(
         leading: const Icon(Icons.touch_app_outlined),
         title: const Text('Shaker'),
         onTap: () {
-          Navigator.pushReplacementNamed(context, PageRoutes.shake);
+          Navigator.pushNamed(context, PageRoutes.shake);
+        },
+      ),
+      ListTile(
+        leading: const FaIcon(FontAwesomeIcons.flickr),
+        title: Text("Flickr"),
+        onTap: () {
+          Navigator.pushNamed(context, PageRoutes.flickr);
         },
       ),
       ListTile(
         leading: const Icon(Icons.score),
         title: Text(AppLocalizations.of(context)!.pointsScreen),
         onTap: () {},
-      ),
-      ListTile(
-        leading: const FaIcon(FontAwesomeIcons.flickr),
-        title: Text("flickr"),
-        onTap: () {
-          Navigator.pushReplacementNamed(context, PageRoutes.flickr);
-        },
       ),
     ];
 

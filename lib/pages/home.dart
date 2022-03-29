@@ -49,7 +49,11 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
 
-    setupSharedPrefs();
+    initAsyncMethod();
+  }
+
+  void initAsyncMethod() async {
+    await setupSharedPrefs();
     try {
       if (fetchedImagesURL.isEmpty) {
         fetchFromFlickr();

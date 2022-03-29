@@ -58,6 +58,7 @@ class FLickrPhotosetService extends FlickrService {
         }
       } on Exception catch (e) {
         _controller.sink.addError(e);
+        stopFetch();
         //_controller.close();
       }
     }

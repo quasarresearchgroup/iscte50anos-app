@@ -1,7 +1,7 @@
 import 'dart:async';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:iscte_spots/models/flickr/flickr_photoset.dart';
 import 'package:iscte_spots/pages/flickr/flickr_album_page.dart';
@@ -9,9 +9,6 @@ import 'package:iscte_spots/services/flickr_iscte_album_service.dart';
 import 'package:iscte_spots/services/flickr_service.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:logger/logger.dart';
-
-import '../../widgets/my_bottom_bar.dart';
-import '../../widgets/nav_drawer/navigation_drawer.dart';
 
 class FlickrTest extends StatefulWidget {
   static const pageRoute = "/flickr";
@@ -90,74 +87,65 @@ class _FlickrTestState extends State<FlickrTest> {
   @override
   Widget build(BuildContext context) {
     hasData = fetchedPhotosets.isNotEmpty;
-    return WillPopScope(
-        onWillPop: () async {
-          SystemNavigator.pop();
-          return true;
-        },
-        child: Scaffold(
-            drawer: const NavigationDrawer(),
-            appBar: AppBar(
-              title: Title(color: Colors.black, child: const Text("Flickr")),
-              actions: [
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Center(
-                    child: fetching
-                        ? const CircularProgressIndicator.adaptive()
-                        : const FaIcon(FontAwesomeIcons.check),
-                  ),
-                )
-              ],
-            ),
-            bottomNavigationBar: const MyBottomBar(selectedIndex: 0),
-            floatingActionButton: FloatingActionButton(
-              child: const FaIcon(FontAwesomeIcons.redoAlt),
-              onPressed: () {
-                fetchMorePhotosets();
-              },
-            ),
-            body: !hasData
-                ? SizedBox.expand(
-                    child: noMoreData
-                        ? const Center(child: Text("No more data!"))
-                        : const LoadingWidget())
-                : LayoutBuilder(
-                    builder:
-                        (BuildContext context, BoxConstraints constraints) {
-                      return Column(
-                        children: [
-                          SizedBox(
-                              height: constraints.maxHeight * 0.05,
-                              child: Center(
-                                  child: Text(
-                                      "${activePage + 1} / ${fetchedPhotosets.length}"))),
-                          SizedBox(
-                            height: constraints.maxHeight * 0.95,
-                            child: PageView.builder(
-                              controller: widget._pageController,
-                              itemCount: fetchedPhotosets.length + 1,
-                              onPageChanged: (int page) {
-                                setState(() {
-                                  activePage = page;
-                                });
-                              },
-                              itemBuilder: (context, index) {
-                                return index == fetchedPhotosets.length
-                                    ? const LoadingWidget()
-                                    : FlickrCard(
-                                        isActivePage: activePage == index,
-                                        indexedPhotoset:
-                                            fetchedPhotosets[index],
-                                        constraints: constraints,
-                                      );
-                              },
-                            ),
-                          ),
-                        ],
-                      );
-                    },
-                  )));
+    return Scaffold(
+        appBar: AppBar(
+          title: Title(color: Colors.black, child: const Text("Flickr")),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Center(
+                child: fetching
+                    ? const CircularProgressIndicator.adaptive()
+                    : const FaIcon(FontAwesomeIcons.check),
+              ),
+            )
+          ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          child: const FaIcon(FontAwesomeIcons.redoAlt),
+          onPressed: () {
+            fetchMorePhotosets();
+          },
+        ),
+        body: !hasData
+            ? SizedBox.expand(
+                child: noMoreData
+                    ? const Center(child: Text("No more data!"))
+                    : const LoadingWidget())
+            : LayoutBuilder(
+                builder: (BuildContext context, BoxConstraints constraints) {
+                  return Column(
+                    children: [
+                      SizedBox(
+                          height: constraints.maxHeight * 0.05,
+                          child: Center(
+                              child: Text(
+                                  "${activePage + 1} / ${fetchedPhotosets.length}"))),
+                      SizedBox(
+                        height: constraints.maxHeight * 0.95,
+                        child: PageView.builder(
+                          controller: widget._pageController,
+                          itemCount: fetchedPhotosets.length + 1,
+                          onPageChanged: (int page) {
+                            setState(() {
+                              activePage = page;
+                            });
+                          },
+                          itemBuilder: (context, index) {
+                            return index == fetchedPhotosets.length
+                                ? const LoadingWidget()
+                                : FlickrCard(
+                                    isActivePage: activePage == index,
+                                    indexedPhotoset: fetchedPhotosets[index],
+                                    constraints: constraints,
+                                  );
+                          },
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ));
   }
 }
 
@@ -178,9 +166,11 @@ class FlickrCard extends StatelessWidget {
     final Widget imageWidget = indexedPhotoset.primaryphotoURL != null
         ? ClipRRect(
             borderRadius: BorderRadius.circular(20),
-            child: Image.network(
-              indexedPhotoset.primaryphotoURL!,
-              fit: BoxFit.fitHeight,
+            child: InteractiveViewer(
+              child: CachedNetworkImage(
+                imageUrl: indexedPhotoset.primaryphotoURL!,
+                fit: BoxFit.fitHeight,
+              ),
             ),
           )
         : const FaIcon(FontAwesomeIcons.flickr);
