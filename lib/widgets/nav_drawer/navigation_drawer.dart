@@ -38,6 +38,7 @@ class NavigationDrawer extends StatelessWidget {
         leading: const Icon(Icons.timeline),
         title: Text(AppLocalizations.of(context)!.timelineScreen),
         onTap: () {
+          Navigator.pop(context);
           Navigator.pushNamed(context, PageRoutes.timeline);
         },
       ),
@@ -45,6 +46,7 @@ class NavigationDrawer extends StatelessWidget {
         leading: const Icon(Icons.web_sharp),
         title: Text(AppLocalizations.of(context)!.visitedPagesScreen),
         onTap: () {
+          Navigator.pop(context);
           Navigator.pushNamed(context, PageRoutes.visited);
         },
       ),
@@ -52,6 +54,7 @@ class NavigationDrawer extends StatelessWidget {
         leading: const Icon(Icons.help),
         title: Text(AppLocalizations.of(context)!.quizScreen),
         onTap: () {
+          Navigator.pop(context);
           Navigator.pushNamed(context, PageRoutes.quiz);
         },
       ),
@@ -59,6 +62,7 @@ class NavigationDrawer extends StatelessWidget {
         leading: const Icon(Icons.touch_app_outlined),
         title: Text(AppLocalizations.of(context)!.shakerScreen),
         onTap: () {
+          Navigator.pop(context);
           Navigator.pushNamed(context, PageRoutes.shake);
         },
       ),
@@ -66,6 +70,7 @@ class NavigationDrawer extends StatelessWidget {
         leading: const FaIcon(FontAwesomeIcons.flickr),
         title: Text(AppLocalizations.of(context)!.flickrScreen),
         onTap: () {
+          Navigator.pop(context);
           Navigator.pushNamed(context, PageRoutes.flickr);
         },
       ),
