@@ -13,6 +13,7 @@
 
     "generalError":"Erro",
     "noMoreDataError":"Sem mais dados",
+    "networkError":"Erro de conecção",
 
     "mainMenu": "Menu principal",
     "quizPageTitle":"Quiz",

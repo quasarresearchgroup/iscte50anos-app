@@ -12,6 +12,7 @@
 
     "generalError":"Error",
     "noMoreDataError":"No more Data",
+    "networkError":"Network Error",
 
 
     "mainMenu": "Main Menu",

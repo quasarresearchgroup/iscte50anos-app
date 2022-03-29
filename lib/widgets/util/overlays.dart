@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:logger/logger.dart';
 
 Future<void> showNetworkErrorOverlay(
@@ -31,9 +32,10 @@ Future<void> showNetworkErrorOverlay(
                         padding: const EdgeInsets.all(8.0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: const [
-                            Text("Network Error"),
-                            Icon(Icons.signal_wifi_connected_no_internet_4),
+                          children: [
+                            Text(AppLocalizations.of(context)!.networkError),
+                            const Icon(
+                                Icons.signal_wifi_connected_no_internet_4),
                           ],
                         ),
                       ),
