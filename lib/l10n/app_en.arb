@@ -1,18 +1,28 @@
 {
     "appName":"IscteSpots",
+
     "scanCodeButton": "Scan Code",
     "createCode": "Create Code",
     "scanACode": "Scan a code",
     "noPages":"No Pages visited yet",
     "loading":"Loading...",
-    "quizPageTitle":"Quiz",
+    "advance":"Forward",
+    "quizComplete":"Quiz completed",
+    "back":"Go Back",
+
     "generalError":"Error",
+    "noMoreDataError":"No more Data",
+
 
     "mainMenu": "Main Menu",
+    "quizPageTitle":"Quiz",
     "pointsScreen":"Points",
     "visitedPagesScreen":"Visited Pages",
     "timelineScreen":"Timeline",
+    "timelineDetailsScreen":"Details",
     "puzzleScreen":"Puzzle",
-    "quizScreen":"Quizzes"
+    "quizScreen":"Quizzes",
+    "flickrScreen":"Flickr",
+    "shakerScreen":"Shaker"
 
 }

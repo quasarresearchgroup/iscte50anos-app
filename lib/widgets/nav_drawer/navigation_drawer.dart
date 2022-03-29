@@ -57,14 +57,14 @@ class NavigationDrawer extends StatelessWidget {
       ),
       ListTile(
         leading: const Icon(Icons.touch_app_outlined),
-        title: const Text('Shaker'),
+        title: Text(AppLocalizations.of(context)!.shakerScreen),
         onTap: () {
           Navigator.pushNamed(context, PageRoutes.shake);
         },
       ),
       ListTile(
         leading: const FaIcon(FontAwesomeIcons.flickr),
-        title: Text("Flickr"),
+        title: Text(AppLocalizations.of(context)!.flickrScreen),
         onTap: () {
           Navigator.pushNamed(context, PageRoutes.flickr);
         },

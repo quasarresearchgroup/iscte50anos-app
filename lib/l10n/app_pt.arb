@@ -1,17 +1,28 @@
 {
     "appName":"IscteSpots",
+
     "scanCodeButton": "Digitalizar Código",
     "createCode": "Criar Código",
     "scanACode": "Digitalize um código",
     "noPages":"Ainda não visitou páginas",
-    "loading":"A carregar",
-    "quizPageTitle":"Quiz",
+    "loading":"A carregar...",
+    "advance":"Avançar",
+    "quizComplete":"Quiz concluído",
+    "back":"Voltar",
+
+
     "generalError":"Erro",
+    "noMoreDataError":"Sem mais dados",
 
     "mainMenu": "Menu principal",
+    "quizPageTitle":"Quiz",
     "pointsScreen":"Ver Points",
     "visitedPagesScreen":"Páginas Visitadas",
     "timelineScreen":"Linha do Tempo",
+    "timelineDetailsScreen":"Detalhes",
     "puzzleScreen":"Puzzle",
-    "quizScreen":"Quizzes"
+    "quizScreen":"Quizzes",
+    "flickrScreen":"Flickr",
+    "shakerScreen":"Shaker"
+
 }

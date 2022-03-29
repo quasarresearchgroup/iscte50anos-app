@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:iscte_spots/models/flickr/flickr_photo.dart';
 import 'package:iscte_spots/models/flickr/flickr_photoset.dart';
@@ -122,7 +123,9 @@ class _FlickAlbumPageState extends State<FlickAlbumPage> {
                                   )),
                         )
                       : noMoreData
-                          ? const Center(child: Text("no more data"))
+                          ? Center(
+                              child: Text(AppLocalizations.of(context)!
+                                  .noMoreDataError))
                           : const Center(
                               child: CircularProgressIndicator.adaptive()));
             }));

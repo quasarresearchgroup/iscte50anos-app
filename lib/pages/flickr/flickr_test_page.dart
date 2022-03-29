@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:iscte_spots/models/flickr/flickr_photoset.dart';
 import 'package:iscte_spots/pages/flickr/flickr_album_page.dart';
@@ -89,7 +90,9 @@ class _FlickrTestState extends State<FlickrTest> {
     hasData = fetchedPhotosets.isNotEmpty;
     return Scaffold(
         appBar: AppBar(
-          title: Title(color: Colors.black, child: const Text("Flickr")),
+          title: Title(
+              color: Colors.black,
+              child: Text(AppLocalizations.of(context)!.flickrScreen)),
           actions: [
             Padding(
               padding: const EdgeInsets.all(10.0),
@@ -110,7 +113,9 @@ class _FlickrTestState extends State<FlickrTest> {
         body: !hasData
             ? SizedBox.expand(
                 child: noMoreData
-                    ? const Center(child: Text("No more data!"))
+                    ? Center(
+                        child:
+                            Text(AppLocalizations.of(context)!.noMoreDataError))
                     : const LoadingWidget())
             : LayoutBuilder(
                 builder: (BuildContext context, BoxConstraints constraints) {

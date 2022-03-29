@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:logger/logger.dart';
 
 import './answer.dart';
@@ -125,7 +126,7 @@ class _QuizState extends State<Quiz> {
         }).toList(),
 
         ElevatedButton(
-          child: const Text("Avançar"),
+          child: Text(AppLocalizations.of(context)!.advance),
           onPressed: () {
             widget.answerQuestion(1);
             startTimer();

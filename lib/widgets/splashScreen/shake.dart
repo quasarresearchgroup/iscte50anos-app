@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:iscte_spots/helper/image_manipulation.dart';
@@ -58,7 +59,9 @@ class _ShakerState extends State<Shaker> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Title(color: Colors.black, child: const Text("Shaker")),
+          title: Title(
+              color: Colors.black,
+              child: Text(AppLocalizations.of(context)!.shakerScreen)),
         ),
         floatingActionButton: FloatingActionButton(
           child: const FaIcon(FontAwesomeIcons.redoAlt),
@@ -106,13 +109,6 @@ class _GravityPlaneState extends State<GravityPlane> {
   void didUpdateWidget(GravityPlane oldWidget) {
     if (oldWidget.image != widget.image) {
       widget._logger.d("changing image");
-/*
-     pieces?.then((value) {
-        for(MovingPiece piece in value){
-          piece.
-        }
-      });
-      */
       setState(() {});
     }
     super.didUpdateWidget(oldWidget);
