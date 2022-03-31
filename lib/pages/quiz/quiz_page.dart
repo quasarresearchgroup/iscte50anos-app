@@ -113,7 +113,6 @@ class _QuizPageState extends State<QuizPage> {
     return Scaffold(
         appBar: AppBar(
           title: Text(AppLocalizations.of(context)!.quizPageTitle),
-          //backgroundColor: const Color.fromRGBO(200, 200, 200, 0),
         ),
         drawer: const NavigationDrawer(),
         body: Padding(
