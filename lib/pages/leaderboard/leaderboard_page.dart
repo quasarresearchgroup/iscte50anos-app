@@ -63,7 +63,13 @@ class LeaderBoardPage extends StatelessWidget {
           title: const Text("Leaderboard"),//AppLocalizations.of(context)!.quizPageTitle)
         ),
         drawer: const NavigationDrawer(),
-        body: const Leaderboard(),
+        body: NotificationListener<OverscrollIndicatorNotification>(
+          onNotification: (overscroll) {
+            overscroll.disallowIndicator();
+            return true;
+          },
+          child: const Leaderboard(),
+        ),
       ), //Scaffold
       debugShowCheckedModeBanner: false,
     ); //MaterialApp
@@ -158,11 +164,13 @@ class _LeaderboardState extends State<Leaderboard> {
                             title: Text(utf8.decode(utf8.encode(items[index]["name"])),
                                 style: const TextStyle(
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 18
+                                    fontSize: 16
                                 )
                             ),
-                            subtitle: Text("Pontos: ${items[index]["points"]}"),
-                            dense:true,
+                            subtitle: Text("Pontos: ${items[index]["points"]} \nAfiliação: IGE"),
+                            //isThreeLine: true,
+                            //dense:true,
+                            minVerticalPadding: 10.0,
                             trailing: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: <Widget>[
@@ -217,7 +225,6 @@ class _LeaderboardState extends State<Leaderboard> {
           onTap: () {
             setState(() {
               if(!isLoading){
-                print("Toquei");
                 futureLeaderboard = fetchLeaderboard();
               }
             });
