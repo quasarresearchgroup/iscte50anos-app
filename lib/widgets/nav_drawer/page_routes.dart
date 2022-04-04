@@ -6,7 +6,7 @@ import 'package:iscte_spots/pages/splash.dart';
 import 'package:iscte_spots/pages/timeline_page.dart';
 import 'package:iscte_spots/widgets/splashScreen/shake.dart';
 
-import '../../pages/flickr/flickr_test_page.dart';
+import '../../pages/flickr/flickr_page.dart';
 
 class PageRoutes {
   static const String splash = SplashScreen.pageRoute;
@@ -16,5 +16,5 @@ class PageRoutes {
   static const String visited = VisitedPagesPage.pageRoute;
   static const String qrscan = QRScanPage.pageRoute;
   static const String quiz = QuizPage.pageRoute;
-  static const String flickr = FlickrTest.pageRoute;
+  static const String flickr = FlickrPage.pageRoute;
 }

@@ -1,12 +1,11 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:logger/logger.dart';
 
 import 'clipped_piece.dart';
 
 class PuzzlePiece extends StatefulWidget {
-  final Logger _logger = Logger();
+  //final Logger _logger = Logger();
 
   final Image image;
   final Size imageSize;
@@ -60,8 +59,7 @@ class PuzzlePieceState extends State<PuzzlePiece> {
     double minWidth = widget.col * pieceWidth * 0.5;
     top ??= (Random().nextDouble() * maxHeight) - minHeight;
     left ??= (Random().nextDouble() * maxWidth) - minWidth;
-    widget._logger.d(
-        "col:${widget.col}; row:${widget.row}; pieceHeight:$pieceHeight; pieceWidth:$pieceWidth; top:$top; left:$left;");
+    //widget._logger.d("col:${widget.col}; row:${widget.row}; pieceHeight:$pieceHeight; pieceWidth:$pieceWidth; top:$top; left:$left;");
   }
 
   @override
@@ -94,7 +92,7 @@ class PuzzlePieceState extends State<PuzzlePiece> {
                   }
                   widget.sendToBack(widget);
                 }
-                widget._logger.d("top:$top; left: $left");
+                //widget._logger.d("top:$top; left: $left");
               });
             }
           },

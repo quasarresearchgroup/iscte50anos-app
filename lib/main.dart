@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:iscte_spots/pages/flickr/flickr_test_page.dart';
+import 'package:iscte_spots/pages/flickr/flickr_page.dart';
 import 'package:iscte_spots/pages/home.dart';
 import 'package:iscte_spots/pages/qr_scan_page.dart';
 import 'package:iscte_spots/pages/quiz/quiz_page.dart';
@@ -32,8 +32,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: '',
-      theme: ThemeData.light(),
-      darkTheme: ThemeData.dark(),
+      theme: ThemeData.light().copyWith(errorColor: Colors.deepOrangeAccent),
+      darkTheme: ThemeData.dark().copyWith(errorColor: Colors.deepOrangeAccent),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       home: const SplashScreen(),
@@ -44,7 +44,7 @@ class MyApp extends StatelessWidget {
         PageRoutes.qrscan: (context) => QRScanPage(),
         PageRoutes.quiz: (context) => QuizPage(),
         PageRoutes.shake: (context) => Shaker(),
-        PageRoutes.flickr: (context) => FlickrTest(),
+        PageRoutes.flickr: (context) => FlickrPage(),
       },
     );
   }

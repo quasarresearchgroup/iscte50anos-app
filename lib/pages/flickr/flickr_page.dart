@@ -13,20 +13,20 @@ import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:iscte_spots/widgets/util/overlays.dart';
 import 'package:logger/logger.dart';
 
-class FlickrTest extends StatefulWidget {
+class FlickrPage extends StatefulWidget {
   static const pageRoute = "/flickr";
   final Logger _logger = Logger();
   final FlickrIscteAlbumService flickrService = FlickrIscteAlbumService();
   final PageController _pageController = PageController(viewportFraction: 0.8);
   final int fetchThreshHold = 1000;
 
-  FlickrTest({Key? key}) : super(key: key);
+  FlickrPage({Key? key}) : super(key: key);
 
   @override
-  State<FlickrTest> createState() => _FlickrTestState();
+  State<FlickrPage> createState() => _FlickrPageState();
 }
 
-class _FlickrTestState extends State<FlickrTest> {
+class _FlickrPageState extends State<FlickrPage> {
   List<FlickrPhotoset> fetchedPhotosets = [];
   late StreamSubscription<FlickrPhotoset> _streamSubscription;
 
@@ -113,7 +113,7 @@ class _FlickrTestState extends State<FlickrTest> {
           ],
         ),
         floatingActionButton: FloatingActionButton(
-          child: const FaIcon(FontAwesomeIcons.redoAlt),
+          child: const FaIcon(FontAwesomeIcons.rotateRight),
           onPressed: () {
             fetchMorePhotosets();
           },

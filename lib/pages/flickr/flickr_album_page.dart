@@ -125,7 +125,8 @@ class _FlickAlbumPageState extends State<FlickAlbumPage> {
                       : noMoreData
                           ? Center(
                               child: Text(AppLocalizations.of(context)!
-                                  .noMoreDataError))
+                                  .noMoreDataError),
+                            )
                           : const Center(
                               child: CircularProgressIndicator.adaptive()));
             }));

@@ -26,7 +26,7 @@ class ImageManipulation {
     return imageSize;
   }
 
-  static Future<List<PuzzlePiece>> splitImagePuzzlePiece({
+  static Future<List<Widget>> splitImagePuzzlePiece({
     required Image image,
     required rows,
     required cols,

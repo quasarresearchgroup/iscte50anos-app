@@ -27,6 +27,7 @@ class Home extends StatefulWidget {
   final int shakerThreshhold = 5;
   @override
   _HomeState createState() => _HomeState();
+
   final Image originalImage =
       Image.asset('Resources/Img/Campus/campus-iscte-3.jpg');
   final FlickrIsctePhotoService flickrService = FlickrIsctePhotoService();
@@ -37,7 +38,7 @@ class _HomeState extends State<Home> {
       SharedPreferences.getInstance();
   List<Image> notViewedImages = [
     Image.asset('Resources/Img/Campus/campus-iscte-3.jpg'),
-    Image.asset('Resources/Img/Campus/AulaISCTE_3.jpg')
+    Image.asset('Resources/Img/Campus/AulaISCTE_3.jpg'),
   ];
   List<String> fetchedImagesURL = [];
   List<Image> viewedImages = [];
@@ -197,8 +198,8 @@ class _HomeState extends State<Home> {
                 child: Center(
                     child: IconButton(
                         icon: const FaIcon(FontAwesomeIcons.circleQuestion),
-                        onPressed: () =>
-                            showHelpOverlay(context, currentPuzzleImage!))),
+                        onPressed: () => showHelpOverlay(
+                            context, currentPuzzleImage!, widget._logger))),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -212,7 +213,7 @@ class _HomeState extends State<Home> {
           ),
           bottomNavigationBar: const MyBottomBar(selectedIndex: 0),
           floatingActionButton: FloatingActionButton(
-            child: const FaIcon(FontAwesomeIcons.redoAlt),
+            child: const FaIcon(FontAwesomeIcons.rotateRight),
             onPressed: () async {
               widget._logger.d("Pressed refresh");
               if (notViewedImages.isNotEmpty) {
@@ -237,28 +238,5 @@ class _HomeState extends State<Home> {
             ),
           ),
         ));
-  }
-
-  Future<void> showHelpOverlay(BuildContext context, Widget image) async {
-    OverlayState? overlayState = Overlay.of(context);
-    OverlayEntry overlayEntry = OverlayEntry(
-      builder: (context) {
-        return Positioned(
-            top: 100,
-            right: 10,
-            child: SizedBox(
-                width: MediaQuery.of(context).size.width * 0.2,
-                child: Container(
-                    decoration: BoxDecoration(border: Border.all()),
-                    child: image)));
-      },
-      maintainState: true,
-      opaque: false,
-    );
-    overlayState?.insert(overlayEntry);
-    widget._logger.d("Inserted Help overlay");
-    await Future.delayed(const Duration(seconds: 2));
-    overlayEntry.remove();
-    widget._logger.d("Removed Help overlay");
   }
 }

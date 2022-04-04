@@ -46,14 +46,6 @@ class _PuzzlePageState extends State<PuzzlePage> {
     final imageHeight =
         widget.constraints.maxWidth * imageSize.height / imageSize.width;
 
-    pieces = await ImageManipulation.splitImagePuzzlePiece(
-      image: img,
-      bringToTop: bringToTop,
-      sendToBack: sendToBack,
-      rows: widget.rows,
-      cols: widget.cols,
-      constraints: widget.constraints,
-    );
     pieces.insert(0, Expanded(child: Container()));
     pieces.insert(
         1,
@@ -61,18 +53,28 @@ class _PuzzlePageState extends State<PuzzlePage> {
           decoration: BoxDecoration(
               color: Colors.brown,
               border: Border.all(
-                  color: Theme.of(context).shadowColor.withAlpha(50))),
+                  color: Theme.of(context).shadowColor.withAlpha(100))),
           child: SizedBox(
             width: imageWidth,
             height: imageHeight,
           ),
+        ));
+    pieces.insertAll(
+        2,
+        await ImageManipulation.splitImagePuzzlePiece(
+          image: img,
+          bringToTop: bringToTop,
+          sendToBack: sendToBack,
+          rows: widget.rows,
+          cols: widget.cols,
+          constraints: widget.constraints,
         ));
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    return pieces.isNotEmpty ? Stack(children: pieces) : LoadingWidget();
+    return pieces.isNotEmpty ? Stack(children: pieces) : const LoadingWidget();
   }
 
   void bringToTop(Widget widget) {
