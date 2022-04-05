@@ -128,8 +128,9 @@ class _AffiliationLeaderboardState extends State<AffiliationLeaderboard> {
   String selectedType = "-";
   String selectedAffiliation = "-";
   bool firstSearch = false;
+  bool canSearch = false;
 
-  Map<String, dynamic> maps = {"Aluno":"student", "Docente":"professor", "Investigador":"researcher", "Funcionário":"Staff"};
+  Map<String, dynamic> maps = {"Aluno":"student", "Docente":"professor", "Investigador":"researcher", "Funcionário":"staff"};
 
 
   late Map<String, dynamic> affiliationMap;
@@ -143,7 +144,6 @@ class _AffiliationLeaderboardState extends State<AffiliationLeaderboard> {
       }
       throw Exception('Failed to load leaderboard');
     }finally{
-
     }
   }
 
@@ -162,7 +162,6 @@ class _AffiliationLeaderboardState extends State<AffiliationLeaderboard> {
 
   @override
   Widget build(BuildContext context) {
-    if(readJson ) {
       return Column(
         children: [
           const SizedBox( // Container to hold the description
@@ -176,66 +175,95 @@ class _AffiliationLeaderboardState extends State<AffiliationLeaderboard> {
               ),
             ),
           ),
-          Row(
-            children: const [
-              Text("Tipo de perfil"),
-              Text("Afiliação"),
-            ],
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          ),
-          Row(
+          if (readJson) Row(
             children: [
-              Column(
-                children: [
-                  //const Text("Tipo de perfil"),
-                  DropdownButton(
-                    value: selectedType,
-                    items:
-                    (affiliationMap.keys.toList()).map((type) =>
-                        DropdownMenuItem<String>(
-                            value: type, child: Text(type)),
-                    ).toList(),
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        selectedType = newValue!;
-                        selectedAffiliation = "-";
-                      });
-                    },
-                  ),
-                ],
-              ),
-              Column(
+              SizedBox(
+                width:120,
+                child: Column(
                   children: [
-                    //const Text("Afiliação"),
+                    const Text("Tipo"),
                     DropdownButton(
+                      isExpanded: true,
+                      value: selectedType,
+                      items:
+                      (affiliationMap.keys.toList()).map((type) =>
+                          DropdownMenuItem<String>(
+                              value: type, child: Text(type,overflow: TextOverflow.ellipsis)),
+                      ).toList(),
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          canSearch=false;
+                          selectedType = newValue!;
+                          selectedAffiliation = "-";
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                width:120,
+                child: Column(
+                  children: [
+                    const Text("Sub-tipo"),
+                    DropdownButton(
+                      isExpanded: true,
                       value: selectedAffiliation,
                       items:
                       (affiliationMap[selectedType] as List<dynamic>).map((
                           aff) =>
                           DropdownMenuItem<String>(
-                              value: aff, child: Text(aff)),
+                              value: aff, child: Text(aff,overflow: TextOverflow.ellipsis)),
                       ).toList(),
                       onChanged: (selectedType == "-") ? null : (String? newValue) {
                         if(newValue != "-"){
                           setState(() {
+                            canSearch=true;
                             firstSearch=true;
                             selectedAffiliation = newValue!;
                           });
                         }
                       },
                     ),
-                  ]
+                  ],
+                ),
+              ),
+              SizedBox(
+                width:120,
+                child: Column(
+                  children: [
+                    const Text("Afiliação"),
+                    DropdownButton(
+                      isExpanded:true,
+                      value: selectedAffiliation,
+                      items:
+                      (affiliationMap[selectedType] as List<dynamic>).map((
+                          aff) =>
+                          DropdownMenuItem<String>(
+                              value: aff, child: Text(aff,overflow: TextOverflow.ellipsis)),
+                      ).toList(),
+                      onChanged: (selectedType == "-") ? null : (String? newValue) {
+                        if(newValue != "-"){
+                          setState(() {
+                            canSearch=true;
+                            firstSearch=true;
+                            selectedAffiliation = newValue!;
+                          });
+                        }
+                      },
+                    ),
+                  ],
+                ),
               ),
             ],
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           ),
-          if(firstSearch) Expanded(child: LeaderboardList(key: UniqueKey(),fetchFunction: fetchLeaderboard))
-          else const Expanded(child: Center(child:Text("Selecione a afiliação pretendida"))),
+          if(canSearch) Expanded(child: LeaderboardList(key: UniqueKey(),fetchFunction: fetchLeaderboard))
+          else if(!firstSearch && readJson) const Expanded(child: Center(child:Text("Selecione a afiliação pretendida", style: TextStyle(
+              fontSize: 16
+          )))),
         ],
       );
-    }else{
-      return Container();
-    }
   }
 }
 
