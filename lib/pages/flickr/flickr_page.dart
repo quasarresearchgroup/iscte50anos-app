@@ -30,6 +30,7 @@ class _FlickrPageState extends State<FlickrPage> {
   List<FlickrPhotoset> fetchedPhotosets = [];
   late StreamSubscription<FlickrPhotoset> _streamSubscription;
 
+  bool networkError = false;
   bool fetching = false;
   bool hasData = false;
   int activePage = 0;
@@ -59,7 +60,7 @@ class _FlickrPageState extends State<FlickrPage> {
         }
       });
     }, onError: (error) {
-      widget._logger.d(error);
+      widget._logger.e(error);
       showNetworkErrorOverlay(context, widget._logger);
       noMoreData = error == FlickrService.NODATAERROR;
     });
@@ -81,12 +82,15 @@ class _FlickrPageState extends State<FlickrPage> {
         widget._logger.d("fetching more data");
         lastFetch = millisecondsSinceEpoch2;
         await widget.flickrService.fetch();
-        setState(() {
-          fetching = false;
-        });
+        networkError = false;
       } on SocketException catch (e) {
         widget._logger.e(e);
         showNetworkErrorOverlay(context, widget._logger);
+        networkError = true;
+      } finally {
+        setState(() {
+          fetching = false;
+        });
       }
     } else {
       widget._logger.d("wait a bit before fetching againg");
@@ -105,11 +109,21 @@ class _FlickrPageState extends State<FlickrPage> {
             Padding(
               padding: const EdgeInsets.all(10.0),
               child: Center(
+                  child: Text(
+                "${activePage + 1} / ${fetchedPhotosets.length}",
+                textScaleFactor: 1.25,
+              )),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Center(
                 child: fetching
                     ? const CircularProgressIndicator.adaptive()
-                    : const FaIcon(FontAwesomeIcons.check),
+                    : networkError
+                        ? const Icon(Icons.signal_wifi_connected_no_internet_4)
+                        : const FaIcon(FontAwesomeIcons.check),
               ),
-            )
+            ),
           ],
         ),
         floatingActionButton: FloatingActionButton(
@@ -127,35 +141,26 @@ class _FlickrPageState extends State<FlickrPage> {
                     : const LoadingWidget())
             : LayoutBuilder(
                 builder: (BuildContext context, BoxConstraints constraints) {
-                  return Column(
-                    children: [
-                      SizedBox(
-                          height: constraints.maxHeight * 0.05,
-                          child: Center(
-                              child: Text(
-                                  "${activePage + 1} / ${fetchedPhotosets.length}"))),
-                      SizedBox(
-                        height: constraints.maxHeight * 0.95,
-                        child: PageView.builder(
-                          controller: widget._pageController,
-                          itemCount: fetchedPhotosets.length + 1,
-                          onPageChanged: (int page) {
-                            setState(() {
-                              activePage = page;
-                            });
-                          },
-                          itemBuilder: (context, index) {
-                            return index == fetchedPhotosets.length
-                                ? const LoadingWidget()
-                                : FlickrCard(
-                                    isActivePage: activePage == index,
-                                    indexedPhotoset: fetchedPhotosets[index],
-                                    constraints: constraints,
-                                  );
-                          },
-                        ),
-                      ),
-                    ],
+                  return SizedBox(
+                    height: constraints.maxHeight * 0.95,
+                    child: PageView.builder(
+                      controller: widget._pageController,
+                      itemCount: fetchedPhotosets.length + 1,
+                      onPageChanged: (int page) {
+                        setState(() {
+                          activePage = page;
+                        });
+                      },
+                      itemBuilder: (context, index) {
+                        return index == fetchedPhotosets.length
+                            ? const LoadingWidget()
+                            : FlickrCard(
+                                isActivePage: activePage == index,
+                                indexedPhotoset: fetchedPhotosets[index],
+                                constraints: constraints,
+                              );
+                      },
+                    ),
                   );
                 },
               ));
@@ -188,16 +193,14 @@ class FlickrCard extends StatelessWidget {
           )
         : const FaIcon(FontAwesomeIcons.flickr);
 
-    final double margin = isActivePage ? 0 : 10;
+    final double margin = isActivePage ? 10 : 20;
 
     return InkWell(
       onTap: () {
         Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => FlickAlbumPage(
-                    album: indexedPhotoset,
-                  )),
+              builder: (context) => FlickAlbumPage(album: indexedPhotoset)),
         );
       },
       child: AnimatedContainer(

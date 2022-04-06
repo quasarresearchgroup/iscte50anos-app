@@ -2,9 +2,9 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
-import 'package:iscte_spots/widgets/puzzle/puzzle_piece.dart';
+import 'package:iscte_spots/widgets/puzzle/puzzle_piece_widget.dart';
 
-import '../widgets/puzzle/clipped_piece.dart';
+import '../widgets/puzzle/clipped_piece_widget.dart';
 import '../widgets/splashScreen/moving_widget.dart';
 import 'box_size.dart';
 
@@ -26,7 +26,7 @@ class ImageManipulation {
     return imageSize;
   }
 
-  static Future<List<Widget>> splitImagePuzzlePiece({
+  static Future<List<PuzzlePieceWidget>> splitImagePuzzlePiece({
     required Image image,
     required rows,
     required cols,
@@ -35,11 +35,11 @@ class ImageManipulation {
     required constraints,
   }) async {
     //logger.d('started split');
-    List<PuzzlePiece> outputList = [];
+    List<PuzzlePieceWidget> outputList = [];
     Size imageSize = await getImageSize(image);
     for (int x = 0; x < rows; x++) {
       for (int y = 0; y < cols; y++) {
-        var puzzlePiece = PuzzlePiece(
+        var puzzlePiece = PuzzlePieceWidget(
           key: GlobalKey(),
           image: image,
           imageSize: imageSize,
@@ -87,7 +87,7 @@ class ImageManipulation {
           weight: (Random().nextDouble() + 0.5) * 0.5,
           imageSize: imageSize,
           constraints: pieceConstraints,
-          child: ClippedPiece(
+          child: ClippedPieceWidget(
             image: image,
             row: x,
             col: y,

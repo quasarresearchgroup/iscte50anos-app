@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:iscte_spots/widgets/puzzle/puzzle_piece_clipper.dart';
 
-class ClippedPiece extends StatelessWidget {
-  const ClippedPiece({
+class ClippedPieceWidget extends StatelessWidget {
+  const ClippedPieceWidget({
     Key? key,
     required this.image,
     required this.row,

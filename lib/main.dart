@@ -32,8 +32,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: '',
-      theme: ThemeData.light().copyWith(errorColor: Colors.deepOrangeAccent),
-      darkTheme: ThemeData.dark().copyWith(errorColor: Colors.deepOrangeAccent),
+      theme: ThemeData.light().copyWith(
+        errorColor: Colors.deepOrangeAccent,
+      ),
+      darkTheme: ThemeData.dark().copyWith(
+        errorColor: Colors.deepOrangeAccent,
+      ),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       home: const SplashScreen(),

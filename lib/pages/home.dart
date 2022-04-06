@@ -5,7 +5,10 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:iscte_spots/models/database/tables/database_puzzle_piece_table.dart';
+import 'package:iscte_spots/models/puzzle_piece.dart';
 import 'package:iscte_spots/pages/puzzle_page.dart';
 import 'package:iscte_spots/widgets/my_bottom_bar.dart';
 import 'package:iscte_spots/widgets/nav_drawer/navigation_drawer.dart';
@@ -181,6 +184,7 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    var isDialOpen = ValueNotifier<bool>(false);
     return WillPopScope(
         onWillPop: () async {
           SystemNavigator.pop();
@@ -212,16 +216,51 @@ class _HomeState extends State<Home> {
             ],
           ),
           bottomNavigationBar: const MyBottomBar(selectedIndex: 0),
-          floatingActionButton: FloatingActionButton(
-            child: const FaIcon(FontAwesomeIcons.rotateRight),
-            onPressed: () async {
-              widget._logger.d("Pressed refresh");
-              if (notViewedImages.isNotEmpty) {
-                randomizeChosenImage();
-              } else {
-                fetchAndRandomize();
-              }
-            },
+          floatingActionButton: SpeedDial(
+            icon: Icons.add,
+            activeIcon: Icons.close,
+            openCloseDial: isDialOpen,
+            elevation: 8.0,
+            children: [
+              SpeedDialChild(
+                  child: const FaIcon(FontAwesomeIcons.helmetSafety),
+                  backgroundColor: Colors.deepPurpleAccent,
+                  label: 'getAll',
+                  onTap: () async {
+                    List<PuzzlePiece> all =
+                        await DatabasePuzzlePieceTable.getAll();
+                    String join = all
+                        .map((PuzzlePiece e) =>
+                            "[pos:${e.row},${e.column},top:${e.top},left:${e.left}]")
+                        .toList()
+                        .join("\n");
+                    widget._logger.d("Stored Puzzle Pieces:\n$join");
+                  }),
+              SpeedDialChild(
+                  child: const FaIcon(FontAwesomeIcons.trash),
+                  backgroundColor: Colors.red,
+                  label: 'Delete',
+                  onTap: () {
+                    setState(() {
+                      DatabasePuzzlePieceTable.removeALL();
+                      widget._logger.d("Removed all Puzzle Pieces");
+                      Navigator.popAndPushNamed(context, PuzzlePage.pageRoute);
+                    });
+                  }),
+              SpeedDialChild(
+                child: const FaIcon(FontAwesomeIcons.rotateRight),
+                backgroundColor: Colors.green,
+                label: 'Refresh',
+                onTap: () async {
+                  widget._logger.d("Pressed refresh");
+                  if (notViewedImages.isNotEmpty) {
+                    randomizeChosenImage();
+                  } else {
+                    fetchAndRandomize();
+                  }
+                },
+              ),
+            ],
           ),
           body: Center(
             child: Padding(

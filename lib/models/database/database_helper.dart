@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:iscte_spots/models/database/tables/database_content_table.dart';
 import 'package:iscte_spots/models/database/tables/database_event_table.dart';
 import 'package:iscte_spots/models/database/tables/database_page_table.dart';
+import 'package:iscte_spots/models/database/tables/database_puzzle_piece_table.dart';
 import 'package:iscte_spots/models/database/tables/database_topic_event_table.dart';
 import 'package:iscte_spots/models/database/tables/database_topic_table.dart';
 import 'package:logger/logger.dart';
@@ -14,7 +15,7 @@ class DatabaseHelper {
   static final Logger _logger = Logger();
   static Database? _database;
   static const _databaseName = "MyDatabase.db";
-  static const _databaseVersion = 8;
+  static const _databaseVersion = 9;
 
   //  singleton class
   DatabaseHelper._privateConstructor();
@@ -39,6 +40,7 @@ class DatabaseHelper {
     await DatabaseEventTable.onCreate(db, version);
     await DatabaseContentTable.onCreate(db, version);
     await DatabaseTopicEventTable.onCreate(db, version);
+    await DatabasePuzzlePieceTable.onCreate(db, version);
 
     // await _createFKs(db);
     _logger.d('Finished OnCreate to the db');
@@ -56,6 +58,7 @@ class DatabaseHelper {
     await DatabaseEventTable.drop(db);
     await DatabaseTopicTable.drop(db);
     await DatabaseTopicEventTable.drop(db);
+    await DatabasePuzzlePieceTable.drop(db);
 
     _logger.d('Finished DropAll to the db');
   }
@@ -66,6 +69,8 @@ class DatabaseHelper {
     await DatabaseContentTable.removeALL();
     await DatabaseEventTable.removeALL();
     await DatabaseTopicTable.removeALL();
+    await DatabaseTopicEventTable.removeALL();
+    await DatabasePuzzlePieceTable.removeALL();
     _logger.d('Finished removeAll to the db');
   }
 
@@ -83,11 +88,13 @@ class DatabaseHelper {
     _logger.d('Started init db');
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, _databaseName);
-    return await openDatabase(path,
+    Database database = await openDatabase(path,
         version: _databaseVersion,
         onConfigure: _onConfigure,
         onCreate: _onCreate,
         onUpgrade: _upgradeDb,
         onDowngrade: _upgradeDb);
+
+    return database;
   }
 }
