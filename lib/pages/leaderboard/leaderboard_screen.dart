@@ -177,8 +177,9 @@ class _AffiliationLeaderboardState extends State<AffiliationLeaderboard> {
           ),
           if (readJson) Row(
             children: [
-              SizedBox(
-                width:120,
+              const SizedBox(width:15),
+              Flexible(
+                flex:1,
                 child: Column(
                   children: [
                     const Text("Tipo"),
@@ -201,8 +202,9 @@ class _AffiliationLeaderboardState extends State<AffiliationLeaderboard> {
                   ],
                 ),
               ),
-              SizedBox(
-                width:120,
+              const SizedBox(width:15),
+              Flexible(
+                flex:1,
                 child: Column(
                   children: [
                     const Text("Sub-tipo"),
@@ -228,8 +230,9 @@ class _AffiliationLeaderboardState extends State<AffiliationLeaderboard> {
                   ],
                 ),
               ),
-              SizedBox(
-                width:120,
+              const SizedBox(width:15),
+              Flexible(
+                flex:1,
                 child: Column(
                   children: [
                     const Text("Afiliação"),
@@ -255,6 +258,7 @@ class _AffiliationLeaderboardState extends State<AffiliationLeaderboard> {
                   ],
                 ),
               ),
+              const SizedBox(width:20),
             ],
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           ),
