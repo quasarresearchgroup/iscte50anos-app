@@ -8,9 +8,10 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_appauth/flutter_appauth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:http/http.dart';
 
 final FlutterAppAuth appAuth = FlutterAppAuth();
-final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
+const FlutterSecureStorage secureStorage = FlutterSecureStorage();
 
 /// -----------------------------------
 ///           Auth0 Variables
@@ -18,9 +19,10 @@ final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
 
 const IDP_DOMAIN = 'login.iscte-iul.pt';
 const IDP_CLIENT_ID = '0oa2y4zd1pm9krr2o417';
-
 const IDP_REDIRECT_URI = 'pt.iscteiul.vultos:/callback';
 const IDP_ISSUER = 'https://$IDP_DOMAIN';
+
+const API_ADDRESS = "192.168.1.124";
 
 /// -----------------------------------
 ///           Profile Widget
@@ -47,14 +49,14 @@ class Profile extends StatelessWidget {
 
           ),
         ),
-        SizedBox(height: 24.0),
+        const SizedBox(height: 24.0),
         Text('Name: $name'),
-        SizedBox(height: 48.0),
+        const SizedBox(height: 48.0),
         ElevatedButton(
           onPressed: () {
             logoutAction();
           },
-          child: Text('Logout'),
+          child: const Text('Logout'),
         ),
       ],
     );
@@ -124,14 +126,15 @@ class _LoginPageState extends State<LoginPage> {
 
     // Get refresh token from storage
     final storedRefreshToken = await secureStorage.read(key: 'refresh_token');
-    if (storedRefreshToken == null) return;
+    final apiToken = await secureStorage.read(key: 'api_token');
+
+    if (storedRefreshToken == null && apiToken == null) return;
 
     setState(() {
       isBusy = true;
     });
 
     try {
-
       final response = await appAuth.token(TokenRequest(
         IDP_CLIENT_ID,
         IDP_REDIRECT_URI,
@@ -166,13 +169,12 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<Map> getUserDetails(String accessToken) async {
-    print(accessToken);
+    //print(accessToken);
     const url = 'https://$IDP_DOMAIN/oauth2/v1/userinfo';
     final response = await http.get(
       Uri.parse(url),
       headers: {'Authorization': 'Bearer $accessToken'},
     );
-
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
     } else {
@@ -187,6 +189,7 @@ class _LoginPageState extends State<LoginPage> {
     });
 
     try {
+      // GET ACCESS TOKEN AND ID TOKEN FROM OKTA
       final AuthorizationTokenResponse? result =
       await appAuth.authorizeAndExchangeCode(
         AuthorizationTokenRequest(
@@ -199,12 +202,23 @@ class _LoginPageState extends State<LoginPage> {
       );
 
       final idToken = parseIdToken(result?.idToken ?? "");
-      final profile = await getUserDetails(result?.accessToken ?? "");
-      print(idToken);
-      print(profile);
+      //final profile = await getUserDetails(result?.accessToken ?? "");
+      //print(idToken);
+      //print(profile);
 
-      await secureStorage.write(
-          key: 'refresh_token', value: result?.refreshToken);
+      await secureStorage.write(key: 'refresh_token', value: result?.refreshToken);
+
+      // Exchange OKTA access token to API Token
+      Response tokenExchange = await http.post(
+        Uri.parse('http://$API_ADDRESS/api/auth/'),
+          body: {"access_token": result?.accessToken}
+      );
+
+      final Map apiToken = json.decode(utf8.decode(tokenExchange.body.codeUnits));
+      secureStorage.write(key: 'api_token', value: apiToken["access_token"]);
+      //print("API Token: ${apiToken["access_token"]}");
+
+      // TODO Route to Profile or Home Page
 
       setState(() {
         isBusy = false;
@@ -212,9 +226,9 @@ class _LoginPageState extends State<LoginPage> {
         name = idToken['name'];
         //picture = profile['picture'];
       });
-    } catch (e, s) {
-      print('login error: $e - stack: $s');
 
+    } catch (e, s) {
+      //print('login error: $e - stack: $s');
       setState(() {
         isBusy = false;
         isLoggedIn = false;
@@ -232,8 +246,6 @@ class _LoginPageState extends State<LoginPage> {
       Uri.parse(url),
     );
     */
-
-
     setState(() {
       isLoggedIn = false;
       isBusy = false;
