@@ -26,6 +26,13 @@ class LeaderBoardPage extends StatefulWidget {
 class _LeaderBoardPageState extends State<LeaderBoardPage> {
   Logger logger = Logger();
 
+  late Map<String, dynamic> affiliationMap;
+
+  Future<String> loadAffiliationData() async {
+    var jsonText = await rootBundle.loadString('Resources/affiliations_abbr.json');
+    setState(() => affiliationMap = json.decode(utf8.decode(jsonText.codeUnits)));
+    return 'success';
+  }
 
   static const List<Widget> _pages = <Widget>[
     GlobalLeaderboard(),
@@ -43,6 +50,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
   @override
   void initState() {
     super.initState();
+    loadAffiliationData();
   }
 
   @override
@@ -117,7 +125,9 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
 }
 
 class AffiliationLeaderboard extends StatefulWidget {
+
   const AffiliationLeaderboard({Key? key}) : super(key: key);
+
 
   @override
   _AffiliationLeaderboardState createState() => _AffiliationLeaderboardState();
@@ -189,7 +199,8 @@ class _AffiliationLeaderboardState extends State<AffiliationLeaderboard> {
                       items:
                       (affiliationMap.keys.toList()).map((type) =>
                           DropdownMenuItem<String>(
-                              value: type, child: Text(type,overflow: TextOverflow.ellipsis)),
+                              value: type, child: SizedBox(width: double.maxFinite,
+                              child: Text(type,overflow: TextOverflow.ellipsis,textAlign: TextAlign.center))),
                       ).toList(),
                       onChanged: (String? newValue) {
                         setState(() {
@@ -212,10 +223,10 @@ class _AffiliationLeaderboardState extends State<AffiliationLeaderboard> {
                       isExpanded: true,
                       value: selectedAffiliation,
                       items:
-                      (affiliationMap[selectedType] as List<dynamic>).map((
-                          aff) =>
+                      (affiliationMap[selectedType] as List<dynamic>).map((aff) =>
                           DropdownMenuItem<String>(
-                              value: aff, child: Text(aff,overflow: TextOverflow.ellipsis)),
+                              value: aff, child: SizedBox(width: double.maxFinite,
+                              child: Text(aff,overflow: TextOverflow.ellipsis,textAlign: TextAlign.center))),
                       ).toList(),
                       onChanged: (selectedType == "-") ? null : (String? newValue) {
                         if(newValue != "-"){
@@ -240,10 +251,10 @@ class _AffiliationLeaderboardState extends State<AffiliationLeaderboard> {
                       isExpanded:true,
                       value: selectedAffiliation,
                       items:
-                      (affiliationMap[selectedType] as List<dynamic>).map((
-                          aff) =>
+                      (affiliationMap[selectedType] as List<dynamic>).map((aff) =>
                           DropdownMenuItem<String>(
-                              value: aff, child: Text(aff,overflow: TextOverflow.ellipsis)),
+                              value: aff, child: SizedBox(width: double.maxFinite,
+                              child: Text(aff,overflow: TextOverflow.ellipsis,textAlign: TextAlign.center))),
                       ).toList(),
                       onChanged: (selectedType == "-") ? null : (String? newValue) {
                         if(newValue != "-"){
@@ -329,19 +340,6 @@ class _LeaderboardListState extends State<LeaderboardList> {
     futureLeaderboard = widget.fetchFunction();
   }
 
-  Future<List<dynamic>> fetchLeaderboard() async {
-    try {
-      isLoading = true;
-      final response = await http.get(Uri.parse('http://192.168.1.124/api/users/leaderboard'));
-      if (response.statusCode == 200) {
-        return jsonDecode(utf8.decode(response.body.codeUnits));
-      }
-      throw Exception('Failed to load leaderboard');
-    }finally{
-      isLoading = false;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -381,10 +379,9 @@ class _LeaderboardListState extends State<LeaderboardList> {
                       trailing: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
-                            index == 0 ? Image.asset("Resources/Img/LeaderBoardIcons/gold_medal.png") :
-                            index == 1 ? Image.asset("Resources/Img/LeaderBoardIcons/silver_medal.png") :
-                            index == 2 ? Image.asset("Resources/Img/LeaderBoardIcons/bronze_medal.png") :
-                              Container(),
+                            if(index == 0) Image.asset("Resources/Img/LeaderBoardIcons/gold_medal.png") else
+                            if(index == 1) Image.asset("Resources/Img/LeaderBoardIcons/silver_medal.png") else
+                            if(index == 2) Image.asset("Resources/Img/LeaderBoardIcons/bronze_medal.png"),
                             const SizedBox(width:10),
                             Text( "#${index+1}",
                                 style: const TextStyle(
