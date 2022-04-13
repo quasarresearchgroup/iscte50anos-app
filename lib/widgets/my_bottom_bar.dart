@@ -16,31 +16,36 @@ class _MyBottomBarState extends State<MyBottomBar> {
   @override
   Widget build(BuildContext context) {
     void changePage(int index) {
-      switch (index) {
-        case 0:
-          {
-            Navigator.pushReplacementNamed(context, PageRoutes.home);
-          }
-          break;
-        case 1:
-          {
-            Navigator.pushReplacementNamed(context, PageRoutes.qrscan);
-          }
-          break;
-        default:
-          {
-            Navigator.pushReplacementNamed(context, PageRoutes.home);
-          }
+      if (index != widget.selectedIndex) {
+        switch (index) {
+          case 0:
+            {
+              Navigator.pushReplacementNamed(context, PageRoutes.home);
+            }
+            break;
+          case 1:
+            {
+              Navigator.pushReplacementNamed(context, PageRoutes.qrscan);
+            }
+            break;
+          default:
+            {
+              Navigator.pushReplacementNamed(context, PageRoutes.home);
+            }
+        }
       }
     }
 
     return BottomNavigationBar(
       currentIndex: widget.selectedIndex,
+      elevation: 0,
+      backgroundColor: Theme.of(context).primaryColor.withAlpha(0),
       onTap: changePage,
       type: BottomNavigationBarType.fixed,
-      selectedItemColor: Colors.blue[700],
+      selectedItemColor: Theme.of(context).selectedRowColor,
+      unselectedItemColor: Theme.of(context).unselectedWidgetColor,
       selectedFontSize: 13,
-      unselectedFontSize: 13,
+      unselectedFontSize: 10,
       iconSize: 30,
       items: [
         BottomNavigationBarItem(
