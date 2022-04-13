@@ -7,13 +7,11 @@ class YearTimeline extends StatefulWidget {
       {Key? key,
       required this.changeYearFunction,
       required this.yearsList,
-      required this.lineStyle,
       required this.selectedYear})
       : super(key: key);
 
   final Function changeYearFunction;
   final List<int> yearsList;
-  final LineStyle lineStyle;
   final int? selectedYear;
 
   @override
@@ -24,7 +22,7 @@ class _YearTimelineState extends State<YearTimeline> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.lightBlue,
+      color: Theme.of(context).primaryColor,
       child: ListView.builder(
           scrollDirection: Axis.horizontal,
           itemCount: widget.yearsList.length,
@@ -32,7 +30,6 @@ class _YearTimelineState extends State<YearTimeline> {
           itemBuilder: (BuildContext context, int index) {
             return YearTimelineTile(
                 changeYearFunction: widget.changeYearFunction,
-                lineStyle: widget.lineStyle,
                 year: widget.yearsList[index],
                 isSelected: widget.selectedYear == widget.yearsList[index],
                 isFirst: index == 0,
@@ -49,12 +46,10 @@ class YearTimelineTile extends StatefulWidget {
       required this.year,
       required this.isFirst,
       required this.isLast,
-      required this.lineStyle,
       required this.isSelected})
       : super(key: key);
 
   final Function changeYearFunction;
-  final LineStyle lineStyle;
   final int year;
   final bool isFirst;
   final bool isLast;
@@ -68,12 +63,13 @@ class _YearTimelineTileState extends State<YearTimelineTile> {
   @override
   Widget build(BuildContext context) {
     const double textFontSize = 20.0;
-    const double textPadding = 30.0;
-    const double iconEdgeInsets = 8.0;
     const double minWidth2 = 90;
     const double radius = 15;
     final Color color2 = Colors.white.withOpacity(0.3);
     const double timelineIconOffset = 0.7;
+    Color iconTextColor = Theme.of(context).selectedRowColor;
+    LineStyle lineStyle = LineStyle(color: iconTextColor, thickness: 6);
+
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -88,8 +84,8 @@ class _YearTimelineTileState extends State<YearTimelineTile> {
           });
         },
         child: TimelineTile(
-          beforeLineStyle: widget.lineStyle,
-          afterLineStyle: widget.lineStyle,
+          beforeLineStyle: lineStyle,
+          afterLineStyle: lineStyle,
           axis: TimelineAxis.horizontal,
           alignment: TimelineAlign.manual,
           lineXY: timelineIconOffset,
@@ -98,17 +94,24 @@ class _YearTimelineTileState extends State<YearTimelineTile> {
           hasIndicator: true,
           indicatorStyle: IndicatorStyle(
             drawGap: true,
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
             indicator: Center(
                 child: widget.isSelected
-                    ? const Icon(FontAwesomeIcons.calendarCheck)
-                    : const Icon(FontAwesomeIcons.calendar)),
+                    ? Icon(
+                        FontAwesomeIcons.calendarCheck,
+                        color: iconTextColor,
+                      )
+                    : Icon(
+                        FontAwesomeIcons.calendar,
+                        color: iconTextColor,
+                      )),
           ),
           startChild: Container(
             constraints: const BoxConstraints(minWidth: minWidth2),
             child: Center(
               child: Text(
                 widget.year.toString(),
-                style: const TextStyle(fontSize: textFontSize),
+                style: TextStyle(fontSize: textFontSize, color: iconTextColor),
               ),
             ),
           ),

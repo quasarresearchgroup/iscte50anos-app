@@ -4,15 +4,15 @@ import 'package:iscte_spots/widgets/timeline/timeline_details_page.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
 class EventsTimeline extends StatefulWidget {
-  const EventsTimeline(
-      {Key? key,
-      required this.timeLineMap,
-      required this.timelineYear,
-      required this.lineStyle})
-      : super(key: key);
+  const EventsTimeline({
+    Key? key,
+    required this.timeLineMap,
+    required this.timelineYear,
+  }) : super(key: key);
   final List<Content> timeLineMap;
   final int timelineYear;
-  final LineStyle lineStyle;
+  final LineStyle lineStyle =
+      const LineStyle(color: Colors.black, thickness: 6);
 
   @override
   State<EventsTimeline> createState() => _EventsTimelineState();

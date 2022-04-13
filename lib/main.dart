@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -30,14 +31,48 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    AppBarTheme appBarTheme = const AppBarTheme(
+      //backgroundColor: Color.fromRGBO(14, 41, 194, 1),
+      elevation: 0, // This removes the shadow from all App Bars.
+      centerTitle: true,
+      toolbarHeight: 55,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          bottom: Radius.circular(20),
+        ),
+      ),
+    );
+
+    var darkTheme = ThemeData.dark();
+
+    const primaryColor2 = Color.fromRGBO(14, 41, 194, 1);
     return MaterialApp(
       title: '',
       theme: ThemeData.light().copyWith(
+        primaryColor: primaryColor2,
         errorColor: Colors.deepOrangeAccent,
+        appBarTheme: appBarTheme.copyWith(
+          backgroundColor: primaryColor2,
+          systemOverlayStyle: const SystemUiOverlayStyle(
+            statusBarColor: primaryColor2,
+            statusBarIconBrightness:
+                Brightness.light, // For Android (dark icons)
+            statusBarBrightness: Brightness.light, // For iOS (dark icons)
+          ),
+        ),
       ),
       darkTheme: ThemeData.dark().copyWith(
-        errorColor: Colors.deepOrangeAccent,
-      ),
+          primaryColor: primaryColor2,
+          errorColor: Colors.deepOrangeAccent,
+          appBarTheme: appBarTheme.copyWith(
+            backgroundColor: primaryColor2,
+            systemOverlayStyle: SystemUiOverlayStyle(
+              statusBarColor: darkTheme.bottomAppBarColor,
+              statusBarIconBrightness:
+                  Brightness.light, // For Android (dark icons)
+              statusBarBrightness: Brightness.light, // For iOS (dark icons)
+            ),
+          )),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       home: const SplashScreen(),

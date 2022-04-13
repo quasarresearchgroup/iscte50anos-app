@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:iscte_spots/widgets/timeline/year_timeline.dart';
-import 'package:timeline_tile/timeline_tile.dart';
 
 import '../../models/content.dart';
 import 'events_timeline.dart';
@@ -14,8 +13,6 @@ class TimeLineBody extends StatefulWidget {
 
   final int? initialchosenYear;
 
-  final LineStyle lineStyle =
-      const LineStyle(color: Colors.black, thickness: 6);
   List<Content> mapdata;
 
   @override
@@ -64,7 +61,6 @@ class _TimeLineBodyState extends State<TimeLineBody> {
               )
             ]),
             child: YearTimeline(
-              lineStyle: widget.lineStyle,
               yearsList: list,
               changeYearFunction: changeChosenYear,
               selectedYear: chosenYear != null ? chosenYear! : list.last,
@@ -75,7 +71,6 @@ class _TimeLineBodyState extends State<TimeLineBody> {
           child: EventsTimeline(
             timeLineMap: widget.mapdata,
             timelineYear: chosenYear!,
-            lineStyle: widget.lineStyle,
           )),
     ]);
   }
