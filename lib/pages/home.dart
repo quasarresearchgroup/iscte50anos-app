@@ -26,7 +26,7 @@ class Home extends StatefulWidget {
   }) : super(key: key);
   static const pageRoute = "/";
   final Logger _logger = Logger();
-  final int shakerTimeThreshhold = 0;
+  final int shakerTimeThreshhold = 1000;
   final int shakerThreshhold = 5;
   @override
   _HomeState createState() => _HomeState();
@@ -151,8 +151,6 @@ class _HomeState extends State<Home> {
       setState(() {
         currentPuzzleImage = newImage;
       });
-
-      setState(() {});
       widget._logger.d("Randomized puzzle Image");
     } else {
       widget._logger.d("Woah slow down there");
