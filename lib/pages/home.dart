@@ -215,7 +215,9 @@ class _HomeState extends State<Home> {
           ),
           bottomNavigationBar: const MyBottomBar(selectedIndex: 0),
           floatingActionButton: SpeedDial(
+            backgroundColor: Theme.of(context).primaryColor,
             icon: Icons.add,
+            iconTheme: IconThemeData(color: Theme.of(context).selectedRowColor),
             activeIcon: Icons.close,
             openCloseDial: isDialOpen,
             elevation: 8.0,

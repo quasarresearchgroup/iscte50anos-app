@@ -22,30 +22,34 @@ void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   await dotenv.load(fileName: "Resources/keys.env");
-  runApp(const MyApp());
+  await SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  MyApp({Key? key}) : super(key: key);
+
+  AppBarTheme appBarTheme = const AppBarTheme(
+    //backgroundColor: Color.fromRGBO(14, 41, 194, 1),
+    elevation: 0, // This removes the shadow from all App Bars.
+    centerTitle: true,
+    toolbarHeight: 55,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(
+        bottom: Radius.circular(20),
+      ),
+    ),
+  );
+
+  ThemeData darkTheme = ThemeData.dark();
+
+  Color iscteColor = Color.fromRGBO(14, 41, 194, 1);
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    AppBarTheme appBarTheme = const AppBarTheme(
-      //backgroundColor: Color.fromRGBO(14, 41, 194, 1),
-      elevation: 0, // This removes the shadow from all App Bars.
-      centerTitle: true,
-      toolbarHeight: 55,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          bottom: Radius.circular(20),
-        ),
-      ),
-    );
-
-    var darkTheme = ThemeData.dark();
-
-    const iscteColor = Color.fromRGBO(14, 41, 194, 1);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'IscteSpots',
@@ -54,7 +58,7 @@ class MyApp extends StatelessWidget {
         errorColor: Colors.deepOrangeAccent,
         appBarTheme: appBarTheme.copyWith(
           backgroundColor: iscteColor,
-          systemOverlayStyle: const SystemUiOverlayStyle(
+          systemOverlayStyle: SystemUiOverlayStyle(
             statusBarColor: iscteColor,
             statusBarIconBrightness:
                 Brightness.light, // For Android (dark icons)
@@ -68,7 +72,7 @@ class MyApp extends StatelessWidget {
           appBarTheme: appBarTheme.copyWith(
             backgroundColor: iscteColor,
             systemOverlayStyle: SystemUiOverlayStyle(
-              statusBarColor: darkTheme.bottomAppBarColor,
+              statusBarColor: iscteColor,
               statusBarIconBrightness:
                   Brightness.light, // For Android (dark icons)
               statusBarBrightness: Brightness.light, // For iOS (dark icons)
