@@ -45,16 +45,17 @@ class MyApp extends StatelessWidget {
 
     var darkTheme = ThemeData.dark();
 
-    const primaryColor2 = Color.fromRGBO(14, 41, 194, 1);
+    const iscteColor = Color.fromRGBO(14, 41, 194, 1);
     return MaterialApp(
-      title: '',
+      debugShowCheckedModeBanner: false,
+      title: 'IscteSpots',
       theme: ThemeData.light().copyWith(
-        primaryColor: primaryColor2,
+        primaryColor: iscteColor,
         errorColor: Colors.deepOrangeAccent,
         appBarTheme: appBarTheme.copyWith(
-          backgroundColor: primaryColor2,
+          backgroundColor: iscteColor,
           systemOverlayStyle: const SystemUiOverlayStyle(
-            statusBarColor: primaryColor2,
+            statusBarColor: iscteColor,
             statusBarIconBrightness:
                 Brightness.light, // For Android (dark icons)
             statusBarBrightness: Brightness.light, // For iOS (dark icons)
@@ -62,10 +63,10 @@ class MyApp extends StatelessWidget {
         ),
       ),
       darkTheme: ThemeData.dark().copyWith(
-          primaryColor: primaryColor2,
+          primaryColor: iscteColor,
           errorColor: Colors.deepOrangeAccent,
           appBarTheme: appBarTheme.copyWith(
-            backgroundColor: primaryColor2,
+            backgroundColor: iscteColor,
             systemOverlayStyle: SystemUiOverlayStyle(
               statusBarColor: darkTheme.bottomAppBarColor,
               statusBarIconBrightness:

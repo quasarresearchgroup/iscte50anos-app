@@ -15,8 +15,11 @@ class SplashScreen extends StatelessWidget {
 
     return AnimatedSplashScreen(
       splash: Scaffold(
-          body: GravityPlane(
-              image: Image.asset('Resources/Img/Campus/campus-iscte-3.jpg')))
+          body: Container(
+        decoration: BoxDecoration(color: Theme.of(context).primaryColor),
+        child: GravityPlane(
+            image: Image.asset('Resources/Img/Campus/campus-iscte-3.jpg')),
+      ))
       /* Column(
         children: [
           Image.asset('Resources/Img/Logo/logo_50anos_iscte_branco_rgb.png'),
