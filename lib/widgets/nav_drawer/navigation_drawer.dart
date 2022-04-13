@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:iscte_spots/widgets/nav_drawer/page_routes.dart';
 
 class NavigationDrawer extends StatelessWidget {
@@ -18,7 +19,7 @@ class NavigationDrawer extends StatelessWidget {
         ),
         child: null,
       ),
-      ListTile(
+      /*ListTile(
         leading: const Icon(Icons.home),
         title: Text(AppLocalizations.of(context)!.mainMenu),
         onTap: () {
@@ -32,32 +33,45 @@ class NavigationDrawer extends StatelessWidget {
           Navigator.pushReplacementNamed(context, PageRoutes.qrscan);
         },
       ),
+      */
       ListTile(
         leading: const Icon(Icons.timeline),
         title: Text(AppLocalizations.of(context)!.timelineScreen),
         onTap: () {
-          Navigator.pushReplacementNamed(context, PageRoutes.timeline);
+          Navigator.pop(context);
+          Navigator.pushNamed(context, PageRoutes.timeline);
         },
       ),
       ListTile(
         leading: const Icon(Icons.web_sharp),
         title: Text(AppLocalizations.of(context)!.visitedPagesScreen),
         onTap: () {
-          Navigator.pushReplacementNamed(context, PageRoutes.visited);
+          Navigator.pop(context);
+          Navigator.pushNamed(context, PageRoutes.visited);
         },
       ),
       ListTile(
         leading: const Icon(Icons.help),
         title: Text(AppLocalizations.of(context)!.quizScreen),
         onTap: () {
-          Navigator.pushReplacementNamed(context, PageRoutes.quiz);
+          Navigator.pop(context);
+          Navigator.pushNamed(context, PageRoutes.quiz);
         },
       ),
       ListTile(
         leading: const Icon(Icons.touch_app_outlined),
-        title: const Text('Shaker'),
+        title: Text(AppLocalizations.of(context)!.shakerScreen),
         onTap: () {
-          Navigator.pushReplacementNamed(context, PageRoutes.shake);
+          Navigator.pop(context);
+          Navigator.pushNamed(context, PageRoutes.shake);
+        },
+      ),
+      ListTile(
+        leading: const FaIcon(FontAwesomeIcons.flickr),
+        title: Text(AppLocalizations.of(context)!.flickrScreen),
+        onTap: () {
+          Navigator.pop(context);
+          Navigator.pushNamed(context, PageRoutes.flickr);
         },
       ),
       ListTile(

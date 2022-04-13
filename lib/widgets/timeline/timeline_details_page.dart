@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/models/content.dart';
 
 class TimeLineDetailsPage extends StatelessWidget {
@@ -13,7 +14,7 @@ class TimeLineDetailsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Details"),
+        title: Text(AppLocalizations.of(context)!.timelineDetailsScreen),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
