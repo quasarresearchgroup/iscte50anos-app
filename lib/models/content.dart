@@ -117,7 +117,7 @@ class Content {
       case ContentType.music:
         return const FaIcon(FontAwesomeIcons.music);
       case null:
-        return const FaIcon(FontAwesomeIcons.unlink);
+        return const FaIcon(FontAwesomeIcons.linkSlash);
     }
   }
 

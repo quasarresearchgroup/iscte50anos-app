@@ -3,16 +3,8 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:iscte_spots/widgets/nav_drawer/navigation_drawer.dart';
-import 'package:logger/logger.dart';
 import 'package:http/http.dart' as http;
-
-void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-  runApp(LeaderBoardPage());
-}
+import 'package:logger/logger.dart';
 
 class LeaderBoardPage extends StatelessWidget {
   static const pageRoute = "/leaderboard";
@@ -37,42 +29,19 @@ class LeaderBoardPage extends StatelessWidget {
 
     var darkTheme = ThemeData.dark();
 
-    return MaterialApp(
-      theme: ThemeData.light().copyWith(
-        primaryColor: const Color.fromRGBO(14, 41, 194, 1),
-          appBarTheme: appBarTheme.copyWith(
-            backgroundColor: const Color.fromRGBO(14, 41, 194, 1),
-            systemOverlayStyle: const SystemUiOverlayStyle(
-              statusBarColor: Color.fromRGBO(14, 41, 194, 1),
-              statusBarIconBrightness: Brightness.light, // For Android (dark icons)
-              statusBarBrightness: Brightness.light, // For iOS (dark icons)
-            ),
-          ),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+            "Leaderboard"), //AppLocalizations.of(context)!.quizPageTitle)
       ),
-      darkTheme: ThemeData.dark().copyWith(
-          appBarTheme: appBarTheme.copyWith(
-            systemOverlayStyle: SystemUiOverlayStyle(
-              statusBarColor: darkTheme.bottomAppBarColor,
-              statusBarIconBrightness: Brightness.light, // For Android (dark icons)
-              statusBarBrightness: Brightness.light, // For iOS (dark icons)
-            ),
-          )
+      body: NotificationListener<OverscrollIndicatorNotification>(
+        onNotification: (overscroll) {
+          overscroll.disallowIndicator();
+          return true;
+        },
+        child: const Leaderboard(),
       ),
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text("Leaderboard"),//AppLocalizations.of(context)!.quizPageTitle)
-        ),
-        drawer: const NavigationDrawer(),
-        body: NotificationListener<OverscrollIndicatorNotification>(
-          onNotification: (overscroll) {
-            overscroll.disallowIndicator();
-            return true;
-          },
-          child: const Leaderboard(),
-        ),
-      ), //Scaffold
-      debugShowCheckedModeBanner: false,
-    ); //MaterialApp
+    );
   }
 }
 
@@ -83,7 +52,6 @@ class Leaderboard extends StatefulWidget {
 }
 
 class _LeaderboardState extends State<Leaderboard> {
-
   late Future<List<dynamic>> futureLeaderboard;
   bool isLoading = false;
 
@@ -97,12 +65,13 @@ class _LeaderboardState extends State<Leaderboard> {
     try {
       isLoading = true;
       //print(isLoading);
-      final response = await http.get(Uri.parse('http://192.168.1.124/api/users/groups'));
+      final response =
+          await http.get(Uri.parse('http://192.168.1.124/api/users/groups'));
       if (response.statusCode == 200) {
         return jsonDecode(response.body);
       }
       throw Exception('Failed to load leaderboard');
-    }finally{
+    } finally {
       isLoading = false;
       //print(isLoading);
     }
@@ -112,12 +81,13 @@ class _LeaderboardState extends State<Leaderboard> {
     try {
       isLoading = true;
       print(isLoading);
-      final response = await http.get(Uri.parse('http://192.168.1.124/api/users/leaderboard'));
+      final response = await http
+          .get(Uri.parse('http://192.168.1.124/api/users/leaderboard'));
       if (response.statusCode == 200) {
         return jsonDecode(utf8.decode(response.body.codeUnits));
       }
       throw Exception('Failed to load leaderboard');
-    }finally{
+    } finally {
       isLoading = false;
       print(isLoading);
     }
@@ -133,22 +103,20 @@ class _LeaderboardState extends State<Leaderboard> {
           var items = snapshot.data as List<dynamic>;
           return Column(
             children: [
-              const SizedBox(  // Container to hold the description
+              const SizedBox(
+                // Container to hold the description
                 height: 50,
                 child: Center(
-                  child: Text( "Top 10 Global",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18
-                      )
-                  ),
+                  child: Text("Top 10 Global",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
                 ),
               ),
               Expanded(
                 child: RefreshIndicator(
-                  onRefresh: () async{
+                  onRefresh: () async {
                     setState(() {
-                      if(!isLoading) {
+                      if (!isLoading) {
                         futureLeaderboard = fetchLeaderboard();
                       }
                     });
@@ -158,33 +126,36 @@ class _LeaderboardState extends State<Leaderboard> {
                     itemCount: items.length,
                     itemBuilder: (context, index) {
                       return Padding(
-                        padding: const EdgeInsets.only(left:10.0, right:10.0),
+                        padding: const EdgeInsets.only(left: 10.0, right: 10.0),
                         child: Card(
                           child: ListTile(
-                            title: Text(utf8.decode(utf8.encode(items[index]["name"])),
+                            title: Text(
+                                utf8.decode(utf8.encode(items[index]["name"])),
                                 style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16
-                                )
-                            ),
-                            subtitle: Text("Pontos: ${items[index]["points"]} \nAfiliação: IGE"),
+                                    fontWeight: FontWeight.bold, fontSize: 16)),
+                            subtitle: Text(
+                                "Pontos: ${items[index]["points"]} \nAfiliação: IGE"),
                             //isThreeLine: true,
                             //dense:true,
                             minVerticalPadding: 10.0,
                             trailing: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: <Widget>[
-                                  index == 0 ? Image.asset("Resources/Img/LeaderBoardIcons/gold_medal.png") :
-                                  index == 1 ? Image.asset("Resources/Img/LeaderBoardIcons/silver_medal.png") :
-                                  index == 2 ? Image.asset("Resources/Img/LeaderBoardIcons/bronze_medal.png") :
-                                    Container(),
-                                  const SizedBox(width:10),
-                                  Text( "#${index+1}",
+                                  index == 0
+                                      ? Image.asset(
+                                          "Resources/Img/LeaderBoardIcons/gold_medal.png")
+                                      : index == 1
+                                          ? Image.asset(
+                                              "Resources/Img/LeaderBoardIcons/silver_medal.png")
+                                          : index == 2
+                                              ? Image.asset(
+                                                  "Resources/Img/LeaderBoardIcons/bronze_medal.png")
+                                              : Container(),
+                                  const SizedBox(width: 10),
+                                  Text("#${index + 1}",
                                       style: const TextStyle(
                                           fontWeight: FontWeight.bold,
-                                          fontSize: 20
-                                      )
-                                  ),
+                                          fontSize: 20)),
                                 ]),
                           ),
                         ),
@@ -208,9 +179,11 @@ class _LeaderboardState extends State<Leaderboard> {
             ),
             const Padding(
               padding: EdgeInsets.all(5.0),
-              child: Text('Tocar aqui para recarregar', style: TextStyle(fontWeight: FontWeight.bold),),
+              child: Text(
+                'Tocar aqui para recarregar',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
             ),
-
           ];
         } else {
           children = const <Widget>[
@@ -224,7 +197,7 @@ class _LeaderboardState extends State<Leaderboard> {
         return GestureDetector(
           onTap: () {
             setState(() {
-              if(!isLoading){
+              if (!isLoading) {
                 futureLeaderboard = fetchLeaderboard();
               }
             });
@@ -238,8 +211,6 @@ class _LeaderboardState extends State<Leaderboard> {
           ),
         );
       },
-
     );
   }
 }
-
