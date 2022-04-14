@@ -79,6 +79,14 @@ class NavigationDrawer extends StatelessWidget {
         title: Text(AppLocalizations.of(context)!.pointsScreen),
         onTap: () {},
       ),
+      ListTile(
+        leading: const Icon(Icons.departure_board),
+        title: const Text('Onboarding'),
+        onTap: () {
+          Navigator.pop(context);
+          Navigator.pushNamed(context, PageRoutes.onboard);
+        },
+      ),
     ];
 
     return Drawer(
