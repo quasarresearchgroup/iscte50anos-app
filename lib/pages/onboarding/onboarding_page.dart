@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:iscte_spots/pages/onboarding/getstarted_onboard_button.dart';
-import 'package:iscte_spots/pages/onboarding/next_onboard_button.dart';
+import 'package:iscte_spots/pages/onboarding/bottom_onboard.dart';
+import 'package:iscte_spots/pages/onboarding/onboard_tile.dart';
 import 'package:iscte_spots/pages/onboarding/skip_onboard_button.dart';
 import 'package:logger/logger.dart';
 
@@ -17,33 +17,40 @@ class OnboardingPage extends StatefulWidget {
 class _OnboardingPageState extends State<OnboardingPage>
     with SingleTickerProviderStateMixin {
   final Logger _logger = Logger();
-  late final int _numPages;
   final PageController _pageController = PageController(initialPage: 0);
+  late final int _numPages;
   int _currentPage = 0;
   int _lastPage = 0;
+  final double bottomSheetHeight = 100.0;
   late final AnimationController _controller;
   late final Tween<Offset> _offsetTween;
   final Duration animDuration = const Duration(milliseconds: 500);
-  final List<Container> pageViewChildren = [
-    Container(
-      color: Colors.blue,
-    ),
-    Container(
-      color: Colors.yellow,
-    ),
-    Container(
-      color: Colors.green,
-    ),
-    Container(
-      color: Colors.purple,
-    ),
-    Container(
-      color: Colors.orange,
-    ),
-  ];
+  late final List<Widget> pageViewChildren;
 
   @override
   void initState() {
+    pageViewChildren = [
+      OnboardTile(
+        bottomSheetHeight: bottomSheetHeight,
+        color: Colors.blue,
+      ),
+      OnboardTile(
+        bottomSheetHeight: bottomSheetHeight,
+        color: Colors.yellow,
+      ),
+      OnboardTile(
+        bottomSheetHeight: bottomSheetHeight,
+        color: Colors.green,
+      ),
+      OnboardTile(
+        bottomSheetHeight: bottomSheetHeight,
+        color: Colors.purple,
+      ),
+      OnboardTile(
+        bottomSheetHeight: bottomSheetHeight,
+        color: Colors.orange,
+      ),
+    ];
     _numPages = pageViewChildren.length;
     _controller = AnimationController(
       duration: const Duration(seconds: 2),
@@ -61,29 +68,6 @@ class _OnboardingPageState extends State<OnboardingPage>
   void dispose() {
     _controller.dispose();
     super.dispose();
-  }
-
-  List<Widget> _buildPageIndicator() {
-    List<Widget> list = [];
-    for (int i = 0; i < _numPages; i++) {
-      list.add(i == _currentPage ? _indicator(true) : _indicator(false));
-    }
-    return list;
-  }
-
-  Widget _indicator(bool isActive) {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 150),
-      margin: const EdgeInsets.symmetric(horizontal: 8.0),
-      height: 8.0,
-      width: isActive ? 24.0 : 16.0,
-      decoration: BoxDecoration(
-        color: isActive
-            ? Theme.of(context).selectedRowColor
-            : Theme.of(context).primaryColor,
-        borderRadius: const BorderRadius.all(Radius.circular(12)),
-      ),
-    );
   }
 
   void changePage(int page) {
@@ -118,56 +102,25 @@ class _OnboardingPageState extends State<OnboardingPage>
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Expanded(
-              child: PageView(
-            physics: const ClampingScrollPhysics(),
-            controller: _pageController,
-            onPageChanged: (int page) {
-              changePage(page);
-            },
-            children: pageViewChildren,
-          )),
-          SizedBox(
-            height: 100,
-            child: AnimatedSwitcher(
-                duration: animDuration,
-                reverseDuration: animDuration,
-                switchInCurve: Curves.fastLinearToSlowEaseIn,
-                switchOutCurve: Curves.fastOutSlowIn,
-                //height: 40.0,
-                //width: double.infinity,
-                //color: Theme.of(context).primaryColor,
-                transitionBuilder: (Widget child, Animation<double> animation) {
-                  Animation<Offset> finalAnimation;
-                  if (child is GetStartedOnboard) {
-                    finalAnimation = Tween<Offset>(
-                            begin: const Offset(1, 0.0), end: Offset.zero)
-                        .animate(animation);
-                  } else {
-                    finalAnimation = Tween<Offset>(
-                            begin: const Offset(-1, 0.0), end: Offset.zero)
-                        .animate(animation);
-                  }
-                  return SlideTransition(
-                    position: finalAnimation,
-                    child: child,
-                  );
-                },
-                child: _currentPage != _numPages - 1
-                    ? NextOnboardButton(
-                        //key: ValueKey(_currentPage),
-                        buildPageIndicator: _buildPageIndicator,
-                        pageController: _pageController,
-                        changePage: changePage,
-                        textStyle: textStyle,
-                      )
-                    : GetStartedOnboard(
-                        //key: ValueKey(_currentPage),
-                        )),
+            child: PageView(
+              physics: const ClampingScrollPhysics(),
+              controller: _pageController,
+              onPageChanged: (int page) {
+                changePage(page);
+              },
+              children: pageViewChildren,
+            ),
           ),
         ],
       ),
-/*        bottomSheet: _currentPage == _numPages - 1
-            ?             : const Text(''),*/
+      bottomSheet: BottomSheetOnboard(
+          bottomSheetHeight: bottomSheetHeight,
+          animDuration: animDuration,
+          numPages: _numPages,
+          pageController: _pageController,
+          currentPage: _currentPage,
+          changePage: changePage,
+          textStyle: textStyle),
     );
   }
 }
