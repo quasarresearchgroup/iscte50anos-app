@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:iscte_spots/widgets/nav_drawer/page_routes.dart';
+import 'package:iscte_spots/pages/onboarding/getstarted_onboard_button.dart';
+import 'package:iscte_spots/pages/onboarding/next_onboard_button.dart';
+import 'package:iscte_spots/pages/onboarding/skip_onboard_button.dart';
 import 'package:logger/logger.dart';
 
 class OnboardingPage extends StatefulWidget {
@@ -39,6 +41,28 @@ class _OnboardingPageState extends State<OnboardingPage>
       color: Colors.orange,
     ),
   ];
+
+  @override
+  void initState() {
+    _numPages = pageViewChildren.length;
+    _controller = AnimationController(
+      duration: const Duration(seconds: 2),
+      vsync: this,
+    );
+    _offsetTween = Tween<Offset>(
+      begin: Offset.zero,
+      end: const Offset(-1, 0),
+    );
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   List<Widget> _buildPageIndicator() {
     List<Widget> list = [];
     for (int i = 0; i < _numPages; i++) {
@@ -62,25 +86,11 @@ class _OnboardingPageState extends State<OnboardingPage>
     );
   }
 
-  @override
-  void initState() {
-    _numPages = pageViewChildren.length;
-    _controller = AnimationController(
-      duration: const Duration(seconds: 2),
-      vsync: this,
-    );
-    _offsetTween = Tween<Offset>(
-      begin: Offset.zero,
-      end: const Offset(-1, 0),
-    );
-
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
+  void changePage(int page) {
+    setState(() {
+      _lastPage = _currentPage;
+      _currentPage = page;
+    });
   }
 
   @override
@@ -97,20 +107,12 @@ class _OnboardingPageState extends State<OnboardingPage>
           elevation: 0,
           automaticallyImplyLeading: false,
           actions: [
-            TextButton(
-              onPressed: () {
-                _logger.i("pressed Skip");
-                _pageController.animateToPage(
-                  _numPages - 1,
-                  duration: animDuration,
-                  curve: Curves.easeIn,
-                );
-              },
-              child: Text(
-                'Skip',
-                style: textStyle,
-              ),
-            )
+            SkipButton(
+                logger: _logger,
+                pageController: _pageController,
+                numPages: _numPages,
+                animDuration: animDuration,
+                textStyle: textStyle)
           ]),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -166,112 +168,6 @@ class _OnboardingPageState extends State<OnboardingPage>
       ),
 /*        bottomSheet: _currentPage == _numPages - 1
             ?             : const Text(''),*/
-    );
-  }
-
-  void changePage(int page) {
-    setState(() {
-      _lastPage = _currentPage;
-      _currentPage = page;
-    });
-  }
-}
-
-class GetStartedOnboard extends StatelessWidget {
-  GetStartedOnboard({
-    Key? key,
-  }) : super(key: key);
-
-  final Logger _logger = Logger();
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        _logger.i('Get started');
-        Navigator.pushReplacementNamed(context, PageRoutes.home);
-      },
-      child: SizedBox.expand(
-        child: Container(
-          color: Theme.of(context).selectedRowColor,
-          child: const Center(
-            child: Text(
-              'Get started',
-              style: TextStyle(
-                color: Color(0xFF5B16D0),
-                fontSize: 20.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class NextOnboardButton extends StatelessWidget {
-  NextOnboardButton({
-    Key? key,
-    required PageController pageController,
-    required Function() buildPageIndicator,
-    required this.textStyle,
-    required this.changePage,
-  })  : _pageController = pageController,
-        _buildPageIndicator = buildPageIndicator,
-        super(key: key);
-
-  void Function(int page) changePage;
-  final _buildPageIndicator;
-  final PageController _pageController;
-  final TextStyle textStyle;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: Theme.of(context).primaryColorDark,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 5.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: _buildPageIndicator(),
-            ),
-            Align(
-              alignment: FractionalOffset.bottomRight,
-              child: TextButton(
-                onPressed: () {
-                  _pageController.nextPage(
-                    duration: const Duration(milliseconds: 500),
-                    curve: Curves.ease,
-                  );
-                  if (_pageController.page != null) {
-                    changePage(_pageController.page!.toInt());
-                  }
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Text(
-                      'Next',
-                      style: textStyle,
-                    ),
-                    const SizedBox(width: 10.0),
-                    const Icon(
-                      Icons.arrow_forward,
-                      color: Colors.white,
-                      size: 30.0,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
