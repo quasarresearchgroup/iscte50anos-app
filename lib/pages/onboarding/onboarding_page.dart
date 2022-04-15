@@ -15,13 +15,30 @@ class OnboardingPage extends StatefulWidget {
 class _OnboardingPageState extends State<OnboardingPage>
     with SingleTickerProviderStateMixin {
   final Logger _logger = Logger();
-  final int _numPages = 3;
+  late final int _numPages;
   final PageController _pageController = PageController(initialPage: 0);
   int _currentPage = 0;
   int _lastPage = 0;
   late final AnimationController _controller;
   late final Tween<Offset> _offsetTween;
-
+  final Duration animDuration = const Duration(milliseconds: 500);
+  final List<Container> pageViewChildren = [
+    Container(
+      color: Colors.blue,
+    ),
+    Container(
+      color: Colors.yellow,
+    ),
+    Container(
+      color: Colors.green,
+    ),
+    Container(
+      color: Colors.purple,
+    ),
+    Container(
+      color: Colors.orange,
+    ),
+  ];
   List<Widget> _buildPageIndicator() {
     List<Widget> list = [];
     for (int i = 0; i < _numPages; i++) {
@@ -47,6 +64,7 @@ class _OnboardingPageState extends State<OnboardingPage>
 
   @override
   void initState() {
+    _numPages = pageViewChildren.length;
     _controller = AnimationController(
       duration: const Duration(seconds: 2),
       vsync: this,
@@ -82,9 +100,11 @@ class _OnboardingPageState extends State<OnboardingPage>
             TextButton(
               onPressed: () {
                 _logger.i("pressed Skip");
-                _pageController.animateToPage(_numPages - 1,
-                    duration: const Duration(milliseconds: 500),
-                    curve: Curves.ease);
+                _pageController.animateToPage(
+                  _numPages - 1,
+                  duration: animDuration,
+                  curve: Curves.easeIn,
+                );
               },
               child: Text(
                 'Skip',
@@ -102,43 +122,28 @@ class _OnboardingPageState extends State<OnboardingPage>
             onPageChanged: (int page) {
               changePage(page);
             },
-            children: [
-              Container(
-                color: Colors.green,
-              ),
-              Container(
-                color: Colors.purple,
-              ),
-              Container(
-                color: Colors.orange,
-              ),
-            ],
+            children: pageViewChildren,
           )),
           SizedBox(
             height: 100,
             child: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 500),
-                reverseDuration: const Duration(milliseconds: 500),
-                switchInCurve: Curves.easeIn,
-                switchOutCurve: Curves.easeOut,
+                duration: animDuration,
+                reverseDuration: animDuration,
+                switchInCurve: Curves.fastLinearToSlowEaseIn,
+                switchOutCurve: Curves.fastOutSlowIn,
                 //height: 40.0,
                 //width: double.infinity,
                 //color: Theme.of(context).primaryColor,
                 transitionBuilder: (Widget child, Animation<double> animation) {
-                  final getStartedAnimation = Tween<Offset>(
-                          begin: const Offset(1, 0.0), end: Offset.zero)
-                      .animate(CurvedAnimation(
-                          parent: animation, curve: Curves.easeOut));
-                  final outAnimation =
-                      Tween<Offset>(begin: Offset(-1, 0.0), end: Offset.zero)
-                          .animate(CurvedAnimation(
-                              parent: animation, curve: Curves.easeIn));
-
                   Animation<Offset> finalAnimation;
-                  if (child.key == ValueKey(_numPages - 1)) {
-                    finalAnimation = getStartedAnimation;
+                  if (child is GetStartedOnboard) {
+                    finalAnimation = Tween<Offset>(
+                            begin: const Offset(1, 0.0), end: Offset.zero)
+                        .animate(animation);
                   } else {
-                    finalAnimation = outAnimation;
+                    finalAnimation = Tween<Offset>(
+                            begin: const Offset(-1, 0.0), end: Offset.zero)
+                        .animate(animation);
                   }
                   return SlideTransition(
                     position: finalAnimation,
@@ -147,14 +152,15 @@ class _OnboardingPageState extends State<OnboardingPage>
                 },
                 child: _currentPage != _numPages - 1
                     ? NextOnboardButton(
-                        key: ValueKey(_currentPage),
+                        //key: ValueKey(_currentPage),
                         buildPageIndicator: _buildPageIndicator,
                         pageController: _pageController,
                         changePage: changePage,
-                        textStyle: textStyle)
+                        textStyle: textStyle,
+                      )
                     : GetStartedOnboard(
-                        key: ValueKey(_currentPage),
-                      )),
+                        //key: ValueKey(_currentPage),
+                        )),
           ),
         ],
       ),
