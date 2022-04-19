@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
-class YearTimeline extends StatefulWidget {
-  const YearTimeline(
+class YearTimelineListView extends StatefulWidget {
+  const YearTimelineListView(
       {Key? key,
       required this.changeYearFunction,
       required this.yearsList,
@@ -15,25 +15,28 @@ class YearTimeline extends StatefulWidget {
   final int? selectedYear;
 
   @override
-  State<YearTimeline> createState() => _YearTimelineState();
+  State<YearTimelineListView> createState() => _YearTimelineListViewState();
 }
 
-class _YearTimelineState extends State<YearTimeline> {
+class _YearTimelineListViewState extends State<YearTimelineListView> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Theme.of(context).primaryColor,
+      decoration: BoxDecoration(color: Theme.of(context).primaryColor),
       child: ListView.builder(
           scrollDirection: Axis.horizontal,
           itemCount: widget.yearsList.length,
           shrinkWrap: true,
           itemBuilder: (BuildContext context, int index) {
-            return YearTimelineTile(
-                changeYearFunction: widget.changeYearFunction,
-                year: widget.yearsList[index],
-                isSelected: widget.selectedYear == widget.yearsList[index],
-                isFirst: index == 0,
-                isLast: index == widget.yearsList.length - 1);
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 8.0),
+              child: YearTimelineTile(
+                  changeYearFunction: widget.changeYearFunction,
+                  year: widget.yearsList[index],
+                  isSelected: widget.selectedYear == widget.yearsList[index],
+                  isFirst: index == 0,
+                  isLast: index == widget.yearsList.length - 1),
+            );
           }),
     );
   }

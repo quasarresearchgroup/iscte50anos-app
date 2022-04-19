@@ -5,7 +5,7 @@ import 'package:logger/logger.dart';
 
 import '../models/event.dart';
 
-class ContentLoader {
+class TimelineContentService {
   static const String timelineEntriesFile = 'Resources/timeline.csv';
   static final Logger _logger = Logger();
 

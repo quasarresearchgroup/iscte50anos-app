@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:iscte_spots/widgets/timeline/year_timeline.dart';
+import 'package:iscte_spots/widgets/timeline/list_view/events_timeline_listview.dart';
+import 'package:iscte_spots/widgets/timeline/list_view/year_timeline__listview.dart';
 
 import '../../models/content.dart';
-import 'events_timeline.dart';
 
 class TimeLineBody extends StatefulWidget {
   TimeLineBody({
@@ -51,27 +51,26 @@ class _TimeLineBodyState extends State<TimeLineBody> {
   @override
   Widget build(BuildContext context) {
     return Column(children: [
+      Container(
+        height: 100,
+        decoration: const BoxDecoration(boxShadow: [
+          BoxShadow(
+            color: Colors.black,
+            blurRadius: 15.0,
+          )
+        ]),
+        child: YearTimelineListView(
+          yearsList: list,
+          changeYearFunction: changeChosenYear,
+          selectedYear: chosenYear != null ? chosenYear! : list.last,
+        ),
+      ),
       Expanded(
-          flex: 15,
-          child: Container(
-            decoration: const BoxDecoration(boxShadow: [
-              BoxShadow(
-                color: Colors.black,
-                blurRadius: 15.0,
-              )
-            ]),
-            child: YearTimeline(
-              yearsList: list,
-              changeYearFunction: changeChosenYear,
-              selectedYear: chosenYear != null ? chosenYear! : list.last,
-            ),
-          )),
-      Expanded(
-          flex: 100,
-          child: EventsTimeline(
-            timeLineMap: widget.mapdata,
-            timelineYear: chosenYear!,
-          )),
+        child: EventTimelineListView(
+          timeLineMap: widget.mapdata,
+          timelineYear: chosenYear!,
+        ),
+      ),
     ]);
   }
 }

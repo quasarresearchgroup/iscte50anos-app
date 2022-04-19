@@ -85,6 +85,7 @@ class NavigationDrawer extends StatelessWidget {
     ];
 
     return Drawer(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       child: ListView(
         children: menuWidgetList,
       ),

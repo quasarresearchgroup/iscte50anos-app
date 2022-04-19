@@ -35,6 +35,8 @@ class IscteTheme {
 
   static ThemeData get darkThemeData {
     return ThemeData.dark().copyWith(
+      scaffoldBackgroundColor: Colors.black,
+      backgroundColor: Colors.black,
       primaryColor: iscteColor,
       errorColor: Colors.deepOrangeAccent,
       appBarTheme: appBarTheme,
