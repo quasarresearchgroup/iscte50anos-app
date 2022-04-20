@@ -13,10 +13,12 @@ class EventTimelineTile extends StatelessWidget {
     required this.isFirst,
     required this.isLast,
     required this.data,
+    required this.index,
   }) : super(key: key);
 
   final bool isFirst;
   final bool isLast;
+  final int index;
   final Content data;
   final LineStyle lineStyle;
   final Color color2 = Colors.white.withOpacity(0.3);
@@ -53,40 +55,47 @@ class EventTimelineTile extends StatelessWidget {
         afterLineStyle: lineStyle,
         axis: TimelineAxis.vertical,
         alignment: TimelineAlign.manual,
-        lineXY: 0.20,
+        lineXY: 0.30,
         isFirst: isFirst,
         isLast: isLast,
         indicatorStyle: IndicatorStyle(
           width: 25,
           height: 25,
-          padding: const EdgeInsets.symmetric(vertical: 8),
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
           drawGap: true,
           indicator: Center(
             child: data.contentIcon,
           ),
         ),
-        endChild: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(data.getDateString()),
-                    data.description != null
-                        ? Text(
-                            data.description!,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          )
-                        : Container(),
-                  ],
+        endChild: Container(
+          decoration: BoxDecoration(
+              color: index % 2 == 0
+                  ? Colors.transparent
+                  : Theme.of(context).primaryColor.withAlpha(200),
+              borderRadius: BorderRadius.all(Radius.circular(20))),
+          child: Padding(
+            padding: const EdgeInsets.all(15),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(data.getDateString()),
+                      data.description != null
+                          ? Text(
+                              data.description!,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            )
+                          : Container(),
+                    ],
+                  ),
                 ),
-              ),
-              Icon(Icons.adaptive.arrow_forward)
-            ],
+                Icon(Icons.adaptive.arrow_forward)
+              ],
+            ),
           ),
         ),
         startChild: Center(child: data.scopeIcon),

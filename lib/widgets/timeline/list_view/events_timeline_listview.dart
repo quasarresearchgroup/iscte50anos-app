@@ -52,6 +52,7 @@ class _EventTimelineListViewState extends State<EventTimelineListView> {
 
     for (int index = 0; index < chosenTimelineList.length; index++) {
       timelineTiles.add(EventTimelineTile(
+          index: index,
           data: chosenTimelineList[index],
           isFirst: index == 0,
           isLast: index == chosenTimelineList.length - 1,
