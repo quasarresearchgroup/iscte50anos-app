@@ -19,6 +19,7 @@ class EventTimelineListView extends StatefulWidget {
 class _EventTimelineListViewState extends State<EventTimelineListView> {
   List<Content> chosenTimelineList = <Content>[];
   List<Content> originalTimelineList = <Content>[];
+  final double tileOffset = 0.4;
 
   @override
   void didUpdateWidget(covariant EventTimelineListView oldWidget) {
@@ -53,14 +54,18 @@ class _EventTimelineListViewState extends State<EventTimelineListView> {
     for (int index = 0; index < chosenTimelineList.length; index++) {
       timelineTiles.add(EventTimelineTile(
           index: index,
+          isEven: index % 2 == 0,
           data: chosenTimelineList[index],
           isFirst: index == 0,
           isLast: index == chosenTimelineList.length - 1,
           lineStyle: lineStyle));
     }
 
-    return ListView(
-      children: timelineTiles,
+    return SingleChildScrollView(
+      child: Column(
+        //addAutomaticKeepAlives: true,
+        children: timelineTiles,
+      ),
     );
   }
 }

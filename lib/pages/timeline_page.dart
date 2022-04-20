@@ -13,7 +13,7 @@ import '../widgets/util/loading.dart';
 
 class TimelinePage extends StatefulWidget {
   TimelinePage({Key? key}) : super(key: key);
-  final Logger logger = Logger();
+  final Logger _logger = Logger();
 
   static const pageRoute = "/timeline";
 
@@ -27,7 +27,6 @@ class _TimelinePageState extends State<TimelinePage> {
   @override
   void initState() {
     super.initState();
-    //mapdata = ContentLoader.getTimeLineEntries();
     mapdata = DatabaseContentTable.getAll();
   }
 
@@ -86,9 +85,9 @@ class _TimelinePageState extends State<TimelinePage> {
   void refreshTImelineData(BuildContext context) {
     TimelineContentService.insertContentEntriesFromCSV().then((value) {
       setState(() {
-        widget.logger.d("Inserted from CSV");
+        widget._logger.d("Inserted from CSV");
         mapdata = DatabaseContentTable.getAll();
-        mapdata.then((value) => widget.logger.d(value.length));
+        mapdata.then((value) => widget._logger.d(value.length));
         Navigator.popAndPushNamed(context, TimelinePage.pageRoute);
       });
     });
@@ -97,7 +96,7 @@ class _TimelinePageState extends State<TimelinePage> {
   void deleteTimelineData(BuildContext context) {
     setState(() {
       DatabaseContentTable.removeALL();
-      widget.logger.d("Removed all content");
+      widget._logger.d("Removed all content");
       Navigator.popAndPushNamed(context, TimelinePage.pageRoute);
     });
   }

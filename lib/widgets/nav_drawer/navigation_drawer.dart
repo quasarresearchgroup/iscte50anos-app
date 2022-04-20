@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:iscte_spots/pages/leaderboard/leaderboard_page.dart';
+import 'package:iscte_spots/pages/timeline_page.dart';
 import 'package:iscte_spots/widgets/nav_drawer/page_routes.dart';
+import 'package:iscte_spots/widgets/splashScreen/shake.dart';
+
+import '../../pages/flickr/flickr_page.dart';
+import '../../pages/quiz/quiz_page.dart';
+import '../../pages/scanned_list_page.dart';
 
 class NavigationDrawer extends StatelessWidget {
   const NavigationDrawer({
@@ -23,51 +30,45 @@ class NavigationDrawer extends StatelessWidget {
         leading: const Icon(Icons.timeline),
         title: Text(AppLocalizations.of(context)!.timelineScreen),
         onTap: () {
-          Navigator.pop(context);
-          Navigator.pushNamed(context, PageRoutes.timeline);
+          animateToPage(context, page: TimelinePage());
         },
       ),
       ListTile(
         leading: const Icon(Icons.web_sharp),
         title: Text(AppLocalizations.of(context)!.visitedPagesScreen),
         onTap: () {
-          Navigator.pop(context);
-          Navigator.pushNamed(context, PageRoutes.visited);
+          animateToPage(context, page: const VisitedPagesPage());
         },
       ),
       ListTile(
         leading: const Icon(Icons.help),
         title: Text(AppLocalizations.of(context)!.quizScreen),
         onTap: () {
-          Navigator.pop(context);
-          Navigator.pushNamed(context, PageRoutes.quiz);
+          animateToPage(context, page: QuizPage());
         },
       ),
       ListTile(
         leading: const Icon(Icons.touch_app_outlined),
         title: Text(AppLocalizations.of(context)!.shakerScreen),
         onTap: () {
-          Navigator.pop(context);
-          Navigator.pushNamed(context, PageRoutes.shake);
+          animateToPage(context, page: Shaker());
         },
       ),
       ListTile(
         leading: const FaIcon(FontAwesomeIcons.flickr),
         title: Text(AppLocalizations.of(context)!.flickrScreen),
         onTap: () {
-          Navigator.pop(context);
-          Navigator.pushNamed(context, PageRoutes.flickr);
+          animateToPage(context, page: FlickrPage());
         },
       ),
       ListTile(
         leading: const Icon(Icons.score),
         title: Text(AppLocalizations.of(context)!.pointsScreen),
         onTap: () {
-          Navigator.pop(context);
-          Navigator.pushNamed(context, PageRoutes.leaderboard);
+          animateToPage(context, page: LeaderBoardPage());
         },
       ),
-      Spacer(),
+      const Spacer(),
       ListTile(
         leading: const Icon(Icons.settings),
         title: Text(AppLocalizations.of(context)!.settingsScreen),
@@ -82,6 +83,26 @@ class NavigationDrawer extends StatelessWidget {
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       child: Column(
         children: menuWidgetList,
+      ),
+    );
+  }
+
+  Future<void> animateToPage(BuildContext context,
+      {required Widget page}) async {
+    Future<Widget> buildPageAsync({required Widget page}) async {
+      return Future.microtask(
+        () {
+          return page;
+        },
+      );
+    }
+
+    Widget futurePage = await buildPageAsync(page: page);
+    Navigator.pop(context);
+    Navigator.push(
+      context,
+      PageRoutes.createRoute(
+        widget: futurePage,
       ),
     );
   }
