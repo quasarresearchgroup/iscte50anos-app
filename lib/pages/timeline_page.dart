@@ -41,20 +41,23 @@ class _TimelinePageState extends State<TimelinePage> {
 
     return Theme(
       data: Theme.of(context).copyWith(
-          appBarTheme: Theme.of(context)
-              .appBarTheme
-              .copyWith(shape: const ContinuousRectangleBorder())),
+        appBarTheme: Theme.of(context).appBarTheme.copyWith(
+              shape: const ContinuousRectangleBorder(),
+            ),
+      ),
       child: Scaffold(
         appBar: AppBar(
           title: Text(AppLocalizations.of(context)!.timelineScreen),
           actions: [
             IconButton(
-                onPressed: () {
-                  showSearch(
-                      context: context,
-                      delegate: TimelineSearchDelegate(mapdata: mapdata));
-                },
-                icon: const FaIcon(FontAwesomeIcons.search))
+              onPressed: () {
+                showSearch(
+                  context: context,
+                  delegate: TimelineSearchDelegate(mapdata: mapdata),
+                );
+              },
+              icon: const FaIcon(FontAwesomeIcons.magnifyingGlass),
+            )
           ],
         ),
         floatingActionButton: SpeedDial(

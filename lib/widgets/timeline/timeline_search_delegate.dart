@@ -44,24 +44,27 @@ class TimelineSearchDelegate extends SearchDelegate {
     final String queryString = query;
     List<Content> list = [];
     return FutureBuilder(
-        future: mapdata,
-        builder: (BuildContext context, AsyncSnapshot<List<Content>> snapshot) {
-          if (snapshot.hasData) {
-            list = snapshot.data!.where((element) {
-              if (element.description != null) {
-                return element.description!
-                    .toLowerCase()
-                    .contains(queryString.toLowerCase());
-              } else {
-                return false;
-              }
-            }).toList();
-            _logger.d(list);
-            return TimeLineBody(mapdata: list);
-          } else {
-            return const LoadingWidget();
-          }
-        });
+      future: mapdata,
+      builder: (BuildContext context, AsyncSnapshot<List<Content>> snapshot) {
+        Widget returningWidget;
+        if (snapshot.hasData) {
+          list = snapshot.data!.where((element) {
+            if (element.description != null) {
+              return element.description!
+                  .toLowerCase()
+                  .contains(queryString.toLowerCase());
+            } else {
+              return false;
+            }
+          }).toList();
+          _logger.d(list);
+          returningWidget = TimeLineBody(mapdata: list);
+        } else {
+          returningWidget = const LoadingWidget();
+        }
+        return returningWidget;
+      },
+    );
   }
 
   @override

@@ -162,7 +162,9 @@ class _PuzzlePageState extends State<PuzzlePage> {
 
   @override
   Widget build(BuildContext context) {
-    return pieces.isNotEmpty ? Stack(children: pieces) : const LoadingWidget();
+    Widget widget =
+        pieces.isNotEmpty ? Stack(children: pieces) : const LoadingWidget();
+    return SafeArea(child: widget);
   }
 
   void bringToTop(Widget targetWidget) {

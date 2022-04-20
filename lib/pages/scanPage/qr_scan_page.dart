@@ -1,14 +1,11 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:html/parser.dart' as parser;
 import 'package:http/http.dart' as http;
 import 'package:iscte_spots/helper/helper_methods.dart';
 import 'package:iscte_spots/models/visited_url.dart';
 import 'package:iscte_spots/pages/scanPage/qr_scan_camera_controls.dart';
-import 'package:iscte_spots/widgets/my_bottom_bar.dart';
-import 'package:iscte_spots/widgets/nav_drawer/navigation_drawer.dart';
 import 'package:iscte_spots/widgets/util/overlays.dart';
 import 'package:logger/logger.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
@@ -102,32 +99,16 @@ class QRScanPageState extends State<QRScanPage> {
   Widget build(BuildContext context) {
     checkLaunchBarcode(context);
 
-    return Scaffold(
-      drawer: const NavigationDrawer(),
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.scanACode),
-      ),
-      body: Stack(
-        alignment: Alignment.center,
-        children: <Widget>[
-          MyQRView(context),
-/*          Positioned(
-            bottom: 10,
-            child: QRScanResults(
-              controlsDecoration: controlsDecoration,
-              qrScanResult: qrScanResult,
-            ),
-          )
-        ,
- */
-          Positioned(
-            top: 10,
-            child: QRControlButtons(
-                controlsDecoration: controlsDecoration, controller: controller),
-          ),
-        ],
-      ),
-      bottomNavigationBar: const MyBottomBar(selectedIndex: 1),
+    return Stack(
+      alignment: Alignment.center,
+      children: <Widget>[
+        MyQRView(context),
+        Positioned(
+          top: 10,
+          child: QRControlButtons(
+              controlsDecoration: controlsDecoration, controller: controller),
+        ),
+      ],
     );
   }
 

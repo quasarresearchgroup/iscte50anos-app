@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 class IscteTheme {
   static Color iscteColor = const Color.fromRGBO(14, 41, 194, 1);
+  static Radius appbarRadius = Radius.circular(20);
 
   static AppBarTheme get appBarTheme {
     return AppBarTheme(
@@ -11,9 +12,9 @@ class IscteTheme {
       // This removes the shadow from all App Bars.
       centerTitle: true,
       toolbarHeight: 55,
-      shape: const RoundedRectangleBorder(
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
-          bottom: Radius.circular(20),
+          bottom: IscteTheme.appbarRadius,
         ),
       ),
       backgroundColor: iscteColor,
