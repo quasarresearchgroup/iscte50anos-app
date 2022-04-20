@@ -24,6 +24,8 @@
     "puzzleScreen":"Puzzle",
     "quizScreen":"Quizzes",
     "flickrScreen":"Flickr",
-    "shakerScreen":"Shaker"
+    "shakerScreen":"Shaker",
+    "settingsScreen":"Settings",
+    "logOutButton":"Log Out"
 
 }

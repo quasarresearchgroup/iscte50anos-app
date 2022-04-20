@@ -19,21 +19,6 @@ class NavigationDrawer extends StatelessWidget {
         ),
         child: null,
       ),
-      /*ListTile(
-        leading: const Icon(Icons.home),
-        title: Text(AppLocalizations.of(context)!.mainMenu),
-        onTap: () {
-          Navigator.pushReplacementNamed(context, PageRoutes.home);
-        },
-      ),
-      ListTile(
-        leading: const Icon(Icons.qr_code),
-        title: Text(AppLocalizations.of(context)!.scanCodeButton),
-        onTap: () {
-          Navigator.pushReplacementNamed(context, PageRoutes.qrscan);
-        },
-      ),
-      */
       ListTile(
         leading: const Icon(Icons.timeline),
         title: Text(AppLocalizations.of(context)!.timelineScreen),
@@ -82,11 +67,20 @@ class NavigationDrawer extends StatelessWidget {
           Navigator.pushNamed(context, PageRoutes.leaderboard);
         },
       ),
+      Spacer(),
+      ListTile(
+        leading: const Icon(Icons.settings),
+        title: Text(AppLocalizations.of(context)!.settingsScreen),
+      ),
+      ListTile(
+        leading: Icon(Icons.adaptive.arrow_back_outlined),
+        title: Text(AppLocalizations.of(context)!.logOutButton),
+      ),
     ];
 
     return Drawer(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      child: ListView(
+      child: Column(
         children: menuWidgetList,
       ),
     );

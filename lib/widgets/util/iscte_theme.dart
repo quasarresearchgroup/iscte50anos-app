@@ -20,6 +20,7 @@ class IscteTheme {
       backgroundColor: iscteColor,
       systemOverlayStyle: SystemUiOverlayStyle(
         statusBarColor: iscteColor,
+        systemNavigationBarColor: iscteColor,
         statusBarIconBrightness: Brightness.light, // For Android (dark icons)
         statusBarBrightness: Brightness.light, // For iOS (dark icons)
       ),

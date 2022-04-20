@@ -3,7 +3,6 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -192,70 +191,65 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-        onWillPop: () async {
-          SystemNavigator.pop();
-          return true;
-        },
-        child: Scaffold(
-          extendBodyBehindAppBar: true,
-          extendBody: true,
-          drawer: const NavigationDrawer(),
-          appBar: AppBar(
-            title: Title(
-                color: Colors.black,
-                child: Text(AppLocalizations.of(context)!.appName)),
-            actions: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Center(
-                    child: IconButton(
-                        icon: const FaIcon(FontAwesomeIcons.circleQuestion),
-                        onPressed: () => showHelpOverlay(
-                            context, currentPuzzleImage!, widget._logger))),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Center(
-                    child: Text(
-                  (notViewedImages.length + 1).toString(),
-                  textScaleFactor: 1.5,
-                )),
-              )
-            ],
+    return Scaffold(
+      extendBodyBehindAppBar: true,
+      extendBody: true,
+      drawer: const NavigationDrawer(),
+      appBar: AppBar(
+        title: Title(
+            color: Colors.black,
+            child: Text(AppLocalizations.of(context)!.appName)),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Center(
+                child: IconButton(
+                    icon: const FaIcon(FontAwesomeIcons.circleQuestion),
+                    onPressed: () => showHelpOverlay(
+                        context, currentPuzzleImage!, widget._logger))),
           ),
-          bottomNavigationBar: MyBottomBar(
-            tabController: tabController,
-            initialIndex: 0,
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Center(
+                child: Text(
+              (notViewedImages.length + 1).toString(),
+              textScaleFactor: 1.5,
+            )),
+          )
+        ],
+      ),
+      bottomNavigationBar: MyBottomBar(
+        tabController: tabController,
+        initialIndex: 0,
+      ),
+      floatingActionButton: HomeDial(
+        removePuzzlePieces: removePuzzlePieces,
+        notViewedImages: notViewedImages,
+        randomizeChosenImage: randomizeChosenImage,
+        fetchAndRandomize: fetchAndRandomize,
+      ),
+      body: TabBarView(
+        physics: const NeverScrollableScrollPhysics(),
+        controller: tabController,
+        children: [
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.all(40.0),
+              child: LayoutBuilder(
+                  builder: (BuildContext context, BoxConstraints constraints) {
+                return (currentPuzzleImage != null)
+                    ? PuzzlePage(
+                        image: currentPuzzleImage!,
+                        constraints: constraints,
+                      )
+                    : const LoadingWidget();
+              }),
+            ),
           ),
-          floatingActionButton: HomeDial(
-            removePuzzlePieces: removePuzzlePieces,
-            notViewedImages: notViewedImages,
-            randomizeChosenImage: randomizeChosenImage,
-            fetchAndRandomize: fetchAndRandomize,
-          ),
-          body: TabBarView(
-            physics: const NeverScrollableScrollPhysics(),
-            controller: tabController,
-            children: [
-              Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(40.0),
-                  child: LayoutBuilder(builder:
-                      (BuildContext context, BoxConstraints constraints) {
-                    return (currentPuzzleImage != null)
-                        ? PuzzlePage(
-                            image: currentPuzzleImage!,
-                            constraints: constraints,
-                          )
-                        : const LoadingWidget();
-                  }),
-                ),
-              ),
-              QRScanPage()
-            ],
-          ),
-        ));
+          QRScanPage()
+        ],
+      ),
+    );
   }
 }
 
