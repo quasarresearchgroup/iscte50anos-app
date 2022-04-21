@@ -224,9 +224,9 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
       ),
       floatingActionButton: HomeDial(
         removePuzzlePieces: removePuzzlePieces,
-        notViewedImages: notViewedImages,
         randomizeChosenImage: randomizeChosenImage,
         fetchAndRandomize: fetchAndRandomize,
+        notViewedImages: notViewedImages,
       ),
       body: TabBarView(
         physics: const NeverScrollableScrollPhysics(),
@@ -262,10 +262,10 @@ class HomeDial extends StatelessWidget {
     required this.notViewedImages,
   }) : super(key: key);
   final Logger _logger = Logger();
-  var removePuzzlePieces;
-  var randomizeChosenImage;
-  var fetchAndRandomize;
-  var notViewedImages;
+  final Function removePuzzlePieces;
+  final Function randomizeChosenImage;
+  final Function fetchAndRandomize;
+  final List<Image> notViewedImages;
 
   @override
   Widget build(BuildContext context) {

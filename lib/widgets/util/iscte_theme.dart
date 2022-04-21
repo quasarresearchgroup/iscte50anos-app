@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 
 class IscteTheme {
   static Color iscteColor = const Color.fromRGBO(14, 41, 194, 1);
-  static Radius appbarRadius = Radius.circular(20);
+  static Radius appbarRadius = const Radius.circular(20);
 
   static AppBarTheme get appBarTheme {
     return AppBarTheme(

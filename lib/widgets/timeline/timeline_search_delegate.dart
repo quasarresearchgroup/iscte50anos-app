@@ -22,7 +22,7 @@ class TimelineSearchDelegate extends SearchDelegate {
   @override
   List<Widget>? buildActions(BuildContext context) => [
         IconButton(
-          icon: const FaIcon(FontAwesomeIcons.timesCircle),
+          icon: const FaIcon(FontAwesomeIcons.circleXmark),
           onPressed: () {
             if (query.isEmpty) {
               close(context, null);

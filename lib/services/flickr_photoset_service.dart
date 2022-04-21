@@ -47,7 +47,7 @@ class FLickrPhotosetService extends FlickrService {
           }
           currentPage++;
           if (counter < perPage) {
-            _controller.sink.addError(FlickrService.NODATAERROR);
+            _controller.sink.addError(FlickrService.noDataError);
           }
           stopFetch();
         } else {

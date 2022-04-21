@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:iscte_spots/models/flickr/flickr_photo.dart';
@@ -44,7 +43,7 @@ class _FlickAlbumPageState extends State<FlickAlbumPage> {
       });
     }, onError: (error) {
       widget._logger.d(error);
-      noMoreData = error == FlickrService.NODATAERROR;
+      noMoreData = error == FlickrService.noDataError;
     });
     widget.listViewController.addListener(() {
       //widget._logger.d(

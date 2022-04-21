@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 class QRControlButtons extends StatefulWidget {
-  QRControlButtons(
+  const QRControlButtons(
       {Key? key, required this.controlsDecoration, this.controller})
       : super(key: key);
-  Decoration controlsDecoration;
-  QRViewController? controller;
+  final Decoration controlsDecoration;
+  final QRViewController? controller;
   @override
   State<QRControlButtons> createState() => _QRControlButtonsState();
 }

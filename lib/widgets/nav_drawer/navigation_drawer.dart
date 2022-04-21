@@ -63,7 +63,7 @@ class NavigationDrawer extends StatelessWidget {
       ),
       ListTile(
         leading: const Icon(Icons.score),
-        title: Text(AppLocalizations.of(context)!.pointsScreen),
+        title: Text(AppLocalizations.of(context)!.leaderBoardScreen),
         onTap: () {
           animateToPage(context, page: LeaderBoardPage());
         },

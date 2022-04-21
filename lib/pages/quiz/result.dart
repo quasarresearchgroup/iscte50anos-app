@@ -44,7 +44,7 @@ class Result extends StatelessWidget {
         children: <Widget>[
           Text(
             AppLocalizations.of(context)!.quizComplete,
-            style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+            style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,
           ),
           /*Text(

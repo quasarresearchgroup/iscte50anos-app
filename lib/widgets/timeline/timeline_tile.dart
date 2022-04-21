@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:iscte_spots/widgets/timeline/timeline_details_page.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
@@ -8,7 +6,7 @@ import '../../models/content.dart';
 import '../nav_drawer/page_routes.dart';
 
 class EventTimelineTile extends StatefulWidget {
-  EventTimelineTile({
+  const EventTimelineTile({
     Key? key,
     required this.lineStyle,
     required this.isFirst,
@@ -36,8 +34,7 @@ class _EventTimelineTileState extends State<EventTimelineTile> {
   @override
   void initState() {
     super.initState();
-
-    var future = Future.delayed(
+    Future.delayed(
       Duration(milliseconds: 100 * (widget.index + 1)),
       () {
         setState(() {
@@ -50,7 +47,7 @@ class _EventTimelineTileState extends State<EventTimelineTile> {
   @override
   Widget build(BuildContext context) {
     return AnimatedOpacity(
-      duration: Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 300),
       opacity: opacity,
       child: InkWell(
         splashColor: color2,
@@ -109,7 +106,7 @@ class TimelineInformationChild extends StatelessWidget {
             color: isEven
                 ? Colors.transparent
                 : Theme.of(context).primaryColor.withAlpha(200),
-            borderRadius: BorderRadius.all(Radius.circular(20))),
+            borderRadius: const BorderRadius.all(Radius.circular(20))),
         child: Padding(
           padding: const EdgeInsets.all(15),
           child: Row(

@@ -13,11 +13,12 @@
     "generalError":"Error",
     "noMoreDataError":"No more Data",
     "networkError":"Network Error",
+    "logOutButton":"Log Out",
 
 
     "mainMenu": "Main Menu",
     "quizPageTitle":"Quiz",
-    "pointsScreen":"Points",
+    "leaderBoardScreen":"Leaderboard",
     "visitedPagesScreen":"Visited Pages",
     "timelineScreen":"Timeline",
     "timelineDetailsScreen":"Details",
@@ -25,7 +26,6 @@
     "quizScreen":"Quizzes",
     "flickrScreen":"Flickr",
     "shakerScreen":"Shaker",
-    "settingsScreen":"Settings",
-    "logOutButton":"Log Out"
+    "settingsScreen":"Settings"
 
 }

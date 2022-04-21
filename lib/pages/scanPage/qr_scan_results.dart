@@ -1,23 +1,20 @@
 import 'package:flutter/widgets.dart';
 
-class QRScanResults extends StatefulWidget {
-  QRScanResults({Key? key, required this.controlsDecoration, this.qrScanResult})
+class QRScanResults extends StatelessWidget {
+  const QRScanResults(
+      {Key? key, required this.controlsDecoration, this.qrScanResult})
       : super(key: key);
-  Decoration controlsDecoration;
-  var qrScanResult;
-  @override
-  State<QRScanResults> createState() => _QRScanResultsState();
-}
+  final Decoration controlsDecoration;
+  final String? qrScanResult;
 
-class _QRScanResultsState extends State<QRScanResults> {
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(12),
-      decoration: widget.controlsDecoration,
+      decoration: controlsDecoration,
       child: Text(
         //'Result : ${barcode!.code}',
-        'Result : ${widget.qrScanResult}',
+        'Result : $qrScanResult',
         maxLines: 3,
       ),
     );

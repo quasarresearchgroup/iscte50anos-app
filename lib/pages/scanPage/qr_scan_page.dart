@@ -102,7 +102,7 @@ class QRScanPageState extends State<QRScanPage> {
     return Stack(
       alignment: Alignment.center,
       children: <Widget>[
-        MyQRView(context),
+        myQRView(context),
         Positioned(
           top: 10,
           child: QRControlButtons(
@@ -126,7 +126,7 @@ class QRScanPageState extends State<QRScanPage> {
     }
   }
 
-  Widget MyQRView(BuildContext context) => QRView(
+  Widget myQRView(BuildContext context) => QRView(
       key: qrKey,
       onQRViewCreated: onQRViewCreated,
       overlay: QrScannerOverlayShape(

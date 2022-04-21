@@ -4,7 +4,7 @@ import 'package:iscte_spots/widgets/timeline/timeline_tile.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
 class EventTimelineListView extends StatefulWidget {
-  EventTimelineListView({
+  const EventTimelineListView({
     Key? key,
     required this.timeLineMap,
     required this.timelineYear,

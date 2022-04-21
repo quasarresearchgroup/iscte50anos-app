@@ -5,15 +5,14 @@ import 'package:iscte_spots/widgets/timeline/list_view/year_timeline__listview.d
 import '../../models/content.dart';
 
 class TimeLineBody extends StatefulWidget {
-  TimeLineBody({
+  const TimeLineBody({
     Key? key,
     required this.mapdata,
     this.initialchosenYear,
   }) : super(key: key);
 
   final int? initialchosenYear;
-
-  List<Content> mapdata;
+  final List<Content> mapdata;
 
   @override
   State<TimeLineBody> createState() => _TimeLineBodyState();

@@ -7,7 +7,6 @@ import 'package:logger/logger.dart';
 import 'package:motion_sensors/motion_sensors.dart';
 
 class MovingPiece extends StatefulWidget {
-  Size imageSize;
   final Logger _logger = Logger();
 
   MovingPiece({
@@ -21,10 +20,12 @@ class MovingPiece extends StatefulWidget {
   @override
   _MovingPieceState createState() => _MovingPieceState();
 
-  Widget child;
+  static const int standartSpeed = 100;
+
+  final Size imageSize;
+  final Widget child;
   final BoxSize constraints;
   final double weight;
-  static const int standartSpeed = 100;
   final double maxaccel = 50;
 }
 

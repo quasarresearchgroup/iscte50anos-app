@@ -4,16 +4,16 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class TimelineDial extends StatelessWidget {
-  TimelineDial({
+  const TimelineDial({
     Key? key,
     required this.isDialOpen,
     required this.deleteTimelineData,
     required this.refreshTImelineData,
   }) : super(key: key);
 
-  var isDialOpen;
-  var deleteTimelineData;
-  var refreshTImelineData;
+  final ValueNotifier<bool>? isDialOpen;
+  final Function deleteTimelineData;
+  final Function refreshTImelineData;
 
   @override
   Widget build(BuildContext context) {
