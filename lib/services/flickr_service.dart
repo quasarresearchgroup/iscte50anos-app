@@ -8,7 +8,7 @@ abstract class FlickrService<T> {
   bool fetching = false;
   String? key;
   static const String userID = "45216724@N07";
-  static int NODATAERROR = 1;
+  static const int noDataError = 1;
   Stream<T> get stream;
 
   FlickrService() {

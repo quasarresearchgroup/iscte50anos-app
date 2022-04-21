@@ -9,6 +9,7 @@
     "advance":"Avançar",
     "quizComplete":"Quiz concluído",
     "back":"Voltar",
+    "logOutButton":"Encerrar Sessão",
 
 
     "generalError":"Erro",
@@ -17,13 +18,15 @@
 
     "mainMenu": "Menu principal",
     "quizPageTitle":"Quiz",
-    "pointsScreen":"Ver Pontos",
+    "leaderBoardScreen":"Ranking",
     "visitedPagesScreen":"Páginas Visitadas",
     "timelineScreen":"Linha do Tempo",
     "timelineDetailsScreen":"Detalhes",
     "puzzleScreen":"Puzzle",
     "quizScreen":"Quizzes",
     "flickrScreen":"Flickr",
-    "shakerScreen":"Shaker"
+    "shakerScreen":"Shaker",
+    "settingsScreen":"Definições"
+
 
 }

@@ -49,7 +49,7 @@ class DatabasePuzzlePieceTable {
   static void add(PuzzlePiece puzzlePiece) async {
     DatabaseHelper instance = DatabaseHelper.instance;
     Database db = await instance.database;
-    int insert = await db.insert(
+    await db.insert(
       table,
       puzzlePiece.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,

@@ -14,10 +14,10 @@ class VisitedPagesPage extends StatefulWidget {
 }
 
 class _VisitedPagesPageState extends State<VisitedPagesPage> {
-  TextStyle messagesStyle = const TextStyle(color: Colors.black, fontSize: 25);
-
   @override
   Widget build(BuildContext context) {
+    TextStyle messagesStyle =
+        TextStyle(color: Theme.of(context).selectedRowColor, fontSize: 25);
     return Builder(builder: (context) {
       return Scaffold(
           appBar: AppBar(

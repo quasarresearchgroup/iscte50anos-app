@@ -51,7 +51,8 @@ class DatabaseContentTable {
     DatabaseHelper instance = DatabaseHelper.instance;
     Database db = await instance.database;
     List<Map<String, Object?>> contents =
-        await db.query(table, orderBy: columnDescription);
+        await db.query(table, orderBy: columnDate);
+
     List<Content> contentList = contents.isNotEmpty
         ? contents.map((e) => Content.fromMap(e)).toList()
         : [];
