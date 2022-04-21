@@ -9,6 +9,8 @@ import 'package:iscte_spots/services/flickr_service.dart';
 class FlickrIscteAlbumService extends FlickrService {
   final StreamController<FlickrPhotoset> _controller =
       StreamController<FlickrPhotoset>();
+
+  @override
   Stream<FlickrPhotoset> get stream => _controller.stream;
   //List<FlickrPhotoset> photosetsInstanceList = [];
   int currentPage = 1;
@@ -49,7 +51,7 @@ class FlickrIscteAlbumService extends FlickrService {
           }
           currentPage++;
           if (counter < perPage) {
-            _controller.sink.addError(FlickrService.NODATAERROR);
+            _controller.sink.addError(FlickrService.noDataError);
           }
           stopFetch();
         } else {

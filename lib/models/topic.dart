@@ -5,30 +5,30 @@ class Topic {
   Topic({
     this.id,
     this.description,
-    this.qr_code_link,
+    this.qrCodeLink,
   });
   final int? id;
   final String? description;
-  final String? qr_code_link;
+  final String? qrCodeLink;
 
   static Logger logger = Logger();
 
   @override
   String toString() {
-    return 'Topic{id: $id, description: $description, qr_code_link: $qr_code_link}';
+    return 'Topic{id: $id, description: $description, qr_code_link: $qrCodeLink}';
   }
 
   factory Topic.fromMap(Map<String, dynamic> json) => Topic(
         id: json[DatabaseContentTable.columnId],
         description: json[DatabaseContentTable.columnDescription],
-        qr_code_link: json[DatabaseContentTable.columnLink],
+        qrCodeLink: json[DatabaseContentTable.columnLink],
       );
 
   Map<String, dynamic> toMap() {
     return {
       DatabaseContentTable.columnId: id,
       DatabaseContentTable.columnDescription: description,
-      DatabaseContentTable.columnLink: qr_code_link,
+      DatabaseContentTable.columnLink: qrCodeLink,
     };
   }
 }

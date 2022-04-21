@@ -62,7 +62,7 @@ class _FlickrPageState extends State<FlickrPage> {
     }, onError: (error) {
       widget._logger.e(error);
       showNetworkErrorOverlay(context, widget._logger);
-      noMoreData = error == FlickrService.NODATAERROR;
+      noMoreData = error == FlickrService.noDataError;
     });
   }
 

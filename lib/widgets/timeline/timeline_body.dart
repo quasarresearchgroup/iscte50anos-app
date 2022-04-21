@@ -1,22 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:iscte_spots/widgets/timeline/year_timeline.dart';
-import 'package:timeline_tile/timeline_tile.dart';
+import 'package:iscte_spots/widgets/timeline/list_view/events_timeline_listview.dart';
+import 'package:iscte_spots/widgets/timeline/list_view/year_timeline__listview.dart';
 
 import '../../models/content.dart';
-import 'events_timeline.dart';
 
 class TimeLineBody extends StatefulWidget {
-  TimeLineBody({
+  const TimeLineBody({
     Key? key,
     required this.mapdata,
     this.initialchosenYear,
   }) : super(key: key);
 
   final int? initialchosenYear;
-
-  final LineStyle lineStyle =
-      const LineStyle(color: Colors.black, thickness: 6);
-  List<Content> mapdata;
+  final List<Content> mapdata;
 
   @override
   State<TimeLineBody> createState() => _TimeLineBodyState();
@@ -54,29 +50,26 @@ class _TimeLineBodyState extends State<TimeLineBody> {
   @override
   Widget build(BuildContext context) {
     return Column(children: [
+      Container(
+        height: 100,
+        decoration: const BoxDecoration(boxShadow: [
+          BoxShadow(
+            color: Colors.black,
+            blurRadius: 15.0,
+          )
+        ]),
+        child: YearTimelineListView(
+          yearsList: list,
+          changeYearFunction: changeChosenYear,
+          selectedYear: chosenYear != null ? chosenYear! : list.last,
+        ),
+      ),
       Expanded(
-          flex: 15,
-          child: Container(
-            decoration: const BoxDecoration(boxShadow: [
-              BoxShadow(
-                color: Colors.black,
-                blurRadius: 15.0,
-              )
-            ]),
-            child: YearTimeline(
-              lineStyle: widget.lineStyle,
-              yearsList: list,
-              changeYearFunction: changeChosenYear,
-              selectedYear: chosenYear != null ? chosenYear! : list.last,
-            ),
-          )),
-      Expanded(
-          flex: 100,
-          child: EventsTimeline(
-            timeLineMap: widget.mapdata,
-            timelineYear: chosenYear!,
-            lineStyle: widget.lineStyle,
-          )),
+        child: EventTimelineListView(
+          timeLineMap: widget.mapdata,
+          timelineYear: chosenYear!,
+        ),
+      ),
     ]);
   }
 }

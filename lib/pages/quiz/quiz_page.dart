@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:iscte_spots/widgets/nav_drawer/navigation_drawer.dart';
 import 'package:logger/logger.dart';
 
 import './quiz.dart';
@@ -8,7 +7,7 @@ import './result.dart';
 
 class QuizPage extends StatefulWidget {
   static const pageRoute = "/quiz";
-  Logger logger = Logger();
+  final Logger logger = Logger();
 
   QuizPage({Key? key}) : super(key: key);
   @override
@@ -111,19 +110,18 @@ class _QuizPageState extends State<QuizPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(AppLocalizations.of(context)!.quizPageTitle),
-        ),
-        drawer: const NavigationDrawer(),
-        body: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: _questionIndex < _questions.length
-              ? Quiz(
-                  questions: _questions,
-                  answerQuestion: _answerQuestion,
-                  questionIndex: _questionIndex)
-              : Result(_totalScore, _resetQuiz),
-        ), //Padding
-      );
+      appBar: AppBar(
+        title: Text(AppLocalizations.of(context)!.quizPageTitle),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: _questionIndex < _questions.length
+            ? Quiz(
+                questions: _questions,
+                answerQuestion: _answerQuestion,
+                questionIndex: _questionIndex)
+            : Result(_totalScore, _resetQuiz),
+      ), //Padding
+    );
   }
 }

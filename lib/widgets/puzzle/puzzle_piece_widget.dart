@@ -24,7 +24,7 @@ class PuzzlePieceWidget extends StatefulWidget {
   final double? left;
   final bool? movable;
 
-  PuzzlePieceWidget({
+  const PuzzlePieceWidget({
     Key? key,
     required this.image,
     required this.imageSize,

@@ -43,9 +43,10 @@ class _ShakerState extends State<Shaker> {
 
   void setupURLStream() {
     _streamSubscription = widget.flickrService.stream.listen((String event) {
-      if (!images.contains(event)) {
+      final Image image = Image.network(event);
+      if (!images.contains(image)) {
         setState(() {
-          images.add(Image.network(event));
+          images.add(image);
         });
       } else {
         widget._logger.d("duplicated photo entry: $event");
@@ -64,7 +65,7 @@ class _ShakerState extends State<Shaker> {
               child: Text(AppLocalizations.of(context)!.shakerScreen)),
         ),
         floatingActionButton: FloatingActionButton(
-          child: const FaIcon(FontAwesomeIcons.redoAlt),
+          child: const FaIcon(FontAwesomeIcons.rotateRight),
           onPressed: () {
             if (images.isEmpty) {
               widget.flickrService.fetch();
@@ -82,12 +83,11 @@ class _ShakerState extends State<Shaker> {
 }
 
 class GravityPlane extends StatefulWidget {
-  int rows = 7;
-  int cols = 7;
-
   GravityPlane({Key? key, required this.image}) : super(key: key);
   final Logger _logger = Logger();
   final Image image;
+  final int rows = 7;
+  final int cols = 7;
 
   @override
   _GravityPlaneState createState() => _GravityPlaneState();

@@ -4,10 +4,9 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:http/http.dart' as http;
 import 'package:iscte_spots/widgets/nav_drawer/navigation_drawer.dart';
 import 'package:logger/logger.dart';
-import 'package:http/http.dart' as http;
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,7 +24,6 @@ class LeaderBoardPage extends StatefulWidget {
 
 class _LeaderBoardPageState extends State<LeaderBoardPage> {
   Logger logger = Logger();
-
 
   static const List<Widget> _pages = <Widget>[
     GlobalLeaderboard(),
@@ -64,27 +62,28 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
     return MaterialApp(
       theme: ThemeData.light().copyWith(
         primaryColor: const Color.fromRGBO(14, 41, 194, 1),
-          appBarTheme: appBarTheme.copyWith(
-            backgroundColor: const Color.fromRGBO(14, 41, 194, 1),
-            systemOverlayStyle: const SystemUiOverlayStyle(
-              statusBarColor: Color.fromRGBO(14, 41, 194, 1),
-              statusBarIconBrightness: Brightness.light, // For Android (dark icons)
-              statusBarBrightness: Brightness.light, // For iOS (dark icons)
-            ),
+        appBarTheme: appBarTheme.copyWith(
+          backgroundColor: const Color.fromRGBO(14, 41, 194, 1),
+          systemOverlayStyle: const SystemUiOverlayStyle(
+            statusBarColor: Color.fromRGBO(14, 41, 194, 1),
+            statusBarIconBrightness:
+                Brightness.light, // For Android (dark icons)
+            statusBarBrightness: Brightness.light, // For iOS (dark icons)
           ),
+        ),
       ),
       darkTheme: ThemeData.dark().copyWith(
           appBarTheme: appBarTheme.copyWith(
-            systemOverlayStyle: SystemUiOverlayStyle(
-              statusBarColor: darkTheme.bottomAppBarColor,
-              statusBarIconBrightness: Brightness.light, // For Android (dark icons)
-              statusBarBrightness: Brightness.light, // For iOS (dark icons)
-            ),
-          )
-      ),
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarColor: darkTheme.bottomAppBarColor,
+          statusBarIconBrightness: Brightness.light, // For Android (dark icons)
+          statusBarBrightness: Brightness.light, // For iOS (dark icons)
+        ),
+      )),
       home: Scaffold(
         appBar: AppBar(
-          title: const Text("Leaderboard"),//AppLocalizations.of(context)!.quizPageTitle)
+          title: const Text(
+              "Leaderboard"), //AppLocalizations.of(context)!.quizPageTitle)
         ),
         drawer: const NavigationDrawer(),
         body: NotificationListener<OverscrollIndicatorNotification>(
@@ -107,10 +106,10 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
             ),
           ],
           currentIndex: _selectedIndex,
-            //selectedItemColor: Colors.amber[800],
+          //selectedItemColor: Colors.amber[800],
           onTap: _onItemTapped,
         ),
-      ),//Scaffold
+      ), //Scaffold
       debugShowCheckedModeBanner: false,
     ); //MaterialApp
   }
@@ -124,33 +123,38 @@ class AffiliationLeaderboard extends StatefulWidget {
 }
 
 class _AffiliationLeaderboardState extends State<AffiliationLeaderboard> {
-
   String selectedType = "-";
   String selectedAffiliation = "-";
   bool firstSearch = false;
   bool canSearch = false;
 
-  Map<String, dynamic> maps = {"Aluno":"student", "Docente":"professor", "Investigador":"researcher", "Funcionário":"staff"};
-
+  Map<String, dynamic> maps = {
+    "Aluno": "student",
+    "Docente": "professor",
+    "Investigador": "researcher",
+    "Funcionário": "staff"
+  };
 
   late Map<String, dynamic> affiliationMap;
   bool readJson = false;
 
   Future<List<dynamic>> fetchLeaderboard() async {
     try {
-      final response = await http.get(Uri.parse('http://192.168.1.124/api/users/leaderboard?type=${maps[selectedType]}&affiliation=$selectedAffiliation'));
+      final response = await http.get(Uri.parse(
+          'http://192.168.1.124/api/users/leaderboard?type=${maps[selectedType]}&affiliation=$selectedAffiliation'));
       if (response.statusCode == 200) {
         return jsonDecode(utf8.decode(response.body.codeUnits));
       }
       throw Exception('Failed to load leaderboard');
-    }finally{
-    }
+    } finally {}
   }
 
   Future<String> loadAffiliationData() async {
-    var jsonText = await rootBundle.loadString('Resources/affiliations_abbr.json');
+    var jsonText =
+        await rootBundle.loadString('Resources/affiliations_abbr.json');
     readJson = true;
-    setState(() => affiliationMap = json.decode(utf8.decode(jsonText.codeUnits)));
+    setState(
+        () => affiliationMap = json.decode(utf8.decode(jsonText.codeUnits)));
     return 'success';
   }
 
@@ -162,38 +166,39 @@ class _AffiliationLeaderboardState extends State<AffiliationLeaderboard> {
 
   @override
   Widget build(BuildContext context) {
-      return Column(
-        children: [
-          const SizedBox( // Container to hold the description
-            height: 50,
-            child: Center(
-              child: Text("Top 10 por Afiliação",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18
-                  )
-              ),
-            ),
+    return Column(
+      children: [
+        const SizedBox(
+          // Container to hold the description
+          height: 50,
+          child: Center(
+            child: Text("Top 10 por Afiliação",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
           ),
-          if (readJson) Row(
+        ),
+        if (readJson)
+          Row(
             children: [
-              const SizedBox(width:15),
+              const SizedBox(width: 15),
               Flexible(
-                flex:1,
+                flex: 1,
                 child: Column(
                   children: [
                     const Text("Tipo"),
                     DropdownButton(
                       isExpanded: true,
                       value: selectedType,
-                      items:
-                      (affiliationMap.keys.toList()).map((type) =>
-                          DropdownMenuItem<String>(
-                              value: type, child: Text(type,overflow: TextOverflow.ellipsis)),
-                      ).toList(),
+                      items: (affiliationMap.keys.toList())
+                          .map(
+                            (type) => DropdownMenuItem<String>(
+                                value: type,
+                                child: Text(type,
+                                    overflow: TextOverflow.ellipsis)),
+                          )
+                          .toList(),
                       onChanged: (String? newValue) {
                         setState(() {
-                          canSearch=false;
+                          canSearch = false;
                           selectedType = newValue!;
                           selectedAffiliation = "-";
                         });
@@ -202,102 +207,112 @@ class _AffiliationLeaderboardState extends State<AffiliationLeaderboard> {
                   ],
                 ),
               ),
-              const SizedBox(width:15),
+              const SizedBox(width: 15),
               Flexible(
-                flex:1,
+                flex: 1,
                 child: Column(
                   children: [
                     const Text("Sub-tipo"),
                     DropdownButton(
                       isExpanded: true,
                       value: selectedAffiliation,
-                      items:
-                      (affiliationMap[selectedType] as List<dynamic>).map((
-                          aff) =>
-                          DropdownMenuItem<String>(
-                              value: aff, child: Text(aff,overflow: TextOverflow.ellipsis)),
-                      ).toList(),
-                      onChanged: (selectedType == "-") ? null : (String? newValue) {
-                        if(newValue != "-"){
-                          setState(() {
-                            canSearch=true;
-                            firstSearch=true;
-                            selectedAffiliation = newValue!;
-                          });
-                        }
-                      },
+                      items: (affiliationMap[selectedType] as List<dynamic>)
+                          .map(
+                            (aff) => DropdownMenuItem<String>(
+                                value: aff,
+                                child:
+                                    Text(aff, overflow: TextOverflow.ellipsis)),
+                          )
+                          .toList(),
+                      onChanged: (selectedType == "-")
+                          ? null
+                          : (String? newValue) {
+                              if (newValue != "-") {
+                                setState(() {
+                                  canSearch = true;
+                                  firstSearch = true;
+                                  selectedAffiliation = newValue!;
+                                });
+                              }
+                            },
                     ),
                   ],
                 ),
               ),
-              const SizedBox(width:15),
+              const SizedBox(width: 15),
               Flexible(
-                flex:1,
+                flex: 1,
                 child: Column(
                   children: [
                     const Text("Afiliação"),
                     DropdownButton(
-                      isExpanded:true,
+                      isExpanded: true,
                       value: selectedAffiliation,
-                      items:
-                      (affiliationMap[selectedType] as List<dynamic>).map((
-                          aff) =>
-                          DropdownMenuItem<String>(
-                              value: aff, child: Text(aff,overflow: TextOverflow.ellipsis)),
-                      ).toList(),
-                      onChanged: (selectedType == "-") ? null : (String? newValue) {
-                        if(newValue != "-"){
-                          setState(() {
-                            canSearch=true;
-                            firstSearch=true;
-                            selectedAffiliation = newValue!;
-                          });
-                        }
-                      },
+                      items: (affiliationMap[selectedType] as List<dynamic>)
+                          .map(
+                            (aff) => DropdownMenuItem<String>(
+                                value: aff,
+                                child:
+                                    Text(aff, overflow: TextOverflow.ellipsis)),
+                          )
+                          .toList(),
+                      onChanged: (selectedType == "-")
+                          ? null
+                          : (String? newValue) {
+                              if (newValue != "-") {
+                                setState(() {
+                                  canSearch = true;
+                                  firstSearch = true;
+                                  selectedAffiliation = newValue!;
+                                });
+                              }
+                            },
                     ),
                   ],
                 ),
               ),
-              const SizedBox(width:20),
+              const SizedBox(width: 20),
             ],
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           ),
-          if(canSearch) Expanded(child: LeaderboardList(key: UniqueKey(),fetchFunction: fetchLeaderboard))
-          else if(!firstSearch && readJson) const Expanded(child: Center(child:Text("Selecione a afiliação pretendida", style: TextStyle(
-              fontSize: 16
-          )))),
-        ],
-      );
+        if (canSearch)
+          Expanded(
+              child: LeaderboardList(
+                  key: UniqueKey(), fetchFunction: fetchLeaderboard))
+        else if (!firstSearch && readJson)
+          const Expanded(
+              child: Center(
+                  child: Text("Selecione a afiliação pretendida",
+                      style: TextStyle(fontSize: 16)))),
+      ],
+    );
   }
 }
 
-class GlobalLeaderboard extends StatelessWidget{
+class GlobalLeaderboard extends StatelessWidget {
   const GlobalLeaderboard({Key? key}) : super(key: key);
 
   Future<List<dynamic>> fetchLeaderboard() async {
     try {
-      final response = await http.get(Uri.parse('http://192.168.1.124/api/users/leaderboard'));
+      final response = await http
+          .get(Uri.parse('http://192.168.1.124/api/users/leaderboard'));
       if (response.statusCode == 200) {
         return jsonDecode(utf8.decode(response.body.codeUnits));
       }
       throw Exception('Failed to load leaderboard');
-    }finally{
-    }
+    } finally {}
   }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const SizedBox(  // Container to hold the description
+        const SizedBox(
+          // Container to hold the description
           height: 50,
           child: Center(
-            child: Text( "Top 10 Global",
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18
-                )
-            ),
+            child: Text("Top 10 Global",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
           ),
         ),
         Expanded(child: LeaderboardList(fetchFunction: fetchLeaderboard)),
@@ -306,20 +321,17 @@ class GlobalLeaderboard extends StatelessWidget{
   }
 }
 
-
 class LeaderboardList extends StatefulWidget {
-
   final Future<List<dynamic>> Function() fetchFunction;
 
-  const LeaderboardList({Key? key, required this.fetchFunction}) : super(key: key);
+  const LeaderboardList({Key? key, required this.fetchFunction})
+      : super(key: key);
 
   @override
   _LeaderboardListState createState() => _LeaderboardListState();
-
 }
 
 class _LeaderboardListState extends State<LeaderboardList> {
-
   late Future<List<dynamic>> futureLeaderboard;
   bool isLoading = false;
 
@@ -332,12 +344,13 @@ class _LeaderboardListState extends State<LeaderboardList> {
   Future<List<dynamic>> fetchLeaderboard() async {
     try {
       isLoading = true;
-      final response = await http.get(Uri.parse('http://192.168.1.124/api/users/leaderboard'));
+      final response = await http
+          .get(Uri.parse('http://192.168.1.124/api/users/leaderboard'));
       if (response.statusCode == 200) {
         return jsonDecode(utf8.decode(response.body.codeUnits));
       }
       throw Exception('Failed to load leaderboard');
-    }finally{
+    } finally {
       isLoading = false;
     }
   }
@@ -351,53 +364,57 @@ class _LeaderboardListState extends State<LeaderboardList> {
         if (snapshot.hasData) {
           var items = snapshot.data as List<dynamic>;
           return RefreshIndicator(
-            onRefresh: () async{
+            onRefresh: () async {
               setState(() {
-                if(!isLoading) {
+                if (!isLoading) {
                   futureLeaderboard = widget.fetchFunction();
                 }
               });
             },
-            child: items.isEmpty ? const Center(child:Text("Não foram encontrados resultados")) :
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const AlwaysScrollableScrollPhysics(),
-              itemCount: items.length,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.only(left:10.0, right:10.0),
-                  child: Card(
-                    child: ListTile(
-                      title: Text(utf8.decode(utf8.encode(items[index]["name"])),
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16
-                          )
-                      ),
-                      subtitle: Text("Pontos: ${items[index]["points"]} \nAfiliação: ${items[index]["affiliation"]}"),
-                      //isThreeLine: true,
-                      //dense:true,
-                      minVerticalPadding: 10.0,
-                      trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            index == 0 ? Image.asset("Resources/Img/LeaderBoardIcons/gold_medal.png") :
-                            index == 1 ? Image.asset("Resources/Img/LeaderBoardIcons/silver_medal.png") :
-                            index == 2 ? Image.asset("Resources/Img/LeaderBoardIcons/bronze_medal.png") :
-                              Container(),
-                            const SizedBox(width:10),
-                            Text( "#${index+1}",
+            child: items.isEmpty
+                ? const Center(child: Text("Não foram encontrados resultados"))
+                : ListView.builder(
+                    shrinkWrap: true,
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    itemCount: items.length,
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+                        child: Card(
+                          child: ListTile(
+                            title: Text(
+                                utf8.decode(utf8.encode(items[index]["name"])),
                                 style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20
-                                )
-                            ),
-                          ]),
-                    ),
+                                    fontWeight: FontWeight.bold, fontSize: 16)),
+                            subtitle: Text(
+                                "Pontos: ${items[index]["points"]} \nAfiliação: ${items[index]["affiliation"]}"),
+                            //isThreeLine: true,
+                            //dense:true,
+                            minVerticalPadding: 10.0,
+                            trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  index == 0
+                                      ? Image.asset(
+                                          "Resources/Img/LeaderBoardIcons/gold_medal.png")
+                                      : index == 1
+                                          ? Image.asset(
+                                              "Resources/Img/LeaderBoardIcons/silver_medal.png")
+                                          : index == 2
+                                              ? Image.asset(
+                                                  "Resources/Img/LeaderBoardIcons/bronze_medal.png")
+                                              : Container(),
+                                  const SizedBox(width: 10),
+                                  Text("#${index + 1}",
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20)),
+                                ]),
+                          ),
+                        ),
+                      );
+                    },
                   ),
-                );
-              },
-            ),
           );
         } else if (snapshot.hasError) {
           children = <Widget>[
@@ -412,9 +429,11 @@ class _LeaderboardListState extends State<LeaderboardList> {
             ),
             const Padding(
               padding: EdgeInsets.all(5.0),
-              child: Text('Tocar aqui para recarregar', style: TextStyle(fontWeight: FontWeight.bold),),
+              child: Text(
+                'Tocar aqui para recarregar',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
             ),
-
           ];
         } else {
           children = const <Widget>[
@@ -428,7 +447,7 @@ class _LeaderboardListState extends State<LeaderboardList> {
         return GestureDetector(
           onTap: () {
             setState(() {
-              if(!isLoading){
+              if (!isLoading) {
                 futureLeaderboard = widget.fetchFunction();
               }
             });
@@ -442,8 +461,6 @@ class _LeaderboardListState extends State<LeaderboardList> {
           ),
         );
       },
-
     );
   }
 }
-

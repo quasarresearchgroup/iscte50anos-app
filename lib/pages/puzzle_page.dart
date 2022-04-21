@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:iscte_spots/helper/image_manipulation.dart';
 import 'package:iscte_spots/models/database/tables/database_puzzle_piece_table.dart';
@@ -85,61 +84,6 @@ class _PuzzlePageState extends State<PuzzlePage> {
       return !storedPositions.contains(point);
     }).toList();
 
-/*
-    if (puzzlePiecesList.length < widget.rows * widget.cols) {
-      List<PuzzlePiece> storedPieces = await DatabasePuzzlePieceTable.getAll();
-
-      puzzlePiecesList = await ImageManipulation.splitImagePuzzlePiece(
-        image: img,
-        bringToTop: bringToTop,
-        sendToBack: sendToBack,
-        rows: widget.rows,
-        cols: widget.cols,
-        constraints: widget.constraints,
-      );
-      Size imageSize = await ImageManipulation.getImageSize(img);
-      final imageWidth = widget.constraints.maxWidth;
-      final imageHeight = widget.constraints.maxHeight *
-          widget.constraints.maxWidth /
-          imageSize.width;
-
-      List<PuzzlePiece> remadePuzzlePieces =
-          puzzlePiecesList.map((PuzzlePieceWidget e) {
-        final double pieceWidth = imageWidth / e.maxCol;
-        final double pieceHeight = imageHeight / e.maxRow;
-
-        double maxHeight = e.maxRow * pieceHeight * 0.5;
-        double minHeight = e.row * pieceHeight * 0.5;
-        double maxWidth = e.maxCol * pieceWidth * 0.5;
-        double minWidth = e.col * pieceWidth * 0.5;
-        return PuzzlePiece(
-          row: e.row,
-          column: e.col,
-          maxRow: e.maxRow,
-          maxColumn: e.maxCol,
-          top: (Random().nextDouble() * maxHeight) - minHeight,
-          left: (Random().nextDouble() * maxWidth) - minWidth,
-        );
-      }).toList();
-
-      List<PuzzlePiece> notStoredPieces = [];
-      for (var element in remadePuzzlePieces) {
-        if (!storedPieces.contains(element)) {
-          notStoredPieces.add(element);
-        }
-      }
-
-      DatabasePuzzlePieceTable.addBatch(notStoredPieces);
-    }
-
-    List<PuzzlePieceWidget> movablePuzzlePieces = puzzlePiecesList
-        .where((element) => element.movable != null ? element.movable! : true)
-        .toList();
-    List<PuzzlePieceWidget> snappedPuzzlePieces = puzzlePiecesList
-        .where((element) => element.movable != null ? !element.movable! : false)
-        .toList();
-*/
-
     pieces.add(SizedBox.expand(child: Container()));
     pieces.add(Container(
       decoration: BoxDecoration(
@@ -162,7 +106,9 @@ class _PuzzlePageState extends State<PuzzlePage> {
 
   @override
   Widget build(BuildContext context) {
-    return pieces.isNotEmpty ? Stack(children: pieces) : const LoadingWidget();
+    Widget widget =
+        pieces.isNotEmpty ? Stack(children: pieces) : const LoadingWidget();
+    return SafeArea(child: widget);
   }
 
   void bringToTop(Widget targetWidget) {
