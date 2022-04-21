@@ -1,10 +1,20 @@
 import 'package:flutter/widgets.dart';
 
 class OnboardTile extends StatefulWidget {
+  OnboardTile({
+    Key? key,
+    required this.color,
+    required this.bottomSheetHeight,
+    required this.child,
+    required this.imageLink,
+    required this.title,
+  }) : super(key: key);
+
   Color color;
   double bottomSheetHeight;
-  OnboardTile({Key? key, required this.color, required this.bottomSheetHeight})
-      : super(key: key);
+  Widget child;
+  String imageLink;
+  String title;
 
   @override
   State<OnboardTile> createState() => _OnboardTileState();
@@ -29,7 +39,7 @@ class _OnboardTileState extends State<OnboardTile> {
 
   @override
   Widget build(BuildContext context) {
-    const opacityAnimationDuration = const Duration(milliseconds: 500);
+    const Duration opacityAnimationDuration = const Duration(milliseconds: 500);
     return Container(
       color: widget.color,
       child: SafeArea(
@@ -43,23 +53,20 @@ class _OnboardTileState extends State<OnboardTile> {
               AnimatedOpacity(
                 duration: opacityAnimationDuration,
                 opacity: textOpacity[0],
-                child: const Text(
-                  'Lorem Ipsum',
+                child: Text(
+                  widget.title,
                   textScaleFactor: 2,
                 ),
               ),
               AnimatedOpacity(
                 duration: opacityAnimationDuration,
                 opacity: textOpacity[1],
-                child: Image.asset('Resources/Img/Campus/campus-iscte-3.jpg'),
+                child: Image.asset(widget.imageLink),
               ),
               AnimatedOpacity(
                 duration: opacityAnimationDuration,
                 opacity: textOpacity[2],
-                child: const Text(
-                  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam condimentum et nisi ac blandit. Suspendisse potenti. Phasellus nec semper orci. Proin porta est massa, vel convallis ex auctor at. Etiam rutrum, tortor vitae faucibus mollis, tellus arcu malesuada ligula, et vestibulum arcu odio vitae dolor. Praesent pellentesque mauris non augue egestas, sit amet maximus turpis molestie. Mauris et leo ex. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.",
-                  textScaleFactor: 1,
-                ),
+                child: widget.child,
               ),
             ],
           ),

@@ -29,24 +29,43 @@ class _OnboardingPageState extends State<OnboardingPage>
 
   @override
   void initState() {
+    Text description = const Text(
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam condimentum et nisi ac blandit. Suspendisse potenti. Phasellus nec semper orci. Proin porta est massa, vel convallis ex auctor at. Etiam rutrum, tortor vitae faucibus mollis, tellus arcu malesuada ligula, et vestibulum arcu odio vitae dolor. Praesent pellentesque mauris non augue egestas, sit amet maximus turpis molestie. Mauris et leo ex. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.");
+    String imageLink = 'Resources/Img/Campus/campus-iscte-3.jpg';
+    String title = 'Lorem Ipsum';
     pageViewChildren = [
       OnboardTile(
+        child: description,
+        imageLink: imageLink,
+        title: "Ciências Sociais",
         bottomSheetHeight: bottomSheetHeight,
         color: Colors.blue,
       ),
       OnboardTile(
+        child: description,
+        imageLink: imageLink,
+        title: "Tecnologias e Arquitetura",
         bottomSheetHeight: bottomSheetHeight,
         color: Colors.yellow,
       ),
       OnboardTile(
+        child: description,
+        imageLink: imageLink,
+        title: "Gestão e Economia",
         bottomSheetHeight: bottomSheetHeight,
         color: Colors.green,
       ),
       OnboardTile(
+        child: description,
+        imageLink: imageLink,
+        title: title,
         bottomSheetHeight: bottomSheetHeight,
         color: Colors.purple,
       ),
       OnboardTile(
+        child: description,
+        imageLink: imageLink,
+        title: title,
         bottomSheetHeight: bottomSheetHeight,
         color: Colors.orange,
       ),
