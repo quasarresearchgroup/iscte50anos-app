@@ -1,5 +1,7 @@
+
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +10,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/widgets/nav_drawer/navigation_drawer.dart';
 import 'package:logger/logger.dart';
 import 'package:http/http.dart' as http;
+
+const API_ADDRESS = "https://194.210.120.48";
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -148,13 +152,19 @@ class _AffiliationLeaderboardState extends State<AffiliationLeaderboard> {
 
   Future<List<dynamic>> fetchLeaderboard() async {
     try {
-      final response = await http.get(Uri.parse('http://192.168.1.124/api/users/leaderboard?type=${maps[selectedType]}&affiliation=$selectedAffiliation'));
+
+      HttpClient client = HttpClient();
+      client.badCertificateCallback =((X509Certificate cert, String  host, int port) => true);
+      final request = await client.getUrl(Uri.parse('${API_ADDRESS}/api/users/leaderboard?type=${maps[selectedType]}&affiliation=$selectedAffiliation'));
+      final response = await request.close();
+
       if (response.statusCode == 200) {
-        return jsonDecode(utf8.decode(response.body.codeUnits));
+        return jsonDecode(await response.transform(utf8.decoder).join());
       }
-      throw Exception('Failed to load leaderboard');
-    }finally{
+    }catch(e){
+      print(e);
     }
+    throw Exception('Failed to load leaderboard');
   }
 
   Future<String> loadAffiliationData() async {
@@ -200,7 +210,9 @@ class _AffiliationLeaderboardState extends State<AffiliationLeaderboard> {
                       (affiliationMap.keys.toList()).map((type) =>
                           DropdownMenuItem<String>(
                               value: type, child: SizedBox(width: double.maxFinite,
-                              child: Text(type,overflow: TextOverflow.ellipsis,textAlign: TextAlign.center))),
+                              child: Text(type,overflow: TextOverflow.ellipsis,textAlign: TextAlign.center,style: const TextStyle(
+                                  fontSize: 13
+                              )))),
                       ).toList(),
                       onChanged: (String? newValue) {
                         setState(() {
@@ -214,7 +226,7 @@ class _AffiliationLeaderboardState extends State<AffiliationLeaderboard> {
                 ),
               ),
               const SizedBox(width:15),
-              Flexible(
+              /*Flexible(
                 flex:1,
                 child: Column(
                   children: [
@@ -226,7 +238,9 @@ class _AffiliationLeaderboardState extends State<AffiliationLeaderboard> {
                       (affiliationMap[selectedType] as List<dynamic>).map((aff) =>
                           DropdownMenuItem<String>(
                               value: aff, child: SizedBox(width: double.maxFinite,
-                              child: Text(aff,overflow: TextOverflow.ellipsis,textAlign: TextAlign.center))),
+                              child: Text(aff,overflow: TextOverflow.ellipsis,textAlign: TextAlign.center,style: const TextStyle(
+                                  fontSize: 13
+                              )))),
                       ).toList(),
                       onChanged: (selectedType == "-") ? null : (String? newValue) {
                         if(newValue != "-"){
@@ -241,7 +255,7 @@ class _AffiliationLeaderboardState extends State<AffiliationLeaderboard> {
                   ],
                 ),
               ),
-              const SizedBox(width:15),
+              const SizedBox(width:15),*/
               Flexible(
                 flex:1,
                 child: Column(
@@ -254,7 +268,9 @@ class _AffiliationLeaderboardState extends State<AffiliationLeaderboard> {
                       (affiliationMap[selectedType] as List<dynamic>).map((aff) =>
                           DropdownMenuItem<String>(
                               value: aff, child: SizedBox(width: double.maxFinite,
-                              child: Text(aff,overflow: TextOverflow.ellipsis,textAlign: TextAlign.center))),
+                              child: Text(aff,overflow: TextOverflow.ellipsis,textAlign: TextAlign.center, style: const TextStyle(
+                                  fontSize: 13
+                              )))),
                       ).toList(),
                       onChanged: (selectedType == "-") ? null : (String? newValue) {
                         if(newValue != "-"){
@@ -287,13 +303,20 @@ class GlobalLeaderboard extends StatelessWidget{
 
   Future<List<dynamic>> fetchLeaderboard() async {
     try {
-      final response = await http.get(Uri.parse('http://192.168.1.124/api/users/leaderboard'));
+      HttpClient client = HttpClient();
+      client.badCertificateCallback =((X509Certificate cert, String  host, int port) => true);
+      final request = await client.getUrl(Uri.parse('${API_ADDRESS}/api/users/leaderboard'));
+      final response = await request.close();
+
       if (response.statusCode == 200) {
-        return jsonDecode(utf8.decode(response.body.codeUnits));
+        return jsonDecode(await response.transform(utf8.decoder).join());
+      }else{
+        print(response);
       }
-      throw Exception('Failed to load leaderboard');
-    }finally{
+    }catch (e){
+      print(e);
     }
+    throw Exception('Failed to load leaderboard');
   }
 
   @override
@@ -366,13 +389,14 @@ class _LeaderboardListState extends State<LeaderboardList> {
                   padding: const EdgeInsets.only(left:10.0, right:10.0),
                   child: Card(
                     child: ListTile(
-                      title: Text(utf8.decode(utf8.encode(items[index]["name"])),
+                      title: Text(items[index]["username"].toString(),
                           style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 16
                           )
                       ),
-                      subtitle: Text("Pontos: ${items[index]["points"]} \nAfiliação: ${items[index]["affiliation"]}"),
+                      subtitle: Text("Spots: ${items[index]["num_spots_read"]}\nTempo: 00:${items[index]["total_time"]}"),
+                      //Text("Pontos: ${items[index]["points"]} \nAfiliação: ${items[index]["affiliation"]}"),
                       //isThreeLine: true,
                       //dense:true,
                       minVerticalPadding: 10.0,
@@ -413,7 +437,7 @@ class _LeaderboardListState extends State<LeaderboardList> {
             ),
 
           ];
-        } else {
+        } else{
           children = const <Widget>[
             SizedBox(
               child: CircularProgressIndicator.adaptive(),
