@@ -33,7 +33,6 @@ dependencies:
   flutter_appauth:
   flutter_secure_storage:
   flutter_native_splash: ^2.1.0
-  flutter_dotenv: ^5.0.2
   shared_preferences: ^2.0.13
   cached_network_image: ^3.2.0
 
@@ -54,5 +53,4 @@ flutter:
     - Resources/Img/Campus/
     - Resources/Img/TimelineIcons/
     - Resources/QRCodes/NewQrCodes/alternatives/
-    - Resources/keys.env
     - Resources/Img/LeaderBoardIcons/
