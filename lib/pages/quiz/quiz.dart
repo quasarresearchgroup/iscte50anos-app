@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:logger/logger.dart';
 
 import './answer.dart';
@@ -13,7 +14,6 @@ class Quiz extends StatefulWidget {
   final Logger logger = Logger();
 
   final List<String> selectedAnswers = [];
-  String selectedAnswer = "";
 
   Quiz({
     Key? key,
@@ -28,6 +28,7 @@ class Quiz extends StatefulWidget {
 
 class _QuizState extends State<Quiz> {
   Timer? timer;
+  String selectedAnswer = "";
 
   final double time = 30000;
   double countdown = 30000;
@@ -58,10 +59,10 @@ class _QuizState extends State<Quiz> {
           widget.selectedAnswers.add(answer);
         }
       } else {
-        widget.selectedAnswer = answer;
+        selectedAnswer = answer;
       }
       !multiple
-          ? widget.logger.i("Selected answer:" + widget.selectedAnswer)
+          ? widget.logger.i("Selected answer:" + selectedAnswer)
           : widget.logger
               .i("Selected answers:" + widget.selectedAnswers.toString());
     });
@@ -69,6 +70,7 @@ class _QuizState extends State<Quiz> {
 
   @override
   initState() {
+    super.initState();
     startTimer();
   }
 
@@ -120,12 +122,12 @@ class _QuizState extends State<Quiz> {
               answer['text'].toString(),
               widget.questions[widget.questionIndex]["isMultipleChoice"]
                   as bool,
-              widget.selectedAnswer,
+              selectedAnswer,
               widget.selectedAnswers);
         }).toList(),
 
         ElevatedButton(
-          child: const Text("Avançar"),
+          child: Text(AppLocalizations.of(context)!.advance),
           onPressed: () {
             widget.answerQuestion(1);
             startTimer();

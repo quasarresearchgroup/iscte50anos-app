@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:iscte_spots/pages/home.dart';
 import 'package:iscte_spots/widgets/nav_drawer/page_routes.dart';
 import 'package:logger/logger.dart';
 
@@ -40,22 +42,27 @@ class Result extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          const Text(
-            "Quiz 1 concluído",
-            style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+          Text(
+            AppLocalizations.of(context)!.quizComplete,
+            style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,
-          ), //Text
+          ),
           /*Text(
             'Pontos: ' '$resultScore',
             style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,
           ), //Text*/
           ElevatedButton(
-            child: const Text(
-              'Voltar ao menu',
+            child: Text(
+              AppLocalizations.of(context)!.back,
             ), //Te
             onPressed: () {
-              Navigator.pushReplacementNamed(context, PageRoutes.home);
+              Navigator.pushReplacement(
+                context,
+                PageRoutes.createRoute(
+                  widget: Home(),
+                ),
+              );
             },
           ), //FlatButton
         ], //<Widget>[]

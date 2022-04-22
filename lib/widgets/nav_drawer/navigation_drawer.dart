@@ -1,6 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:iscte_spots/pages/leaderboard/leaderboard_page.dart';
+import 'package:iscte_spots/pages/timeline_page.dart';
 import 'package:iscte_spots/widgets/nav_drawer/page_routes.dart';
+import 'package:iscte_spots/widgets/splashScreen/shake.dart';
+
+import '../../pages/flickr/flickr_page.dart';
+import '../../pages/quiz/quiz_page.dart';
+import '../../pages/scanned_list_page.dart';
 
 class NavigationDrawer extends StatelessWidget {
   const NavigationDrawer({
@@ -19,57 +27,82 @@ class NavigationDrawer extends StatelessWidget {
         child: null,
       ),
       ListTile(
-        leading: const Icon(Icons.home),
-        title: Text(AppLocalizations.of(context)!.mainMenu),
-        onTap: () {
-          Navigator.pushReplacementNamed(context, PageRoutes.home);
-        },
-      ),
-      ListTile(
-        leading: const Icon(Icons.qr_code),
-        title: Text(AppLocalizations.of(context)!.scanCodeButton),
-        onTap: () {
-          Navigator.pushReplacementNamed(context, PageRoutes.qrscan);
-        },
-      ),
-      ListTile(
         leading: const Icon(Icons.timeline),
         title: Text(AppLocalizations.of(context)!.timelineScreen),
         onTap: () {
-          Navigator.pushReplacementNamed(context, PageRoutes.timeline);
+          animateToPage(context, page: TimelinePage());
         },
       ),
       ListTile(
         leading: const Icon(Icons.web_sharp),
         title: Text(AppLocalizations.of(context)!.visitedPagesScreen),
         onTap: () {
-          Navigator.pushReplacementNamed(context, PageRoutes.visited);
+          animateToPage(context, page: const VisitedPagesPage());
         },
       ),
       ListTile(
         leading: const Icon(Icons.help),
         title: Text(AppLocalizations.of(context)!.quizScreen),
         onTap: () {
-          Navigator.pushReplacementNamed(context, PageRoutes.quiz);
+          animateToPage(context, page: QuizPage());
         },
       ),
       ListTile(
         leading: const Icon(Icons.touch_app_outlined),
-        title: const Text('Shaker'),
+        title: Text(AppLocalizations.of(context)!.shakerScreen),
         onTap: () {
-          Navigator.pushReplacementNamed(context, PageRoutes.shake);
+          animateToPage(context, page: Shaker());
+        },
+      ),
+      ListTile(
+        leading: const FaIcon(FontAwesomeIcons.flickr),
+        title: Text(AppLocalizations.of(context)!.flickrScreen),
+        onTap: () {
+          animateToPage(context, page: FlickrPage());
         },
       ),
       ListTile(
         leading: const Icon(Icons.score),
-        title: Text(AppLocalizations.of(context)!.pointsScreen),
-        onTap: () {},
+        title: Text(AppLocalizations.of(context)!.leaderBoardScreen),
+        onTap: () {
+          animateToPage(context, page: LeaderBoardPage());
+        },
+      ),
+      const Spacer(),
+      ListTile(
+        leading: const Icon(Icons.settings),
+        title: Text(AppLocalizations.of(context)!.settingsScreen),
+      ),
+      ListTile(
+        leading: Icon(Icons.adaptive.arrow_back_outlined),
+        title: Text(AppLocalizations.of(context)!.logOutButton),
       ),
     ];
 
     return Drawer(
-      child: ListView(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      child: Column(
         children: menuWidgetList,
+      ),
+    );
+  }
+
+  Future<void> animateToPage(BuildContext context,
+      {required Widget page}) async {
+    Future<Widget> buildPageAsync({required Widget page}) async {
+      return Future.microtask(
+        () {
+          return page;
+        },
+      );
+    }
+
+    Widget futurePage = await buildPageAsync(page: page);
+    Navigator.pop(context);
+    Navigator.push(
+      context,
+      PageRoutes.createRoute(
+        widget: futurePage,
       ),
     );
   }

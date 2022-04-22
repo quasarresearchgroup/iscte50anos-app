@@ -3,16 +3,24 @@ import 'package:flutter/material.dart';
 import 'package:iscte_spots/pages/home.dart';
 import 'package:page_transition/page_transition.dart';
 
+import '../widgets/splashScreen/shake.dart';
+
 class SplashScreen extends StatelessWidget {
   const SplashScreen({Key? key}) : super(key: key);
   static const pageRoute = "/splash";
 
   @override
   Widget build(BuildContext context) {
+    //return const Home();
+
     return AnimatedSplashScreen(
-      splash:
-          //Scaffold(body: GravityPlane()),
-          Column(
+      splash: Scaffold(
+          body: Container(
+        decoration: BoxDecoration(color: Theme.of(context).primaryColor),
+        child: GravityPlane(
+            image: Image.asset('Resources/Img/Campus/campus-iscte-3.jpg')),
+      ))
+      /* Column(
         children: [
           Image.asset('Resources/Img/Logo/logo_50anos_iscte_branco_rgb.png'),
           const Text(
@@ -20,13 +28,13 @@ class SplashScreen extends StatelessWidget {
             style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
           )
         ],
-      ),
-      backgroundColor: Colors.blue,
-      nextScreen: const Home(),
-      splashIconSize: 1,
-      duration: 3000,
-      pageTransitionType: PageTransitionType.rightToLeftWithFade,
-      animationDuration: const Duration(seconds: 1),
+      )*/
+      ,
+      nextScreen: Home(),
+      duration: 5000,
+      splashIconSize: 1000,
+      splashTransition: SplashTransition.fadeTransition,
+      pageTransitionType: PageTransitionType.fade,
     );
   }
 }
