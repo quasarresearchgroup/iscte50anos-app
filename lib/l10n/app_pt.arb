@@ -26,7 +26,8 @@
     "quizScreen":"Quizzes",
     "flickrScreen":"Flickr",
     "shakerScreen":"Shaker",
-    "settingsScreen":"Definições"
+    "settingsScreen":"Definições",
+    "registerScreen":"Registrar"
 
 
 }
