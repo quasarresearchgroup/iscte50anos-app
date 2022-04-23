@@ -46,7 +46,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   List<String> fetchedImagesURL = [];
   List<Image> viewedImages = [];
   Image? currentPuzzleImage;
-  late TabController tabController;
+  late TabController _tabController;
 
   final List<StreamSubscription<dynamic>> _streamSubscriptions =
       <StreamSubscription<dynamic>>[];
@@ -55,7 +55,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 2, vsync: this);
     initAsyncMethod();
   }
 
@@ -127,6 +127,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   @override
   void dispose() {
     super.dispose();
+    _tabController.dispose();
     for (StreamSubscription<dynamic> subscription in _streamSubscriptions) {
       subscription.cancel();
       widget._logger.d("canceled sensor subscription");
@@ -219,7 +220,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
         ],
       ),
       bottomNavigationBar: MyBottomBar(
-        tabController: tabController,
+        tabController: _tabController,
         initialIndex: 0,
       ),
       floatingActionButton: HomeDial(
@@ -230,7 +231,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
       ),
       body: TabBarView(
         physics: const NeverScrollableScrollPhysics(),
-        controller: tabController,
+        controller: _tabController,
         children: [
           Center(
             child: Padding(
