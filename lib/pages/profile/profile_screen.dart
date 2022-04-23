@@ -104,7 +104,7 @@ class _ProfileState extends State<Profile> {
           Uri.parse('http://192.168.1.124/api/users/profile'),
         //8eb7f1e61ef68a526cf5a1fb6ddb0903bc0678c1
         //555103c2c229fc06bcc7e10e91323c2bc4162bdd
-          headers: {'Authorization': 'Token 555103c2c229fc06bcc7e10e91323c2bc4162bdd'},
+          headers: {'Authorization': 'Token ce0d0c050ab6b249283f24c01dfe84fd01dc2070'},
       );
       if (response.statusCode == 200) {
         print("recebi");
@@ -122,8 +122,14 @@ class _ProfileState extends State<Profile> {
     return FutureBuilder(
       future: futureProfile,
       builder: (context, snapshot) {
+        List<Widget> children;
         if (snapshot.hasData) {
+
           var profile = snapshot.data as Map;
+          var spots = profile["num_spots_read"];
+          var totalTime = spots > 0 ? Duration(seconds: profile["total_time"]).toString().split(".")[0]
+              : "-";
+
           return RefreshIndicator(
             onRefresh: () async {
               setState(() {
@@ -169,10 +175,10 @@ class _ProfileState extends State<Profile> {
                             children: [
                               Column(
                                 children: [
-                                  const Text("Nível", style:TextStyle(
+                                  const Text("Spots", style:TextStyle(
                                       fontSize: 14
                                   )),
-                                  Text(profile["level"].toString(), style: const TextStyle(
+                                  Text(profile["num_spots_read"].toString(), style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 18
                                   )),
@@ -180,10 +186,10 @@ class _ProfileState extends State<Profile> {
                               ),
                               Column(
                                 children: [
-                                  const Text("Pontos", style: TextStyle(
+                                  const Text("Tempo", style: TextStyle(
                                       fontSize: 14
                                   )),
-                                  Text(profile["points"].toString(), style: const TextStyle(
+                                  Text(totalTime.toString(), style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 18
                                   )),
@@ -233,7 +239,7 @@ class _ProfileState extends State<Profile> {
                         ],
                       )
                   ),
-                  const SizedBox(height: 15),
+                  /*const SizedBox(height: 15),
                   const Text("Estatísticas", style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 18
@@ -263,14 +269,53 @@ class _ProfileState extends State<Profile> {
                     fontWeight: FontWeight.bold,
                   )),
                   const SizedBox(height: 10),
-
+                                            */
                 ],
               ),
             ),
           );
-        }else{
-          return Container();
+        }else if (snapshot.hasError) {
+          children = <Widget>[
+            const Icon(
+              Icons.error_outline,
+              color: Colors.red,
+              size: 60,
+            ),
+            const Padding(
+              padding: EdgeInsets.only(top: 10),
+              child: Text('Ocorreu um erro a descarregar os dados'),
+            ),
+            const Padding(
+              padding: EdgeInsets.all(5.0),
+              child: Text('Tocar aqui para recarregar', style: TextStyle(fontWeight: FontWeight.bold),),
+            ),
+
+          ];
+        } else{
+          children = const <Widget>[
+            SizedBox(
+              child: CircularProgressIndicator.adaptive(),
+              width: 60,
+              height: 60,
+            ),
+          ];
         }
+        return GestureDetector(
+          onTap: () {
+            setState(() {
+              if(!isLoading){
+                futureProfile = fetchProfile();
+              }
+            });
+          },
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: children,
+            ),
+          ),
+        );
       }
     );
   }
