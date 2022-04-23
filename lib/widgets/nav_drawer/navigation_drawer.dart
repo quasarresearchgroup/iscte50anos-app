@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:iscte_spots/pages/leaderboard/leaderboard_page.dart';
 import 'package:iscte_spots/pages/timeline_page.dart';
 import 'package:iscte_spots/widgets/nav_drawer/page_routes.dart';
 import 'package:iscte_spots/widgets/splashScreen/shake.dart';
 
 import '../../pages/flickr/flickr_page.dart';
+import '../../pages/leaderboard/leaderboard_screen.dart';
 import '../../pages/quiz/quiz_page.dart';
 import '../../pages/scanned_list_page.dart';
 
