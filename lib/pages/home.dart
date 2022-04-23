@@ -18,7 +18,7 @@ import 'package:logger/logger.dart';
 import 'package:motion_sensors/motion_sensors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../services/flickr_iscte_photos.dart';
+import '../services/flickr/flickr_iscte_photos.dart';
 
 class Home extends StatefulWidget {
   Home({

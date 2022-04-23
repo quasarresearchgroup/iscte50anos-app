@@ -8,8 +8,8 @@ import 'package:iscte_spots/widgets/splashScreen/shake.dart';
 import '../../pages/flickr/flickr_page.dart';
 import '../../pages/leaderboard/leaderboard_screen.dart';
 import '../../pages/quiz/quiz_page.dart';
-import '../../pages/register_page.dart';
 import '../../pages/scanned_list_page.dart';
+import '../../register/register_page.dart';
 
 class NavigationDrawer extends StatelessWidget {
   const NavigationDrawer({
