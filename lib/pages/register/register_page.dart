@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:iscte_spots/models/registration_form_result.dart';
 import 'package:iscte_spots/pages/register/acount_register_widget.dart';
 import 'package:iscte_spots/pages/register/school_register_widget.dart';
+import 'package:iscte_spots/services/registration_service.dart';
 import 'package:logger/logger.dart';
 
 import 'acount_register_widget.dart';
@@ -19,6 +20,8 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   int _curentStep = 0;
+
+  int _stepErrorIndex = -1;
   bool get isFirstStep => _curentStep == 0;
   bool get isSecondStep => _curentStep == 1;
   bool get isLastStep => _curentStep == getSteps().length - 1;
@@ -123,13 +126,8 @@ class _RegisterPageState extends State<RegisterPage> {
     }
   }
 
-  void _onStepContinue() {
-    if (isLastStep) {
-      widget._logger.i("completed steps");
-      setState(() {
-        _isCompleted = true;
-      });
-    } else if (isFirstStep) {
+  void _onStepContinue() async {
+    if (isFirstStep) {
       if (widget._accountFormkey.currentState!.validate()) {
         setState(() {
           _curentStep++;
@@ -137,55 +135,87 @@ class _RegisterPageState extends State<RegisterPage> {
       }
     } else if (isSecondStep) {
       if (widget._schoolFormkey.currentState!.validate()) {
+        var registrationFormResult = RegistrationFormResult(
+          username: userNameController.text,
+          firstName: nameController.text,
+          lastName: lastNameController.text,
+          email: emailController.text,
+          password: passwordController.text,
+          passwordConfirmation: passwordConfirmationController.text,
+          affiliationType: chosenaffiliationType.value,
+          affiliationName: chosenAffiliationName.value,
+        );
+        await RegistrationService.registerNewUser(registrationFormResult);
         setState(() {
           _curentStep++;
         });
       }
+    } else if (isLastStep) {
+      widget._logger.i("completed steps");
+      setState(() {
+        _isCompleted = true;
+      });
     }
   }
 
-  List<Step> getSteps() => [
-        Step(
-          state: _curentStep >= 1 ? StepState.complete : StepState.indexed,
-          isActive: _curentStep >= 0,
-          title: const Text("Account"),
-          content: AccountRegisterForm(
-            formKey: widget._accountFormkey,
-            userNameController: userNameController,
-            nameController: nameController,
-            lastNameController: lastNameController,
-            emailController: emailController,
-            passwordController: passwordController,
-            passwordConfirmationController: passwordConfirmationController,
-          ),
+  StepState _stepState(int step) {
+    if (_curentStep == step) {
+      return StepState.editing;
+    } else {
+      if (_stepErrorIndex == step) {
+        return StepState.error;
+      } else if (_curentStep > step) {
+        return StepState.complete;
+      } else {
+        return StepState.indexed;
+      }
+    }
+  }
+
+  List<Step> getSteps() {
+    var registrationFormResult = RegistrationFormResult(
+      username: userNameController.text,
+      firstName: nameController.text,
+      lastName: lastNameController.text,
+      email: emailController.text,
+      password: passwordController.text,
+      passwordConfirmation: passwordConfirmationController.text,
+      affiliationType: chosenaffiliationType.value,
+      affiliationName: chosenAffiliationName.value,
+    );
+    return [
+      Step(
+        state: _stepState(0),
+        isActive: _curentStep >= 0,
+        title: const Text("Account"),
+        content: AccountRegisterForm(
+          formKey: widget._accountFormkey,
+          userNameController: userNameController,
+          nameController: nameController,
+          lastNameController: lastNameController,
+          emailController: emailController,
+          passwordController: passwordController,
+          passwordConfirmationController: passwordConfirmationController,
         ),
-        Step(
-          state: _curentStep >= 2 ? StepState.complete : StepState.indexed,
-          isActive: _curentStep >= 1,
-          title: const Text("School"),
-          content: SchoolRegisterForm(
-            formKey: widget._schoolFormkey,
-            chosenAffiliationType: chosenaffiliationType,
-            chosenAffiliationName: chosenAffiliationName,
-          ),
+      ),
+      Step(
+        state: _stepState(1),
+        isActive: _curentStep >= 1,
+        title: const Text("School"),
+        content: SchoolRegisterForm(
+          formKey: widget._schoolFormkey,
+          chosenAffiliationType: chosenaffiliationType,
+          chosenAffiliationName: chosenAffiliationName,
         ),
-        Step(
-          state: _curentStep >= 3 ? StepState.complete : StepState.indexed,
-          isActive: _curentStep >= 2,
-          title: const Text("Complete"),
-          content: CompleteForm(
-              data: RegistrationFormResult(
-            username: userNameController.text,
-            name: nameController.text,
-            lastName: lastNameController.text,
-            email: emailController.text,
-            password: passwordController.text,
-            passwordConfirmation: passwordConfirmationController.text,
-            affiliationType: chosenaffiliationType.value,
-            affiliationName: chosenAffiliationName.value,
-          )),
-        )
-      ];
+      ),
+      Step(
+        state: _stepState(2),
+        isActive: _curentStep >= 2,
+        title: const Text("Complete"),
+        content: CompleteForm(data: registrationFormResult),
+      )
+    ];
+  }
 }
 
 class CompleteForm extends StatelessWidget {

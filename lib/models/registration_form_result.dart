@@ -1,7 +1,7 @@
 class RegistrationFormResult {
   RegistrationFormResult({
     required this.username,
-    required this.name,
+    required this.firstName,
     required this.lastName,
     required this.password,
     required this.passwordConfirmation,
@@ -10,7 +10,7 @@ class RegistrationFormResult {
     required this.affiliationName,
   });
   final String username;
-  final String name;
+  final String firstName;
   final String lastName;
   final String password;
   final String passwordConfirmation;
@@ -20,16 +20,16 @@ class RegistrationFormResult {
 
   @override
   String toString() {
-    return 'RegistrationFormResult{name: $name, lastName: $lastName, password: $password, email: $email, district: $affiliationType, school: $affiliationName}';
+    return 'RegistrationFormResult{username: $username, first_name: $firstName, last_name: $lastName, password: $password, password_confirmation: $passwordConfirmation, email: $email, affiliation_type: $affiliationType, affiliation_name: $affiliationName}';
   }
 
   factory RegistrationFormResult.fromMap(Map<String, dynamic> json) =>
       RegistrationFormResult(
         username: json["username"],
-        name: json["name"],
-        lastName: json["lastName"],
+        firstName: json["first_name"],
+        lastName: json["last_name"],
         password: json["password"],
-        passwordConfirmation: json["passwordConfirmation"],
+        passwordConfirmation: json["password_confirmation"],
         email: json["email"],
         affiliationType: json["affiliation_type"],
         affiliationName: json["affiliation_name"],
@@ -38,10 +38,10 @@ class RegistrationFormResult {
   Map<String, dynamic> toMap() {
     return {
       "username": username,
-      "name": name,
-      "lastName": lastName,
+      "first_name": firstName,
+      "last_name": lastName,
       "password": password,
-      "passwordConfirmation": passwordConfirmation,
+      "password_confirmation": passwordConfirmation,
       "email": email,
       "affiliation_type": affiliationType,
       "affiliation_name": affiliationName,
