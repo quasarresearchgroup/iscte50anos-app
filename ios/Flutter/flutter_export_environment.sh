@@ -1,9 +1,9 @@
 #!/bin/sh
 # This is a generated file; do not edit or check into version control.
-export "FLUTTER_ROOT=/home/joao/snap/flutter/common/flutter"
-export "FLUTTER_APPLICATION_PATH=/home/joao/Uni/Mestrado/Tese/iscte50anos"
+export "FLUTTER_ROOT=C:\Users\SoPlays\Documents\Flutter"
+export "FLUTTER_APPLICATION_PATH=D:\Joao\escola\UNI\Tese-Mestrado\qr_codes_test\Flutter_QRCode_Reader_Creator"
 export "COCOAPODS_PARALLEL_CODE_SIGN=true"
-export "FLUTTER_TARGET=lib/main.dart"
+export "FLUTTER_TARGET=lib\main.dart"
 export "FLUTTER_BUILD_DIR=build"
 export "FLUTTER_BUILD_NAME=1.0.0"
 export "FLUTTER_BUILD_NUMBER=1"

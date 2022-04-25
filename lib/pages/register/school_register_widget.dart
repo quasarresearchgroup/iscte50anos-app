@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:iscte_spots/pages/register/registration_error.dart';
 import 'package:iscte_spots/services/registration_service.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
@@ -11,17 +12,21 @@ class SchoolRegisterForm extends StatefulWidget {
     required this.chosenAffiliationType,
     required this.chosenAffiliationName,
     required this.formKey,
+    required this.errorCode,
   }) : super(key: key);
   final Logger _logger = Logger();
   ValueNotifier<String> chosenAffiliationType;
   ValueNotifier<String> chosenAffiliationName;
   final GlobalKey<FormState> formKey;
+  final RegistrationError errorCode;
 
   @override
   State<SchoolRegisterForm> createState() => _SchoolRegisterFormState();
 }
 
 class _SchoolRegisterFormState extends State<SchoolRegisterForm> {
+  var autovalidateMode2 = AutovalidateMode.always;
+
   Future<Map<String, List<String>>> schoolsAfilitation =
       RegistrationService.getSchoolAffiliations();
 
@@ -45,11 +50,9 @@ class _SchoolRegisterFormState extends State<SchoolRegisterForm> {
             ),
           );
         } else if (snapshot.hasError) {
-          return Container(
-            child: Text(snapshot.error.toString()),
-          );
+          return Text(snapshot.error.toString());
         } else {
-          return LoadingWidget();
+          return const LoadingWidget();
         }
       },
     );
@@ -91,16 +94,18 @@ class _SchoolRegisterFormState extends State<SchoolRegisterForm> {
     }).toList();
 
     return [
-      Text("District"),
+      const Text("District"),
       DropdownButtonFormField<String>(
         menuMaxHeight: MediaQuery.of(context).size.height / 2,
-        autovalidateMode: AutovalidateMode.onUserInteraction,
+        autovalidateMode: autovalidateMode2,
         isExpanded: true,
         value: widget.chosenAffiliationType.value,
-        hint: Text("District"),
+        hint: const Text("District"),
         items: districtList,
         validator: (String? value) {
-          if (value == "-") {
+          if (widget.errorCode == RegistrationError.invalidAffiliation) {
+            return 'Invalid District';
+          } else if (value == "-") {
             return 'Please select a District';
           }
           return null;
@@ -118,13 +123,15 @@ class _SchoolRegisterFormState extends State<SchoolRegisterForm> {
       const Text("School"),
       DropdownButtonFormField<String>(
         menuMaxHeight: MediaQuery.of(context).size.height / 2,
-        autovalidateMode: AutovalidateMode.onUserInteraction,
+        autovalidateMode: autovalidateMode2,
         isExpanded: true,
         value: widget.chosenAffiliationName.value,
-        hint: Text("School"),
+        hint: const Text("School"),
         items: schoolsList,
         validator: (String? value) {
-          if (value == "-") {
+          if (widget.errorCode == RegistrationError.invalidAffiliation) {
+            return 'Invalid School';
+          } else if (value == "-") {
             return 'Please select a School';
           }
           return null;

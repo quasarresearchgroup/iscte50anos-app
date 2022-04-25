@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:iscte_spots/models/registration_form_result.dart';
+import 'package:iscte_spots/pages/register/registration_error.dart';
 import 'package:iscte_spots/widgets/util/constants.dart';
 import 'package:logger/logger.dart';
 
@@ -36,7 +37,7 @@ class RegistrationService {
     }
   }
 
-  static Future<Map<dynamic, dynamic>> registerNewUser(
+  static Future<RegistrationError> registerNewUser(
       RegistrationFormResult registrationFormResult) async {
     await Future.delayed(const Duration(seconds: 2));
     _logger.d("registering new User:\n$registrationFormResult");
@@ -57,8 +58,23 @@ class RegistrationService {
     var decodedResponse =
         await jsonDecode(await response.transform(utf8.decoder).join());
     _logger.d("response: $decodedResponse");
+
+    RegistrationError responseRegistrationError;
+    if (decodedResponse["code"] != null) {
+      int responseErrorCode = decodedResponse["code"];
+      responseRegistrationError =
+          RegistrationErrorExtension.registrationErrorConstructor(
+              responseErrorCode);
+    } else {
+      String responseApiToken = decodedResponse["api_token"];
+      _logger.d("Created new user with token: $responseApiToken");
+
+      responseRegistrationError = RegistrationError.noError;
+    }
     client.close();
 
-    return decodedResponse;
+    _logger.d(
+        "response error code: $responseRegistrationError ; code: ${responseRegistrationError.code}");
+    return responseRegistrationError;
   }
 }
