@@ -5,11 +5,11 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:iscte_spots/widgets/util/constants.dart';
+import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 import 'package:logger/logger.dart';
 
-import '../../widgets/util/iscte_theme.dart';
-
-const API_ADDRESS = "http://192.168.1.124";
+//const API_ADDRESS = "http://192.168.1.124";
 
 const API_ADDRESS_PROD = "https://194.210.120.48";
 const API_ADDRESS_TEST = "http://192.168.1.124";
@@ -89,7 +89,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage>
 
     var darkTheme = ThemeData.dark();
 
-    return MaterialApp(
+    return /*MaterialApp(
       theme: ThemeData.light().copyWith(
         primaryColor: const Color.fromRGBO(14, 41, 194, 1),
         appBarTheme: appBarTheme.copyWith(
@@ -110,46 +110,55 @@ class _LeaderBoardPageState extends State<LeaderBoardPage>
           statusBarBrightness: Brightness.light, // For iOS (dark icons)
         ),
       )),
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text(
-              "Leaderboard"), //AppLocalizations.of(context)!.quizPageTitle)
+      home:*/
+        Scaffold(
+      appBar: AppBar(
+        title: const Text(
+            "Leaderboard"), //AppLocalizations.of(context)!.quizPageTitle)
+      ),
+      body: NotificationListener<OverscrollIndicatorNotification>(
+        onNotification: (overscroll) {
+          overscroll.disallowIndicator();
+          return true;
+        },
+        child: TabBarView(
+          physics: const NeverScrollableScrollPhysics(),
+          controller: _tabController,
+          children: _pages,
+        ), // _pages[_selectedIndex],
+      ),
+      bottomNavigationBar: ClipRRect(
+        borderRadius: BorderRadius.only(
+          topLeft: IscteTheme.appbarRadius,
+          topRight: IscteTheme.appbarRadius,
         ),
-        body: NotificationListener<OverscrollIndicatorNotification>(
-          onNotification: (overscroll) {
-            overscroll.disallowIndicator();
-            return true;
-          },
-          child: TabBarView(
-            physics: const NeverScrollableScrollPhysics(),
-            controller: _tabController,
-            children: _pages,
-          ), // _pages[_selectedIndex],
-        ),
-        bottomNavigationBar: ClipRRect(
-          borderRadius: BorderRadius.only(
-            topLeft: IscteTheme.appbarRadius,
-            topRight: IscteTheme.appbarRadius,
-          ),
-          child: BottomNavigationBar(
-            type: BottomNavigationBarType.fixed,
-            items: const [
-              BottomNavigationBarItem(
-                icon: Icon(CupertinoIcons.globe),
-                label: 'Global',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.group),
-                label: 'Afiliação',
-              ),
-            ],
-            currentIndex: _selectedIndex,
-            //selectedItemColor: Colors.amber[800],
-            onTap: _onItemTapped,
-          ),
+        child: BottomNavigationBar(
+          type: BottomNavigationBarType.shifting,
+          selectedItemColor: Theme.of(context).selectedRowColor,
+          unselectedItemColor: Theme.of(context).unselectedWidgetColor,
+          elevation: 8,
+          enableFeedback: true,
+          iconSize: 30,
+          selectedFontSize: 13,
+          unselectedFontSize: 10,
+          currentIndex: _selectedIndex,
+          onTap: _onItemTapped,
+          //selectedItemColor: Colors.amber[800],
+          //type: BottomNavigationBarType.fixed,
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(CupertinoIcons.globe),
+              label: 'Global',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.group),
+              label: 'Afiliação',
+            ),
+          ],
         ),
       ),
-      debugShowCheckedModeBanner: false,
+      /*),
+      debugShowCheckedModeBanner: false,*/
     );
   }
 }
@@ -167,13 +176,6 @@ class _AffiliationLeaderboardState extends State<AffiliationLeaderboard>
   String selectedAffiliation = "-";
   bool firstSearch = false;
   bool canSearch = false;
-
-  Map<String, dynamic> maps = {
-    "Aluno": "student",
-    "Docente": "professor",
-    "Investigador": "researcher",
-    "Funcionário": "staff"
-  };
 
   late Map<String, dynamic> affiliationMap;
   bool readJson = false;
