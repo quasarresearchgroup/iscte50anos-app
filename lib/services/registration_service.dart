@@ -6,8 +6,10 @@ import 'package:iscte_spots/models/registration_form_result.dart';
 import 'package:iscte_spots/pages/register/registration_error.dart';
 import 'package:iscte_spots/widgets/util/constants.dart';
 import 'package:logger/logger.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RegistrationService {
+  static const String backendApiKeySharedPrefsString = 'backend_api_key';
   static const String AfiliationsFile = 'Resources/Afiliacoes&Inscritos.csv';
   static final Logger _logger = Logger();
 
@@ -68,7 +70,9 @@ class RegistrationService {
     } else {
       String responseApiToken = decodedResponse["api_token"];
       _logger.d("Created new user with token: $responseApiToken");
-
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(backendApiKeySharedPrefsString, responseApiToken);
+      _logger.d("Stored token: $responseApiToken in Shared Preferences");
       responseRegistrationError = RegistrationError.noError;
     }
     client.close();
