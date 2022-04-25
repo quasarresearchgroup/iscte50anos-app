@@ -7,6 +7,7 @@ import 'package:iscte_spots/pages/register/school_register_widget.dart';
 import 'package:iscte_spots/services/registration_service.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:logger/logger.dart';
+import 'package:lottie/lottie.dart';
 
 import 'acount_register_widget.dart';
 
@@ -82,7 +83,7 @@ class _RegisterPageState extends State<RegisterPage> {
         email: "test@gmail.com",
         password: "test",
         passwordConfirmation: "test",
-        affiliationType: "Alenquera",
+        affiliationType: "Alenquer",
         affiliationName: "Escola Secundária Damião de Goes",
       );
       setState(() {
@@ -156,13 +157,7 @@ class _RegisterPageState extends State<RegisterPage> {
           body: _isLodading
               ? const LoadingWidget()
               : _isCompleted
-                  ? const Center(
-                      child: FlutterLogo(
-                        size: 300,
-                        textColor: Colors.blue,
-                        style: FlutterLogoStyle.stacked,
-                      ),
-                    )
+                  ? CompleteForm()
                   : Stepper(
                       type: StepperType.vertical,
                       currentStep: _curentStep,
@@ -257,30 +252,14 @@ class _RegisterPageState extends State<RegisterPage> {
 }
 
 class CompleteForm extends StatelessWidget {
-  const CompleteForm({Key? key, required this.data}) : super(key: key);
-  final RegistrationFormResult data;
+  const CompleteForm({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: data
-          .toMap()
-          .entries
-          .map(
-            (MapEntry<String, dynamic> e) => Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Flexible(child: Text(e.key)),
-                Flexible(
-                  flex: 2,
-                  child: Text(
-                    e.value,
-                  ),
-                ),
-              ],
-            ),
-          )
-          .toList(),
+    return Container(
+      color: Colors.green,
+      child: Lottie.network(
+          'https://assets6.lottiefiles.com/packages/lf20_Vwcw5D.json'),
     );
   }
 }
