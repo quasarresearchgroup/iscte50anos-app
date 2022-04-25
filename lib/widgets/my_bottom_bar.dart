@@ -40,11 +40,11 @@ class _MyBottomBarState extends State<MyBottomBar> {
       ),
       child: BottomNavigationBar(
         currentIndex: selectedIndex,
+        onTap: changePage,
         type: BottomNavigationBarType.shifting,
         selectedItemColor: Theme.of(context).selectedRowColor,
         unselectedItemColor: Theme.of(context).unselectedWidgetColor,
         elevation: 8,
-        onTap: changePage,
         enableFeedback: true,
         iconSize: 30,
         selectedFontSize: 13,

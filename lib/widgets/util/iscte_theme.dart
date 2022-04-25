@@ -31,17 +31,19 @@ class IscteTheme {
     return ThemeData.light().copyWith(
       primaryColor: iscteColor,
       errorColor: Colors.deepOrangeAccent,
+      bottomAppBarColor: iscteColor,
       appBarTheme: appBarTheme,
     );
   }
 
   static ThemeData get darkThemeData {
     return ThemeData.dark().copyWith(
-      scaffoldBackgroundColor: Colors.black,
-      backgroundColor: Colors.black,
       primaryColor: iscteColor,
       errorColor: Colors.deepOrangeAccent,
+      bottomAppBarColor: iscteColor,
       appBarTheme: appBarTheme,
+      scaffoldBackgroundColor: Colors.black,
+      backgroundColor: Colors.black,
     );
   }
 }

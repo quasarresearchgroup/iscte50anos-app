@@ -26,6 +26,7 @@
     "quizScreen":"Quizzes",
     "flickrScreen":"Flickr",
     "shakerScreen":"Shaker",
-    "settingsScreen":"Settings"
+    "settingsScreen":"Settings",
+    "registerScreen":"Register"
 
 }

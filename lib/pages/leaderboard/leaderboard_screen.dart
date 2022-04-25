@@ -5,11 +5,11 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:iscte_spots/widgets/util/constants.dart';
+import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 import 'package:logger/logger.dart';
 
-import '../../widgets/util/iscte_theme.dart';
-
-const API_ADDRESS = "http://192.168.1.124";
+//const API_ADDRESS = "http://192.168.1.124";
 
 const API_ADDRESS_PROD = "https://194.210.120.48";
 const API_ADDRESS_TEST = "http://192.168.1.124";
@@ -31,23 +31,22 @@ class LeaderBoardPage extends StatefulWidget {
 class _LeaderBoardPageState extends State<LeaderBoardPage>
     with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   final Logger logger = Logger();
-
-  late Map<String, dynamic> affiliationMap;
   late TabController _tabController;
   int _selectedIndex = 0;
+  late Map<String, dynamic> affiliationMap;
+
+  Future<String> loadAffiliationData() async {
+    var jsonText =
+        await rootBundle.loadString('Resources/affiliations_abbr.json');
+    setState(
+        () => affiliationMap = json.decode(utf8.decode(jsonText.codeUnits)));
+    return 'success';
+  }
 
   static const List<Widget> _pages = <Widget>[
     GlobalLeaderboard(),
     AffiliationLeaderboard(),
   ];
-
-  Future<String> loadAffiliationData() async {
-    var jsonText =
-    await rootBundle.loadString('Resources/affiliations_abbr.json');
-    setState(
-            () => affiliationMap = json.decode(utf8.decode(jsonText.codeUnits)));
-    return 'success';
-  }
 
   //Page Selection Mechanics
   void _onItemTapped(int index) {
@@ -76,46 +75,93 @@ class _LeaderBoardPageState extends State<LeaderBoardPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text(
-              "Leaderboard"), //AppLocalizations.of(context)!.quizPageTitle)
+
+    AppBarTheme appBarTheme = const AppBarTheme(
+      elevation: 0, // This removes the shadow from all App Bars.
+      centerTitle: true,
+      toolbarHeight: 55,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          bottom: Radius.circular(20),
         ),
-        body: NotificationListener<OverscrollIndicatorNotification>(
-          onNotification: (overscroll) {
-            overscroll.disallowIndicator();
-            return true;
-          },
-          child: TabBarView(
-            physics: const NeverScrollableScrollPhysics(),
-            controller: _tabController,
-            children: _pages,
-          ), // _pages[_selectedIndex],
-        ),
-        bottomNavigationBar: ClipRRect(
-          borderRadius: BorderRadius.only(
-            topLeft: IscteTheme.appbarRadius,
-            topRight: IscteTheme.appbarRadius,
-          ),
-          child: BottomNavigationBar(
-            type: BottomNavigationBarType.fixed,
-            items: const [
-              BottomNavigationBarItem(
-                icon: Icon(CupertinoIcons.globe),
-                label: 'Global',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.group),
-                label: 'Afiliação',
-              ),
-            ],
-            currentIndex: _selectedIndex,
-            //selectedItemColor: Colors.amber[800],
-            onTap: _onItemTapped,
+      ),
+    );
+
+    var darkTheme = ThemeData.dark();
+
+    return /*MaterialApp(
+      theme: ThemeData.light().copyWith(
+        primaryColor: const Color.fromRGBO(14, 41, 194, 1),
+        appBarTheme: appBarTheme.copyWith(
+          backgroundColor: const Color.fromRGBO(14, 41, 194, 1),
+          systemOverlayStyle: const SystemUiOverlayStyle(
+            statusBarColor: Color.fromRGBO(14, 41, 194, 1),
+            statusBarIconBrightness:
+                Brightness.light, // For Android (dark icons)
+            statusBarBrightness: Brightness.light, // For iOS (dark icons)
           ),
         ),
       ),
+      darkTheme: ThemeData.dark().copyWith(
+          appBarTheme: appBarTheme.copyWith(
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarColor: darkTheme.bottomAppBarColor,
+          statusBarIconBrightness: Brightness.light, // For Android (dark icons)
+          statusBarBrightness: Brightness.light, // For iOS (dark icons)
+        ),
+      )),
+      home:*/
+        Scaffold(
+      appBar: AppBar(
+        title: const Text(
+            "Leaderboard"), //AppLocalizations.of(context)!.quizPageTitle)
+      ),
+      body: NotificationListener<OverscrollIndicatorNotification>(
+        onNotification: (overscroll) {
+          overscroll.disallowIndicator();
+          return true;
+        },
+        child: TabBarView(
+          physics: const NeverScrollableScrollPhysics(),
+          controller: _tabController,
+          children: _pages,
+        ), // _pages[_selectedIndex],
+      ),
+      bottomNavigationBar: ClipRRect(
+        borderRadius: BorderRadius.only(
+          topLeft: IscteTheme.appbarRadius,
+          topRight: IscteTheme.appbarRadius,
+        ),
+        child: BottomNavigationBar(
+          //type: BottomNavigationBarType.shifting,
+          type: BottomNavigationBarType.shifting,
+          backgroundColor: Theme.of(context).primaryColor,
+          selectedItemColor: Theme.of(context).selectedRowColor,
+          unselectedItemColor: Theme.of(context).unselectedWidgetColor,
+          elevation: 8,
+          enableFeedback: true,
+          iconSize: 30,
+          selectedFontSize: 13,
+          unselectedFontSize: 10,
+          currentIndex: _selectedIndex,
+          onTap: _onItemTapped,
+          //selectedItemColor: Colors.amber[800],
+          items: [
+            BottomNavigationBarItem(
+              icon: const Icon(CupertinoIcons.globe),
+              backgroundColor: Theme.of(context).primaryColor,
+              label: 'Global',
+            ),
+            BottomNavigationBarItem(
+              icon: const Icon(Icons.group),
+              backgroundColor: Theme.of(context).primaryColor,
+              label: 'Afiliação',
+            ),
+          ],
+        ),
+      ),
+      /*),
+      debugShowCheckedModeBanner: false,*/
     );
   }
 }
@@ -134,13 +180,6 @@ class _AffiliationLeaderboardState extends State<AffiliationLeaderboard>
   bool firstSearch = false;
   bool canSearch = false;
 
-  Map<String, dynamic> maps = {
-    "Aluno": "student",
-    "Docente": "professor",
-    "Investigador": "researcher",
-    "Funcionário": "staff"
-  };
-
   late Map<String, dynamic> affiliationMap;
   bool readJson = false;
 
@@ -148,7 +187,7 @@ class _AffiliationLeaderboardState extends State<AffiliationLeaderboard>
     try {
       HttpClient client = HttpClient();
       client.badCertificateCallback =
-      ((X509Certificate cert, String host, int port) => true);
+          ((X509Certificate cert, String host, int port) => true);
       final request = await client.getUrl(Uri.parse(
           '${API_ADDRESS}/api/users/leaderboard?type=${selectedType}&affiliation=$selectedAffiliation'));
       final response = await request.close();
@@ -164,10 +203,10 @@ class _AffiliationLeaderboardState extends State<AffiliationLeaderboard>
 
   Future<String> loadAffiliationData() async {
     var jsonText =
-    await rootBundle.loadString('Resources/openday_affiliations.json');
+        await rootBundle.loadString('Resources/openday_affiliations.json');
     readJson = true;
     setState(
-            () => affiliationMap = json.decode(utf8.decode(jsonText.codeUnits)));
+        () => affiliationMap = json.decode(utf8.decode(jsonText.codeUnits)));
     return 'success';
   }
 
@@ -208,10 +247,10 @@ class _AffiliationLeaderboardState extends State<AffiliationLeaderboard>
                       items: (affiliationMap.keys.toList())
                           .map(
                             (type) => DropdownMenuItem<String>(
-                            value: type,
-                            child: Text(type,
-                                style: const TextStyle(fontSize: 13))),
-                             )
+                                value: type,
+                                child: Text(type,
+                                    style: const TextStyle(fontSize: 13))),
+                          )
                           .toList(),
                       selectedItemBuilder: (BuildContext context) {
                         return affiliationMap.keys.toList().map((type) {
@@ -248,13 +287,14 @@ class _AffiliationLeaderboardState extends State<AffiliationLeaderboard>
                       items: (affiliationMap[selectedType])
                           .map<DropdownMenuItem<String>>(
                             (aff) => DropdownMenuItem<String>(
-                              value: aff,
-                              child: Text(aff,
-                                style: const TextStyle(fontSize: 13))
-                              ),
-                      ).toList(),
+                                value: aff,
+                                child: Text(aff,
+                                    style: const TextStyle(fontSize: 13))),
+                          )
+                          .toList(),
                       selectedItemBuilder: (BuildContext context) {
-                        return (affiliationMap[selectedType] as List<dynamic>).map((aff) {
+                        return (affiliationMap[selectedType] as List<dynamic>)
+                            .map((aff) {
                           return Center(
                             child: Text(aff,
                                 overflow: TextOverflow.ellipsis,
@@ -266,14 +306,14 @@ class _AffiliationLeaderboardState extends State<AffiliationLeaderboard>
                       onChanged: (selectedType == "-")
                           ? null
                           : (String? newValue) {
-                        if (newValue != "-") {
-                          setState(() {
-                            canSearch = true;
-                            firstSearch = true;
-                            selectedAffiliation = newValue!;
-                          });
-                        }
-                      },
+                              if (newValue != "-") {
+                                setState(() {
+                                  canSearch = true;
+                                  firstSearch = true;
+                                  selectedAffiliation = newValue!;
+                                });
+                              }
+                            },
                     ),
                   ],
                 ),
@@ -303,7 +343,7 @@ class GlobalLeaderboard extends StatelessWidget {
     try {
       HttpClient client = HttpClient();
       client.badCertificateCallback =
-      ((X509Certificate cert, String host, int port) => true);
+          ((X509Certificate cert, String host, int port) => true);
       final request = await client
           .getUrl(Uri.parse('${API_ADDRESS}/api/users/leaderboard'));
       final response = await request.close();
@@ -359,15 +399,12 @@ class _LeaderboardListState extends State<LeaderboardList> {
 
   @override
   Widget build(BuildContext context) {
-
     return FutureBuilder(
       future: futureLeaderboard,
       builder: (context, snapshot) {
         List<Widget> children;
         if (snapshot.hasData) {
-
           var items = snapshot.data as List<dynamic>;
-
           return RefreshIndicator(
             onRefresh: () async {
               setState(() {
@@ -379,49 +416,50 @@ class _LeaderboardListState extends State<LeaderboardList> {
             child: items.isEmpty
                 ? const Center(child: Text("Não foram encontrados resultados"))
                 : ListView.builder(
-              shrinkWrap: true,
-              physics: const AlwaysScrollableScrollPhysics(),
-              itemCount: items.length,
-              itemBuilder: (context, index) {
+                    shrinkWrap: true,
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    itemCount: items.length,
+                    itemBuilder: (context, index) {
+                      var time = Duration(seconds: items[index]["total_time"])
+                          .toString()
+                          .split(".")[0];
 
-                var time = Duration(seconds: items[index]["total_time"]).toString().split(".")[0];
-
-                return Padding(
-                  padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-                  child: Card(
-                    child: ListTile(
-                      title: Text(items[index]["username"].toString(),
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 16)),
-                      subtitle: Text(
-                          "Spots: ${items[index]["num_spots_read"]}\nTempo: $time"),
-                      //Text("Pontos: ${items[index]["points"]} \nAfiliação: ${items[index]["affiliation"]}"),
-                      //isThreeLine: true,
-                      //dense:true,
-                      minVerticalPadding: 10.0,
-                      trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            if (index == 0)
-                              Image.asset(
-                                  "Resources/Img/LeaderBoardIcons/gold_medal.png")
-                            else if (index == 1)
-                              Image.asset(
-                                  "Resources/Img/LeaderBoardIcons/silver_medal.png")
-                            else if (index == 2)
-                                Image.asset(
-                                    "Resources/Img/LeaderBoardIcons/bronze_medal.png"),
-                            const SizedBox(width: 10),
-                            Text("#${index + 1}",
+                      return Padding(
+                        padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+                        child: Card(
+                          child: ListTile(
+                            title: Text(items[index]["username"].toString(),
                                 style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20)),
-                          ]),
-                    ),
+                                    fontWeight: FontWeight.bold, fontSize: 16)),
+                            subtitle: Text(
+                                "Spots: ${items[index]["num_spots_read"]}\nTempo: $time"),
+                            //Text("Pontos: ${items[index]["points"]} \nAfiliação: ${items[index]["affiliation"]}"),
+                            //isThreeLine: true,
+                            //dense:true,
+                            minVerticalPadding: 10.0,
+                            trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  if (index == 0)
+                                    Image.asset(
+                                        "Resources/Img/LeaderBoardIcons/gold_medal.png")
+                                  else if (index == 1)
+                                    Image.asset(
+                                        "Resources/Img/LeaderBoardIcons/silver_medal.png")
+                                  else if (index == 2)
+                                    Image.asset(
+                                        "Resources/Img/LeaderBoardIcons/bronze_medal.png"),
+                                  const SizedBox(width: 10),
+                                  Text("#${index + 1}",
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20)),
+                                ]),
+                          ),
+                        ),
+                      );
+                    },
                   ),
-                );
-              },
-            ),
           );
         } else if (snapshot.hasError) {
           children = <Widget>[
