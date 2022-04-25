@@ -13,7 +13,7 @@ workflows:
       cocoapods: default
       vars:
         FCI_KEYSTORE_PATH: /tmp/keystore.keystore
-        PACKAGE_NAME: 'io.Iscte.IscteSpots' # <-- Put your package name here e.g. "io.codemagic.flutteryaml"
+        PACKAGE_NAME: 'iscte.iscteSpots' # <-- Put your package name here e.g. "io.codemagic.flutteryaml"
         GOOGLE_PLAY_TRACK: 'alpha' # <-- Any default or custom track that is not in ‘draft’ status
     triggering:
       events:
