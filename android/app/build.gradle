@@ -76,11 +76,7 @@ android {
     }
     buildTypes {
         release {
-            file(rootProject.file('key.properties')).with {
-                propFile ->
-                    if (propFile.canRead()) {
-                        signingConfig signingConfigs.release
-                    }
+            signingConfig signingConfigs.release
             }
         }
     }
