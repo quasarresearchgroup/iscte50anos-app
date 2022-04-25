@@ -87,9 +87,8 @@ class _PuzzlePageState extends State<PuzzlePage> {
     pieces.add(SizedBox.expand(child: Container()));
     pieces.add(Container(
       decoration: BoxDecoration(
-        color: Colors.brown,
         border: Border.all(
-          color: Theme.of(context).shadowColor.withAlpha(100),
+          color: Theme.of(context).primaryColor,
         ),
       ),
       child: SizedBox(

@@ -133,7 +133,9 @@ class _LeaderBoardPageState extends State<LeaderBoardPage>
           topRight: IscteTheme.appbarRadius,
         ),
         child: BottomNavigationBar(
+          //type: BottomNavigationBarType.shifting,
           type: BottomNavigationBarType.shifting,
+          backgroundColor: Theme.of(context).primaryColor,
           selectedItemColor: Theme.of(context).selectedRowColor,
           unselectedItemColor: Theme.of(context).unselectedWidgetColor,
           elevation: 8,
@@ -144,14 +146,15 @@ class _LeaderBoardPageState extends State<LeaderBoardPage>
           currentIndex: _selectedIndex,
           onTap: _onItemTapped,
           //selectedItemColor: Colors.amber[800],
-          //type: BottomNavigationBarType.fixed,
-          items: const [
+          items: [
             BottomNavigationBarItem(
-              icon: Icon(CupertinoIcons.globe),
+              icon: const Icon(CupertinoIcons.globe),
+              backgroundColor: Theme.of(context).primaryColor,
               label: 'Global',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.group),
+              icon: const Icon(Icons.group),
+              backgroundColor: Theme.of(context).primaryColor,
               label: 'Afiliação',
             ),
           ],
