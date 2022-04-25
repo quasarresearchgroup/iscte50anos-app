@@ -10,6 +10,7 @@ import 'package:iscte_spots/models/database/tables/database_puzzle_piece_table.d
 import 'package:iscte_spots/models/puzzle_piece.dart';
 import 'package:iscte_spots/pages/puzzle_page.dart';
 import 'package:iscte_spots/pages/scanPage/qr_scan_page.dart';
+import 'package:iscte_spots/services/registration_service.dart';
 import 'package:iscte_spots/widgets/my_bottom_bar.dart';
 import 'package:iscte_spots/widgets/nav_drawer/navigation_drawer.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
@@ -18,7 +19,7 @@ import 'package:logger/logger.dart';
 import 'package:motion_sensors/motion_sensors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../services/flickr_iscte_photos.dart';
+import '../services/flickr/flickr_iscte_photos.dart';
 
 class Home extends StatefulWidget {
   Home({
@@ -298,6 +299,23 @@ class HomeDial extends StatelessWidget {
             label: 'Delete',
             onTap: () {
               removePuzzlePieces(context);
+            }),
+        SpeedDialChild(
+            child: const FaIcon(FontAwesomeIcons.trash),
+            backgroundColor: Colors.blue,
+            label: 'Delete api_key',
+            onTap: () async {
+              final SharedPreferences prefs =
+                  await SharedPreferences.getInstance();
+              String? apiKey;
+              apiKey = await prefs.getString(
+                  RegistrationService.backendApiKeySharedPrefsString);
+              _logger.d("api_key before removal: $apiKey");
+              await prefs
+                  .remove(RegistrationService.backendApiKeySharedPrefsString);
+              apiKey = await prefs.getString(
+                  RegistrationService.backendApiKeySharedPrefsString);
+              _logger.d("deleted api_key, current value: $apiKey");
             }),
         SpeedDialChild(
           child: const FaIcon(FontAwesomeIcons.rotateRight),

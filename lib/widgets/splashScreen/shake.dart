@@ -9,7 +9,7 @@ import 'package:iscte_spots/helper/image_manipulation.dart';
 import 'package:iscte_spots/widgets/splashScreen/moving_widget.dart';
 import 'package:logger/logger.dart';
 
-import '../../services/flickr_iscte_photos.dart';
+import '../../services/flickr/flickr_iscte_photos.dart';
 import '../util/loading.dart';
 
 class Shaker extends StatefulWidget {

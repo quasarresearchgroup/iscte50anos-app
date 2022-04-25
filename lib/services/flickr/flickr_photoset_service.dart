@@ -3,7 +3,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:iscte_spots/models/flickr/flickr_photo.dart';
-import 'package:iscte_spots/services/flickr_service.dart';
+import 'package:iscte_spots/services/flickr/flickr_service.dart';
 
 class FLickrPhotosetService extends FlickrService {
   final StreamController<FlickrPhoto> _controller =
@@ -22,7 +22,7 @@ class FLickrPhotosetService extends FlickrService {
       try {
         http.Response response = await http
             .get(Uri.parse(
-                'https://www.flickr.com/services/rest/?method=flickr.photosets.getPhotos&api_key=$key&photoset_id=$albumID&user_id=${FlickrService.userID}&page=$currentPage&per_page=$perPage&format=json&nojsoncallback=1'))
+                'https://www.flickr.com/services/rest/?method=flickr.photosets.getPhotos&api_key=${FlickrService.key}&photoset_id=$albumID&user_id=${FlickrService.userID}&page=$currentPage&per_page=$perPage&format=json&nojsoncallback=1'))
             .timeout(const Duration(minutes: 2));
         if (response.statusCode == 200) {
           logger.d("Started fetching image urls");
