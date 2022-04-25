@@ -26,15 +26,6 @@ workflows:
         - pattern: '*'
           include: true
     scripts:
-      - name: Set up key properties
-        script: |
-          echo $CM_KEYSTORE | base64 --decode > $CM_KEYSTORE_PATH  # Not required if using team code signing identities
-          cat >> "$CM_BUILD_DIR/project_directory/android/key.properties" <<EOF
-          storePassword=$CM_KEYSTORE_PASSWORD
-          keyPassword=$CM_KEY_PASSWORD
-          keyAlias=$CM_KEY_ALIAS
-          storeFile=$CM_KEYSTORE_PATH
-          EOF
       - name: Set up local.properties
         script: |
           echo "flutter.sdk=$HOME/programs/flutter" > "$FCI_BUILD_DIR/android/local.properties"
@@ -52,10 +43,10 @@ workflows:
         script: |
           cd . && flutter test
         ignore_failure: true
-      - name: Build APK with Flutter
+      - name: Build Android
         script: |
-          cd . && flutter build apk --release --build-name=1.0.0 --build-number=$(($(google-play get-latest-build-number --package-name "$PACKAGE_NAME" --tracks="$GOOGLE_PLAY_TRACK") + 1))
-
+          echo $CM_KEYSTORE | base64 --decode > $CM_KEYSTORE_PATH  # Not required if using team code signing identities
+          cd android && ./gradlew assembleRelease
     artifacts:
     - build/**/outputs/apk/**/*.apk
     - build/**/outputs/bundle/**/*.aab
