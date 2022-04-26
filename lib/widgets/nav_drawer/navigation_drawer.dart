@@ -65,21 +65,16 @@ class NavigationDrawer extends StatelessWidget {
         title: const Text("Account"),
         children: [
           ListTile(
-            leading: const Icon(Icons.login),
-            title: Text(AppLocalizations.of(context)!.loginScreen),
-            onTap: () {
-              PageRoutes.animateToPage(context, page: const AuthPage());
-            },
-          ),
-          ListTile(
             leading: const Icon(Icons.settings),
             title: Text(AppLocalizations.of(context)!.settingsScreen),
           ),
           ListTile(
             leading: Icon(Icons.adaptive.arrow_back_outlined),
             title: Text(AppLocalizations.of(context)!.logOutButton),
-            onTap: () {
-              OpenDayLoginService.logOut();
+            onTap: () async {
+              Navigator.of(context).pop();
+              await OpenDayLoginService.logOut(context);
+              PageRoutes.animateToPage(context, page: AuthPage());
             },
           ),
         ],

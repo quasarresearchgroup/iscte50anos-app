@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:iscte_spots/pages/auth/login/login_openday_page.dart';
 import 'package:iscte_spots/pages/auth/register/register_openday_page.dart';
+import 'package:iscte_spots/pages/home.dart';
 import 'package:iscte_spots/services/auth/openday_login_service.dart';
+import 'package:iscte_spots/widgets/nav_drawer/page_routes.dart';
+import 'package:iscte_spots/widgets/util/loading.dart';
 
 class AuthPage extends StatefulWidget {
   const AuthPage({Key? key}) : super(key: key);
@@ -14,11 +17,17 @@ class AuthPage extends StatefulWidget {
 class _AuthPageState extends State<AuthPage> {
   late Widget _chosenWidget;
   bool _isLoggedIn = true;
+  bool _isLoading = true;
+  late List<StatefulWidget> _pages;
 
   @override
   void initState() {
     super.initState();
     _chosenWidget = LoginOpendayPage(changeToSignUp: changeToSignUp);
+    _pages = [
+      RegisterOpenDayPage(changeToLogIn: changeToLogIn),
+      LoginOpendayPage(changeToSignUp: changeToSignUp)
+    ];
     initFunc();
   }
 
@@ -26,34 +35,39 @@ class _AuthPageState extends State<AuthPage> {
     bool _loggedIn = await OpenDayLoginService.isLoggedIn();
     setState(() {
       _isLoggedIn = _loggedIn;
-      if (_isLoggedIn) {
-        Navigator.of(context).popUntil((route) => route.isFirst);
-      }
+      _isLoading = false;
     });
+    if (_isLoggedIn) {
+      //Navigator.pop(context);
+      PageRoutes.animateToPage(context, page: Home());
+    }
   }
 
   void changeToSignUp() {
     setState(() {
-      _chosenWidget = RegisterOpenDayPage(changeToLogIn: changeToLogIn);
+      _chosenWidget = _pages[0];
     });
   }
 
   void changeToLogIn() {
     setState(() {
-      _chosenWidget = LoginOpendayPage(changeToSignUp: changeToSignUp);
+      _chosenWidget = _pages[1];
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _isLoggedIn
-          ? Center(
-              child: FlutterLogo(
-              size: 300,
-            ))
-          : AnimatedSwitcher(
-              duration: Duration(seconds: 1), child: _chosenWidget),
+      body: AnimatedSwitcher(
+          duration: const Duration(seconds: 1),
+          child: _isLoading
+              ? const LoadingWidget()
+              : _isLoggedIn
+                  ? const Center(
+                      child: FlutterLogo(
+                      size: 300,
+                    ))
+                  : _chosenWidget),
     );
   }
 }

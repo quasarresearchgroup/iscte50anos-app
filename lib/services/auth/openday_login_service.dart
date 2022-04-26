@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:iscte_spots/models/auth/login_form_result.dart';
 import 'package:iscte_spots/services/auth/auth_service.dart';
@@ -47,6 +48,7 @@ class OpenDayLoginService {
         await storage.read(key: AuthService.usernameStorageLocation);
     String? password =
         await storage.read(key: AuthService.passwordStorageLocation);
+    _logger.d("username : $username ; password : $password");
     if (username != null && password != null) {
       int loginresult =
           await login(LoginFormResult(username: username, password: password));
@@ -60,7 +62,7 @@ class OpenDayLoginService {
     }
   }
 
-  static Future<void> logOut() async {
+  static Future<void> logOut(BuildContext context) async {
     AuthService.deleteUserCredentials();
     return;
   }
