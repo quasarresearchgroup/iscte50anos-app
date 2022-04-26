@@ -35,7 +35,7 @@ class _LoginOpendayState extends State<LoginOpendayPage>
   }
 
   List<Widget> generateFormFields() {
-    AutovalidateMode autovalidateMode = AutovalidateMode.always;
+    AutovalidateMode autovalidateMode = AutovalidateMode.onUserInteraction;
     return [
       TextFormField(
         autovalidateMode: autovalidateMode,
@@ -48,6 +48,7 @@ class _LoginOpendayState extends State<LoginOpendayPage>
       ),
       TextFormField(
         autovalidateMode: autovalidateMode,
+        obscureText: true,
         controller: widget.passwordController,
         decoration: IscteTheme.buildInputDecoration(hint: "Password"),
         textInputAction: TextInputAction.done,
@@ -79,6 +80,9 @@ class _LoginOpendayState extends State<LoginOpendayPage>
             } else {
               setState(() {
                 _loginError = true;
+                if (_loginFormkey.currentState != null) {
+                  _loginFormkey.currentState!.validate();
+                }
               });
             }
           }

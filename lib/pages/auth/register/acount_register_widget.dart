@@ -43,7 +43,7 @@ class _AccountRegisterFormState extends State<AccountRegisterForm> {
   }
 
   List<TextFormField> generateFormFields() {
-    AutovalidateMode autovalidateMode = AutovalidateMode.always;
+    AutovalidateMode autovalidateMode = AutovalidateMode.onUserInteraction;
     return [
       TextFormField(
         autovalidateMode: autovalidateMode,

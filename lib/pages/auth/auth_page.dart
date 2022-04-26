@@ -58,6 +58,7 @@ class _AuthPageState extends State<AuthPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: AnimatedSwitcher(
           duration: const Duration(seconds: 1),
           child: _isLoading
