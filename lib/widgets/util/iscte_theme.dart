@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 
 class IscteTheme {
   static Color iscteColor = const Color.fromRGBO(14, 41, 194, 1);
+  static Color iscteColorLight = iscteColor.withGreen(iscteColor.green + 100);
+  static Color iscteColorDark = iscteColor.withGreen(iscteColor.green - 100);
   static Radius appbarRadius = const Radius.circular(20);
 
   static AppBarTheme get appBarTheme {
@@ -30,6 +32,8 @@ class IscteTheme {
   static ThemeData get lightThemeData {
     return ThemeData.light().copyWith(
       primaryColor: iscteColor,
+      primaryColorLight: iscteColorLight,
+      primaryColorDark: iscteColorDark,
       errorColor: Colors.deepOrangeAccent,
       bottomAppBarColor: iscteColor,
       appBarTheme: appBarTheme,
@@ -39,11 +43,23 @@ class IscteTheme {
   static ThemeData get darkThemeData {
     return ThemeData.dark().copyWith(
       primaryColor: iscteColor,
+      primaryColorLight: iscteColorLight,
+      primaryColorDark: iscteColorDark,
       errorColor: Colors.deepOrangeAccent,
       bottomAppBarColor: iscteColor,
       appBarTheme: appBarTheme,
       scaffoldBackgroundColor: Colors.black,
       backgroundColor: Colors.black,
+    );
+  }
+
+  static InputDecoration buildInputDecoration({required String hint}) {
+    return InputDecoration(
+      contentPadding: const EdgeInsets.only(left: 25, right: 25),
+      border: UnderlineInputBorder(
+          //border: OutlineInputBorder(
+          borderRadius: BorderRadius.all(IscteTheme.appbarRadius)),
+      hintText: hint,
     );
   }
 }

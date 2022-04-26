@@ -2,14 +2,13 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/services.dart';
-import 'package:iscte_spots/models/registration_form_result.dart';
-import 'package:iscte_spots/pages/register/registration_error.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:iscte_spots/models/auth/registration_form_result.dart';
+import 'package:iscte_spots/pages/auth/register/registration_error.dart';
 import 'package:iscte_spots/widgets/util/constants.dart';
 import 'package:logger/logger.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class RegistrationService {
-  static const String backendApiKeySharedPrefsString = 'backend_api_key';
   static const String AfiliationsFile = 'Resources/Afiliacoes&Inscritos.csv';
   static final Logger _logger = Logger();
 
@@ -41,15 +40,14 @@ class RegistrationService {
 
   static Future<RegistrationError> registerNewUser(
       RegistrationFormResult registrationFormResult) async {
-    await Future.delayed(const Duration(seconds: 2));
     _logger.d("registering new User:\n$registrationFormResult");
 
     HttpClient client = HttpClient();
     client.badCertificateCallback =
         ((X509Certificate cert, String host, int port) => true);
 
-    final HttpClientRequest request =
-        await client.postUrl(Uri.parse('$API_ADDRESS/api/auth/signup'));
+    final HttpClientRequest request = await client
+        .postUrl(Uri.parse('${BackEndConstants.API_ADDRESS}/api/auth/signup'));
 
     request.headers.set('content-type', 'application/json');
     request.add(utf8.encode(json.encode(registrationFormResult.toMap())));
@@ -70,9 +68,13 @@ class RegistrationService {
     } else {
       String responseApiToken = decodedResponse["api_token"];
       _logger.d("Created new user with token: $responseApiToken");
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString(backendApiKeySharedPrefsString, responseApiToken);
-      _logger.d("Stored token: $responseApiToken in Shared Preferences");
+
+      final storage = FlutterSecureStorage();
+      await storage.write(
+          key: BackEndConstants.backendApiKeySharedPrefsString,
+          value: responseApiToken);
+
+      _logger.d("Stored token: $responseApiToken in Secure Storage");
       responseRegistrationError = RegistrationError.noError;
     }
     client.close();

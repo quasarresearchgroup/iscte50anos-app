@@ -27,6 +27,8 @@
     "flickrScreen":"Flickr",
     "shakerScreen":"Shaker",
     "settingsScreen":"Settings",
-    "registerScreen":"Register"
+    "registerScreen":"Sign In",
+    "loginScreen":"Login"
+
 
 }

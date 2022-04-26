@@ -10,16 +10,15 @@ import 'package:iscte_spots/models/database/tables/database_puzzle_piece_table.d
 import 'package:iscte_spots/models/puzzle_piece.dart';
 import 'package:iscte_spots/pages/puzzle_page.dart';
 import 'package:iscte_spots/pages/scanPage/qr_scan_page.dart';
-import 'package:iscte_spots/services/registration_service.dart';
+import 'package:iscte_spots/services/flickr/flickr_iscte_photos.dart';
 import 'package:iscte_spots/widgets/my_bottom_bar.dart';
 import 'package:iscte_spots/widgets/nav_drawer/navigation_drawer.dart';
+import 'package:iscte_spots/widgets/util/constants.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:iscte_spots/widgets/util/overlays.dart';
 import 'package:logger/logger.dart';
 import 'package:motion_sensors/motion_sensors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../services/flickr/flickr_iscte_photos.dart';
 
 class Home extends StatefulWidget {
   Home({
@@ -192,63 +191,69 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      extendBody: true,
-      drawer: const NavigationDrawer(),
-      appBar: AppBar(
-        title: Title(
-            color: Colors.black,
-            child: Text(AppLocalizations.of(context)!.appName)),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Center(
-                child: IconButton(
-                    icon: const FaIcon(FontAwesomeIcons.circleQuestion),
-                    onPressed: () => showHelpOverlay(
-                        context, currentPuzzleImage!, widget._logger))),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Center(
-                child: Text(
-              (notViewedImages.length + 1).toString(),
-              textScaleFactor: 1.5,
-            )),
-          )
-        ],
-      ),
-      bottomNavigationBar: MyBottomBar(
-        tabController: tabController,
-        initialIndex: 0,
-      ),
-      floatingActionButton: HomeDial(
-        removePuzzlePieces: removePuzzlePieces,
-        randomizeChosenImage: randomizeChosenImage,
-        fetchAndRandomize: fetchAndRandomize,
-        notViewedImages: notViewedImages,
-      ),
-      body: TabBarView(
-        physics: const NeverScrollableScrollPhysics(),
-        controller: tabController,
-        children: [
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.all(40.0),
-              child: LayoutBuilder(
-                  builder: (BuildContext context, BoxConstraints constraints) {
-                return (currentPuzzleImage != null)
-                    ? PuzzlePage(
-                        image: currentPuzzleImage!,
-                        constraints: constraints,
-                      )
-                    : const LoadingWidget();
-              }),
+    return WillPopScope(
+      onWillPop: () async {
+        dispose();
+        return true;
+      },
+      child: Scaffold(
+        extendBodyBehindAppBar: true,
+        extendBody: true,
+        drawer: const NavigationDrawer(),
+        appBar: AppBar(
+          title: Title(
+              color: Colors.black,
+              child: Text(AppLocalizations.of(context)!.appName)),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Center(
+                  child: IconButton(
+                      icon: const FaIcon(FontAwesomeIcons.circleQuestion),
+                      onPressed: () => showHelpOverlay(
+                          context, currentPuzzleImage!, widget._logger))),
             ),
-          ),
-          QRScanPage()
-        ],
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Center(
+                  child: Text(
+                (notViewedImages.length + 1).toString(),
+                textScaleFactor: 1.5,
+              )),
+            )
+          ],
+        ),
+        bottomNavigationBar: MyBottomBar(
+          tabController: tabController,
+          initialIndex: 0,
+        ),
+        floatingActionButton: HomeDial(
+          removePuzzlePieces: removePuzzlePieces,
+          randomizeChosenImage: randomizeChosenImage,
+          fetchAndRandomize: fetchAndRandomize,
+          notViewedImages: notViewedImages,
+        ),
+        body: TabBarView(
+          physics: const NeverScrollableScrollPhysics(),
+          controller: tabController,
+          children: [
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.all(40.0),
+                child: LayoutBuilder(builder:
+                    (BuildContext context, BoxConstraints constraints) {
+                  return (currentPuzzleImage != null)
+                      ? PuzzlePage(
+                          image: currentPuzzleImage!,
+                          constraints: constraints,
+                        )
+                      : const LoadingWidget();
+                }),
+              ),
+            ),
+            QRScanPage()
+          ],
+        ),
       ),
     );
   }
@@ -308,13 +313,13 @@ class HomeDial extends StatelessWidget {
               final SharedPreferences prefs =
                   await SharedPreferences.getInstance();
               String? apiKey;
-              apiKey = await prefs.getString(
-                  RegistrationService.backendApiKeySharedPrefsString);
+              apiKey = await prefs
+                  .getString(BackEndConstants.backendApiKeySharedPrefsString);
               _logger.d("api_key before removal: $apiKey");
               await prefs
-                  .remove(RegistrationService.backendApiKeySharedPrefsString);
-              apiKey = await prefs.getString(
-                  RegistrationService.backendApiKeySharedPrefsString);
+                  .remove(BackEndConstants.backendApiKeySharedPrefsString);
+              apiKey = await prefs
+                  .getString(BackEndConstants.backendApiKeySharedPrefsString);
               _logger.d("deleted api_key, current value: $apiKey");
             }),
         SpeedDialChild(
