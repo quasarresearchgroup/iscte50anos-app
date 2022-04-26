@@ -44,23 +44,13 @@ class _AccountRegisterFormState extends State<AccountRegisterForm> {
     );
   }
 
-  InputDecoration buildInputDecoration({required String hint}) {
-    return InputDecoration(
-      contentPadding: const EdgeInsets.only(left: 25, right: 25),
-      border: UnderlineInputBorder(
-          //border: OutlineInputBorder(
-          borderRadius: BorderRadius.all(IscteTheme.appbarRadius)),
-      hintText: hint,
-    );
-  }
-
   List<TextFormField> generateFormFields() {
     AutovalidateMode autovalidateMode = AutovalidateMode.always;
     return [
       TextFormField(
         autovalidateMode: autovalidateMode,
         controller: widget.userNameController,
-        decoration: buildInputDecoration(hint: "userName"),
+        decoration: IscteTheme.buildInputDecoration(hint: "userName"),
         textInputAction: TextInputAction.next,
         validator: (value) {
           if (widget.errorCode == RegistrationError.existingUsername) {
@@ -74,7 +64,7 @@ class _AccountRegisterFormState extends State<AccountRegisterForm> {
       TextFormField(
         autovalidateMode: autovalidateMode,
         controller: widget.nameController,
-        decoration: buildInputDecoration(hint: "name"),
+        decoration: IscteTheme.buildInputDecoration(hint: "name"),
         textInputAction: TextInputAction.next,
         validator: (value) {
           if (value == null || value.isEmpty) {
@@ -86,7 +76,7 @@ class _AccountRegisterFormState extends State<AccountRegisterForm> {
       TextFormField(
         autovalidateMode: autovalidateMode,
         controller: widget.lastNameController,
-        decoration: buildInputDecoration(hint: "last name"),
+        decoration: IscteTheme.buildInputDecoration(hint: "last name"),
         textInputAction: TextInputAction.next,
         validator: (value) {
           if (value == null || value.isEmpty) {
@@ -98,7 +88,7 @@ class _AccountRegisterFormState extends State<AccountRegisterForm> {
       TextFormField(
         autovalidateMode: autovalidateMode,
         controller: widget.emailController,
-        decoration: buildInputDecoration(hint: "email"),
+        decoration: IscteTheme.buildInputDecoration(hint: "email"),
         textInputAction: TextInputAction.next,
         validator: (value) {
           if (widget.errorCode == RegistrationError.existingEmail) {
@@ -118,7 +108,7 @@ class _AccountRegisterFormState extends State<AccountRegisterForm> {
         autovalidateMode: autovalidateMode,
         controller: widget.passwordController,
         obscureText: true,
-        decoration: buildInputDecoration(hint: "password"),
+        decoration: IscteTheme.buildInputDecoration(hint: "password"),
         textInputAction: TextInputAction.next,
         validator: (value) {
           if (widget.errorCode == RegistrationError.passwordNotMatch) {
@@ -133,7 +123,7 @@ class _AccountRegisterFormState extends State<AccountRegisterForm> {
         autovalidateMode: autovalidateMode,
         controller: widget.passwordConfirmationController,
         obscureText: true,
-        decoration: buildInputDecoration(hint: "confirm password"),
+        decoration: IscteTheme.buildInputDecoration(hint: "confirm password"),
         textInputAction: TextInputAction.done,
         validator: (value) {
           if (widget.errorCode == RegistrationError.passwordNotMatch) {

@@ -46,4 +46,14 @@ class IscteTheme {
       backgroundColor: Colors.black,
     );
   }
+
+  static InputDecoration buildInputDecoration({required String hint}) {
+    return InputDecoration(
+      contentPadding: const EdgeInsets.only(left: 25, right: 25),
+      border: UnderlineInputBorder(
+          //border: OutlineInputBorder(
+          borderRadius: BorderRadius.all(IscteTheme.appbarRadius)),
+      hintText: hint,
+    );
+  }
 }

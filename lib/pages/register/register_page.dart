@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:iscte_spots/models/registration_form_result.dart';
+import 'package:iscte_spots/models/auth/registration_form_result.dart';
 import 'package:iscte_spots/pages/register/acount_register_widget.dart';
 import 'package:iscte_spots/pages/register/registration_error.dart';
 import 'package:iscte_spots/pages/register/school_register_widget.dart';

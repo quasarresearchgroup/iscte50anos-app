@@ -189,7 +189,7 @@ class _AffiliationLeaderboardState extends State<AffiliationLeaderboard>
       client.badCertificateCallback =
           ((X509Certificate cert, String host, int port) => true);
       final request = await client.getUrl(Uri.parse(
-          '${API_ADDRESS}/api/users/leaderboard?type=${selectedType}&affiliation=$selectedAffiliation'));
+          '${BackEndConstants.API_ADDRESS}/api/users/leaderboard?type=${selectedType}&affiliation=$selectedAffiliation'));
       final response = await request.close();
 
       if (response.statusCode == 200) {
@@ -344,8 +344,8 @@ class GlobalLeaderboard extends StatelessWidget {
       HttpClient client = HttpClient();
       client.badCertificateCallback =
           ((X509Certificate cert, String host, int port) => true);
-      final request = await client
-          .getUrl(Uri.parse('${API_ADDRESS}/api/users/leaderboard'));
+      final request = await client.getUrl(
+          Uri.parse('${BackEndConstants.API_ADDRESS}/api/users/leaderboard'));
       final response = await request.close();
 
       if (response.statusCode == 200) {
