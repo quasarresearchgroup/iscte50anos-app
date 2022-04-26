@@ -52,7 +52,6 @@ class PageRoutes {
     }
 
     Widget futurePage = await buildPageAsync(page: page);
-    Navigator.pop(context);
     Navigator.pushReplacement(
       context,
       PageRoutes.createRoute(

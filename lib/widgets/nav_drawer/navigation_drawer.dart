@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:iscte_spots/pages/auth/login/login_openday_page.dart';
+import 'package:iscte_spots/pages/auth/register/register_page.dart';
 import 'package:iscte_spots/pages/flickr/flickr_page.dart';
 import 'package:iscte_spots/pages/leaderboard/leaderboard_screen.dart';
-import 'package:iscte_spots/pages/login/login_openday_page.dart';
 import 'package:iscte_spots/pages/quiz/quiz_page.dart';
-import 'package:iscte_spots/pages/register/register_page.dart';
 import 'package:iscte_spots/pages/scanned_list_page.dart';
 import 'package:iscte_spots/pages/timeline_page.dart';
 import 'package:iscte_spots/widgets/nav_drawer/page_routes.dart';

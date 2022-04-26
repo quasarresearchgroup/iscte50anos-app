@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:iscte_spots/pages/register/registration_error.dart';
+import 'package:iscte_spots/pages/auth/register/registration_error.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
-
-import '../../widgets/util/iscte_theme.dart';
 
 class AccountRegisterForm extends StatefulWidget {
   const AccountRegisterForm({
