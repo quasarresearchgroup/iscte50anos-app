@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:iscte_spots/pages/auth/register/registration_error.dart';
-import 'package:iscte_spots/services/registration_service.dart';
+import 'package:iscte_spots/services/auth/registration_service.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:logger/logger.dart';

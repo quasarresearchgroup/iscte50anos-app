@@ -10,10 +10,10 @@ import 'package:iscte_spots/models/database/tables/database_puzzle_piece_table.d
 import 'package:iscte_spots/models/puzzle_piece.dart';
 import 'package:iscte_spots/pages/puzzle_page.dart';
 import 'package:iscte_spots/pages/scanPage/qr_scan_page.dart';
+import 'package:iscte_spots/services/auth/auth_service.dart';
 import 'package:iscte_spots/services/flickr/flickr_iscte_photos.dart';
 import 'package:iscte_spots/widgets/my_bottom_bar.dart';
 import 'package:iscte_spots/widgets/nav_drawer/navigation_drawer.dart';
-import 'package:iscte_spots/widgets/util/constants.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:iscte_spots/widgets/util/overlays.dart';
 import 'package:logger/logger.dart';
@@ -314,12 +314,11 @@ class HomeDial extends StatelessWidget {
                   await SharedPreferences.getInstance();
               String? apiKey;
               apiKey = await prefs
-                  .getString(BackEndConstants.backendApiKeySharedPrefsString);
+                  .getString(AuthService.backendApiKeyStorageLocation);
               _logger.d("api_key before removal: $apiKey");
-              await prefs
-                  .remove(BackEndConstants.backendApiKeySharedPrefsString);
+              await prefs.remove(AuthService.backendApiKeyStorageLocation);
               apiKey = await prefs
-                  .getString(BackEndConstants.backendApiKeySharedPrefsString);
+                  .getString(AuthService.backendApiKeyStorageLocation);
               _logger.d("deleted api_key, current value: $apiKey");
             }),
         SpeedDialChild(

@@ -3,10 +3,11 @@ import 'dart:io';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:iscte_spots/models/auth/login_form_result.dart';
+import 'package:iscte_spots/services/auth/auth_service.dart';
 import 'package:iscte_spots/widgets/util/constants.dart';
 import 'package:logger/logger.dart';
 
-class OpenDayLogin {
+class OpenDayLoginService {
   static final Logger _logger = Logger();
 
   static Future<int> login(LoginFormResult loginFormResult) async {
@@ -25,20 +26,42 @@ class OpenDayLogin {
     HttpClientResponse response = await request.close();
     var decodedResponse =
         await jsonDecode(await response.transform(utf8.decoder).join());
-    if (response.statusCode == 200) {
-      String? responseApiToken = decodedResponse["api_token"];
-      if (responseApiToken != null) {
-        final storage = FlutterSecureStorage();
-        storage.write(
-          key: BackEndConstants.backendApiKeySharedPrefsString,
-          value: responseApiToken,
-        );
-        _logger.d("Stored token: $responseApiToken in Secure Storage");
-      }
+    String? responseApiToken = decodedResponse["api_token"];
+
+    if (response.statusCode == 200 && responseApiToken != null) {
+      AuthService.storeLogInCredenials(
+        username: loginFormResult.username,
+        password: loginFormResult.password,
+        apiKey: responseApiToken,
+      );
     } else {
       _logger.e(
           "statusCode: ${response.statusCode} on login response: $decodedResponse");
     }
     return response.statusCode;
+  }
+
+  static Future<bool> isLoggedIn() async {
+    const storage = FlutterSecureStorage();
+    String? username =
+        await storage.read(key: AuthService.usernameStorageLocation);
+    String? password =
+        await storage.read(key: AuthService.passwordStorageLocation);
+    if (username != null && password != null) {
+      int loginresult =
+          await login(LoginFormResult(username: username, password: password));
+      if (loginresult == 200) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  static Future<void> logOut() async {
+    AuthService.deleteUserCredentials();
+    return;
   }
 }

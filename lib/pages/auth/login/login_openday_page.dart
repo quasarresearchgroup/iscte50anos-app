@@ -2,23 +2,24 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:iscte_spots/models/auth/login_form_result.dart';
-import 'package:iscte_spots/pages/auth/register/register_page.dart';
 import 'package:iscte_spots/pages/home.dart';
-import 'package:iscte_spots/services/openday/openday_login_service.dart';
+import 'package:iscte_spots/services/auth/openday_login_service.dart';
 import 'package:iscte_spots/widgets/nav_drawer/page_routes.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
 
 class LoginOpendayPage extends StatefulWidget {
-  LoginOpendayPage({Key? key}) : super(key: key);
+  LoginOpendayPage({Key? key, required this.changeToSignUp}) : super(key: key);
 
   @override
   State<LoginOpendayPage> createState() => _LoginOpendayState();
+  void Function() changeToSignUp;
   final TextEditingController userNameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 }
 
-class _LoginOpendayState extends State<LoginOpendayPage> {
+class _LoginOpendayState extends State<LoginOpendayPage>
+    with AutomaticKeepAliveClientMixin {
   final _loginFormkey = GlobalKey<FormState>();
 
   bool _loginError = false;
@@ -67,7 +68,7 @@ class _LoginOpendayState extends State<LoginOpendayPage> {
             _isLoading = true;
           });
           if (_loginFormkey.currentState!.validate()) {
-            int statusCode = await OpenDayLogin.login(
+            int statusCode = await OpenDayLoginService.login(
               LoginFormResult(
                 username: widget.userNameController.text,
                 password: widget.passwordController.text,
@@ -93,8 +94,7 @@ class _LoginOpendayState extends State<LoginOpendayPage> {
               text: "Sign up!",
               recognizer: TapGestureRecognizer()
                 ..onTap = () {
-                  PageRoutes.replacePushanimateToPage(context,
-                      page: RegisterPage());
+                  widget.changeToSignUp();
                 },
               style: TextStyle(
                 color: Theme.of(context).primaryColorLight,
@@ -108,18 +108,17 @@ class _LoginOpendayState extends State<LoginOpendayPage> {
   Widget build(BuildContext context) {
     List<Widget> formFields = generateFormFields();
     List<Widget> formButtons = generateFormButtons();
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Login OpenDay"),
-      ),
-      body: _isLoading
-          ? const LoadingWidget()
-          : Form(
-              key: _loginFormkey,
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [...formFields, ...formButtons]),
-            ),
-    );
+    super.build(context);
+    return _isLoading
+        ? const LoadingWidget()
+        : Form(
+            key: _loginFormkey,
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [...formFields, ...formButtons]),
+          );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

@@ -1,24 +1,27 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:iscte_spots/models/auth/registration_form_result.dart';
 import 'package:iscte_spots/pages/auth/register/registration_error.dart';
 import 'package:iscte_spots/pages/auth/register/school_register_widget.dart';
-import 'package:iscte_spots/services/registration_service.dart';
+import 'package:iscte_spots/services/auth/registration_service.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:logger/logger.dart';
 import 'package:lottie/lottie.dart';
 
 import 'acount_register_widget.dart';
 
-class RegisterPage extends StatefulWidget {
-  RegisterPage({Key? key}) : super(key: key);
+class RegisterOpenDayPage extends StatefulWidget {
+  RegisterOpenDayPage({Key? key, required this.changeToLogIn})
+      : super(key: key);
   final Logger _logger = Logger();
-
+  void Function() changeToLogIn;
   @override
-  State<RegisterPage> createState() => _RegisterPageState();
+  State<RegisterOpenDayPage> createState() => _RegisterOpenDayPageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
+class _RegisterOpenDayPageState extends State<RegisterOpenDayPage>
+    with AutomaticKeepAliveClientMixin {
   final _accountFormkey = GlobalKey<FormState>();
   final _schoolFormkey = GlobalKey<FormState>();
   int _curentStep = 0;
@@ -131,6 +134,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return WillPopScope(
       onWillPop: () async {
         if (isFirstStep || _isCompleted) {
@@ -148,54 +152,70 @@ class _RegisterPageState extends State<RegisterPage> {
                 shape: const ContinuousRectangleBorder(),
               ),
         ),
-        child: Scaffold(
-          appBar: AppBar(
-            title: const Text("Register"),
-          ),
-          //body: Padding(padding: EdgeInsets.all(8), child: RegisterForm()),
-          body: _isLodading
-              ? const LoadingWidget()
-              : _isCompleted
-                  ? CompleteForm()
-                  : Stepper(
-                      type: StepperType.vertical,
-                      currentStep: _curentStep,
-                      onStepContinue: _onStepContinue,
-                      onStepCancel: _onStepCancel,
-                      controlsBuilder:
-                          (BuildContext context, ControlsDetails details) {
-                        final bool isLastStep =
-                            _curentStep == getSteps().length - 1;
-                        final bool isFirst = _curentStep == 0;
+        child: _isLodading
+            ? const LoadingWidget()
+            : _isCompleted
+                ? CompleteForm()
+                : Stepper(
+                    type: StepperType.vertical,
+                    currentStep: _curentStep,
+                    onStepContinue: _onStepContinue,
+                    onStepCancel: _onStepCancel,
+                    controlsBuilder:
+                        (BuildContext context, ControlsDetails details) {
+                      final bool isLastStep =
+                          _curentStep == getSteps().length - 1;
+                      final bool isFirst = _curentStep == 0;
 
-                        return Container(
-                          margin: const EdgeInsets.only(top: 30),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: ElevatedButton(
-                                  child: Text(
-                                    isLastStep ? "CONFIRM" : "NEXT",
-                                  ),
-                                  onPressed: _onStepContinue,
-                                ),
-                              ),
-                              const SizedBox(width: 12),
-                              isFirst
-                                  ? Container()
-                                  : Expanded(
-                                      child: ElevatedButton(
-                                        child: const Text("BACK"),
-                                        onPressed: _onStepCancel,
-                                      ),
+                      return Container(
+                        margin: const EdgeInsets.only(top: 30),
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: ElevatedButton(
+                                    child: Text(
+                                      isLastStep ? "CONFIRM" : "NEXT",
                                     ),
-                            ],
-                          ),
-                        );
-                      },
-                      steps: getSteps(),
-                    ),
-        ),
+                                    onPressed: _onStepContinue,
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                isFirst
+                                    ? Container()
+                                    : Expanded(
+                                        child: ElevatedButton(
+                                          child: const Text("BACK"),
+                                          onPressed: _onStepCancel,
+                                        ),
+                                      ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            RichText(
+                                text: TextSpan(
+                                    text: "Already have an account? ",
+                                    children: [
+                                  TextSpan(
+                                      text: "Log In!",
+                                      recognizer: TapGestureRecognizer()
+                                        ..onTap = () {
+                                          widget.changeToLogIn();
+                                        },
+                                      style: TextStyle(
+                                        color:
+                                            Theme.of(context).primaryColorLight,
+                                      ))
+                                ])),
+                          ],
+                        ),
+                      );
+                    },
+                    steps: getSteps(),
+                  ),
       ),
     );
   }
@@ -248,6 +268,9 @@ class _RegisterPageState extends State<RegisterPage> {
 */
     ];
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 class CompleteForm extends StatelessWidget {
