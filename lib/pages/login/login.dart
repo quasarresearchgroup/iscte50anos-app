@@ -1,100 +1,22 @@
 /// -----------------------------------
 ///          External Packages
 /// -----------------------------------
-
 import 'package:flutter/material.dart';
-
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:flutter_appauth/flutter_appauth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:http/http.dart';
+import 'package:iscte_spots/pages/login/profile.dart';
+
+import '../../services/login_service.dart';
+import 'iscte_login_widget.dart';
 
 final FlutterAppAuth appAuth = FlutterAppAuth();
 const FlutterSecureStorage secureStorage = FlutterSecureStorage();
 
 /// -----------------------------------
-///           Auth0 Variables
-/// -----------------------------------
-
-const IDP_DOMAIN = 'login.iscte-iul.pt';
-const IDP_CLIENT_ID = '0oa2y4zd1pm9krr2o417';
-const IDP_REDIRECT_URI = 'pt.iscteiul.vultos:/callback';
-const IDP_ISSUER = 'https://$IDP_DOMAIN';
-
-const API_ADDRESS = "192.168.1.124";
-
-/// -----------------------------------
-///           Profile Widget
-/// -----------------------------------
-
-class Profile extends StatelessWidget {
-  final logoutAction;
-  final String name;
-  final String picture;
-
-  Profile(this.logoutAction, this.name, this.picture);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        Container(
-          width: 150,
-          height: 150,
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.blue, width: 4.0),
-            shape: BoxShape.circle,
-
-          ),
-        ),
-        const SizedBox(height: 24.0),
-        Text('Name: $name'),
-        const SizedBox(height: 48.0),
-        ElevatedButton(
-          onPressed: () {
-            logoutAction();
-          },
-          child: const Text('Logout'),
-        ),
-      ],
-    );
-  }
-}
-
-/// -----------------------------------
-///            Login Widget
-/// -----------------------------------
-
-class Login extends StatelessWidget {
-  final loginAction;
-  final String loginError;
-
-  const Login(this.loginAction, this.loginError);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        ElevatedButton(
-          onPressed: () {
-            loginAction();
-          },
-          child: const Text('Login using Iscte Login'),
-        ),
-        Text(loginError ?? ''),
-      ],
-    );
-  }
-}
-
-/// -----------------------------------
 ///                 App
 /// -----------------------------------
 
-void main(){
+void main() {
   //secureStorage.deleteAll();
   runApp(LoginPage());
 }
@@ -123,7 +45,6 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void initAction() async {
-
     // Get refresh token from storage
     final storedRefreshToken = await secureStorage.read(key: 'refresh_token');
     final apiToken = await secureStorage.read(key: 'api_token');
@@ -136,14 +57,15 @@ class _LoginPageState extends State<LoginPage> {
 
     try {
       final response = await appAuth.token(TokenRequest(
-        IDP_CLIENT_ID,
-        IDP_REDIRECT_URI,
-        issuer: IDP_ISSUER,
+        IscteLoginService.IDP_CLIENT_ID,
+        IscteLoginService.IDP_REDIRECT_URI,
+        issuer: IscteLoginService.IDP_ISSUER,
         refreshToken: storedRefreshToken,
       ));
 
-      final idToken = parseIdToken(response?.idToken ?? "");
-      final profile = await getUserDetails(response?.accessToken ?? "");
+      final idToken = IscteLoginService.parseIdToken(response?.idToken ?? "");
+      final profile =
+          await IscteLoginService.getUserDetails(response?.accessToken ?? "");
 
       secureStorage.write(key: 'refresh_token', value: response?.refreshToken);
 
@@ -153,32 +75,9 @@ class _LoginPageState extends State<LoginPage> {
         name = idToken['name'];
         picture = profile['picture'];
       });
-
     } catch (e, s) {
       print('error on refresh token: $e - stack: $s');
       logoutAction();
-    }
-  }
-
-  Map<String, dynamic> parseIdToken(String idToken) {
-    final parts = idToken.split(r'.');
-    assert(parts.length == 3);
-
-    return jsonDecode(
-        utf8.decode(base64Url.decode(base64Url.normalize(parts[1]))));
-  }
-
-  Future<Map> getUserDetails(String accessToken) async {
-    //print(accessToken);
-    const url = 'https://$IDP_DOMAIN/oauth2/v1/userinfo';
-    final response = await http.get(
-      Uri.parse(url),
-      headers: {'Authorization': 'Bearer $accessToken'},
-    );
-    if (response.statusCode == 200) {
-      return jsonDecode(response.body);
-    } else {
-      throw Exception('Failed to get user details');
     }
   }
 
@@ -189,44 +88,13 @@ class _LoginPageState extends State<LoginPage> {
     });
 
     try {
-      // GET ACCESS TOKEN AND ID TOKEN FROM OKTA
-      final AuthorizationTokenResponse? result =
-      await appAuth.authorizeAndExchangeCode(
-        AuthorizationTokenRequest(
-          IDP_CLIENT_ID,
-          IDP_REDIRECT_URI,
-          issuer: 'https://$IDP_DOMAIN',
-          scopes: ['openid', 'profile', 'offline_access'],
-          //promptValues: ['login']
-        ),
-      );
-
-      final idToken = parseIdToken(result?.idToken ?? "");
-      //final profile = await getUserDetails(result?.accessToken ?? "");
-      //print(idToken);
-      //print(profile);
-
-      await secureStorage.write(key: 'refresh_token', value: result?.refreshToken);
-
-      // Exchange OKTA access token to API Token
-      Response tokenExchange = await http.post(
-        Uri.parse('http://$API_ADDRESS/api/auth/'),
-          body: {"access_token": result?.accessToken}
-      );
-
-      final Map apiToken = json.decode(utf8.decode(tokenExchange.body.codeUnits));
-      secureStorage.write(key: 'api_token', value: apiToken["access_token"]);
-      //print("API Token: ${apiToken["access_token"]}");
-
-      // TODO Route to Profile or Home Page
-
+      final Map<String, dynamic> idToken = await IscteLoginService.login();
       setState(() {
         isBusy = false;
         isLoggedIn = true;
         name = idToken['name'];
         //picture = profile['picture'];
       });
-
     } catch (e, s) {
       //print('login error: $e - stack: $s');
       setState(() {
@@ -257,18 +125,16 @@ class _LoginPageState extends State<LoginPage> {
     return MaterialApp(
       title: 'Login',
       home: Scaffold(
-
         appBar: AppBar(
           title: const Text('Login'),
         ),
-
         body: Center(
           child: isBusy
-          ? const CircularProgressIndicator.adaptive()
-            : isLoggedIn
-        ? Profile(logoutAction, name, picture)
-        : Login(loginAction, errorMessage),
-    ),
+              ? const CircularProgressIndicator.adaptive()
+              : isLoggedIn
+                  ? Profile(logoutAction, name, picture)
+                  : IscteLogin(loginAction, errorMessage),
+        ),
       ),
     );
   }
