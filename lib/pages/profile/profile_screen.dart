@@ -28,8 +28,7 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
+    return Scaffold(
         appBar: AppBar(
           title: const Text("Profile"),//AppLocalizations.of(context)!.quizPageTitle)
         ),
@@ -41,9 +40,7 @@ class ProfilePage extends StatelessWidget {
           },
           child: const Profile(),
         ),
-      ), //Scaffold
-      debugShowCheckedModeBanner: false,
-    ); //MaterialApp
+      );
   }
 }
 
