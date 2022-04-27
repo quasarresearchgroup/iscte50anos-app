@@ -41,8 +41,4 @@ class QRScanService {
       return 'ERROR: ${e.toString()}.';
     }
   }
-
-  static void openDayRequest() {
-    _logger.d("OpenDay qrscan service request");
-  }
 }

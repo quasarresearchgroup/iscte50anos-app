@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:iscte_spots/pages/scanPage/qr_scan_camera_controls.dart';
-import 'package:iscte_spots/services/qr_scan_service.dart';
+import 'package:iscte_spots/services/openday/openday_qr_scan_service.dart';
 import 'package:logger/logger.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 class QRScanPageOpenDay extends StatefulWidget {
-  QRScanPageOpenDay({Key? key}) : super(key: key);
+  QRScanPageOpenDay({Key? key, required this.changeImage}) : super(key: key);
   final Logger logger = Logger();
-
+  final void Function(String imageLink) changeImage;
   @override
   State<StatefulWidget> createState() => QRScanPageOpenDayState();
 }
@@ -67,7 +67,9 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
     if (barcode != null && barcode != barcodeold) {
       //setState(() => barcodeold = barcode);
       barcodeold = barcode;
-      QRScanService.openDayRequest();
+      String spotRequest =
+          await OpenDayQRScanService.spotRequest(barcode: barcode!);
+      widget.changeImage(spotRequest);
       widget.logger.d("OpenDay Scan");
     }
   }
