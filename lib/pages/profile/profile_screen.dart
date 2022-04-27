@@ -64,7 +64,7 @@ class _ProfileState extends State<Profile> {
   Future<Map> fetchProfile() async {
     try {
       isLoading = true;
-      String? apiToken = await secureStorage.read(key: "api_token");
+      String? apiToken = await secureStorage.read(key: "backend_api_key");
 
       HttpClient client = HttpClient();
       client.badCertificateCallback =

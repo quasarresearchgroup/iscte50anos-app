@@ -11,7 +11,6 @@
     "back":"Voltar",
     "logOutButton":"Encerrar Sessão",
 
-
     "generalError":"Erro",
     "noMoreDataError":"Sem mais dados",
     "networkError":"Erro de conecção",
@@ -26,7 +25,10 @@
     "quizScreen":"Quizzes",
     "flickrScreen":"Flickr",
     "shakerScreen":"Shaker",
-    "settingsScreen":"Definições"
+    "settingsScreen":"Definições",
+    "registerScreen":"Registrar",
+    "loginScreen":"Entrar",
+    "profileScreen":"Perfil"
 
 
 }

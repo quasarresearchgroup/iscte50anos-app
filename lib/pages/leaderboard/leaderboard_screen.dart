@@ -187,7 +187,7 @@ class _AffiliationLeaderboardState extends State<AffiliationLeaderboard>
 
   Future<List<dynamic>> fetchLeaderboard() async {
     try {
-      String? apiToken = await secureStorage.read(key: "api_token");
+      String? apiToken = await secureStorage.read(key: "backend_api_key");
 
       HttpClient client = HttpClient();
       client.badCertificateCallback =
@@ -347,7 +347,7 @@ class GlobalLeaderboard extends StatelessWidget {
   Future<List<dynamic>> fetchLeaderboard() async {
     try {
 
-      String? apiToken = await secureStorage.read(key: "api_token");
+      String? apiToken = await secureStorage.read(key: "backend_api_key");
 
       HttpClient client = HttpClient();
       client.badCertificateCallback =
