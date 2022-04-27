@@ -14,6 +14,7 @@ import 'package:http/http.dart' as http;
 const FlutterSecureStorage secureStorage = FlutterSecureStorage();
 const API_ADDRESS = "https://194.210.120.48";
 
+// FOR ISOLATED TESTING
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(ProfilePage());
@@ -27,42 +28,7 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // APP BAR THEME
-    AppBarTheme appBarTheme = const AppBarTheme(
-      //backgroundColor: Color.fromRGBO(14, 41, 194, 1),
-      elevation: 0, // This removes the shadow from all App Bars.
-      centerTitle: true,
-      toolbarHeight: 55,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          bottom: Radius.circular(20),
-        ),
-      ),
-    );
-
-    var darkTheme = ThemeData.dark();
-
     return MaterialApp(
-      theme: ThemeData.light().copyWith(
-        primaryColor: const Color.fromRGBO(14, 41, 194, 1),
-          appBarTheme: appBarTheme.copyWith(
-            backgroundColor: const Color.fromRGBO(14, 41, 194, 1),
-            systemOverlayStyle: const SystemUiOverlayStyle(
-              statusBarColor: Color.fromRGBO(14, 41, 194, 1),
-              statusBarIconBrightness: Brightness.light, // For Android (dark icons)
-              statusBarBrightness: Brightness.light, // For iOS (dark icons)
-            ),
-          ),
-      ),
-      darkTheme: ThemeData.dark().copyWith(
-          appBarTheme: appBarTheme.copyWith(
-            systemOverlayStyle: SystemUiOverlayStyle(
-              statusBarColor: darkTheme.bottomAppBarColor,
-              statusBarIconBrightness: Brightness.light, // For Android (dark icons)
-              statusBarBrightness: Brightness.light, // For iOS (dark icons)
-            ),
-          )
-      ),
       home: Scaffold(
         appBar: AppBar(
           title: const Text("Profile"),//AppLocalizations.of(context)!.quizPageTitle)
@@ -101,7 +67,7 @@ class _ProfileState extends State<Profile> {
   Future<Map> fetchProfile() async {
     try {
       isLoading = true;
-      String? apiToken = "6b94a6c902ff034f1c4fa8484cb0dc42bf2d1393"; //await secureStorage.read(key: "api_token");
+      String? apiToken = await secureStorage.read(key: "api_token");
 
       HttpClient client = HttpClient();
       client.badCertificateCallback =
@@ -326,128 +292,5 @@ class _ProfileState extends State<Profile> {
       }
     );
   }
-
- /* @override
-  Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: futureProfile,
-      builder: (context, snapshot) {
-        List<Widget> children;
-        if (snapshot.hasData) {
-          var items = snapshot.data as List<dynamic>;
-          return Column(
-            children: [
-              SizedBox(  // Container to hold the description
-                height: 200,
-                child: Center(
-                  child: Column(
-                    children: const [
-                      Center(
-                        child:CircleAvatar(
-                          child: Text("DA")
-                        )
-                      ),
-                      Text("Duarte Almeida")
-                    ],
-                  )
-                ),
-              ),
-              Expanded(
-                child: RefreshIndicator(
-                  onRefresh: () async{
-                    setState(() {
-                      if(!isLoading) {
-                        futureProfile = fetchProfile();
-                      }
-                    });
-                  },
-                  child: ListView.builder(
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    itemCount: items.length,
-                    itemBuilder: (context, index) {
-                      return Padding(
-                        padding: const EdgeInsets.only(left:10.0, right:10.0),
-                        child: Card(
-                          child: ListTile(
-                            title: Text(utf8.decode(utf8.encode(items[index]["name"])),
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16
-                                )
-                            ),
-                            subtitle: Text("Pontos: ${items[index]["points"]} \nAfiliação: IGE"),
-                            //isThreeLine: true,
-                            //dense:true,
-                            minVerticalPadding: 10.0,
-                            trailing: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
-                                  index == 0 ? Image.asset("Resources/Img/LeaderBoardIcons/gold_medal.png") :
-                                  index == 1 ? Image.asset("Resources/Img/LeaderBoardIcons/silver_medal.png") :
-                                  index == 2 ? Image.asset("Resources/Img/LeaderBoardIcons/bronze_medal.png") :
-                                    Container(),
-                                  const SizedBox(width:10),
-                                  Text( "#${index+1}",
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 20
-                                      )
-                                  ),
-                                ]),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ),
-            ],
-          );
-        } else if (snapshot.hasError) {
-          children = <Widget>[
-            const Icon(
-              Icons.error_outline,
-              color: Colors.red,
-              size: 60,
-            ),
-            const Padding(
-              padding: EdgeInsets.only(top: 10),
-              child: Text('Ocorreu um erro a descarregar os dados'),
-            ),
-            const Padding(
-              padding: EdgeInsets.all(5.0),
-              child: Text('Tocar aqui para recarregar', style: TextStyle(fontWeight: FontWeight.bold),),
-            ),
-
-          ];
-        } else {
-          children = const <Widget>[
-            SizedBox(
-              child: CircularProgressIndicator.adaptive(),
-              width: 60,
-              height: 60,
-            ),
-          ];
-        }
-        return GestureDetector(
-          onTap: () {
-            setState(() {
-              if(!isLoading){
-                futureProfile = fetchProfile();
-              }
-            });
-          },
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: children,
-            ),
-          ),
-        );
-      },
-
-    );
-  }*/
 }
 
