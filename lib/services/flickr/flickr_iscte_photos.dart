@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:iscte_spots/services/flickr_service.dart';
+import 'package:iscte_spots/services/flickr/flickr_service.dart';
 
 class FlickrIsctePhotoService extends FlickrService {
   static const String tags = "iscte";

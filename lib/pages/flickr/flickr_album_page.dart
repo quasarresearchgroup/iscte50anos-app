@@ -6,8 +6,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:iscte_spots/models/flickr/flickr_photo.dart';
 import 'package:iscte_spots/models/flickr/flickr_photoset.dart';
-import 'package:iscte_spots/services/flickr_photoset_service.dart';
-import 'package:iscte_spots/services/flickr_service.dart';
+import 'package:iscte_spots/services/flickr/flickr_photoset_service.dart';
+import 'package:iscte_spots/services/flickr/flickr_service.dart';
 import 'package:logger/logger.dart';
 
 class FlickAlbumPage extends StatefulWidget {

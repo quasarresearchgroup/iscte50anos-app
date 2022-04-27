@@ -20,4 +20,35 @@ class PageRoutes {
       },
     );
   }
+
+  static Future<Widget> _buildPageAsync({required Widget page}) async {
+    return Future.microtask(
+      () {
+        return page;
+      },
+    );
+  }
+
+  static Future<void> animateToPage(BuildContext context,
+      {required Widget page}) async {
+    Widget futurePage = await _buildPageAsync(page: page);
+    Navigator.pop(context);
+    Navigator.push(
+      context,
+      PageRoutes.createRoute(
+        widget: futurePage,
+      ),
+    );
+  }
+
+  static Future<void> replacePushanimateToPage(BuildContext context,
+      {required Widget page}) async {
+    Widget futurePage = await _buildPageAsync(page: page);
+    Navigator.pushReplacement(
+      context,
+      PageRoutes.createRoute(
+        widget: futurePage,
+      ),
+    );
+  }
 }
