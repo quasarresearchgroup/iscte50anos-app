@@ -23,11 +23,13 @@ class _AuthPageState extends State<AuthPage> {
   @override
   void initState() {
     super.initState();
-    _chosenWidget = LoginOpendayPage(changeToSignUp: changeToSignUp);
     _pages = [
-      RegisterOpenDayPage(changeToLogIn: changeToLogIn),
-      LoginOpendayPage(changeToSignUp: changeToSignUp)
+      RegisterOpenDayPage(
+          changeToLogIn: changeToLogIn, loggingComplete: loggingComplete),
+      LoginOpendayPage(
+          changeToSignUp: changeToSignUp, loggingComplete: loggingComplete)
     ];
+    _chosenWidget = _pages[0];
     initFunc();
   }
 
@@ -38,9 +40,15 @@ class _AuthPageState extends State<AuthPage> {
       _isLoading = false;
     });
     if (_isLoggedIn) {
-      //Navigator.pop(context);
-      PageRoutes.animateToPage(context, page: Home());
+      loggingComplete();
     }
+  }
+
+  void loggingComplete() {
+    setState(() {
+      _isLoggedIn = true;
+    });
+    PageRoutes.animateToPage(context, page: Home());
   }
 
   void changeToSignUp() {

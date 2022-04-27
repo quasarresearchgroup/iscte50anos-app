@@ -2,20 +2,21 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:iscte_spots/models/auth/login_form_result.dart';
-import 'package:iscte_spots/pages/home.dart';
 import 'package:iscte_spots/services/auth/openday_login_service.dart';
-import 'package:iscte_spots/widgets/nav_drawer/page_routes.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
 
 class LoginOpendayPage extends StatefulWidget {
-  LoginOpendayPage({Key? key, required this.changeToSignUp}) : super(key: key);
+  LoginOpendayPage(
+      {Key? key, required this.changeToSignUp, required this.loggingComplete})
+      : super(key: key);
 
   @override
   State<LoginOpendayPage> createState() => _LoginOpendayState();
-  void Function() changeToSignUp;
   final TextEditingController userNameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final void Function() loggingComplete;
+  final void Function() changeToSignUp;
 }
 
 class _LoginOpendayState extends State<LoginOpendayPage>
@@ -25,10 +26,10 @@ class _LoginOpendayState extends State<LoginOpendayPage>
   bool _loginError = false;
   bool _isLoading = false;
 
+  String? get _errorText => _loginError ? "Invalid Credentials" : null;
+
   String? loginValidator(String? value) {
-    if (_loginError) {
-      return "Invalid Credentials";
-    } else if (value == null || value.isEmpty) {
+    if (value == null || value.isEmpty) {
       return 'Please enter some text';
     }
     return null;
@@ -40,7 +41,8 @@ class _LoginOpendayState extends State<LoginOpendayPage>
       TextFormField(
         autovalidateMode: autovalidateMode,
         controller: widget.userNameController,
-        decoration: IscteTheme.buildInputDecoration(hint: "Username"),
+        decoration: IscteTheme.buildInputDecoration(
+            hint: "Username", errorText: _errorText),
         textInputAction: TextInputAction.next,
         validator: (value) {
           return loginValidator(value);
@@ -50,7 +52,8 @@ class _LoginOpendayState extends State<LoginOpendayPage>
         autovalidateMode: autovalidateMode,
         obscureText: true,
         controller: widget.passwordController,
-        decoration: IscteTheme.buildInputDecoration(hint: "Password"),
+        decoration: IscteTheme.buildInputDecoration(
+            hint: "Password", errorText: _errorText),
         textInputAction: TextInputAction.done,
         validator: (value) {
           return loginValidator(value);
@@ -64,31 +67,7 @@ class _LoginOpendayState extends State<LoginOpendayPage>
       ElevatedButton(
         child: const Text("Login"),
         onPressed: () async {
-          setState(() {
-            _loginError = false;
-            _isLoading = true;
-          });
-          if (_loginFormkey.currentState!.validate()) {
-            int statusCode = await OpenDayLoginService.login(
-              LoginFormResult(
-                username: widget.userNameController.text,
-                password: widget.passwordController.text,
-              ),
-            );
-            if (statusCode == 200) {
-              PageRoutes.replacePushanimateToPage(context, page: Home());
-            } else {
-              setState(() {
-                _loginError = true;
-                if (_loginFormkey.currentState != null) {
-                  _loginFormkey.currentState!.validate();
-                }
-              });
-            }
-          }
-          setState(() {
-            _isLoading = false;
-          });
+          await _loginAction();
         },
       ),
       Center(
@@ -106,6 +85,31 @@ class _LoginOpendayState extends State<LoginOpendayPage>
         ])),
       )
     ];
+  }
+
+  Future<void> _loginAction() async {
+    setState(() {
+      _loginError = false;
+      _isLoading = true;
+    });
+    if (_loginFormkey.currentState!.validate()) {
+      int statusCode = await OpenDayLoginService.login(
+        LoginFormResult(
+          username: widget.userNameController.text,
+          password: widget.passwordController.text,
+        ),
+      );
+      if (statusCode == 200) {
+        widget.loggingComplete();
+      } else {
+        setState(() {
+          _loginError = true;
+        });
+      }
+    }
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override

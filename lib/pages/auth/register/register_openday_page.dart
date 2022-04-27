@@ -12,18 +12,21 @@ import 'package:lottie/lottie.dart';
 import 'acount_register_widget.dart';
 
 class RegisterOpenDayPage extends StatefulWidget {
-  RegisterOpenDayPage({Key? key, required this.changeToLogIn})
+  RegisterOpenDayPage(
+      {Key? key, required this.changeToLogIn, required this.loggingComplete})
       : super(key: key);
-  final Logger _logger = Logger();
-  void Function() changeToLogIn;
+
   @override
   State<RegisterOpenDayPage> createState() => _RegisterOpenDayPageState();
+  final Logger _logger = Logger();
+  void Function() changeToLogIn;
+  final void Function() loggingComplete;
 }
 
 class _RegisterOpenDayPageState extends State<RegisterOpenDayPage>
     with AutomaticKeepAliveClientMixin {
-  final _accountFormkey = GlobalKey<FormState>();
-  final _schoolFormkey = GlobalKey<FormState>();
+  GlobalKey<FormState> _accountFormkey = GlobalKey<FormState>();
+  GlobalKey<FormState> _schoolFormkey = GlobalKey<FormState>();
   int _curentStep = 0;
   bool _isLodading = false;
 
@@ -61,14 +64,14 @@ class _RegisterOpenDayPageState extends State<RegisterOpenDayPage>
 
   void _onStepContinue() async {
     if (isFirstStep) {
-      // if (widget._accountFormkey.currentState!.validate()) {
-      setState(() {
-        _curentStep++;
-      });
-      // }
+      if (_accountFormkey.currentState!.validate()) {
+        setState(() {
+          _curentStep++;
+        });
+      }
     } else if (isSecondStep) {
-      //if (widget._schoolFormkey.currentState!.validate()) {
-      /*
+      if (_schoolFormkey.currentState!.validate() &&
+          _accountFormkey.currentState!.validate()) {
         var registrationFormResult = RegistrationFormResult(
           username: userNameController.text,
           firstName: nameController.text,
@@ -79,7 +82,7 @@ class _RegisterOpenDayPageState extends State<RegisterOpenDayPage>
           affiliationType: chosenaffiliationType.value,
           affiliationName: chosenAffiliationName.value,
         );
-        */
+        /*
       var registrationFormResult = RegistrationFormResult(
         username: "test",
         firstName: "test",
@@ -90,30 +93,30 @@ class _RegisterOpenDayPageState extends State<RegisterOpenDayPage>
         affiliationType: "Alenquer",
         affiliationName: "Escola Secundária Damião de Goes",
       );
-      setState(() {
-        _isLodading = true;
-      });
-      RegistrationError registrationError =
-          await RegistrationService.registerNewUser(registrationFormResult);
-      setState(() {
-        _isLodading = false;
-      });
-      if (registrationError != RegistrationError.noError) {
+        */
         setState(() {
-          errorCode = registrationError;
+          _isLodading = true;
         });
-        if (_schoolFormkey.currentState != null) {
-          _schoolFormkey.currentState!.validate();
-        }
-        if (_accountFormkey.currentState != null) {
-          _accountFormkey.currentState!.validate();
-        }
-      } else {
-        setState(() {
+        RegistrationError registrationError =
+            await RegistrationService.registerNewUser(registrationFormResult);
+        if (registrationError == RegistrationError.noError) {
           widget._logger.i("completed registration");
+          widget.loggingComplete();
+        } else {
+          setState(() {
+            errorCode = registrationError;
+          });
+          if (_schoolFormkey.currentState != null) {
+            _schoolFormkey.currentState!.validate();
+          }
+          if (_accountFormkey.currentState != null) {
+            _accountFormkey.currentState!.validate();
+          }
+        }
+        setState(() {
+          _isLodading = false;
         });
       }
-      //}
     }
   }
 
@@ -158,7 +161,7 @@ class _RegisterOpenDayPageState extends State<RegisterOpenDayPage>
               ),
         ),
         child: AnimatedSwitcher(
-          duration: Duration(seconds: 1),
+          duration: const Duration(seconds: 1),
           child: _isLodading
               ? const LoadingWidget()
               : Padding(
@@ -210,9 +213,9 @@ class _RegisterOpenDayPageState extends State<RegisterOpenDayPage>
                         steps: getSteps(),
                       ),
                       RichText(
-                          text: TextSpan(
-                              text: "Already have an account? ",
-                              children: [
+                        text: TextSpan(
+                          text: "Already have an account? ",
+                          children: [
                             TextSpan(
                                 text: "Log In!",
                                 recognizer: TapGestureRecognizer()
@@ -222,7 +225,9 @@ class _RegisterOpenDayPageState extends State<RegisterOpenDayPage>
                                 style: TextStyle(
                                   color: Theme.of(context).primaryColorLight,
                                 ))
-                          ]))
+                          ],
+                        ),
+                      )
                     ],
                   ),
                 ),
@@ -269,14 +274,6 @@ class _RegisterOpenDayPageState extends State<RegisterOpenDayPage>
           chosenAffiliationName: chosenAffiliationName,
         ),
       ),
-/*
-      Step(
-        state: _stepState(2),
-        isActive: _curentStep >= 2,
-        title: const Text("Complete"),
-        content: CompleteForm(data: registrationFormResult),
-      )
-*/
     ];
   }
 }
