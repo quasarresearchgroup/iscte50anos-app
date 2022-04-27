@@ -43,17 +43,19 @@ class _AccountRegisterFormState extends State<AccountRegisterForm> {
   }
 
   List<TextFormField> generateFormFields() {
-    AutovalidateMode autovalidateMode = AutovalidateMode.always;
+    AutovalidateMode autovalidateMode = AutovalidateMode.onUserInteraction;
     return [
       TextFormField(
         autovalidateMode: autovalidateMode,
         controller: widget.userNameController,
-        decoration: IscteTheme.buildInputDecoration(hint: "userName"),
+        decoration: IscteTheme.buildInputDecoration(
+            hint: "userName",
+            errorText: (widget.errorCode == RegistrationError.existingUsername)
+                ? 'Username already exists'
+                : null),
         textInputAction: TextInputAction.next,
         validator: (value) {
-          if (widget.errorCode == RegistrationError.existingUsername) {
-            return 'Username already exists';
-          } else if (value == null || value.isEmpty) {
+          if (value == null || value.isEmpty) {
             return 'Please enter some text';
           }
           return null;
@@ -86,12 +88,14 @@ class _AccountRegisterFormState extends State<AccountRegisterForm> {
       TextFormField(
         autovalidateMode: autovalidateMode,
         controller: widget.emailController,
-        decoration: IscteTheme.buildInputDecoration(hint: "email"),
+        decoration: IscteTheme.buildInputDecoration(
+            hint: "email",
+            errorText: (widget.errorCode == RegistrationError.existingEmail)
+                ? 'Email already exists'
+                : null),
         textInputAction: TextInputAction.next,
         validator: (value) {
-          if (widget.errorCode == RegistrationError.existingEmail) {
-            return 'Email already exists';
-          } else if (value == null || value.isEmpty) {
+          if (value == null || value.isEmpty) {
             return 'Please enter some text';
           } else if (!RegExp(r"\S+[@]\S+\.\S+").hasMatch(value) ||
               widget.errorCode == RegistrationError.invalidEmail) {
@@ -106,12 +110,14 @@ class _AccountRegisterFormState extends State<AccountRegisterForm> {
         autovalidateMode: autovalidateMode,
         controller: widget.passwordController,
         obscureText: true,
-        decoration: IscteTheme.buildInputDecoration(hint: "password"),
+        decoration: IscteTheme.buildInputDecoration(
+            hint: "password",
+            errorText: (widget.errorCode == RegistrationError.passwordNotMatch)
+                ? 'Passwords must match'
+                : null),
         textInputAction: TextInputAction.next,
         validator: (value) {
-          if (widget.errorCode == RegistrationError.passwordNotMatch) {
-            return 'Passwords must match';
-          } else if (value == null || value.isEmpty) {
+          if (value == null || value.isEmpty) {
             return 'Please enter some text';
           }
           return null;
@@ -121,12 +127,14 @@ class _AccountRegisterFormState extends State<AccountRegisterForm> {
         autovalidateMode: autovalidateMode,
         controller: widget.passwordConfirmationController,
         obscureText: true,
-        decoration: IscteTheme.buildInputDecoration(hint: "confirm password"),
+        decoration: IscteTheme.buildInputDecoration(
+            hint: "confirm password",
+            errorText: (widget.errorCode == RegistrationError.passwordNotMatch)
+                ? 'Passwords must match'
+                : null),
         textInputAction: TextInputAction.done,
         validator: (value) {
-          if (widget.errorCode == RegistrationError.passwordNotMatch) {
-            return 'Passwords must match';
-          } else if (value == null || value.isEmpty) {
+          if (value == null || value.isEmpty) {
             return 'Please enter some text';
           } else if (value != widget.passwordController.text) {
             return 'Passwords must match';

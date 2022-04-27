@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:iscte_spots/pages/auth/register/registration_error.dart';
-import 'package:iscte_spots/services/registration_service.dart';
+import 'package:iscte_spots/services/auth/registration_service.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:logger/logger.dart';
@@ -27,7 +27,7 @@ class SchoolRegisterForm extends StatefulWidget {
 class _SchoolRegisterFormState extends State<SchoolRegisterForm> {
   var autovalidateMode2 = AutovalidateMode.always;
 
-  Future<Map<String, List<String>>> schoolsAfilitation =
+  Future<Map<String, dynamic>> schoolsAfilitation =
       RegistrationService.getSchoolAffiliations();
 
   @override
@@ -45,12 +45,36 @@ class _SchoolRegisterFormState extends State<SchoolRegisterForm> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     ...generateFormFields(
-                        snapshot.data as Map<String, List<String>>),
+                        snapshot.data as Map<String, dynamic>),
                   ]),
             ),
           );
         } else if (snapshot.hasError) {
-          return Text(snapshot.error.toString());
+          widget._logger.e(snapshot.error);
+          return Column(
+            children: [
+              RichText(
+                text: const TextSpan(
+                  text: "Error while loading schools!",
+                ),
+              ),
+              TextButton(
+                child: Text(
+                  "Tap to Refresh",
+                  style: TextStyle(
+                    color: Theme.of(context).errorColor,
+                  ),
+                ),
+                onPressed: () {
+                  widget._logger.d("refreshing schools");
+                  setState(() {
+                    schoolsAfilitation =
+                        RegistrationService.getSchoolAffiliations();
+                  });
+                },
+              )
+            ],
+          );
         } else {
           return const LoadingWidget();
         }
@@ -68,8 +92,7 @@ class _SchoolRegisterFormState extends State<SchoolRegisterForm> {
     );
   }
 
-  List<Widget> generateFormFields(
-      Map<String, List<String>> schoolsAfilitation) {
+  List<Widget> generateFormFields(Map<String, dynamic> schoolsAfilitation) {
     List<DropdownMenuItem<String>> districtList =
         schoolsAfilitation.keys.toList().map((String e) {
       return DropdownMenuItem<String>(
@@ -82,8 +105,9 @@ class _SchoolRegisterFormState extends State<SchoolRegisterForm> {
     }).toList();
 
     List<DropdownMenuItem<String>> schoolsList =
-        (schoolsAfilitation[widget.chosenAffiliationType.value] as List<String>)
-            .map((String e) {
+        (schoolsAfilitation[widget.chosenAffiliationType.value]
+                as List<dynamic>)
+            .map((dynamic e) {
       return DropdownMenuItem<String>(
         value: e,
         child: Text(e,

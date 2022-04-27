@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:iscte_spots/pages/auth/login/login_openday_page.dart';
-import 'package:iscte_spots/pages/auth/register/register_page.dart';
+import 'package:iscte_spots/pages/auth/auth_page.dart';
 import 'package:iscte_spots/pages/flickr/flickr_page.dart';
 import 'package:iscte_spots/pages/leaderboard/leaderboard_screen.dart';
+import 'package:iscte_spots/pages/profile/profile_screen.dart';
 import 'package:iscte_spots/pages/timeline_page.dart';
+import 'package:iscte_spots/services/auth/openday_login_service.dart';
 import 'package:iscte_spots/widgets/nav_drawer/page_routes.dart';
 import 'package:iscte_spots/widgets/splashScreen/shake.dart';
 
@@ -49,17 +50,10 @@ class NavigationDrawerOpenDay extends StatelessWidget {
         title: const Text("Account"),
         children: [
           ListTile(
-            leading: const Icon(Icons.login),
-            title: Text(AppLocalizations.of(context)!.registerScreen),
-            onTap: () {
-              PageRoutes.animateToPage(context, page: RegisterPage());
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.login),
-            title: Text(AppLocalizations.of(context)!.loginScreen),
-            onTap: () {
-              PageRoutes.animateToPage(context, page: LoginOpendayPage());
+            leading: Icon(Icons.person),
+            title: Text(AppLocalizations.of(context)!.profileScreen),
+            onTap: () async {
+              PageRoutes.animateToPage(context, page: ProfilePage());
             },
           ),
           ListTile(
@@ -69,6 +63,11 @@ class NavigationDrawerOpenDay extends StatelessWidget {
           ListTile(
             leading: Icon(Icons.adaptive.arrow_back_outlined),
             title: Text(AppLocalizations.of(context)!.logOutButton),
+            onTap: () async {
+              Navigator.of(context).pop();
+              await OpenDayLoginService.logOut(context);
+              PageRoutes.animateToPage(context, page: AuthPage());
+            },
           ),
         ],
       ),

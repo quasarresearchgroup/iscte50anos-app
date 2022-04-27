@@ -28,7 +28,8 @@
     "shakerScreen":"Shaker",
     "settingsScreen":"Settings",
     "registerScreen":"Sign In",
-    "loginScreen":"Login"
+    "loginScreen":"Login",
+    "profileScreen":"Profile"
 
 
 }

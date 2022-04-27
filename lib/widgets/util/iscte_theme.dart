@@ -42,24 +42,26 @@ class IscteTheme {
 
   static ThemeData get darkThemeData {
     return ThemeData.dark().copyWith(
+      scaffoldBackgroundColor: Colors.black,
+      backgroundColor: Colors.black,
       primaryColor: iscteColor,
       primaryColorLight: iscteColorLight,
       primaryColorDark: iscteColorDark,
       errorColor: Colors.deepOrangeAccent,
       bottomAppBarColor: iscteColor,
       appBarTheme: appBarTheme,
-      scaffoldBackgroundColor: Colors.black,
-      backgroundColor: Colors.black,
     );
   }
 
-  static InputDecoration buildInputDecoration({required String hint}) {
+  static InputDecoration buildInputDecoration(
+      {required String hint, String? errorText}) {
     return InputDecoration(
       contentPadding: const EdgeInsets.only(left: 25, right: 25),
       border: UnderlineInputBorder(
           //border: OutlineInputBorder(
           borderRadius: BorderRadius.all(IscteTheme.appbarRadius)),
       hintText: hint,
+      errorText: errorText,
     );
   }
 }

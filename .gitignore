@@ -9,10 +9,7 @@
 .history
 .svn/
 .pubspeck.lock
-
 *.env
-key*.properties
-*.jks
 
 # IntelliJ related
 *.iml

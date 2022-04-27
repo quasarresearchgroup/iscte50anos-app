@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:iscte_spots/pages/profile/profile_screen.dart';
+import 'package:iscte_spots/services/auth/auth_service.dart';
 import 'package:iscte_spots/widgets/util/constants.dart';
 import 'package:logger/logger.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
@@ -13,8 +14,8 @@ class OpenDayQRScanService {
   static final String loginError = "not_logged_in";
 
   static Future<String> spotRequest({Barcode? barcode}) async {
-    String? apiToken = await secureStorage.read(
-        key: BackEndConstants.backendApiKeySharedPrefsString);
+    String? apiToken =
+        await secureStorage.read(key: AuthService.backendApiKeyStorageLocation);
     if (apiToken == null) {
       return loginError;
     }

@@ -5,15 +5,19 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:iscte_spots/widgets/util/constants.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 import 'package:logger/logger.dart';
 
 //const API_ADDRESS = "http://192.168.1.124";
 
-const API_ADDRESS_PROD = "https://194.210.120.48";
-const API_ADDRESS_TEST = "http://192.168.1.124";
+//const API_ADDRESS_PROD = "https://194.210.120.48";
+//const API_ADDRESS_TEST = "http://192.168.1.124";
 
+const FlutterSecureStorage secureStorage = FlutterSecureStorage();
+
+// FOR ISOLATED TESTING
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const LeaderBoardPage());
@@ -76,7 +80,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage>
   Widget build(BuildContext context) {
     super.build(context);
 
-    AppBarTheme appBarTheme = const AppBarTheme(
+    /*AppBarTheme appBarTheme = const AppBarTheme(
       elevation: 0, // This removes the shadow from all App Bars.
       centerTitle: true,
       toolbarHeight: 55,
@@ -89,7 +93,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage>
 
     var darkTheme = ThemeData.dark();
 
-    return /*MaterialApp(
+    return MaterialApp(
       theme: ThemeData.light().copyWith(
         primaryColor: const Color.fromRGBO(14, 41, 194, 1),
         appBarTheme: appBarTheme.copyWith(
@@ -111,7 +115,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage>
         ),
       )),
       home:*/
-        Scaffold(
+        return Scaffold(
       appBar: AppBar(
         title: const Text(
             "Leaderboard"), //AppLocalizations.of(context)!.quizPageTitle)
@@ -160,9 +164,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage>
           ],
         ),
       ),
-      /*),
-      debugShowCheckedModeBanner: false,*/
-    );
+      );
   }
 }
 
@@ -185,11 +187,14 @@ class _AffiliationLeaderboardState extends State<AffiliationLeaderboard>
 
   Future<List<dynamic>> fetchLeaderboard() async {
     try {
+      String? apiToken = await secureStorage.read(key: "backend_api_key");
+
       HttpClient client = HttpClient();
       client.badCertificateCallback =
           ((X509Certificate cert, String host, int port) => true);
       final request = await client.getUrl(Uri.parse(
           '${BackEndConstants.API_ADDRESS}/api/users/leaderboard?type=${selectedType}&affiliation=$selectedAffiliation'));
+      request.headers.add("Authorization", "Token $apiToken");
       final response = await request.close();
 
       if (response.statusCode == 200) {
@@ -341,11 +346,16 @@ class GlobalLeaderboard extends StatelessWidget {
 
   Future<List<dynamic>> fetchLeaderboard() async {
     try {
+
+      String? apiToken = await secureStorage.read(key: "backend_api_key");
+
       HttpClient client = HttpClient();
       client.badCertificateCallback =
           ((X509Certificate cert, String host, int port) => true);
       final request = await client.getUrl(
           Uri.parse('${BackEndConstants.API_ADDRESS}/api/users/leaderboard'));
+      request.headers.add("Authorization", "Token $apiToken");
+
       final response = await request.close();
 
       if (response.statusCode == 200) {

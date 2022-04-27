@@ -11,16 +11,13 @@ class LoadingWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const CircularProgressIndicator.adaptive(),
-            Text(
-              AppLocalizations.of(context)!.loading,
-              style: messagesStyle,
-            )
-          ]),
+      child: Column(children: [
+        const CircularProgressIndicator.adaptive(),
+        Text(
+          AppLocalizations.of(context)!.loading,
+          style: messagesStyle,
+        )
+      ]),
     );
   }
 }

@@ -2,23 +2,27 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/services.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:iscte_spots/models/auth/registration_form_result.dart';
 import 'package:iscte_spots/pages/auth/register/registration_error.dart';
+import 'package:iscte_spots/services/auth/auth_service.dart';
 import 'package:iscte_spots/widgets/util/constants.dart';
 import 'package:logger/logger.dart';
 
 class RegistrationService {
-  static const String AfiliationsFile = 'Resources/Afiliacoes&Inscritos.csv';
+  static const String AfiliationsFile = 'Resources/openday_affiliations.json';
   static final Logger _logger = Logger();
 
-  static Future<Map<String, List<String>>> getSchoolAffiliations() async {
+  static Future<Map<String, dynamic>> getSchoolAffiliations() async {
     await Future.delayed(Duration(seconds: 1));
 
     try {
       final String file = await rootBundle.loadString(AfiliationsFile);
-
-      final Map<String, List<String>> result = {};
+      var jsonText =
+          await rootBundle.loadString('Resources/openday_affiliations.json');
+      Map<String, dynamic> affiliationMap =
+          json.decode(utf8.decode(jsonText.codeUnits));
+      return affiliationMap;
+      /*final Map<String, List<String>> result = {};
 
       result["-"] = <String>["-"];
       file.split("\n").forEach((line) {
@@ -32,6 +36,7 @@ class RegistrationService {
         }
       });
       return result;
+        */
     } catch (e) {
       _logger.e(e);
       rethrow;
@@ -69,12 +74,11 @@ class RegistrationService {
       String responseApiToken = decodedResponse["api_token"];
       _logger.d("Created new user with token: $responseApiToken");
 
-      final storage = FlutterSecureStorage();
-      await storage.write(
-          key: BackEndConstants.backendApiKeySharedPrefsString,
-          value: responseApiToken);
-
-      _logger.d("Stored token: $responseApiToken in Secure Storage");
+      AuthService.storeLogInCredenials(
+        username: registrationFormResult.username,
+        password: registrationFormResult.password,
+        apiKey: responseApiToken,
+      );
       responseRegistrationError = RegistrationError.noError;
     }
     client.close();

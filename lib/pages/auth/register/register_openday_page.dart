@@ -1,29 +1,34 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:iscte_spots/models/auth/registration_form_result.dart';
 import 'package:iscte_spots/pages/auth/register/registration_error.dart';
 import 'package:iscte_spots/pages/auth/register/school_register_widget.dart';
-import 'package:iscte_spots/services/registration_service.dart';
+import 'package:iscte_spots/services/auth/registration_service.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:logger/logger.dart';
 import 'package:lottie/lottie.dart';
 
 import 'acount_register_widget.dart';
 
-class RegisterPage extends StatefulWidget {
-  RegisterPage({Key? key}) : super(key: key);
-  final Logger _logger = Logger();
+class RegisterOpenDayPage extends StatefulWidget {
+  RegisterOpenDayPage(
+      {Key? key, required this.changeToLogIn, required this.loggingComplete})
+      : super(key: key);
 
   @override
-  State<RegisterPage> createState() => _RegisterPageState();
+  State<RegisterOpenDayPage> createState() => _RegisterOpenDayPageState();
+  final Logger _logger = Logger();
+  void Function() changeToLogIn;
+  final void Function() loggingComplete;
 }
 
-class _RegisterPageState extends State<RegisterPage> {
-  final _accountFormkey = GlobalKey<FormState>();
-  final _schoolFormkey = GlobalKey<FormState>();
+class _RegisterOpenDayPageState extends State<RegisterOpenDayPage>
+    with AutomaticKeepAliveClientMixin {
+  GlobalKey<FormState> _accountFormkey = GlobalKey<FormState>();
+  GlobalKey<FormState> _schoolFormkey = GlobalKey<FormState>();
   int _curentStep = 0;
   bool _isLodading = false;
-  bool _isCompleted = false;
 
   RegistrationError errorCode = RegistrationError.noError;
   bool get isFirstStep => _curentStep == 0;
@@ -48,6 +53,9 @@ class _RegisterPageState extends State<RegisterPage> {
     chosenAffiliationName.dispose();
   }
 
+  @override
+  bool get wantKeepAlive => true;
+
   void _onStepCancel() {
     if (_curentStep > 0) {
       setState(() => _curentStep--);
@@ -56,14 +64,14 @@ class _RegisterPageState extends State<RegisterPage> {
 
   void _onStepContinue() async {
     if (isFirstStep) {
-      // if (widget._accountFormkey.currentState!.validate()) {
-      setState(() {
-        _curentStep++;
-      });
-      // }
+      if (_accountFormkey.currentState!.validate()) {
+        setState(() {
+          _curentStep++;
+        });
+      }
     } else if (isSecondStep) {
-      //if (widget._schoolFormkey.currentState!.validate()) {
-      /*
+      if (_schoolFormkey.currentState!.validate() &&
+          _accountFormkey.currentState!.validate()) {
         var registrationFormResult = RegistrationFormResult(
           username: userNameController.text,
           firstName: nameController.text,
@@ -74,7 +82,7 @@ class _RegisterPageState extends State<RegisterPage> {
           affiliationType: chosenaffiliationType.value,
           affiliationName: chosenAffiliationName.value,
         );
-        */
+        /*
       var registrationFormResult = RegistrationFormResult(
         username: "test",
         firstName: "test",
@@ -85,27 +93,30 @@ class _RegisterPageState extends State<RegisterPage> {
         affiliationType: "Alenquer",
         affiliationName: "Escola Secundária Damião de Goes",
       );
-      setState(() {
-        _isLodading = true;
-      });
-      RegistrationError registrationError =
-          await RegistrationService.registerNewUser(registrationFormResult);
-      setState(() {
-        _isLodading = false;
-      });
-      if (registrationError != RegistrationError.noError) {
+        */
         setState(() {
-          errorCode = registrationError;
+          _isLodading = true;
         });
-        //_schoolFormkey.currentState!.validate();
-        //_accountFormkey.currentState!.validate();
-      } else {
-        setState(() {
+        RegistrationError registrationError =
+            await RegistrationService.registerNewUser(registrationFormResult);
+        if (registrationError == RegistrationError.noError) {
           widget._logger.i("completed registration");
-          _isCompleted = true;
+          widget.loggingComplete();
+        } else {
+          setState(() {
+            errorCode = registrationError;
+          });
+          if (_schoolFormkey.currentState != null) {
+            _schoolFormkey.currentState!.validate();
+          }
+          if (_accountFormkey.currentState != null) {
+            _accountFormkey.currentState!.validate();
+          }
+        }
+        setState(() {
+          _isLodading = false;
         });
       }
-      //}
     }
   }
 
@@ -131,9 +142,10 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return WillPopScope(
       onWillPop: () async {
-        if (isFirstStep || _isCompleted) {
+        if (isFirstStep) {
           return true;
         } else {
           setState(() {
@@ -148,53 +160,77 @@ class _RegisterPageState extends State<RegisterPage> {
                 shape: const ContinuousRectangleBorder(),
               ),
         ),
-        child: Scaffold(
-          appBar: AppBar(
-            title: const Text("Register"),
-          ),
-          //body: Padding(padding: EdgeInsets.all(8), child: RegisterForm()),
-          body: _isLodading
+        child: AnimatedSwitcher(
+          duration: const Duration(seconds: 1),
+          child: _isLodading
               ? const LoadingWidget()
-              : _isCompleted
-                  ? CompleteForm()
-                  : Stepper(
-                      type: StepperType.vertical,
-                      currentStep: _curentStep,
-                      onStepContinue: _onStepContinue,
-                      onStepCancel: _onStepCancel,
-                      controlsBuilder:
-                          (BuildContext context, ControlsDetails details) {
-                        final bool isLastStep =
-                            _curentStep == getSteps().length - 1;
-                        final bool isFirst = _curentStep == 0;
+              : Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Stepper(
+                        type: StepperType.vertical,
+                        currentStep: _curentStep,
+                        onStepContinue: _onStepContinue,
+                        onStepCancel: _onStepCancel,
+                        controlsBuilder:
+                            (BuildContext context, ControlsDetails details) {
+                          final bool isLastStep =
+                              _curentStep == getSteps().length - 1;
+                          final bool isFirst = _curentStep == 0;
 
-                        return Container(
-                          margin: const EdgeInsets.only(top: 30),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: ElevatedButton(
-                                  child: Text(
-                                    isLastStep ? "CONFIRM" : "NEXT",
-                                  ),
-                                  onPressed: _onStepContinue,
-                                ),
-                              ),
-                              const SizedBox(width: 12),
-                              isFirst
-                                  ? Container()
-                                  : Expanded(
+                          return Container(
+                            margin: const EdgeInsets.only(top: 30),
+                            child: Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    Expanded(
                                       child: ElevatedButton(
-                                        child: const Text("BACK"),
-                                        onPressed: _onStepCancel,
+                                        child: Text(
+                                          isLastStep ? "CONFIRM" : "NEXT",
+                                        ),
+                                        onPressed: _onStepContinue,
                                       ),
                                     ),
-                            ],
-                          ),
-                        );
-                      },
-                      steps: getSteps(),
-                    ),
+                                    const SizedBox(width: 12),
+                                    isFirst
+                                        ? Container()
+                                        : Expanded(
+                                            child: ElevatedButton(
+                                              child: const Text("BACK"),
+                                              onPressed: _onStepCancel,
+                                            ),
+                                          ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                        steps: getSteps(),
+                      ),
+                      RichText(
+                        text: TextSpan(
+                          text: "Already have an account? ",
+                          children: [
+                            TextSpan(
+                                text: "Log In!",
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    widget.changeToLogIn();
+                                  },
+                                style: TextStyle(
+                                  color: Theme.of(context).primaryColorLight,
+                                ))
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                ),
         ),
       ),
     );
@@ -238,14 +274,6 @@ class _RegisterPageState extends State<RegisterPage> {
           chosenAffiliationName: chosenAffiliationName,
         ),
       ),
-/*
-      Step(
-        state: _stepState(2),
-        isActive: _curentStep >= 2,
-        title: const Text("Complete"),
-        content: CompleteForm(data: registrationFormResult),
-      )
-*/
     ];
   }
 }

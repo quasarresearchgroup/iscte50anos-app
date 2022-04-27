@@ -21,17 +21,17 @@ class PageRoutes {
     );
   }
 
+  static Future<Widget> _buildPageAsync({required Widget page}) async {
+    return Future.microtask(
+      () {
+        return page;
+      },
+    );
+  }
+
   static Future<void> animateToPage(BuildContext context,
       {required Widget page}) async {
-    Future<Widget> buildPageAsync({required Widget page}) async {
-      return Future.microtask(
-        () {
-          return page;
-        },
-      );
-    }
-
-    Widget futurePage = await buildPageAsync(page: page);
+    Widget futurePage = await _buildPageAsync(page: page);
     Navigator.pop(context);
     Navigator.push(
       context,
@@ -43,15 +43,7 @@ class PageRoutes {
 
   static Future<void> replacePushanimateToPage(BuildContext context,
       {required Widget page}) async {
-    Future<Widget> buildPageAsync({required Widget page}) async {
-      return Future.microtask(
-        () {
-          return page;
-        },
-      );
-    }
-
-    Widget futurePage = await buildPageAsync(page: page);
+    Widget futurePage = await _buildPageAsync(page: page);
     Navigator.pushReplacement(
       context,
       PageRoutes.createRoute(
