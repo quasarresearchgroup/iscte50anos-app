@@ -4,7 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:iscte_spots/pages/puzzle_page.dart';
 import 'package:iscte_spots/pages/scanPage/openday_qr_scan_page.dart';
 import 'package:iscte_spots/widgets/my_bottom_bar.dart';
-import 'package:iscte_spots/widgets/nav_drawer/navigation_drawer.dart';
+import 'package:iscte_spots/widgets/nav_drawer/navigation_drawer_openday.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:iscte_spots/widgets/util/overlays.dart';
 import 'package:logger/logger.dart';
@@ -40,7 +40,7 @@ class _HomeOpenDayState extends State<HomeOpenDay>
     return Scaffold(
       extendBodyBehindAppBar: true,
       extendBody: true,
-      drawer: const NavigationDrawer(),
+      drawer: const NavigationDrawerOpenDay(),
       appBar: AppBar(
         title: Text("openDay Home"),
         actions: [
