@@ -9,10 +9,8 @@ import 'package:logger/logger.dart';
 
 import '../../widgets/util/iscte_theme.dart';
 
-const API_ADDRESS = "http://192.168.1.124";
+const API_ADDRESS = "https://194.210.120.48";
 
-const API_ADDRESS_PROD = "https://194.210.120.48";
-const API_ADDRESS_TEST = "http://192.168.1.124";
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -150,7 +148,7 @@ class _AffiliationLeaderboardState extends State<AffiliationLeaderboard>
       client.badCertificateCallback =
       ((X509Certificate cert, String host, int port) => true);
       final request = await client.getUrl(Uri.parse(
-          '${API_ADDRESS}/api/users/leaderboard?type=${selectedType}&affiliation=$selectedAffiliation'));
+          '$API_ADDRESS/api/users/leaderboard?type=${selectedType}&affiliation=$selectedAffiliation'));
       final response = await request.close();
 
       if (response.statusCode == 200) {
@@ -305,7 +303,7 @@ class GlobalLeaderboard extends StatelessWidget {
       client.badCertificateCallback =
       ((X509Certificate cert, String host, int port) => true);
       final request = await client
-          .getUrl(Uri.parse('${API_ADDRESS}/api/users/leaderboard'));
+          .getUrl(Uri.parse('$API_ADDRESS/api/users/leaderboard'));
       final response = await request.close();
 
       if (response.statusCode == 200) {

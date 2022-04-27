@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,7 @@ import 'package:logger/logger.dart';
 import 'package:http/http.dart' as http;
 
 const FlutterSecureStorage secureStorage = FlutterSecureStorage();
+const API_ADDRESS = "https://194.210.120.48";
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -98,23 +100,27 @@ class _ProfileState extends State<Profile> {
 
   Future<Map> fetchProfile() async {
     try {
-     // String? apiToken = await secureStorage.read(key: "api_token");
       isLoading = true;
-      final response = await http.get(
-          Uri.parse('http://192.168.1.124/api/users/profile'),
-        //8eb7f1e61ef68a526cf5a1fb6ddb0903bc0678c1
-        //555103c2c229fc06bcc7e10e91323c2bc4162bdd
-          headers: {'Authorization': 'Token ce0d0c050ab6b249283f24c01dfe84fd01dc2070'},
-      );
+      String? apiToken = "6b94a6c902ff034f1c4fa8484cb0dc42bf2d1393"; //await secureStorage.read(key: "api_token");
+
+      HttpClient client = HttpClient();
+      client.badCertificateCallback =
+      ((X509Certificate cert, String host, int port) => true);
+      final request = await client.getUrl(
+          Uri.parse('$API_ADDRESS/api/users/profile'));
+      request.headers.add("Authorization", "Token $apiToken");
+
+      final response = await request.close();
+
       if (response.statusCode == 200) {
-        print("recebi");
-        return jsonDecode(utf8.decode(response.body.codeUnits));
+        return jsonDecode(await response.transform(utf8.decoder).join());
       }
-      throw Exception('Failed to load profile');
-    }finally{
+    } catch (e) {
+      print(e);
+    } finally {
       isLoading = false;
-      //print(isLoading);
     }
+    throw Exception("Failed to load profile");
   }
 
   @override
@@ -160,6 +166,7 @@ class _ProfileState extends State<Profile> {
                           ),
                           const SizedBox(height: 10),
                           // NAME
+                          //"${profile["name"]}\n(${profile["username"]})"
                           Text(profile["name"], style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 23
