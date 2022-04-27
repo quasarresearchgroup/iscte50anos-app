@@ -24,7 +24,6 @@ class Home extends StatefulWidget {
   Home({
     Key? key,
   }) : super(key: key);
-  static const pageRoute = "/";
   final Logger _logger = Logger();
   final int shakerTimeThreshhold = 1000;
   final int shakerThreshhold = 5;

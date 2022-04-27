@@ -1,6 +1,6 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:iscte_spots/pages/home.dart';
+import 'package:iscte_spots/pages/home/openday_home.dart';
 import 'package:page_transition/page_transition.dart';
 
 import '../widgets/splashScreen/shake.dart';
@@ -30,7 +30,7 @@ class SplashScreen extends StatelessWidget {
         ],
       )*/
       ,
-      nextScreen: Home(),
+      nextScreen: HomeOpenDay(),
       duration: 5000,
       splashIconSize: 1000,
       splashTransition: SplashTransition.fadeTransition,

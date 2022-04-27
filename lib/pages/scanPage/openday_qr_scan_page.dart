@@ -1,23 +1,18 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:iscte_spots/helper/helper_methods.dart';
 import 'package:iscte_spots/pages/scanPage/qr_scan_camera_controls.dart';
 import 'package:iscte_spots/services/qr_scan_service.dart';
-import 'package:iscte_spots/widgets/util/overlays.dart';
 import 'package:logger/logger.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
-class QRScanPage extends StatefulWidget {
-  QRScanPage({Key? key}) : super(key: key);
+class QRScanPageOpenDay extends StatefulWidget {
+  QRScanPageOpenDay({Key? key}) : super(key: key);
   final Logger logger = Logger();
-  static String titleHtmlTag = 'CGqCRe';
 
   @override
-  State<StatefulWidget> createState() => QRScanPageState();
+  State<StatefulWidget> createState() => QRScanPageOpenDayState();
 }
 
-class QRScanPageState extends State<QRScanPage> {
+class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
   final qrKey = GlobalKey(debugLabel: 'QR');
   final Logger _logger = Logger();
   QRViewController? controller;
@@ -72,16 +67,8 @@ class QRScanPageState extends State<QRScanPage> {
     if (barcode != null && barcode != barcodeold) {
       //setState(() => barcodeold = barcode);
       barcodeold = barcode;
-
-      try {
-        String scanResult = await QRScanService.extractData(barcode!.code!);
-        setState(() {
-          qrScanResult = scanResult;
-        });
-        await HelperMethods.launchURL(barcode!.code!);
-      } on SocketException {
-        showNetworkErrorOverlay(context, _logger);
-      }
+      QRScanService.openDayRequest();
+      widget.logger.d("OpenDay Scan");
     }
   }
 

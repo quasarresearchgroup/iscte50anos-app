@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:iscte_spots/models/auth/login_form_result.dart';
 import 'package:iscte_spots/pages/auth/register/register_page.dart';
-import 'package:iscte_spots/pages/home.dart';
+import 'package:iscte_spots/pages/home/home.dart';
 import 'package:iscte_spots/services/openday/openday_login_service.dart';
 import 'package:iscte_spots/widgets/nav_drawer/page_routes.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
