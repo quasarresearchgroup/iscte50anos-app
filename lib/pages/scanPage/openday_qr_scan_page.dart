@@ -70,7 +70,6 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
       String spotRequest =
           await OpenDayQRScanService.spotRequest(barcode: barcode!);
       widget.changeImage(spotRequest);
-      widget.logger.d("OpenDay Scan");
     }
   }
 
