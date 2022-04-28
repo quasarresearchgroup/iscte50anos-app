@@ -5,49 +5,64 @@ import 'package:logger/logger.dart';
 
 class OpenDayNotificationService {
   static final Logger _logger = Logger();
+
   static Future<void> showLoginErrorOverlay(BuildContext context) async {
-    _openDayErrorSnackbar(context, "Authentication Error");
+    _openDayErrorSnackbar(context: context, data: "Authentication Error");
+  }
+
+  static void showConnectionErrorOverlay(BuildContext context) async {
+    _openDayErrorSnackbar(
+      context: context,
+      data: "No Wifi",
+      icon: const Icon(Icons.wifi_off),
+    );
   }
 
   static Future<void> showWrongSpotErrorOverlay(BuildContext context) async {
-    _openDayErrorSnackbar(context, "Wrong Spot");
+    _openDayErrorSnackbar(context: context, data: "Wrong Spot");
   }
 
   static Future<void> showErrorOverlay(BuildContext context) async {
-    _openDayErrorSnackbar(context, "Error");
+    _openDayErrorSnackbar(context: context, data: "Error");
   }
 
   static Future<void> showAlreadeyVisitedOverlay(BuildContext context) async {
-    _openDayErrorSnackbar(context, "You already visited that Spot");
+    _openDayErrorSnackbar(
+        context: context, data: "You already visited that Spot");
   }
 
   static void showInvalidErrorOverlay(BuildContext context) {
-    _openDayErrorSnackbar(context, "Are you sure that is a Spot at Iscte?");
+    _openDayErrorSnackbar(
+        context: context, data: "Are you sure that is a Spot at Iscte?");
   }
 
   static void showDisabledErrorOverlay(BuildContext context) {
-    _openDayErrorSnackbar(context, "Spots are disabled now...");
+    _openDayErrorSnackbar(context: context, data: "Spots are disabled now...");
   }
 
   static Future<void> showAllVisitedOverlay(BuildContext context) async {
     _openDaySucessSnackbar(context, "Wow you won!!");
   }
 
-  static void _openDayErrorSnackbar(BuildContext context, String data) {
+  static Future<void> showNewSpotFoundOverlay(BuildContext context) async {
+    _openDaySucessSnackbar(context, "Wow you found it!!");
+  }
+
+  static void _openDayErrorSnackbar(
+      {required BuildContext context, required String data, Widget? icon}) {
     _logger.i("Inserted overlay: $data");
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         duration: const Duration(milliseconds: 500),
         backgroundColor: Theme.of(context).errorColor,
         shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+          borderRadius: BorderRadius.all(Radius.circular(20)),
         ),
         content: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Text(data),
-            const FaIcon(FontAwesomeIcons.faceSadTear),
+            icon ?? const FaIcon(FontAwesomeIcons.faceSadTear),
           ],
         ),
       ),
@@ -62,8 +77,7 @@ class OpenDayNotificationService {
         duration: const Duration(milliseconds: 500),
         backgroundColor: Colors.green,
         shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+          borderRadius: BorderRadius.all(Radius.circular(20)),
         ),
         content: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,

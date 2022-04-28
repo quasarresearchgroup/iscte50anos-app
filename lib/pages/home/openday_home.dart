@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:iscte_spots/models/database/tables/database_puzzle_piece_table.dart';
 import 'package:iscte_spots/pages/puzzle_page.dart';
 import 'package:iscte_spots/pages/scanPage/openday_qr_scan_page.dart';
 import 'package:iscte_spots/services/openday/openday_qr_scan_service.dart';
@@ -44,40 +45,27 @@ class _HomeOpenDayState extends State<HomeOpenDay>
     setState(() {
       _loading = true;
     });
-    String currentPemit = await OpenDayQRScanService.spotRequest();
-    _changeCurrentImage(currentPemit);
+    await _setupInitialImage();
     setState(() {
       _loading = false;
     });
   }
 
-  void _changeCurrentImage(String imageLink) {
+  Future<void> _setupInitialImage() async {
+    String currentPemit = await OpenDayQRScanService.spotRequest();
+    setState(() {
+      currentPuzzleImage = Image.network(currentPemit);
+    });
+  }
+
+  void _changeCurrentImage(String imageLink) async {
     widget._logger.d("changin imag: $imageLink");
-    if (imageLink == OpenDayQRScanService.generalError) {
-      OpenDayNotificationService.showErrorOverlay(context);
-      widget._logger.d("generalError : $imageLink");
-    } else if (imageLink == OpenDayQRScanService.loginError) {
-      OpenDayNotificationService.showLoginErrorOverlay(context);
-      widget._logger.d("loginError : $imageLink");
-    } else if (imageLink == OpenDayQRScanService.wrongSpotError) {
-      OpenDayNotificationService.showWrongSpotErrorOverlay(context);
-      widget._logger.d("wrongSpotError : $imageLink");
-    } else if (imageLink == OpenDayQRScanService.alreadyVisitedError) {
-      OpenDayNotificationService.showAlreadeyVisitedOverlay(context);
-      widget._logger.d("wrongSpotError : $imageLink");
-    } else if (imageLink == OpenDayQRScanService.allVisited) {
-      OpenDayNotificationService.showAllVisitedOverlay(context);
-      widget._logger.d("wrongSpotError : $imageLink");
-    } else if (imageLink == OpenDayQRScanService.invalidQRError) {
-      OpenDayNotificationService.showInvalidErrorOverlay(context);
-      widget._logger.d("wrongSpotError : $imageLink");
-    } else if (imageLink == OpenDayQRScanService.disabledQRError) {
-      OpenDayNotificationService.showDisabledErrorOverlay(context);
-      widget._logger.d("wrongSpotError : $imageLink");
-    } else {
+    if (!OpenDayQRScanService.isError(imageLink)) {
+      DatabasePuzzlePieceTable.removeALL();
       setState(() {
         currentPuzzleImage = Image.network(imageLink);
       });
+      await OpenDayNotificationService.showNewSpotFoundOverlay(context);
       _tabController.animateTo(widget.puzzleIndex);
     }
   }

@@ -9,17 +9,29 @@ import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 class OpenDayQRScanService {
   static final Logger _logger = Logger();
-  static const String wrongSpotError = "Não podes aceder a este Spot ainda";
   static const String generalError = "error";
+  static const String connectionError = "wifi_error";
   static const String loginError = "not_logged_in";
-  static const String alreadyVisitedError = "Já visitaste este Spot";
-  static const String allVisited = "Parabéns, visitaste todos os Spots!";
   static const String invalidQRError = "QRCode inválido";
   static const String disabledQRError =
       "Não existem QR Codes ativos de momento";
+  static const String wrongSpotError = "Não podes aceder a este Spot ainda";
+  static const String alreadyVisitedError = "Já visitaste este Spot";
+  static const String allVisited = "Parabéns, visitaste todos os Spots!";
+
+  static bool isError(String string) {
+    return string == generalError ||
+        string == connectionError ||
+        string == loginError ||
+        string == invalidQRError ||
+        string == disabledQRError ||
+        string == wrongSpotError ||
+        string == alreadyVisitedError ||
+        string == allVisited;
+  }
 
   static Future<String> spotRequest({Barcode? barcode}) async {
-    _logger.d("started request at ${DateTime.now()}");
+    _logger.d("started request at ${DateTime.now()}\t${barcode?.code}");
     String? apiToken =
         await secureStorage.read(key: AuthService.backendApiKeyStorageLocation);
     if (apiToken == null) {
@@ -54,6 +66,9 @@ class OpenDayQRScanService {
         var responseDecoded2 = responseDecoded["message"] as String;
         return responseDecoded2;
       }
+    } on SocketException {
+      _logger.e("Soccket Exception");
+      return connectionError;
     } catch (e) {
       _logger.e(e);
       return generalError;
