@@ -25,6 +25,7 @@ class _LoginOpendayState extends State<LoginOpendayPage>
     with AutomaticKeepAliveClientMixin {
   final _loginFormkey = GlobalKey<FormState>();
 
+  bool _hidePassword = true;
   bool _loginError = false;
   bool _isLoading = false;
 
@@ -43,6 +44,7 @@ class _LoginOpendayState extends State<LoginOpendayPage>
       TextFormField(
         autovalidateMode: autovalidateMode,
         controller: widget.userNameController,
+        textAlignVertical: TextAlignVertical.top,
         decoration: IscteTheme.buildInputDecoration(
             hint: "Username", errorText: _errorText),
         textInputAction: TextInputAction.next,
@@ -52,10 +54,27 @@ class _LoginOpendayState extends State<LoginOpendayPage>
       ),
       TextFormField(
         autovalidateMode: autovalidateMode,
-        obscureText: true,
+        obscureText: _hidePassword,
         controller: widget.passwordController,
+        textAlignVertical: TextAlignVertical.center,
         decoration: IscteTheme.buildInputDecoration(
-            hint: "Password", errorText: _errorText),
+          hint: "Password",
+          errorText: _errorText,
+          suffixIcon: IconButton(
+            onPressed: () {
+              setState(() {
+                _hidePassword = !_hidePassword;
+              });
+            },
+            icon: AnimatedSwitcher(
+              duration: Duration(milliseconds: 500),
+              child: Icon(
+                _hidePassword ? Icons.visibility : Icons.visibility_off,
+                key: UniqueKey(),
+              ),
+            ),
+          ),
+        ),
         textInputAction: TextInputAction.done,
         validator: (value) {
           return loginValidator(value);
