@@ -9,11 +9,17 @@ import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 class OpenDayQRScanService {
   static final Logger _logger = Logger();
-  static final String wrongSpotError = "wrong_spot";
-  static final String generalError = "error";
-  static final String loginError = "not_logged_in";
+  static const String wrongSpotError = "Não podes aceder a este Spot ainda";
+  static const String generalError = "error";
+  static const String loginError = "not_logged_in";
+  static const String alreadyVisitedError = "Já visitaste este Spot";
+  static const String allVisited = "Parabéns, visitaste todos os Spots!";
+  static const String invalidQRError = "QRCode inválido";
+  static const String disabledQRError =
+      "Não existem QR Codes ativos de momento";
 
   static Future<String> spotRequest({Barcode? barcode}) async {
+    _logger.d("started request at ${DateTime.now()}");
     String? apiToken =
         await secureStorage.read(key: AuthService.backendApiKeyStorageLocation);
     if (apiToken == null) {
@@ -27,7 +33,7 @@ class OpenDayQRScanService {
 
       if (barcode == null) {
         request = await client.getUrl(
-            Uri.parse('${BackEndConstants.API_ADDRESS}/api/spots/permit}'));
+            Uri.parse('${BackEndConstants.API_ADDRESS}/api/spots/permit'));
       } else {
         request = await client.getUrl(Uri.parse(
             '${BackEndConstants.API_ADDRESS}/api/spots/${barcode.code}'));
@@ -39,14 +45,14 @@ class OpenDayQRScanService {
 
       var responseDecoded =
           jsonDecode(await response.transform(utf8.decoder).join());
-      if (response.statusCode == 200) {
-        _logger.d(responseDecoded);
-        String locationPhotoLink = responseDecoded["location_photo_link"];
-        if (locationPhotoLink != null) {
-          return locationPhotoLink;
-        } else {
-          return generalError;
-        }
+      _logger.d(responseDecoded);
+      if (responseDecoded["location_photo_link"] != null) {
+        _logger.d(
+            "${responseDecoded["location_photo_link"]} ${responseDecoded["description"]}");
+        return responseDecoded["location_photo_link"];
+      } else if (responseDecoded["message"] != null) {
+        var responseDecoded2 = responseDecoded["message"] as String;
+        return responseDecoded2;
       }
     } catch (e) {
       _logger.e(e);

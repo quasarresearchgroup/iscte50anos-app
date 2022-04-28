@@ -10,26 +10,30 @@ import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:iscte_spots/widgets/util/overlays.dart';
 import 'package:logger/logger.dart';
 
+import '../../services/openday/openday_notification_service.dart';
+
 class HomeOpenDay extends StatefulWidget {
   HomeOpenDay({Key? key}) : super(key: key);
   final Logger _logger = Logger();
 
   final Image originalImage =
       Image.asset('Resources/Img/Campus/campus-iscte-3.jpg');
-
+  final int scanSpotIndex = 1;
+  final int puzzleIndex = 0;
   @override
   State<HomeOpenDay> createState() => _HomeOpenDayState();
 }
 
 class _HomeOpenDayState extends State<HomeOpenDay>
     with SingleTickerProviderStateMixin {
-  late TabController tabController;
+  late TabController _tabController;
   Image? currentPuzzleImage;
   bool _loading = false;
   @override
   void initState() {
     super.initState();
-    tabController = TabController(length: 2, vsync: this);
+    _tabController =
+        TabController(initialIndex: widget.puzzleIndex, length: 2, vsync: this);
     setState(() {
       currentPuzzleImage = widget.originalImage;
     });
@@ -40,24 +44,42 @@ class _HomeOpenDayState extends State<HomeOpenDay>
     setState(() {
       _loading = true;
     });
-
     String currentPemit = await OpenDayQRScanService.spotRequest();
+    _changeCurrentImage(currentPemit);
     setState(() {
-      if (currentPemit != OpenDayQRScanService.generalError &&
-          currentPemit != OpenDayQRScanService.loginError &&
-          currentPemit != OpenDayQRScanService.wrongSpotError) {
-        currentPuzzleImage = Image.network(currentPemit);
-      } else {
-        widget._logger.d("scan error");
-      }
       _loading = false;
     });
   }
 
   void _changeCurrentImage(String imageLink) {
-    setState(() {
-      currentPuzzleImage = Image.network(imageLink);
-    });
+    widget._logger.d("changin imag: $imageLink");
+    if (imageLink == OpenDayQRScanService.generalError) {
+      OpenDayNotificationService.showErrorOverlay(context);
+      widget._logger.d("generalError : $imageLink");
+    } else if (imageLink == OpenDayQRScanService.loginError) {
+      OpenDayNotificationService.showLoginErrorOverlay(context);
+      widget._logger.d("loginError : $imageLink");
+    } else if (imageLink == OpenDayQRScanService.wrongSpotError) {
+      OpenDayNotificationService.showWrongSpotErrorOverlay(context);
+      widget._logger.d("wrongSpotError : $imageLink");
+    } else if (imageLink == OpenDayQRScanService.alreadyVisitedError) {
+      OpenDayNotificationService.showAlreadeyVisitedOverlay(context);
+      widget._logger.d("wrongSpotError : $imageLink");
+    } else if (imageLink == OpenDayQRScanService.allVisited) {
+      OpenDayNotificationService.showAllVisitedOverlay(context);
+      widget._logger.d("wrongSpotError : $imageLink");
+    } else if (imageLink == OpenDayQRScanService.invalidQRError) {
+      OpenDayNotificationService.showInvalidErrorOverlay(context);
+      widget._logger.d("wrongSpotError : $imageLink");
+    } else if (imageLink == OpenDayQRScanService.disabledQRError) {
+      OpenDayNotificationService.showDisabledErrorOverlay(context);
+      widget._logger.d("wrongSpotError : $imageLink");
+    } else {
+      setState(() {
+        currentPuzzleImage = Image.network(imageLink);
+      });
+      _tabController.animateTo(widget.puzzleIndex);
+    }
   }
 
   @override
@@ -82,12 +104,12 @@ class _HomeOpenDayState extends State<HomeOpenDay>
         ],
       ),
       bottomNavigationBar: MyBottomBar(
-        tabController: tabController,
+        tabController: _tabController,
         initialIndex: 0,
       ),
       body: TabBarView(
         physics: const NeverScrollableScrollPhysics(),
-        controller: tabController,
+        controller: _tabController,
         children: [
           _loading
               ? const LoadingWidget()

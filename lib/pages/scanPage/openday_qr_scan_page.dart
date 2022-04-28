@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:iscte_spots/pages/scanPage/qr_scan_camera_controls.dart';
-import 'package:iscte_spots/services/openday/openday_qr_scan_service.dart';
 import 'package:logger/logger.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:synchronized/synchronized.dart';
+
+import '../../services/openday/openday_qr_scan_service.dart';
 
 class QRScanPageOpenDay extends StatefulWidget {
   QRScanPageOpenDay({Key? key, required this.changeImage}) : super(key: key);
-  final Logger logger = Logger();
+  final Logger _logger = Logger();
   final void Function(String imageLink) changeImage;
   @override
   State<StatefulWidget> createState() => QRScanPageOpenDayState();
@@ -14,12 +16,12 @@ class QRScanPageOpenDay extends StatefulWidget {
 
 class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
   final qrKey = GlobalKey(debugLabel: 'QR');
-  final Logger _logger = Logger();
   QRViewController? controller;
   Decoration controlsDecoration = BoxDecoration(
       borderRadius: BorderRadius.circular(8), color: Colors.white24);
-  Barcode? barcode;
-  Barcode? barcodeold;
+
+  int _lastScan = 0;
+  final int _scanCooldown = 1000;
   String? qrScanResult;
 
   @override
@@ -43,13 +45,11 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
     setState(() => this.controller = controller);
 
     controller.scannedDataStream
-        .listen((scanData) => setState(() => barcode = scanData));
+        .listen((scanData) => checkLaunchBarcode(context, scanData));
   }
 
   @override
   Widget build(BuildContext context) {
-    checkLaunchBarcode(context);
-
     return Stack(
       alignment: Alignment.center,
       children: <Widget>[
@@ -63,14 +63,19 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
     );
   }
 
-  Future<void> checkLaunchBarcode(BuildContext context) async {
-    if (barcode != null && barcode != barcodeold) {
-      //setState(() => barcodeold = barcode);
-      barcodeold = barcode;
-      String spotRequest =
-          await OpenDayQRScanService.spotRequest(barcode: barcode!);
-      widget.changeImage(spotRequest);
-    }
+  void checkLaunchBarcode(BuildContext context, Barcode barcode) {
+    var lock = Lock();
+
+    lock.synchronized(() async {
+      int now = DateTime.now().millisecondsSinceEpoch;
+      if (now - _lastScan >= _scanCooldown) {
+        widget._logger.d("scanned new code");
+        _lastScan = now;
+        String spotRequest =
+            await OpenDayQRScanService.spotRequest(barcode: barcode);
+        widget.changeImage(spotRequest);
+      }
+    });
   }
 
   Widget myQRView(BuildContext context) => QRView(
