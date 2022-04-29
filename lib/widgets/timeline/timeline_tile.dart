@@ -3,7 +3,6 @@ import 'package:iscte_spots/widgets/timeline/timeline_details_page.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
 import '../../models/content.dart';
-import '../nav_drawer/page_routes.dart';
 
 class EventTimelineTile extends StatefulWidget {
   const EventTimelineTile({
@@ -54,13 +53,11 @@ class _EventTimelineTileState extends State<EventTimelineTile> {
         highlightColor: color2,
         enableFeedback: true,
         customBorder: const StadiumBorder(),
-        onTap: () => Navigator.push(
-            context,
-            PageRoutes.createRoute(
-              widget: TimeLineDetailsPage(
-                data: widget.data,
-              ),
-            )),
+        onTap: () => Navigator.pushNamed(
+          context,
+          TimeLineDetailsPage.pageRoute,
+          arguments: widget.data,
+        ),
         child: TimelineTile(
           beforeLineStyle: widget.lineStyle,
           afterLineStyle: widget.lineStyle,

@@ -4,7 +4,9 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:iscte_spots/models/auth/login_form_result.dart';
+import 'package:iscte_spots/pages/auth/auth_page.dart';
 import 'package:iscte_spots/services/auth/auth_service.dart';
+import 'package:iscte_spots/services/onboard_service.dart';
 import 'package:iscte_spots/widgets/util/constants.dart';
 import 'package:logger/logger.dart';
 
@@ -64,6 +66,8 @@ class OpenDayLoginService {
 
   static Future<void> logOut(BuildContext context) async {
     await AuthService.deleteUserCredentials();
+    await OnboadingService.removeOnboard();
+    Navigator.of(context).pushReplacementNamed(AuthPage.pageRoute);
     return;
   }
 }

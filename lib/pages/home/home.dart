@@ -21,6 +21,8 @@ import 'package:motion_sensors/motion_sensors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Home extends StatefulWidget {
+  static const pageRoute = "/home";
+
   Home({
     Key? key,
   }) : super(key: key);

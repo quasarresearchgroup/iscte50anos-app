@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:iscte_spots/pages/splash.dart';
+import 'package:iscte_spots/widgets/nav_drawer/page_routes.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 
 const int puzzlePageIndex = 0;
@@ -33,6 +34,34 @@ class MyApp extends StatelessWidget {
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       home: const SplashScreen(),
+      onGenerateRoute: (settings) {
+        Widget widget = PageRouteExtension.factory(settings.name ?? "")
+            .widget(settings.arguments);
+        //var buildPageAsync = await _buildPageAsync(page: widget);
+        return PageRouteBuilder(
+          transitionDuration: const Duration(seconds: 1),
+          maintainState: true,
+          pageBuilder: (context, animation, secondaryAnimation) => widget,
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            Animatable<Offset> tween =
+                Tween(begin: const Offset(1.0, 0.0), end: Offset.zero).chain(
+              CurveTween(curve: Curves.ease),
+            );
+            return SlideTransition(
+              position: animation.drive(tween),
+              child: child,
+            );
+          },
+        );
+      },
+    );
+  }
+
+  static Future<Widget> _buildPageAsync({required Widget page}) async {
+    return Future.microtask(
+      () {
+        return page;
+      },
     );
   }
 }

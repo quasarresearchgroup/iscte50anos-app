@@ -1,5 +1,84 @@
 import 'package:flutter/widgets.dart';
+import 'package:iscte_spots/models/content.dart';
+import 'package:iscte_spots/pages/auth/auth_page.dart';
+import 'package:iscte_spots/pages/flickr/flickr_page.dart';
+import 'package:iscte_spots/pages/home/home.dart';
+import 'package:iscte_spots/pages/home/openday_home.dart';
+import 'package:iscte_spots/pages/leaderboard/leaderboard_screen.dart';
+import 'package:iscte_spots/pages/profile/profile_screen.dart';
+import 'package:iscte_spots/pages/scanned_list_page.dart';
+import 'package:iscte_spots/pages/timeline_page.dart';
+import 'package:iscte_spots/widgets/splashScreen/shake.dart';
+import 'package:iscte_spots/widgets/timeline/timeline_details_page.dart';
 
+enum PageRoute {
+  HOME, //Home.pageRoute
+  HOMEOPENDAY, //HomeOpenDay.pageRoute
+  AUTH, //AuthPage.pageRoute
+  TIMELINE, //TimelinePage.pageRoute
+  TIMELINEDETAIL, //TimeLineDetailsPage.pageRoute
+  SHAKER, //Shaker.pageRoute
+  FLICKR, //FlickrPage.pageRoute
+  LEADERBOARD, //LeaderBoardPage.pageRoute
+  PROFILE, //ProfilePage.pageRoute
+  VISITED, //VisitedPagesPage.pageRoute
+}
+
+extension PageRouteExtension on PageRoute {
+  static PageRoute factory(String route) {
+    switch (route) {
+      case Home.pageRoute:
+        return PageRoute.HOME;
+      case HomeOpenDay.pageRoute:
+        return PageRoute.HOMEOPENDAY;
+      case AuthPage.pageRoute:
+        return PageRoute.AUTH;
+      case TimelinePage.pageRoute:
+        return PageRoute.TIMELINE;
+      case TimeLineDetailsPage.pageRoute:
+        return PageRoute.TIMELINEDETAIL;
+      case Shaker.pageRoute:
+        return PageRoute.SHAKER;
+      case FlickrPage.pageRoute:
+        return PageRoute.FLICKR;
+      case LeaderBoardPage.pageRoute:
+        return PageRoute.LEADERBOARD;
+      case ProfilePage.pageRoute:
+        return PageRoute.PROFILE;
+      case VisitedPagesPage.pageRoute:
+        return PageRoute.VISITED;
+      default:
+        return PageRoute.HOMEOPENDAY;
+    }
+  }
+
+  Widget widget(Object? argument) {
+    switch (this) {
+      case PageRoute.HOME:
+        return Home();
+      case PageRoute.HOMEOPENDAY:
+        return HomeOpenDay();
+      case PageRoute.AUTH:
+        return AuthPage();
+      case PageRoute.TIMELINE:
+        return TimelinePage();
+      case PageRoute.SHAKER:
+        return Shaker();
+      case PageRoute.LEADERBOARD:
+        return LeaderBoardPage();
+      case PageRoute.PROFILE:
+        return ProfilePage();
+      case PageRoute.VISITED:
+        return VisitedPagesPage();
+      case PageRoute.FLICKR:
+        return FlickrPage();
+      case PageRoute.TIMELINEDETAIL:
+        return TimeLineDetailsPage(data: argument as Content);
+    }
+  }
+}
+
+/*
 class PageRoutes {
   static Route createRoute({
     required Widget widget,
@@ -52,3 +131,4 @@ class PageRoutes {
     );
   }
 }
+*/

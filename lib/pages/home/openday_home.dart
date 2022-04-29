@@ -16,6 +16,8 @@ import 'package:logger/logger.dart';
 import '../../services/openday/openday_notification_service.dart';
 
 class HomeOpenDay extends StatefulWidget {
+  static const pageRoute = "/homeOpenDay";
+
   HomeOpenDay({Key? key}) : super(key: key);
   final Logger _logger = Logger();
 

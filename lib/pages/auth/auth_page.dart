@@ -4,10 +4,11 @@ import 'package:iscte_spots/pages/auth/login/login_openday_page.dart';
 import 'package:iscte_spots/pages/auth/register/register_openday_page.dart';
 import 'package:iscte_spots/pages/home/openday_home.dart';
 import 'package:iscte_spots/services/auth/openday_login_service.dart';
-import 'package:iscte_spots/widgets/nav_drawer/page_routes.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
 
 class AuthPage extends StatefulWidget {
+  static const pageRoute = "/auth";
+
   const AuthPage({Key? key}) : super(key: key);
 
   @override
@@ -57,7 +58,8 @@ class _AuthPageState extends State<AuthPage>
     setState(() {
       _isLoggedIn = true;
     });
-    PageRoutes.animateToPage(context, page: HomeOpenDay());
+    //PageRoutes.animateToPage(context, page: HomeOpenDay());
+    Navigator.pushNamed(context, HomeOpenDay.pageRoute);
   }
 
   void changeToSignUp() {
