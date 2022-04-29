@@ -63,7 +63,7 @@ class OpenDayLoginService {
   }
 
   static Future<void> logOut(BuildContext context) async {
-    AuthService.deleteUserCredentials();
+    await AuthService.deleteUserCredentials();
     return;
   }
 }
