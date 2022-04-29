@@ -3,6 +3,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/models/content.dart';
 
 class TimeLineDetailsPage extends StatelessWidget {
+  static const pageRoute = "/timeline/detail";
+
   const TimeLineDetailsPage({
     required this.data,
     Key? key,

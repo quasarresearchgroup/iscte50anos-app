@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/pages/home/home.dart';
-import 'package:iscte_spots/widgets/nav_drawer/page_routes.dart';
 import 'package:logger/logger.dart';
 
 class Result extends StatelessWidget {
@@ -57,12 +56,15 @@ class Result extends StatelessWidget {
               AppLocalizations.of(context)!.back,
             ), //Te
             onPressed: () {
+              /*
               Navigator.pushReplacement(
                 context,
                 PageRoutes.createRoute(
                   widget: Home(),
                 ),
-              );
+              );*/
+
+              Navigator.pushReplacementNamed(context, Home.pageRoute);
             },
           ), //FlatButton
         ], //<Widget>[]

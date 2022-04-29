@@ -4,8 +4,6 @@ import 'package:iscte_spots/pages/auth/auth_page.dart';
 import 'package:iscte_spots/services/onboard_service.dart';
 import 'package:logger/logger.dart';
 
-import '../../widgets/nav_drawer/page_routes.dart';
-
 class GetStartedOnboard extends StatelessWidget {
   GetStartedOnboard({
     Key? key,
@@ -19,7 +17,8 @@ class GetStartedOnboard extends StatelessWidget {
       onTap: () {
         _logger.i('Tapped on Get started');
         OnboadingService.storeOnboard();
-        PageRoutes.animateToPage(context, page: const AuthPage());
+        //PageRoutes.animateToPage(context, page: const AuthPage());
+        Navigator.pushNamed(context, AuthPage.pageRoute);
       },
       child: SizedBox.expand(
         child: Container(
