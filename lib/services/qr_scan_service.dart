@@ -4,7 +4,7 @@ import 'package:html/parser.dart' as parser;
 import 'package:http/http.dart' as http;
 import 'package:iscte_spots/models/database/tables/database_page_table.dart';
 import 'package:iscte_spots/models/visited_url.dart';
-import 'package:iscte_spots/pages/scanPage/qr_scan_page.dart';
+import 'package:iscte_spots/pages/home/scanPage/qr_scan_page.dart';
 import 'package:logger/logger.dart';
 import 'package:synchronized/synchronized.dart';
 

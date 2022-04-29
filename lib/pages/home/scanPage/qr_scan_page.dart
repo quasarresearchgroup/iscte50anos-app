@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:iscte_spots/helper/helper_methods.dart';
-import 'package:iscte_spots/pages/scanPage/qr_scan_camera_controls.dart';
+import 'package:iscte_spots/pages/home/scanPage/qr_scan_camera_controls.dart';
 import 'package:iscte_spots/services/qr_scan_service.dart';
 import 'package:iscte_spots/widgets/util/overlays.dart';
 import 'package:logger/logger.dart';

@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:iscte_spots/widgets/puzzle/puzzle_piece_clipper.dart';
+import 'package:iscte_spots/pages/home/puzzle/puzzle_piece_clipper.dart';
 
 class ClippedPieceWidget extends StatelessWidget {
   const ClippedPieceWidget({

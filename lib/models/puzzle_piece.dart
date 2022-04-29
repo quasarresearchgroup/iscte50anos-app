@@ -1,5 +1,5 @@
 import 'package:iscte_spots/models/database/tables/database_puzzle_piece_table.dart';
-import 'package:iscte_spots/widgets/puzzle/puzzle_piece_widget.dart';
+import 'package:iscte_spots/pages/home/puzzle/puzzle_piece_widget.dart';
 
 class PuzzlePiece {
   PuzzlePiece({

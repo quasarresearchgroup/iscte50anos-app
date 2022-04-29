@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:iscte_spots/pages/scanPage/qr_scan_camera_controls.dart';
+import 'package:iscte_spots/pages/home/scanPage/qr_scan_camera_controls.dart';
+import 'package:iscte_spots/services/openday/openday_qr_scan_service.dart';
 import 'package:logger/logger.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:synchronized/synchronized.dart';
-
-import '../../services/openday/openday_qr_scan_service.dart';
 
 class QRScanPageOpenDay extends StatefulWidget {
   QRScanPageOpenDay({Key? key, required this.changeImage}) : super(key: key);
@@ -55,7 +54,7 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
       children: <Widget>[
         myQRView(context),
         Positioned(
-          top: 10,
+          bottom: MediaQuery.of(context).size.height * 0.2,
           child: QRControlButtons(
               controlsDecoration: controlsDecoration, controller: controller),
         ),
@@ -88,7 +87,7 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
       key: qrKey,
       onQRViewCreated: onQRViewCreated,
       overlay: QrScannerOverlayShape(
-          borderColor: Theme.of(context).colorScheme.secondary,
+          borderColor: Theme.of(context).primaryColor,
           borderWidth: 10,
           borderLength: 20,
           borderRadius: 10,

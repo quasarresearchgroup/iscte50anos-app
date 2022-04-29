@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:iscte_spots/helper/image_manipulation.dart';
 import 'package:iscte_spots/models/database/tables/database_puzzle_piece_table.dart';
 import 'package:iscte_spots/models/puzzle_piece.dart';
-import 'package:iscte_spots/widgets/puzzle/puzzle_piece_widget.dart';
+import 'package:iscte_spots/pages/home/puzzle/puzzle_piece_widget.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:logger/logger.dart';
 
