@@ -37,7 +37,7 @@ class DatabasePageTable {
     return pageList;
   }
 
-  static void add(VisitedURL page) async {
+  static Future<void> add(VisitedURL page) async {
     DatabaseHelper instance = DatabaseHelper.instance;
     Database db = await instance.database;
     db.query(table, where: '$columnContent = ?', whereArgs: [

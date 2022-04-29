@@ -1,12 +1,14 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:iscte_spots/models/auth/login_form_result.dart';
 import 'package:iscte_spots/services/auth/openday_login_service.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
+import 'package:logger/logger.dart';
 
 class LoginOpendayPage extends StatefulWidget {
+  final Logger _logger = Logger();
+
   LoginOpendayPage(
       {Key? key, required this.changeToSignUp, required this.loggingComplete})
       : super(key: key);
@@ -23,6 +25,7 @@ class _LoginOpendayState extends State<LoginOpendayPage>
     with AutomaticKeepAliveClientMixin {
   final _loginFormkey = GlobalKey<FormState>();
 
+  bool _hidePassword = true;
   bool _loginError = false;
   bool _isLoading = false;
 
@@ -41,6 +44,7 @@ class _LoginOpendayState extends State<LoginOpendayPage>
       TextFormField(
         autovalidateMode: autovalidateMode,
         controller: widget.userNameController,
+        textAlignVertical: TextAlignVertical.top,
         decoration: IscteTheme.buildInputDecoration(
             hint: "Username", errorText: _errorText),
         textInputAction: TextInputAction.next,
@@ -50,10 +54,27 @@ class _LoginOpendayState extends State<LoginOpendayPage>
       ),
       TextFormField(
         autovalidateMode: autovalidateMode,
-        obscureText: true,
+        obscureText: _hidePassword,
         controller: widget.passwordController,
+        textAlignVertical: TextAlignVertical.center,
         decoration: IscteTheme.buildInputDecoration(
-            hint: "Password", errorText: _errorText),
+          hint: "Password",
+          errorText: _errorText,
+          suffixIcon: IconButton(
+            onPressed: () {
+              setState(() {
+                _hidePassword = !_hidePassword;
+              });
+            },
+            icon: AnimatedSwitcher(
+              duration: Duration(milliseconds: 500),
+              child: Icon(
+                _hidePassword ? Icons.visibility : Icons.visibility_off,
+                key: UniqueKey(),
+              ),
+            ),
+          ),
+        ),
         textInputAction: TextInputAction.done,
         validator: (value) {
           return loginValidator(value);
@@ -65,25 +86,13 @@ class _LoginOpendayState extends State<LoginOpendayPage>
   List<Widget> generateFormButtons() {
     return [
       ElevatedButton(
+        style:
+            ElevatedButton.styleFrom(primary: Theme.of(context).primaryColor),
         child: const Text("Login"),
         onPressed: () async {
           await _loginAction();
         },
       ),
-      Center(
-        child: RichText(
-            text: TextSpan(text: "Dont have an account? ", children: [
-          TextSpan(
-              text: "Sign up!",
-              recognizer: TapGestureRecognizer()
-                ..onTap = () {
-                  widget.changeToSignUp();
-                },
-              style: TextStyle(
-                color: Theme.of(context).primaryColorLight,
-              ))
-        ])),
-      )
     ];
   }
 
@@ -119,11 +128,41 @@ class _LoginOpendayState extends State<LoginOpendayPage>
     super.build(context);
     return _isLoading
         ? const LoadingWidget()
-        : Form(
-            key: _loginFormkey,
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [...formFields, ...formButtons]),
+        : Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: Form(
+              key: _loginFormkey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Flexible(
+                    flex: 9,
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [...formFields, ...formButtons]),
+                  ),
+                  Flexible(
+                    flex: 1,
+                    child: Column(
+                      children: [
+                        Text("Dont have an account? "),
+                        ElevatedButton.icon(
+                            style: ElevatedButton.styleFrom(
+                                primary: Theme.of(context).primaryColor),
+                            label: Text("Sign up!"),
+                            icon: Icon(Icons.adaptive.arrow_forward),
+                            onPressed: () {
+                              widget._logger.d("change");
+                              widget.changeToSignUp();
+                            }),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
           );
   }
 

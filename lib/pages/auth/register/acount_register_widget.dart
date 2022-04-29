@@ -29,10 +29,12 @@ class AccountRegisterForm extends StatefulWidget {
 }
 
 class _AccountRegisterFormState extends State<AccountRegisterForm> {
+  bool _hidePassword = true;
+  bool _hidePasswordConfirm = true;
+
   @override
   Widget build(BuildContext context) {
-    List<TextFormField> formFields = generateFormFields();
-
+    List<Widget> formFields = generateFormFields();
     return Form(
       key: widget.formKey,
       child:
@@ -42,18 +44,19 @@ class _AccountRegisterFormState extends State<AccountRegisterForm> {
     );
   }
 
-  List<TextFormField> generateFormFields() {
+  List<Widget> generateFormFields() {
     AutovalidateMode autovalidateMode = AutovalidateMode.onUserInteraction;
     return [
       TextFormField(
         autovalidateMode: autovalidateMode,
         controller: widget.userNameController,
+        textAlignVertical: TextAlignVertical.top,
+        textInputAction: TextInputAction.next,
         decoration: IscteTheme.buildInputDecoration(
             hint: "userName",
             errorText: (widget.errorCode == RegistrationError.existingUsername)
                 ? 'Username already exists'
                 : null),
-        textInputAction: TextInputAction.next,
         validator: (value) {
           if (value == null || value.isEmpty) {
             return 'Please enter some text';
@@ -64,8 +67,9 @@ class _AccountRegisterFormState extends State<AccountRegisterForm> {
       TextFormField(
         autovalidateMode: autovalidateMode,
         controller: widget.nameController,
-        decoration: IscteTheme.buildInputDecoration(hint: "name"),
+        textAlignVertical: TextAlignVertical.top,
         textInputAction: TextInputAction.next,
+        decoration: IscteTheme.buildInputDecoration(hint: "name"),
         validator: (value) {
           if (value == null || value.isEmpty) {
             return 'Please enter some text';
@@ -76,8 +80,9 @@ class _AccountRegisterFormState extends State<AccountRegisterForm> {
       TextFormField(
         autovalidateMode: autovalidateMode,
         controller: widget.lastNameController,
-        decoration: IscteTheme.buildInputDecoration(hint: "last name"),
+        textAlignVertical: TextAlignVertical.top,
         textInputAction: TextInputAction.next,
+        decoration: IscteTheme.buildInputDecoration(hint: "last name"),
         validator: (value) {
           if (value == null || value.isEmpty) {
             return 'Please enter some text';
@@ -88,12 +93,13 @@ class _AccountRegisterFormState extends State<AccountRegisterForm> {
       TextFormField(
         autovalidateMode: autovalidateMode,
         controller: widget.emailController,
+        textAlignVertical: TextAlignVertical.top,
+        textInputAction: TextInputAction.next,
         decoration: IscteTheme.buildInputDecoration(
             hint: "email",
             errorText: (widget.errorCode == RegistrationError.existingEmail)
                 ? 'Email already exists'
                 : null),
-        textInputAction: TextInputAction.next,
         validator: (value) {
           if (value == null || value.isEmpty) {
             return 'Please enter some text';
@@ -109,13 +115,28 @@ class _AccountRegisterFormState extends State<AccountRegisterForm> {
       TextFormField(
         autovalidateMode: autovalidateMode,
         controller: widget.passwordController,
-        obscureText: true,
+        obscureText: _hidePassword,
+        textAlignVertical: TextAlignVertical.center,
+        textInputAction: TextInputAction.next,
         decoration: IscteTheme.buildInputDecoration(
             hint: "password",
             errorText: (widget.errorCode == RegistrationError.passwordNotMatch)
                 ? 'Passwords must match'
-                : null),
-        textInputAction: TextInputAction.next,
+                : null,
+            suffixIcon: IconButton(
+              onPressed: () {
+                setState(() {
+                  _hidePassword = !_hidePassword;
+                });
+              },
+              icon: AnimatedSwitcher(
+                duration: Duration(milliseconds: 500),
+                child: Icon(
+                  _hidePassword ? Icons.visibility : Icons.visibility_off,
+                  key: UniqueKey(),
+                ),
+              ),
+            )),
         validator: (value) {
           if (value == null || value.isEmpty) {
             return 'Please enter some text';
@@ -126,13 +147,33 @@ class _AccountRegisterFormState extends State<AccountRegisterForm> {
       TextFormField(
         autovalidateMode: autovalidateMode,
         controller: widget.passwordConfirmationController,
-        obscureText: true,
+        obscureText: _hidePasswordConfirm,
+        textInputAction: TextInputAction.done,
+        textAlignVertical: TextAlignVertical.center,
         decoration: IscteTheme.buildInputDecoration(
             hint: "confirm password",
             errorText: (widget.errorCode == RegistrationError.passwordNotMatch)
                 ? 'Passwords must match'
-                : null),
-        textInputAction: TextInputAction.done,
+                : null,
+            suffixIcon: InkWell(
+              onTap: () {
+                setState(() {
+                  _hidePasswordConfirm = !_hidePasswordConfirm;
+                });
+              },
+              child: Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: AnimatedSwitcher(
+                  duration: Duration(milliseconds: 500),
+                  child: Icon(
+                    _hidePasswordConfirm
+                        ? Icons.visibility
+                        : Icons.visibility_off,
+                    key: UniqueKey(),
+                  ),
+                ),
+              ),
+            )),
         validator: (value) {
           if (value == null || value.isEmpty) {
             return 'Please enter some text';

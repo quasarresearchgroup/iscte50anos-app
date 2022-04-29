@@ -54,7 +54,7 @@ class IscteTheme {
   }
 
   static InputDecoration buildInputDecoration(
-      {required String hint, String? errorText}) {
+      {required String hint, String? errorText, Widget? suffixIcon}) {
     return InputDecoration(
       contentPadding: const EdgeInsets.only(left: 25, right: 25),
       border: UnderlineInputBorder(
@@ -62,6 +62,8 @@ class IscteTheme {
           borderRadius: BorderRadius.all(IscteTheme.appbarRadius)),
       hintText: hint,
       errorText: errorText,
+      suffixIcon: suffixIcon,
+      alignLabelWithHint: true,
     );
   }
 }

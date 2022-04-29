@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:iscte_spots/pages/auth/login/login_openday_page.dart';
 import 'package:iscte_spots/pages/auth/register/register_openday_page.dart';
-import 'package:iscte_spots/pages/home.dart';
+import 'package:iscte_spots/pages/home/openday_home.dart';
 import 'package:iscte_spots/services/auth/openday_login_service.dart';
 import 'package:iscte_spots/widgets/nav_drawer/page_routes.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
@@ -14,22 +14,31 @@ class AuthPage extends StatefulWidget {
   State<AuthPage> createState() => _AuthPageState();
 }
 
-class _AuthPageState extends State<AuthPage> {
-  late Widget _chosenWidget;
+class _AuthPageState extends State<AuthPage>
+    with SingleTickerProviderStateMixin {
   bool _isLoggedIn = true;
   bool _isLoading = true;
   late List<StatefulWidget> _pages;
+  final int _loginIndex = 0;
+  final int _registerIndex = 1;
+  late TabController _tabController;
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
     super.initState();
     _pages = [
+      LoginOpendayPage(
+          changeToSignUp: changeToSignUp, loggingComplete: loggingComplete),
       RegisterOpenDayPage(
           changeToLogIn: changeToLogIn, loggingComplete: loggingComplete),
-      LoginOpendayPage(
-          changeToSignUp: changeToSignUp, loggingComplete: loggingComplete)
     ];
-    _chosenWidget = _pages[0];
+    _tabController = TabController(length: _pages.length, vsync: this);
     initFunc();
   }
 
@@ -48,35 +57,32 @@ class _AuthPageState extends State<AuthPage> {
     setState(() {
       _isLoggedIn = true;
     });
-    PageRoutes.animateToPage(context, page: Home());
+    PageRoutes.animateToPage(context, page: HomeOpenDay());
   }
 
   void changeToSignUp() {
-    setState(() {
-      _chosenWidget = _pages[0];
-    });
+    _tabController.animateTo(_registerIndex);
   }
 
   void changeToLogIn() {
-    setState(() {
-      _chosenWidget = _pages[1];
-    });
+    _tabController.animateTo(_loginIndex);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: AnimatedSwitcher(
-          duration: const Duration(seconds: 1),
-          child: _isLoading
-              ? const LoadingWidget()
-              : _isLoggedIn
-                  ? const Center(
-                      child: FlutterLogo(
-                      size: 300,
-                    ))
-                  : _chosenWidget),
+      body: _isLoading
+          ? const LoadingWidget()
+          : _isLoggedIn
+              ? const Center(
+                  child: FlutterLogo(
+                  size: 300,
+                ))
+              : TabBarView(
+                  controller: _tabController,
+                  physics: NeverScrollableScrollPhysics(),
+                  children: _pages),
     );
   }
 }

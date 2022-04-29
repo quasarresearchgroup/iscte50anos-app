@@ -4,16 +4,15 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:iscte_spots/pages/auth/auth_page.dart';
 import 'package:iscte_spots/pages/flickr/flickr_page.dart';
 import 'package:iscte_spots/pages/leaderboard/leaderboard_screen.dart';
+import 'package:iscte_spots/pages/onboarding/onboarding_page.dart';
 import 'package:iscte_spots/pages/profile/profile_screen.dart';
-import 'package:iscte_spots/pages/quiz/quiz_page.dart';
-import 'package:iscte_spots/pages/scanned_list_page.dart';
 import 'package:iscte_spots/pages/timeline_page.dart';
 import 'package:iscte_spots/services/auth/openday_login_service.dart';
 import 'package:iscte_spots/widgets/nav_drawer/page_routes.dart';
 import 'package:iscte_spots/widgets/splashScreen/shake.dart';
 
-class NavigationDrawer extends StatelessWidget {
-  const NavigationDrawer({
+class NavigationDrawerOpenDay extends StatelessWidget {
+  const NavigationDrawerOpenDay({
     Key? key,
   }) : super(key: key);
 
@@ -25,20 +24,6 @@ class NavigationDrawer extends StatelessWidget {
         title: Text(AppLocalizations.of(context)!.timelineScreen),
         onTap: () {
           PageRoutes.animateToPage(context, page: TimelinePage());
-        },
-      ),
-      ListTile(
-        leading: const Icon(Icons.web_sharp),
-        title: Text(AppLocalizations.of(context)!.visitedPagesScreen),
-        onTap: () {
-          PageRoutes.animateToPage(context, page: const VisitedPagesPage());
-        },
-      ),
-      ListTile(
-        leading: const Icon(Icons.help),
-        title: Text(AppLocalizations.of(context)!.quizScreen),
-        onTap: () {
-          PageRoutes.animateToPage(context, page: QuizPage());
         },
       ),
       ListTile(
@@ -62,16 +47,16 @@ class NavigationDrawer extends StatelessWidget {
           PageRoutes.animateToPage(context, page: const LeaderBoardPage());
         },
       ),
-      ListTile(
-        leading: const Icon(Icons.person),
-        title: Text(AppLocalizations.of(context)!.profileScreen),
-        onTap: () {
-          PageRoutes.animateToPage(context, page: ProfilePage());
-        },
-      ),
       ExpansionTile(
         title: const Text("Account"),
         children: [
+          ListTile(
+            leading: Icon(Icons.person),
+            title: Text(AppLocalizations.of(context)!.profileScreen),
+            onTap: () async {
+              PageRoutes.animateToPage(context, page: ProfilePage());
+            },
+          ),
           ListTile(
             leading: const Icon(Icons.settings),
             title: Text(AppLocalizations.of(context)!.settingsScreen),
@@ -85,6 +70,13 @@ class NavigationDrawer extends StatelessWidget {
               PageRoutes.animateToPage(context, page: AuthPage());
             },
           ),
+          ListTile(
+            leading: const Icon(Icons.departure_board),
+            title: const Text('Onboarding'),
+            onTap: () {
+              PageRoutes.animateToPage(context, page: OnboardingPage());
+            },
+          )
         ],
       ),
     ];

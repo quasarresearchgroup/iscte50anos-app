@@ -15,18 +15,15 @@ class MyBottomBar extends StatefulWidget {
 }
 
 class _MyBottomBarState extends State<MyBottomBar> {
-  late int selectedIndex;
   @override
   void initState() {
     super.initState();
-    selectedIndex = widget.initialIndex;
   }
 
   void changePage(int index) {
-    if (index != selectedIndex) {
+    if (index != widget.tabController.index) {
       setState(() {
         widget.tabController.animateTo(index);
-        selectedIndex = index;
       });
     }
   }
@@ -39,7 +36,7 @@ class _MyBottomBarState extends State<MyBottomBar> {
         topRight: IscteTheme.appbarRadius,
       ),
       child: BottomNavigationBar(
-        currentIndex: selectedIndex,
+        currentIndex: widget.tabController.index,
         type: BottomNavigationBarType.shifting,
         selectedItemColor: Theme.of(context).selectedRowColor,
         unselectedItemColor: Theme.of(context).unselectedWidgetColor,
