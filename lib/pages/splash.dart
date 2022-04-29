@@ -28,7 +28,7 @@ class _SplashScreenState extends State<SplashScreen> {
     return _isLoggedIn
         ? HomeOpenDay()
         : _isOnboarded
-            ? const AuthPage()
+            ? AuthPage()
             : OnboardingPage();
   }
 

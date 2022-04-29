@@ -11,15 +11,19 @@ import 'package:lottie/lottie.dart';
 import 'acount_register_widget.dart';
 
 class RegisterOpenDayPage extends StatefulWidget {
-  RegisterOpenDayPage(
-      {Key? key, required this.changeToLogIn, required this.loggingComplete})
-      : super(key: key);
+  RegisterOpenDayPage({
+    Key? key,
+    required this.changeToLogIn,
+    required this.loggingComplete,
+    required this.animatedSwitcherDuration,
+  }) : super(key: key);
 
   @override
   State<RegisterOpenDayPage> createState() => _RegisterOpenDayPageState();
   final Logger _logger = Logger();
   void Function() changeToLogIn;
   final void Function() loggingComplete;
+  final Duration animatedSwitcherDuration;
 }
 
 class _RegisterOpenDayPageState extends State<RegisterOpenDayPage>
@@ -160,7 +164,7 @@ class _RegisterOpenDayPageState extends State<RegisterOpenDayPage>
               ),
         ),
         child: AnimatedSwitcher(
-          duration: const Duration(seconds: 1),
+          duration: widget.animatedSwitcherDuration,
           child: _isLodading
               ? const LoadingWidget()
               : Padding(

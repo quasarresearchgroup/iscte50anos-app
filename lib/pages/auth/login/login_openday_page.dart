@@ -9,9 +9,12 @@ import 'package:logger/logger.dart';
 class LoginOpendayPage extends StatefulWidget {
   final Logger _logger = Logger();
 
-  LoginOpendayPage(
-      {Key? key, required this.changeToSignUp, required this.loggingComplete})
-      : super(key: key);
+  LoginOpendayPage({
+    Key? key,
+    required this.changeToSignUp,
+    required this.loggingComplete,
+    required this.animatedSwitcherDuration,
+  }) : super(key: key);
 
   @override
   State<LoginOpendayPage> createState() => _LoginOpendayState();
@@ -19,6 +22,7 @@ class LoginOpendayPage extends StatefulWidget {
   final TextEditingController passwordController = TextEditingController();
   final void Function() loggingComplete;
   final void Function() changeToSignUp;
+  final Duration animatedSwitcherDuration;
 }
 
 class _LoginOpendayState extends State<LoginOpendayPage>
@@ -126,44 +130,47 @@ class _LoginOpendayState extends State<LoginOpendayPage>
     List<Widget> formFields = generateFormFields();
     List<Widget> formButtons = generateFormButtons();
     super.build(context);
-    return _isLoading
-        ? const LoadingWidget()
-        : Padding(
-            padding: const EdgeInsets.only(bottom: 10),
-            child: Form(
-              key: _loginFormkey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                //mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Flexible(
-                    flex: 9,
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [...formFields, ...formButtons]),
-                  ),
-                  Flexible(
-                    flex: 1,
-                    child: Column(
-                      children: [
-                        Text("Dont have an account? "),
-                        ElevatedButton.icon(
-                            style: ElevatedButton.styleFrom(
-                                primary: Theme.of(context).primaryColor),
-                            label: Text("Sign up!"),
-                            icon: Icon(Icons.adaptive.arrow_forward),
-                            onPressed: () {
-                              widget._logger.d("change");
-                              widget.changeToSignUp();
-                            }),
-                      ],
+    return AnimatedSwitcher(
+      duration: widget.animatedSwitcherDuration,
+      child: _isLoading
+          ? const LoadingWidget()
+          : Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: Form(
+                key: _loginFormkey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Flexible(
+                      flex: 9,
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [...formFields, ...formButtons]),
                     ),
-                  ),
-                ],
+                    Flexible(
+                      flex: 1,
+                      child: Column(
+                        children: [
+                          Text("Dont have an account? "),
+                          ElevatedButton.icon(
+                              style: ElevatedButton.styleFrom(
+                                  primary: Theme.of(context).primaryColor),
+                              label: Text("Sign up!"),
+                              icon: Icon(Icons.adaptive.arrow_forward),
+                              onPressed: () {
+                                widget._logger.d("change");
+                                widget.changeToSignUp();
+                              }),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-          );
+    );
   }
 
   @override
