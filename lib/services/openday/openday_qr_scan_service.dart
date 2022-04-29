@@ -1,11 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:iscte_spots/pages/profile/profile_screen.dart';
 import 'package:iscte_spots/services/auth/auth_service.dart';
 import 'package:iscte_spots/widgets/util/constants.dart';
 import 'package:logger/logger.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
+
+import 'openday_notification_service.dart';
 
 class OpenDayQRScanService {
   static final Logger _logger = Logger();
@@ -28,6 +31,66 @@ class OpenDayQRScanService {
         string == wrongSpotError ||
         string == alreadyVisitedError ||
         string == allVisited;
+  }
+
+  static Future<String?> requestRouter(
+      BuildContext context, String response) async {
+    switch (response) {
+      case OpenDayQRScanService.generalError:
+        {
+          OpenDayNotificationService.showErrorOverlay(context);
+          _logger.d("generalError : $response");
+        }
+        break;
+      case OpenDayQRScanService.connectionError:
+        {
+          OpenDayNotificationService.showConnectionErrorOverlay(context);
+          _logger.d("connectionError : $response");
+        }
+        break;
+      case OpenDayQRScanService.loginError:
+        {
+          OpenDayNotificationService.showLoginErrorOverlay(context);
+          _logger.d("loginError : $response");
+        }
+        break;
+      case OpenDayQRScanService.wrongSpotError:
+        {
+          OpenDayNotificationService.showWrongSpotErrorOverlay(context);
+          _logger.d("wrongSpotError : $response");
+        }
+        break;
+      case OpenDayQRScanService.alreadyVisitedError:
+        {
+          OpenDayNotificationService.showAlreadeyVisitedOverlay(context);
+          _logger.d("alreadyVisitedError : $response");
+        }
+        break;
+      case OpenDayQRScanService.allVisited:
+        {
+          OpenDayNotificationService.showAllVisitedOverlay(context);
+          _logger.d("allVisited : $response");
+        }
+        break;
+      case OpenDayQRScanService.invalidQRError:
+        {
+          OpenDayNotificationService.showInvalidErrorOverlay(context);
+          _logger.d("invalidQRError : $response");
+        }
+        break;
+      case OpenDayQRScanService.disabledQRError:
+        {
+          OpenDayNotificationService.showDisabledErrorOverlay(context);
+          _logger.d("disabledQRError : $response");
+        }
+        break;
+      default:
+        {
+          await OpenDayNotificationService.showNewSpotFoundOverlay(context);
+          _logger.d("changed image: $response");
+          return response;
+        }
+    }
   }
 
   static Future<String> spotRequest({Barcode? barcode}) async {

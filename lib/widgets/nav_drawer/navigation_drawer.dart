@@ -23,7 +23,7 @@ class NavigationDrawer extends StatelessWidget {
         title: Text(AppLocalizations.of(context)!.timelineScreen),
         onTap: () {
           //PageRoutes.animateToPage(context, page: TimelinePage());
-          Navigator.pushNamed(context, TimelinePage.pageRoute);
+          Navigator.popAndPushNamed(context, TimelinePage.pageRoute);
         },
       ),
       ListTile(
@@ -31,7 +31,7 @@ class NavigationDrawer extends StatelessWidget {
         title: Text(AppLocalizations.of(context)!.visitedPagesScreen),
         onTap: () {
           //PageRoutes.animateToPage(context, page: const VisitedPagesPage());
-          Navigator.pushNamed(context, VisitedPagesPage.pageRoute);
+          Navigator.popAndPushNamed(context, VisitedPagesPage.pageRoute);
         },
       ),
       ListTile(
@@ -39,7 +39,7 @@ class NavigationDrawer extends StatelessWidget {
         title: Text(AppLocalizations.of(context)!.quizScreen),
         onTap: () {
           //PageRoutes.animateToPage(context, page: QuizPage());
-          Navigator.pushNamed(context, QuizPage.pageRoute);
+          Navigator.popAndPushNamed(context, QuizPage.pageRoute);
         },
       ),
       ListTile(
@@ -47,7 +47,7 @@ class NavigationDrawer extends StatelessWidget {
         title: Text(AppLocalizations.of(context)!.shakerScreen),
         onTap: () {
           //PageRoutes.animateToPage(context, page: Shaker());
-          Navigator.pushNamed(context, Shaker.pageRoute);
+          Navigator.popAndPushNamed(context, Shaker.pageRoute);
         },
       ),
       ListTile(
@@ -55,7 +55,7 @@ class NavigationDrawer extends StatelessWidget {
         title: Text(AppLocalizations.of(context)!.flickrScreen),
         onTap: () {
           //PageRoutes.animateToPage(context, page: FlickrPage());
-          Navigator.pushNamed(context, FlickrPage.pageRoute);
+          Navigator.popAndPushNamed(context, FlickrPage.pageRoute);
         },
       ),
       ListTile(
@@ -63,7 +63,7 @@ class NavigationDrawer extends StatelessWidget {
         title: Text(AppLocalizations.of(context)!.leaderBoardScreen),
         onTap: () {
           //PageRoutes.animateToPage(context, page: const LeaderBoardPage());
-          Navigator.pushNamed(context, LeaderBoardPage.pageRoute);
+          Navigator.popAndPushNamed(context, LeaderBoardPage.pageRoute);
         },
       ),
       ListTile(
@@ -71,7 +71,7 @@ class NavigationDrawer extends StatelessWidget {
         title: Text(AppLocalizations.of(context)!.profileScreen),
         onTap: () {
           //PageRoutes.animateToPage(context, page: ProfilePage());
-          Navigator.pushNamed(context, ProfilePage.pageRoute);
+          Navigator.popAndPushNamed(context, ProfilePage.pageRoute);
         },
       ),
       ExpansionTile(

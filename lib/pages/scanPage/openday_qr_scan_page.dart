@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:iscte_spots/pages/scanPage/qr_scan_camera_controls.dart';
-import 'package:iscte_spots/services/openday/openday_notification_service.dart';
 import 'package:logger/logger.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:synchronized/synchronized.dart';
@@ -67,72 +66,22 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
   void checkLaunchBarcode(BuildContext context, Barcode barcode) {
     var lock = Lock();
 
-    lock.synchronized(() async {
-      int now = DateTime.now().millisecondsSinceEpoch;
-      if (now - _lastScan >= _scanCooldown) {
-        widget._logger.d("scanned new code");
-        _lastScan = now;
-        String spotRequest =
-            await OpenDayQRScanService.spotRequest(barcode: barcode);
-
-        switch (spotRequest) {
-          case OpenDayQRScanService.generalError:
-            {
-              OpenDayNotificationService.showErrorOverlay(context);
-              widget._logger.d("generalError : $spotRequest");
-            }
-            break;
-          case OpenDayQRScanService.connectionError:
-            {
-              OpenDayNotificationService.showConnectionErrorOverlay(context);
-              widget._logger.d("connectionError : $spotRequest");
-            }
-            break;
-          case OpenDayQRScanService.loginError:
-            {
-              OpenDayNotificationService.showLoginErrorOverlay(context);
-              widget._logger.d("loginError : $spotRequest");
-            }
-            break;
-          case OpenDayQRScanService.wrongSpotError:
-            {
-              OpenDayNotificationService.showWrongSpotErrorOverlay(context);
-              widget._logger.d("wrongSpotError : $spotRequest");
-            }
-            break;
-          case OpenDayQRScanService.alreadyVisitedError:
-            {
-              OpenDayNotificationService.showAlreadeyVisitedOverlay(context);
-              widget._logger.d("alreadyVisitedError : $spotRequest");
-            }
-            break;
-          case OpenDayQRScanService.allVisited:
-            {
-              OpenDayNotificationService.showAllVisitedOverlay(context);
-              widget._logger.d("allVisited : $spotRequest");
-            }
-            break;
-          case OpenDayQRScanService.invalidQRError:
-            {
-              OpenDayNotificationService.showInvalidErrorOverlay(context);
-              widget._logger.d("invalidQRError : $spotRequest");
-            }
-            break;
-          case OpenDayQRScanService.disabledQRError:
-            {
-              OpenDayNotificationService.showDisabledErrorOverlay(context);
-              widget._logger.d("disabledQRError : $spotRequest");
-            }
-            break;
-          default:
-            {
-              await OpenDayNotificationService.showNewSpotFoundOverlay(context);
-              widget._logger.d("changed image: $spotRequest");
-              widget.changeImage(spotRequest);
-            }
+    lock.synchronized(
+      () async {
+        int now = DateTime.now().millisecondsSinceEpoch;
+        if (now - _lastScan >= _scanCooldown) {
+          widget._logger.d("scanned new code");
+          _lastScan = now;
+          String spotRequest =
+              await OpenDayQRScanService.spotRequest(barcode: barcode);
+          String? newImageURL =
+              await OpenDayQRScanService.requestRouter(context, spotRequest);
+          if (newImageURL != null) {
+            widget.changeImage(newImageURL);
+          }
         }
-      }
-    });
+      },
+    );
   }
 
   Widget myQRView(BuildContext context) => QRView(

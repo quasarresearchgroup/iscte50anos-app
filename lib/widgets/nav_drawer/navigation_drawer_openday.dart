@@ -22,7 +22,7 @@ class NavigationDrawerOpenDay extends StatelessWidget {
         title: Text(AppLocalizations.of(context)!.timelineScreen),
         onTap: () {
 //          PageRoutes.animateToPage(context, page: TimelinePage());
-          Navigator.of(context).pushNamed(TimelinePage.pageRoute);
+          Navigator.of(context).popAndPushNamed(TimelinePage.pageRoute);
         },
       ),
       ListTile(
@@ -30,7 +30,7 @@ class NavigationDrawerOpenDay extends StatelessWidget {
         title: Text(AppLocalizations.of(context)!.shakerScreen),
         onTap: () {
 //          PageRoutes.animateToPage(context, page: Shaker());
-          Navigator.of(context).pushNamed(Shaker.pageRoute);
+          Navigator.of(context).popAndPushNamed(Shaker.pageRoute);
         },
       ),
       ListTile(
@@ -38,7 +38,7 @@ class NavigationDrawerOpenDay extends StatelessWidget {
         title: Text(AppLocalizations.of(context)!.flickrScreen),
         onTap: () {
 //          PageRoutes.animateToPage(context, page: FlickrPage());
-          Navigator.of(context).pushNamed(FlickrPage.pageRoute);
+          Navigator.of(context).popAndPushNamed(FlickrPage.pageRoute);
         },
       ),
       ListTile(
@@ -46,7 +46,7 @@ class NavigationDrawerOpenDay extends StatelessWidget {
         title: Text(AppLocalizations.of(context)!.leaderBoardScreen),
         onTap: () {
           //PageRoutes.animateToPage(context, page: const LeaderBoardPage());
-          Navigator.of(context).pushNamed(LeaderBoardPage.pageRoute);
+          Navigator.of(context).popAndPushNamed(LeaderBoardPage.pageRoute);
         },
       ),
       ExpansionTile(
@@ -57,7 +57,7 @@ class NavigationDrawerOpenDay extends StatelessWidget {
             title: Text(AppLocalizations.of(context)!.profileScreen),
             onTap: () async {
               //PageRoutes.animateToPage(context, page: ProfilePage());
-              Navigator.of(context).pushNamed(ProfilePage.pageRoute);
+              Navigator.of(context).popAndPushNamed(ProfilePage.pageRoute);
             },
           ),
           ListTile(
@@ -68,7 +68,6 @@ class NavigationDrawerOpenDay extends StatelessWidget {
             leading: Icon(Icons.adaptive.arrow_back_outlined),
             title: Text(AppLocalizations.of(context)!.logOutButton),
             onTap: () async {
-              Navigator.of(context).pop();
               await OpenDayLoginService.logOut(context);
             },
           ),
@@ -77,7 +76,7 @@ class NavigationDrawerOpenDay extends StatelessWidget {
             title: const Text('Onboarding'),
             onTap: () {
               //PageRoutes.animateToPage(context, page: OnboardingPage());
-              Navigator.of(context).pushNamed(OnboardingPage.pageRoute);
+              Navigator.of(context).popAndPushNamed(OnboardingPage.pageRoute);
             },
           )
         ],
