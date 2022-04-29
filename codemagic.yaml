@@ -43,10 +43,10 @@ workflows:
         script: |
           cd . && flutter test
         ignore_failure: true
-      - name: Build Android
-        script: |
-          echo $CM_KEYSTORE | base64 --decode > $CM_KEYSTORE_PATH  # Not required if using team code signing identities
-          flutter build appbundle
+      #- name: Build Android
+       # script: |
+        #  echo $CM_KEYSTORE | base64 --decode > $CM_KEYSTORE_PATH  # Not required if using team code signing identities
+         # flutter build appbundle
     artifacts:
     - build/**/outputs/apk/**/*.apk
     - build/**/outputs/bundle/**/*.aab
