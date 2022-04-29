@@ -23,7 +23,8 @@ class PuzzlePage extends StatefulWidget {
   _PuzzlePageState createState() => _PuzzlePageState();
 }
 
-class _PuzzlePageState extends State<PuzzlePage> {
+class _PuzzlePageState extends State<PuzzlePage>
+    with AutomaticKeepAliveClientMixin {
   List<Widget> pieces = [];
   //make this a future so that previous operations get queued and complete only when this has values
   @override
@@ -33,12 +34,23 @@ class _PuzzlePageState extends State<PuzzlePage> {
   }
 
   @override
+  bool get wantKeepAlive => true;
+
+  @override
   void didUpdateWidget(PuzzlePage oldWidget) {
     if (oldWidget.image != widget.image) {
       widget._logger.d("changing image");
       generatePieces(widget.image);
     }
     super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Widget widget =
+        pieces.isNotEmpty ? Stack(children: pieces) : const LoadingWidget();
+    super.build(context);
+    return SafeArea(child: widget);
   }
 
   void generatePieces(Image img) async {
@@ -102,13 +114,6 @@ class _PuzzlePageState extends State<PuzzlePage> {
     pieces.addAll(storedPuzzlePieceWidgets);
     pieces.addAll(notStoredPieces);
     setState(() {});
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    Widget widget =
-        pieces.isNotEmpty ? Stack(children: pieces) : const LoadingWidget();
-    return SafeArea(child: widget);
   }
 
   void bringToTop(Widget targetWidget) {

@@ -65,7 +65,6 @@ class OpenDayLoginService {
   }
 
   static Future<void> logOut(BuildContext context) async {
-    //Navigator.of(context).popUntil(AuthPage.pageRoute);
     await AuthService.deleteUserCredentials();
     await OnboadingService.removeOnboard();
     Navigator.of(context).pushReplacementNamed(AuthPage.pageRoute);

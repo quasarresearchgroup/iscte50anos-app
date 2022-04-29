@@ -1,3 +1,4 @@
+import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -7,6 +8,7 @@ import 'package:iscte_spots/pages/scanPage/openday_qr_scan_page.dart';
 import 'package:iscte_spots/services/openday/openday_qr_scan_service.dart';
 import 'package:iscte_spots/widgets/my_bottom_bar.dart';
 import 'package:iscte_spots/widgets/nav_drawer/navigation_drawer_openday.dart';
+import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:iscte_spots/widgets/util/overlays.dart';
 import 'package:logger/logger.dart';
@@ -32,6 +34,8 @@ class _HomeOpenDayState extends State<HomeOpenDay>
   late TabController _tabController;
   Image? currentPuzzleImage;
   bool _loading = false;
+  late final ConfettiController _confettiController;
+
   @override
   void initState() {
     super.initState();
@@ -40,7 +44,14 @@ class _HomeOpenDayState extends State<HomeOpenDay>
     setState(() {
       currentPuzzleImage = widget.originalImage;
     });
+    _confettiController = ConfettiController(duration: Duration(seconds: 2));
     initFunc();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _confettiController.dispose();
   }
 
   void initFunc() async {
@@ -67,6 +78,7 @@ class _HomeOpenDayState extends State<HomeOpenDay>
       setState(() {
         currentPuzzleImage = Image.network(imageLink);
       });
+      _confettiController.play();
       await OpenDayNotificationService.showNewSpotFoundOverlay(context);
       _tabController.animateTo(widget.puzzleIndex);
     }
@@ -93,31 +105,53 @@ class _HomeOpenDayState extends State<HomeOpenDay>
           ),
         ],
       ),
+      floatingActionButton: FloatingActionButton(onPressed: () {
+        widget._logger.i("playing confettis");
+        _confettiController.play();
+      }),
       bottomNavigationBar: MyBottomBar(
         tabController: _tabController,
         initialIndex: 0,
       ),
-      body: TabBarView(
-        physics: const NeverScrollableScrollPhysics(),
-        controller: _tabController,
+      body: Stack(
         children: [
-          _loading
-              ? const LoadingWidget()
-              : Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(40.0),
-                    child: LayoutBuilder(builder:
-                        (BuildContext context, BoxConstraints constraints) {
-                      return (currentPuzzleImage != null)
-                          ? PuzzlePage(
-                              image: currentPuzzleImage!,
-                              constraints: constraints,
-                            )
-                          : const LoadingWidget();
-                    }),
-                  ),
-                ),
-          QRScanPageOpenDay(changeImage: _changeCurrentImage)
+          TabBarView(
+            physics: const NeverScrollableScrollPhysics(),
+            controller: _tabController,
+            children: [
+              _loading
+                  ? const LoadingWidget()
+                  : Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(40.0),
+                        child: LayoutBuilder(builder:
+                            (BuildContext context, BoxConstraints constraints) {
+                          return (currentPuzzleImage != null)
+                              ? PuzzlePage(
+                                  image: currentPuzzleImage!,
+                                  constraints: constraints,
+                                )
+                              : const LoadingWidget();
+                        }),
+                      ),
+                    ),
+              QRScanPageOpenDay(changeImage: _changeCurrentImage)
+            ],
+          ),
+          Align(
+            alignment: Alignment.topCenter,
+            child: ConfettiWidget(
+              confettiController: _confettiController,
+              blastDirectionality: BlastDirectionality.explosive,
+              emissionFrequency: 0.1,
+              colors: [
+                IscteTheme.iscteColor,
+                IscteTheme.iscteColor.withBlue(IscteTheme.iscteColor.blue + 50),
+                IscteTheme.iscteColor.withBlue(IscteTheme.iscteColor.blue - 50),
+                Colors.white,
+              ],
+            ),
+          ),
         ],
       ),
     );
