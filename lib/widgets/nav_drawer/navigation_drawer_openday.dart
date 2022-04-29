@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:iscte_spots/pages/auth/auth_page.dart';
 import 'package:iscte_spots/pages/flickr/flickr_page.dart';
 import 'package:iscte_spots/pages/leaderboard/leaderboard_screen.dart';
+import 'package:iscte_spots/pages/onboarding/onboarding_page.dart';
 import 'package:iscte_spots/pages/profile/profile_screen.dart';
 import 'package:iscte_spots/pages/timeline_page.dart';
 import 'package:iscte_spots/services/auth/openday_login_service.dart';
@@ -69,6 +70,13 @@ class NavigationDrawerOpenDay extends StatelessWidget {
               PageRoutes.animateToPage(context, page: AuthPage());
             },
           ),
+          ListTile(
+            leading: const Icon(Icons.departure_board),
+            title: const Text('Onboarding'),
+            onTap: () {
+              PageRoutes.animateToPage(context, page: OnboardingPage());
+            },
+          )
         ],
       ),
     ];
