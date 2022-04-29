@@ -426,51 +426,61 @@ class _LeaderboardListState extends State<LeaderboardList> {
             child: items.isEmpty
                 ? const Center(child: Text("Não foram encontrados resultados"))
                 : ListView.builder(
-                    shrinkWrap: true,
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    itemCount: items.length,
-                    itemBuilder: (context, index) {
-                      var time = Duration(seconds: items[index]["total_time"])
-                          .toString()
-                          .split(".")[0];
+              shrinkWrap: true,
+              physics: const AlwaysScrollableScrollPhysics(),
+              itemCount: items.length,
+              itemBuilder: (context, index) {
+                var time = Duration(seconds: items[index]["total_time"])
+                    .toString()
+                    .split(".")[0];
 
-                      return Padding(
-                        padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-                        child: Card(
-                          child: ListTile(
-                            title: Text(items[index]["username"].toString(),
+                return Padding(
+                  padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+                  child: Card(
+                    child: ListTile(
+                      title: Text(items[index]["username"].toString(),
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16)),
+                      subtitle: Text(
+                          "Spots: ${items[index]["num_spots_read"]}\nTempo: $time"),
+                      //Text("Pontos: ${items[index]["points"]} \nAfiliação: ${items[index]["affiliation"]}"),
+                      //isThreeLine: true,
+                      //dense:true,
+                      minVerticalPadding: 10.0,
+                      trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            if (index == 0)
+                              Image.asset(
+                                  "Resources/Img/LeaderBoardIcons/gold_medal.png")
+                            else
+                              if (index == 1)
+                                Image.asset(
+                                    "Resources/Img/LeaderBoardIcons/silver_medal.png")
+                              else
+                                if (index == 2)
+                                  Image.asset(
+                                      "Resources/Img/LeaderBoardIcons/bronze_medal.png"),
+                            const SizedBox(width: 10),
+                            Text("#${index + 1}",
                                 style: const TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 16)),
-                            subtitle: Text(
-                                "Spots: ${items[index]["num_spots_read"]}\nTempo: $time"),
-                            //Text("Pontos: ${items[index]["points"]} \nAfiliação: ${items[index]["affiliation"]}"),
-                            //isThreeLine: true,
-                            //dense:true,
-                            minVerticalPadding: 10.0,
-                            trailing: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
-                                  if (index == 0)
-                                    Image.asset(
-                                        "Resources/Img/LeaderBoardIcons/gold_medal.png")
-                                  else if (index == 1)
-                                    Image.asset(
-                                        "Resources/Img/LeaderBoardIcons/silver_medal.png")
-                                  else if (index == 2)
-                                    Image.asset(
-                                        "Resources/Img/LeaderBoardIcons/bronze_medal.png"),
-                                  const SizedBox(width: 10),
-                                  Text("#${index + 1}",
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 20)),
-                                ]),
-                          ),
-                        ),
-                      );
-                    },
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20)),
+                          ]),
+                    ),
                   ),
+                );
+              },
+            ),
           );
+        }else if(snapshot.connectionState!= ConnectionState.done){
+          children = const <Widget>[
+            SizedBox(
+              child: CircularProgressIndicator.adaptive(),
+              width: 60,
+              height: 60,
+            ),
+          ];
         } else if (snapshot.hasError) {
           children = <Widget>[
             const Icon(

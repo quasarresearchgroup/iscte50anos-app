@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:iscte_spots/pages/profile/placeholder.dart';
 import 'package:iscte_spots/widgets/nav_drawer/navigation_drawer.dart';
 import 'package:logger/logger.dart';
 import 'package:http/http.dart' as http;
@@ -93,10 +94,11 @@ class _ProfileState extends State<Profile> {
       builder: (context, snapshot) {
         List<Widget> children;
         if (snapshot.hasData) {
-
           var profile = snapshot.data as Map;
           var spots = profile["num_spots_read"];
-          var totalTime = spots > 0 ? Duration(seconds: profile["total_time"]).toString().split(".")[0]
+          var totalTime = spots > 0 ? Duration(seconds: profile["total_time"])
+              .toString()
+              .split(".")[0]
               : "-";
 
           return RefreshIndicator(
@@ -120,10 +122,11 @@ class _ProfileState extends State<Profile> {
                                   radius: 40,
                                   child: FittedBox(
                                       fit: BoxFit.fill,
-                                      child: Text(profile["initials"], style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 40
-                                      ))
+                                      child: Text(profile["initials"],
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 40
+                                          ))
                                   )
                               )
                           ),
@@ -136,7 +139,8 @@ class _ProfileState extends State<Profile> {
                           )),
                           const SizedBox(height: 20),
                           Text(profile["affiliation_name"].toString(),
-                              textAlign: TextAlign.center, style: const TextStyle(
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
                                   fontSize: 13
                               )),
                           const SizedBox(height: 20),
@@ -145,13 +149,14 @@ class _ProfileState extends State<Profile> {
                             children: [
                               Column(
                                 children: [
-                                  const Text("Spots", style:TextStyle(
+                                  const Text("Spots", style: TextStyle(
                                       fontSize: 14
                                   )),
-                                  Text(profile["num_spots_read"].toString(), style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18
-                                  )),
+                                  Text(profile["num_spots_read"].toString(),
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18
+                                      )),
                                 ],
                               ),
                               Column(
@@ -159,10 +164,11 @@ class _ProfileState extends State<Profile> {
                                   const Text("Tempo", style: TextStyle(
                                       fontSize: 14
                                   )),
-                                  Text(totalTime.toString(), style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18
-                                  )),
+                                  Text(totalTime.toString(),
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18
+                                      )),
                                 ],
                               )
                             ],
@@ -183,10 +189,11 @@ class _ProfileState extends State<Profile> {
                                   const Text("Global", style: TextStyle(
                                       fontSize: 14
                                   )),
-                                  Text("#"+profile["ranking"].toString(), style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18
-                                  )),
+                                  Text("#" + profile["ranking"].toString(),
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18
+                                      )),
                                 ],
                               ),
                               Column(
@@ -194,10 +201,12 @@ class _ProfileState extends State<Profile> {
                                   const Text("Afiliação", style: TextStyle(
                                       fontSize: 14
                                   )),
-                                  Text("#"+profile["affiliation_ranking"].toString(), style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18
-                                  )),
+                                  Text("#" +
+                                      profile["affiliation_ranking"].toString(),
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18
+                                      )),
                                 ],
                               )
                             ],
@@ -244,6 +253,12 @@ class _ProfileState extends State<Profile> {
               ),
             ),
           );
+        }else if(snapshot.connectionState!= ConnectionState.done){
+          children = const <Widget>[
+            Expanded(
+              child: ProfilePlaceholder(),
+            )//ProfilePlaceholder(),
+          ];
         }else if (snapshot.hasError) {
           children = <Widget>[
             const Icon(
@@ -263,11 +278,7 @@ class _ProfileState extends State<Profile> {
           ];
         } else{
           children = const <Widget>[
-            SizedBox(
-              child: CircularProgressIndicator.adaptive(),
-              width: 60,
-              height: 60,
-            ),
+            ProfilePlaceholder(),
           ];
         }
         return GestureDetector(
