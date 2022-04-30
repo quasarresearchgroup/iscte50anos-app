@@ -168,23 +168,42 @@ class _HomeOpenDayState extends State<HomeOpenDay>
 
   Widget lottieCompleteLoginBuilder() => Stack(
         children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Lottie.network(
-                "https://assets6.lottiefiles.com/packages/lf20_Vwcw5D.json",
-                //"https://assets4.lottiefiles.com/datafiles/hToYrgLpHl1u69x/data.json",
-                //width: MediaQuery.of(context).size.width * 0.5,
-                //height: MediaQuery.of(context).size.height * 0.5,
-                //fit: BoxFit.contain,
-                controller: _lottieController,
-                onLoaded: (LottieComposition composition) {
-                  _lottieController.forward();
-                  _confettiController.play();
-                },
-              )
-            ],
+          Center(
+            child: Card(
+              color: Colors.green.shade700,
+              margin: const EdgeInsets.all(50.0),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(IscteTheme.appbarRadius)),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Lottie.network(
+                    "https://assets6.lottiefiles.com/packages/lf20_Vwcw5D.json",
+                    //"https://assets4.lottiefiles.com/datafiles/hToYrgLpHl1u69x/data.json",
+                    //width: MediaQuery.of(context).size.width * 0.5,
+                    //height: MediaQuery.of(context).size.height * 0.5,
+                    //fit: BoxFit.contain,
+                    controller: _lottieController,
+                    onLoaded: (LottieComposition composition) {
+                      _lottieController.forward();
+                      _confettiController.play();
+                    },
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: const [
+                        Text("Wow you found it!!"),
+                        FaIcon(FontAwesomeIcons.faceSmile),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
           Align(
             alignment: Alignment.topCenter,

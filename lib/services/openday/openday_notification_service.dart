@@ -44,9 +44,9 @@ class OpenDayNotificationService {
     _openDaySucessSnackbar(context, "Wow you won!!");
   }
 
-  static Future<void> showNewSpotFoundOverlay(BuildContext context) async {
+/*  static Future<void> showNewSpotFoundOverlay(BuildContext context) async {
     _openDaySucessSnackbar(context, "Wow you found it!!");
-  }
+  }*/
 
   static void _openDayErrorSnackbar(
       {required BuildContext context, required String data, Widget? icon}) {

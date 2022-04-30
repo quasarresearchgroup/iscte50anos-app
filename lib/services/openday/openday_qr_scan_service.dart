@@ -86,7 +86,7 @@ class OpenDayQRScanService {
         break;
       default:
         {
-          await OpenDayNotificationService.showNewSpotFoundOverlay(context);
+          //await OpenDayNotificationService.showNewSpotFoundOverlay(context);
           _logger.d("changed image: $response");
           return response;
         }
