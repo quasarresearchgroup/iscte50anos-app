@@ -12,8 +12,7 @@ import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:iscte_spots/widgets/util/overlays.dart';
 import 'package:logger/logger.dart';
-
-import '../../services/openday/openday_notification_service.dart';
+import 'package:lottie/lottie.dart';
 
 class HomeOpenDay extends StatefulWidget {
   static const pageRoute = "/homeOpenDay";
@@ -30,11 +29,13 @@ class HomeOpenDay extends StatefulWidget {
 }
 
 class _HomeOpenDayState extends State<HomeOpenDay>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   late TabController _tabController;
   Image? currentPuzzleImage;
   bool _loading = false;
+  bool _showCompletePage = false;
   late final ConfettiController _confettiController;
+  late final AnimationController _lottieController;
 
   @override
   void initState() {
@@ -44,7 +45,26 @@ class _HomeOpenDayState extends State<HomeOpenDay>
     setState(() {
       currentPuzzleImage = widget.originalImage;
     });
-    _confettiController = ConfettiController(duration: Duration(seconds: 2));
+    _confettiController =
+        ConfettiController(duration: const Duration(seconds: 2));
+    _lottieController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    );
+    _lottieController.addStatusListener(
+      (status) {
+        widget._logger.d("listenning to sucess Puzzle animation $status");
+        if (status == AnimationStatus.completed) {
+          Future.delayed(const Duration(milliseconds: 500)).then((value) {
+            setState(() {
+              _lottieController.reset();
+              _showCompletePage = false;
+            });
+          });
+        }
+      },
+    );
+
     initFunc();
   }
 
@@ -52,6 +72,7 @@ class _HomeOpenDayState extends State<HomeOpenDay>
   void dispose() {
     super.dispose();
     _confettiController.dispose();
+    _lottieController.dispose();
   }
 
   void initFunc() async {
@@ -77,9 +98,8 @@ class _HomeOpenDayState extends State<HomeOpenDay>
       DatabasePuzzlePieceTable.removeALL();
       setState(() {
         currentPuzzleImage = Image.network(imageLink);
+        _showCompletePage = true;
       });
-      _confettiController.play();
-      await OpenDayNotificationService.showNewSpotFoundOverlay(context);
       _tabController.animateTo(widget.puzzleIndex);
     }
   }
@@ -107,35 +127,63 @@ class _HomeOpenDayState extends State<HomeOpenDay>
       ),
       floatingActionButton: FloatingActionButton(onPressed: () {
         widget._logger.i("playing confettis");
-        _confettiController.play();
+        setState(() {
+          _showCompletePage = true;
+        });
       }),
       bottomNavigationBar: MyBottomBar(
         tabController: _tabController,
         initialIndex: 0,
       ),
-      body: Stack(
+      body: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 500),
+        child: _showCompletePage
+            ? lottieCompleteLoginBuilder()
+            : TabBarView(
+                physics: const NeverScrollableScrollPhysics(),
+                controller: _tabController,
+                children: [
+                  _loading
+                      ? const LoadingWidget()
+                      : Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(40.0),
+                            child: LayoutBuilder(builder: (BuildContext context,
+                                BoxConstraints constraints) {
+                              return (currentPuzzleImage != null)
+                                  ? PuzzlePage(
+                                      image: currentPuzzleImage!,
+                                      constraints: constraints,
+                                    )
+                                  : const LoadingWidget();
+                            }),
+                          ),
+                        ),
+                  QRScanPageOpenDay(changeImage: _changeCurrentImage)
+                ],
+              ),
+      ),
+    );
+  }
+
+  Widget lottieCompleteLoginBuilder() => Stack(
         children: [
-          TabBarView(
-            physics: const NeverScrollableScrollPhysics(),
-            controller: _tabController,
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              _loading
-                  ? const LoadingWidget()
-                  : Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(40.0),
-                        child: LayoutBuilder(builder:
-                            (BuildContext context, BoxConstraints constraints) {
-                          return (currentPuzzleImage != null)
-                              ? PuzzlePage(
-                                  image: currentPuzzleImage!,
-                                  constraints: constraints,
-                                )
-                              : const LoadingWidget();
-                        }),
-                      ),
-                    ),
-              QRScanPageOpenDay(changeImage: _changeCurrentImage)
+              Lottie.network(
+                "https://assets6.lottiefiles.com/packages/lf20_Vwcw5D.json",
+                //"https://assets4.lottiefiles.com/datafiles/hToYrgLpHl1u69x/data.json",
+                //width: MediaQuery.of(context).size.width * 0.5,
+                //height: MediaQuery.of(context).size.height * 0.5,
+                //fit: BoxFit.contain,
+                controller: _lottieController,
+                onLoaded: (LottieComposition composition) {
+                  _lottieController.forward();
+                  _confettiController.play();
+                },
+              )
             ],
           ),
           Align(
@@ -151,9 +199,7 @@ class _HomeOpenDayState extends State<HomeOpenDay>
                 Colors.white,
               ],
             ),
-          ),
+          )
         ],
-      ),
-    );
-  }
+      );
 }
