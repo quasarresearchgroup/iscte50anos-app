@@ -7,6 +7,7 @@ import 'package:iscte_spots/pages/home/openday_home.dart';
 import 'package:iscte_spots/pages/leaderboard/leaderboard_screen.dart';
 import 'package:iscte_spots/pages/profile/profile_screen.dart';
 import 'package:iscte_spots/pages/scanned_list_page.dart';
+import 'package:iscte_spots/pages/settings/settings_page.dart';
 import 'package:iscte_spots/pages/timeline_page.dart';
 import 'package:iscte_spots/widgets/splashScreen/shake.dart';
 import 'package:iscte_spots/widgets/timeline/timeline_details_page.dart';
@@ -22,6 +23,7 @@ enum PageRoute {
   LEADERBOARD, //LeaderBoardPage.pageRoute
   PROFILE, //ProfilePage.pageRoute
   VISITED, //VisitedPagesPage.pageRoute
+  SETTINGS, //SettingsPage.pageRoute
 }
 
 extension PageRouteExtension on PageRoute {
@@ -47,6 +49,8 @@ extension PageRouteExtension on PageRoute {
         return PageRoute.PROFILE;
       case VisitedPagesPage.pageRoute:
         return PageRoute.VISITED;
+      case SettingsPage.pageRoute:
+        return PageRoute.SETTINGS;
       default:
         return PageRoute.HOMEOPENDAY;
     }
@@ -74,6 +78,8 @@ extension PageRouteExtension on PageRoute {
         return FlickrPage();
       case PageRoute.TIMELINEDETAIL:
         return TimeLineDetailsPage(data: argument as Content);
+      case PageRoute.SETTINGS:
+        return SettingsPage();
     }
   }
 }

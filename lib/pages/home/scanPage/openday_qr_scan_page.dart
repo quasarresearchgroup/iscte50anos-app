@@ -6,9 +6,12 @@ import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:synchronized/synchronized.dart';
 
 class QRScanPageOpenDay extends StatefulWidget {
-  QRScanPageOpenDay({Key? key, required this.changeImage}) : super(key: key);
+  QRScanPageOpenDay(
+      {Key? key, required this.changeImage, required this.completedAllPuzzle})
+      : super(key: key);
   final Logger _logger = Logger();
   final void Function(String imageLink) changeImage;
+  final void Function() completedAllPuzzle;
   @override
   State<StatefulWidget> createState() => QRScanPageOpenDayState();
 }
@@ -90,6 +93,9 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
           String? newImageURL =
               await OpenDayQRScanService.requestRouter(context, spotRequest);
           if (newImageURL != null) {
+            if (newImageURL == OpenDayQRScanService.allVisited) {
+              widget.completedAllPuzzle();
+            }
             widget.changeImage(newImageURL);
           }
           await controller?.resumeCamera();

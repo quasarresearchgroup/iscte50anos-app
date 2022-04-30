@@ -5,10 +5,11 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:iscte_spots/models/database/tables/database_puzzle_piece_table.dart';
 import 'package:iscte_spots/pages/home/puzzle/puzzle_page.dart';
 import 'package:iscte_spots/pages/home/scanPage/openday_qr_scan_page.dart';
+import 'package:iscte_spots/pages/home/sucess_scan_widget.dart';
 import 'package:iscte_spots/services/openday/openday_qr_scan_service.dart';
+import 'package:iscte_spots/services/shared_prefs_service.dart';
 import 'package:iscte_spots/widgets/my_bottom_bar.dart';
 import 'package:iscte_spots/widgets/nav_drawer/navigation_drawer_openday.dart';
-import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:iscte_spots/widgets/util/overlays.dart';
 import 'package:logger/logger.dart';
@@ -20,8 +21,6 @@ class HomeOpenDay extends StatefulWidget {
   HomeOpenDay({Key? key}) : super(key: key);
   final Logger _logger = Logger();
 
-  final Image originalImage =
-      Image.asset('Resources/Img/Campus/campus-iscte-3.jpg');
   final int scanSpotIndex = 1;
   final int puzzleIndex = 0;
   @override
@@ -33,7 +32,8 @@ class _HomeOpenDayState extends State<HomeOpenDay>
   late TabController _tabController;
   Image? currentPuzzleImage;
   bool _loading = false;
-  bool _showCompletePage = false;
+  bool _showSucessPage = false;
+  bool _completedAllPuzzlesBool = false;
   late final ConfettiController _confettiController;
   late final AnimationController _lottieController;
 
@@ -42,9 +42,7 @@ class _HomeOpenDayState extends State<HomeOpenDay>
     super.initState();
     _tabController =
         TabController(initialIndex: widget.puzzleIndex, length: 2, vsync: this);
-    setState(() {
-      currentPuzzleImage = widget.originalImage;
-    });
+
     _confettiController =
         ConfettiController(duration: const Duration(seconds: 2));
     _lottieController = AnimationController(
@@ -58,7 +56,7 @@ class _HomeOpenDayState extends State<HomeOpenDay>
           Future.delayed(const Duration(milliseconds: 500)).then((value) {
             setState(() {
               _lottieController.reset();
-              _showCompletePage = false;
+              _showSucessPage = false;
             });
           });
         }
@@ -80,7 +78,10 @@ class _HomeOpenDayState extends State<HomeOpenDay>
       _loading = true;
     });
     await _setupInitialImage();
+    bool completedAllPuzzlesState =
+        await SharedPrefsService.getCompletedAllPuzzles();
     setState(() {
+      _completedAllPuzzlesBool = completedAllPuzzlesState;
       _loading = false;
     });
   }
@@ -98,10 +99,19 @@ class _HomeOpenDayState extends State<HomeOpenDay>
       DatabasePuzzlePieceTable.removeALL();
       setState(() {
         currentPuzzleImage = Image.network(imageLink);
-        _showCompletePage = true;
+        _showSucessPage = true;
       });
       _tabController.animateTo(widget.puzzleIndex);
     }
+  }
+
+  void _completedAllPuzzles() async {
+    bool _completedAllPuzzleState =
+        await SharedPrefsService.storeCompletedAllPuzzles();
+    setState(() {
+      _completedAllPuzzlesBool = _completedAllPuzzleState;
+    });
+    _tabController.animateTo(widget.puzzleIndex);
   }
 
   @override
@@ -128,97 +138,79 @@ class _HomeOpenDayState extends State<HomeOpenDay>
       floatingActionButton: FloatingActionButton(onPressed: () {
         widget._logger.i("playing confettis");
         setState(() {
-          _showCompletePage = true;
+          _showSucessPage = true;
         });
       }),
-      bottomNavigationBar: MyBottomBar(
-        tabController: _tabController,
-        initialIndex: 0,
-      ),
+      bottomNavigationBar: !_completedAllPuzzlesBool
+          ? MyBottomBar(
+              tabController: _tabController,
+              initialIndex: 0,
+            )
+          : Container(),
       body: AnimatedSwitcher(
         duration: const Duration(milliseconds: 500),
-        child: _showCompletePage
-            ? lottieCompleteLoginBuilder()
-            : TabBarView(
-                physics: const NeverScrollableScrollPhysics(),
-                controller: _tabController,
-                children: [
-                  _loading
-                      ? const LoadingWidget()
-                      : Center(
-                          child: Padding(
-                            padding: const EdgeInsets.all(40.0),
-                            child: LayoutBuilder(builder: (BuildContext context,
-                                BoxConstraints constraints) {
-                              return (currentPuzzleImage != null)
-                                  ? PuzzlePage(
-                                      image: currentPuzzleImage!,
-                                      constraints: constraints,
-                                    )
-                                  : const LoadingWidget();
-                            }),
-                          ),
-                        ),
-                  QRScanPageOpenDay(changeImage: _changeCurrentImage)
-                ],
-              ),
+        child: _completedAllPuzzlesBool
+            ? CompletedChallengeWidget()
+            : _showSucessPage
+                ? SucessScanWidget(
+                    confettiController: _confettiController,
+                    lottieController: _lottieController,
+                  )
+                : TabBarView(
+                    physics: const NeverScrollableScrollPhysics(),
+                    controller: _tabController,
+                    children: [
+                      _loading || currentPuzzleImage == null
+                          ? const LoadingWidget()
+                          : Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(40.0),
+                                child: LayoutBuilder(builder:
+                                    (BuildContext context,
+                                        BoxConstraints constraints) {
+                                  return (currentPuzzleImage != null)
+                                      ? PuzzlePage(
+                                          image: currentPuzzleImage!,
+                                          constraints: constraints,
+                                        )
+                                      : const LoadingWidget();
+                                }),
+                              ),
+                            ),
+                      QRScanPageOpenDay(
+                        changeImage: _changeCurrentImage,
+                        completedAllPuzzle: _completedAllPuzzles,
+                      )
+                    ],
+                  ),
       ),
     );
   }
+}
 
-  Widget lottieCompleteLoginBuilder() => Stack(
-        children: [
-          Center(
-            child: Card(
-              color: Colors.green.shade700,
-              margin: const EdgeInsets.all(50.0),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(IscteTheme.appbarRadius)),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Lottie.network(
-                    "https://assets6.lottiefiles.com/packages/lf20_Vwcw5D.json",
-                    //"https://assets4.lottiefiles.com/datafiles/hToYrgLpHl1u69x/data.json",
-                    //width: MediaQuery.of(context).size.width * 0.5,
-                    //height: MediaQuery.of(context).size.height * 0.5,
-                    //fit: BoxFit.contain,
-                    controller: _lottieController,
-                    onLoaded: (LottieComposition composition) {
-                      _lottieController.forward();
-                      _confettiController.play();
-                    },
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: const [
-                        Text("Wow you found it!!"),
-                        FaIcon(FontAwesomeIcons.faceSmile),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Align(
-            alignment: Alignment.topCenter,
-            child: ConfettiWidget(
-              confettiController: _confettiController,
-              blastDirectionality: BlastDirectionality.explosive,
-              emissionFrequency: 0.1,
-              colors: [
-                IscteTheme.iscteColor,
-                IscteTheme.iscteColor.withBlue(IscteTheme.iscteColor.blue + 50),
-                IscteTheme.iscteColor.withBlue(IscteTheme.iscteColor.blue - 50),
-                Colors.white,
-              ],
-            ),
-          )
-        ],
-      );
+class CompletedChallengeWidget extends StatefulWidget {
+  const CompletedChallengeWidget({Key? key}) : super(key: key);
+
+  @override
+  State<CompletedChallengeWidget> createState() =>
+      _CompletedChallengeWidgetState();
+}
+
+class _CompletedChallengeWidgetState extends State<CompletedChallengeWidget> {
+  bool _loading = true;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: _loading
+          ? LoadingWidget()
+          : Lottie.network(
+              "https://assets9.lottiefiles.com/packages/lf20_tjbhujef.json",
+              onLoaded: (LottieComposition composition) {
+              setState(() {
+                _loading = false;
+              });
+            }),
+    );
+  }
 }

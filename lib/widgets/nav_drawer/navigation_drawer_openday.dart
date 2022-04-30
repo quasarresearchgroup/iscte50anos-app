@@ -5,6 +5,7 @@ import 'package:iscte_spots/pages/flickr/flickr_page.dart';
 import 'package:iscte_spots/pages/leaderboard/leaderboard_screen.dart';
 import 'package:iscte_spots/pages/onboarding/onboarding_page.dart';
 import 'package:iscte_spots/pages/profile/profile_screen.dart';
+import 'package:iscte_spots/pages/settings/settings_page.dart';
 import 'package:iscte_spots/pages/timeline_page.dart';
 import 'package:iscte_spots/services/auth/openday_login_service.dart';
 import 'package:iscte_spots/widgets/splashScreen/shake.dart';
@@ -61,9 +62,12 @@ class NavigationDrawerOpenDay extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.settings),
-            title: Text(AppLocalizations.of(context)!.settingsScreen),
-          ),
+              leading: const Icon(Icons.settings),
+              title: Text(AppLocalizations.of(context)!.settingsScreen),
+              onTap: () async {
+                //PageRoutes.animateToPage(context, page: ProfilePage());
+                Navigator.of(context).popAndPushNamed(SettingsPage.pageRoute);
+              }),
           ListTile(
             leading: Icon(Icons.adaptive.arrow_back_outlined),
             title: Text(AppLocalizations.of(context)!.logOutButton),

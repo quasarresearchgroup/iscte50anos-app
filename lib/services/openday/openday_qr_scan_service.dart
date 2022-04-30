@@ -66,12 +66,6 @@ class OpenDayQRScanService {
           _logger.d("alreadyVisitedError : $response");
         }
         break;
-      case OpenDayQRScanService.allVisited:
-        {
-          OpenDayNotificationService.showAllVisitedOverlay(context);
-          _logger.d("allVisited : $response");
-        }
-        break;
       case OpenDayQRScanService.invalidQRError:
         {
           OpenDayNotificationService.showInvalidErrorOverlay(context);
@@ -82,6 +76,13 @@ class OpenDayQRScanService {
         {
           OpenDayNotificationService.showDisabledErrorOverlay(context);
           _logger.d("disabledQRError : $response");
+        }
+        break;
+      case OpenDayQRScanService.allVisited:
+        {
+          //OpenDayNotificationService.showAllVisitedOverlay(context);
+          _logger.d("allVisited : $response");
+          return OpenDayQRScanService.allVisited;
         }
         break;
       default:
