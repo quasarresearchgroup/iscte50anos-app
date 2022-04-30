@@ -33,7 +33,8 @@ class _HomeOpenDayState extends State<HomeOpenDay>
   Image? currentPuzzleImage;
   bool _loading = false;
   bool _showSucessPage = false;
-  bool _completedAllPuzzlesBool = false;
+  final ValueNotifier<bool> _completedAllPuzzlesBool =
+      SharedPrefsService().allPuzzleCompleteState;
   late final ConfettiController _confettiController;
   late final AnimationController _lottieController;
 
@@ -78,10 +79,7 @@ class _HomeOpenDayState extends State<HomeOpenDay>
       _loading = true;
     });
     await _setupInitialImage();
-    bool completedAllPuzzlesState =
-        await SharedPrefsService.getCompletedAllPuzzles();
     setState(() {
-      _completedAllPuzzlesBool = completedAllPuzzlesState;
       _loading = false;
     });
   }
@@ -108,109 +106,119 @@ class _HomeOpenDayState extends State<HomeOpenDay>
   void _completedAllPuzzles() async {
     bool _completedAllPuzzleState =
         await SharedPrefsService.storeCompletedAllPuzzles();
-    setState(() {
-      _completedAllPuzzlesBool = _completedAllPuzzleState;
-    });
     _tabController.animateTo(widget.puzzleIndex);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      extendBody: true,
-      drawer: const NavigationDrawerOpenDay(),
-      appBar: AppBar(
-        title: const Text("OpenDay Home"),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Center(
-              child: IconButton(
-                icon: const FaIcon(FontAwesomeIcons.circleQuestion),
-                onPressed: () => showHelpOverlay(
-                    context, currentPuzzleImage!, widget._logger),
-              ),
-            ),
+    return ValueListenableBuilder<bool>(
+      valueListenable: _completedAllPuzzlesBool,
+      builder: (BuildContext context, bool value, _) {
+        return Scaffold(
+          extendBodyBehindAppBar: true,
+          extendBody: true,
+          drawer: const NavigationDrawerOpenDay(),
+          appBar: AppBar(
+            title: const Text("OpenDay Home"),
+            actions: value
+                ? null
+                : [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Center(
+                        child: IconButton(
+                          icon: const FaIcon(FontAwesomeIcons.circleQuestion),
+                          onPressed: () => showHelpOverlay(
+                              context, currentPuzzleImage!, widget._logger),
+                        ),
+                      ),
+                    ),
+                  ],
           ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(onPressed: () {
-        widget._logger.i("playing confettis");
-        setState(() {
-          _showSucessPage = true;
-        });
-      }),
-      bottomNavigationBar: !_completedAllPuzzlesBool
-          ? MyBottomBar(
-              tabController: _tabController,
-              initialIndex: 0,
-            )
-          : Container(),
-      body: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 500),
-        child: _completedAllPuzzlesBool
-            ? CompletedChallengeWidget()
-            : _showSucessPage
-                ? SucessScanWidget(
-                    confettiController: _confettiController,
-                    lottieController: _lottieController,
-                  )
-                : TabBarView(
-                    physics: const NeverScrollableScrollPhysics(),
-                    controller: _tabController,
-                    children: [
-                      _loading || currentPuzzleImage == null
-                          ? const LoadingWidget()
-                          : Center(
-                              child: Padding(
-                                padding: const EdgeInsets.all(40.0),
-                                child: LayoutBuilder(builder:
-                                    (BuildContext context,
-                                        BoxConstraints constraints) {
-                                  return (currentPuzzleImage != null)
-                                      ? PuzzlePage(
-                                          image: currentPuzzleImage!,
-                                          constraints: constraints,
-                                        )
-                                      : const LoadingWidget();
-                                }),
-                              ),
-                            ),
-                      QRScanPageOpenDay(
-                        changeImage: _changeCurrentImage,
-                        completedAllPuzzle: _completedAllPuzzles,
+          floatingActionButton: FloatingActionButton(onPressed: () {
+            widget._logger.i("playing confettis");
+            setState(() {
+              _showSucessPage = true;
+            });
+          }),
+          bottomNavigationBar: value
+              ? Container()
+              : MyBottomBar(
+                  tabController: _tabController,
+                  initialIndex: 0,
+                ),
+          body: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 500),
+            child: value
+                ? CompletedChallengeWidget()
+                : _showSucessPage
+                    ? SucessScanWidget(
+                        confettiController: _confettiController,
+                        lottieController: _lottieController,
                       )
-                    ],
-                  ),
-      ),
+                    : TabBarView(
+                        physics: const NeverScrollableScrollPhysics(),
+                        controller: _tabController,
+                        children: [
+                          _loading || currentPuzzleImage == null
+                              ? const LoadingWidget()
+                              : Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(40.0),
+                                    child: LayoutBuilder(
+                                      builder: (BuildContext context,
+                                          BoxConstraints constraints) {
+                                        return (currentPuzzleImage != null)
+                                            ? PuzzlePage(
+                                                image: currentPuzzleImage!,
+                                                constraints: constraints,
+                                              )
+                                            : const LoadingWidget();
+                                      },
+                                    ),
+                                  ),
+                                ),
+                          QRScanPageOpenDay(
+                            changeImage: _changeCurrentImage,
+                            completedAllPuzzle: _completedAllPuzzles,
+                          )
+                        ],
+                      ),
+          ),
+        );
+      },
     );
   }
 }
 
 class CompletedChallengeWidget extends StatefulWidget {
-  const CompletedChallengeWidget({Key? key}) : super(key: key);
+  CompletedChallengeWidget({Key? key}) : super(key: key);
+  final Logger _logger = Logger();
 
   @override
   State<CompletedChallengeWidget> createState() =>
       _CompletedChallengeWidgetState();
 }
 
-class _CompletedChallengeWidgetState extends State<CompletedChallengeWidget> {
-  bool _loading = true;
+class _CompletedChallengeWidgetState extends State<CompletedChallengeWidget>
+    with TickerProviderStateMixin {
+  bool _loading = false;
 
   @override
   Widget build(BuildContext context) {
+    widget._logger.d("built CompletedChallengeWidget");
     return Center(
-      child: _loading
-          ? LoadingWidget()
-          : Lottie.network(
-              "https://assets9.lottiefiles.com/packages/lf20_tjbhujef.json",
-              onLoaded: (LottieComposition composition) {
-              setState(() {
-                _loading = false;
-              });
-            }),
+      child: Lottie.asset("Resources/Lotties/thank-you-with-confetti.json",
+          controller: AnimationController(
+            vsync: this,
+            duration: const Duration(seconds: 3),
+          )..forward(),
+          repeat: true, onLoaded: (LottieComposition composition) {
+        setState(() {
+          widget._logger.d("CompletedChallengeWidget loaded lottie");
+          _loading = false;
+        });
+      }),
     );
   }
 }
