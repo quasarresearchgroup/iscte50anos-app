@@ -27,6 +27,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      //showSemanticsDebugger: true,
       debugShowCheckedModeBanner: false,
       title: 'IscteSpots',
       theme: IscteTheme.lightThemeData,
