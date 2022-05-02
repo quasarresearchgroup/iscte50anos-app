@@ -33,6 +33,7 @@ class ImageManipulation {
     required bringToTop,
     required sendToBack,
     required constraints,
+    required completeCallback,
   }) async {
     //logger.d('started split');
     List<PuzzlePieceWidget> outputList = [];
@@ -50,6 +51,7 @@ class ImageManipulation {
           bringToTop: bringToTop,
           sendToBack: sendToBack,
           constraints: constraints,
+          completeCallback: completeCallback,
         );
         outputList.add(puzzlePiece);
       }

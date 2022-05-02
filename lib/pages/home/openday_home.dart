@@ -5,17 +5,19 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:iscte_spots/models/database/tables/database_puzzle_piece_table.dart';
 import 'package:iscte_spots/pages/home/puzzle/puzzle_page.dart';
 import 'package:iscte_spots/pages/home/scanPage/openday_qr_scan_page.dart';
-import 'package:iscte_spots/pages/home/sucess_scan_widget.dart';
+import 'package:iscte_spots/pages/home/widgets/sucess_scan_widget.dart';
 import 'package:iscte_spots/pages/leaderboard/leaderboard_screen.dart';
 import 'package:iscte_spots/services/openday/openday_qr_scan_service.dart';
 import 'package:iscte_spots/services/profile/profile_service.dart';
 import 'package:iscte_spots/services/shared_prefs_service.dart';
+import 'package:iscte_spots/widgets/iscte_confetti_widget.dart';
 import 'package:iscte_spots/widgets/my_bottom_bar.dart';
 import 'package:iscte_spots/widgets/nav_drawer/navigation_drawer_openday.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:iscte_spots/widgets/util/overlays.dart';
 import 'package:logger/logger.dart';
-import 'package:lottie/lottie.dart';
+
+import 'widgets/completed_challenge_widget.dart';
 
 class HomeOpenDay extends StatefulWidget {
   static const pageRoute = "/homeOpenDay";
@@ -101,6 +103,7 @@ class _HomeOpenDayState extends State<HomeOpenDay>
       setState(() {
         currentPuzzleImage = Image.network(imageLink);
         _showSucessPage = true;
+        futureProfile = ProfileService().fetchProfile();
       });
       _tabController.animateTo(widget.puzzleIndex);
     }
@@ -164,83 +167,64 @@ class _HomeOpenDayState extends State<HomeOpenDay>
                   tabController: _tabController,
                   initialIndex: 0,
                 ),
-          body: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 500),
-            child: challengeCompleteBool
-                ? CompletedChallengeWidget()
-                : _showSucessPage
-                    ? SucessScanWidget(
-                        confettiController: _confettiController,
-                        lottieController: _lottieController,
-                      )
-                    : TabBarView(
-                        physics: const NeverScrollableScrollPhysics(),
-                        controller: _tabController,
-                        children: [
-                          _loading || currentPuzzleImage == null
-                              ? const LoadingWidget()
-                              : Center(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(40.0),
-                                    child: LayoutBuilder(
-                                      builder: (BuildContext context,
-                                          BoxConstraints constraints) {
-                                        return (currentPuzzleImage != null)
-                                            ? PuzzlePage(
-                                                image: currentPuzzleImage!,
-                                                constraints: constraints,
-                                              )
-                                            : const LoadingWidget();
-                                      },
-                                    ),
-                                  ),
-                                ),
-                          QRScanPageOpenDay(
-                            changeImage: _changeCurrentImage,
-                            completedAllPuzzle: _completedAllPuzzles,
-                          )
-                        ],
-                      ),
-          ),
+          body: buildHomeBody(challengeCompleteBool),
         );
       },
     );
   }
-}
 
-class CompletedChallengeWidget extends StatefulWidget {
-  CompletedChallengeWidget({Key? key}) : super(key: key);
-  final Logger _logger = Logger();
-
-  @override
-  State<CompletedChallengeWidget> createState() =>
-      _CompletedChallengeWidgetState();
-}
-
-class _CompletedChallengeWidgetState extends State<CompletedChallengeWidget>
-    with SingleTickerProviderStateMixin {
-  bool _loading = true;
-  late AnimationController _animationController;
-
-  @override
-  void dispose() {
-    super.dispose();
-    _animationController.dispose();
-  }
-
-  @override
-  void initState() {
-    _animationController =
-        AnimationController(vsync: this, duration: const Duration(seconds: 1));
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    widget._logger.d("built CompletedChallengeWidget");
-    return Center(
-        child: Lottie.asset(
-      "Resources/Lotties/thank-you-with-confetti.json",
-    ));
+  AnimatedSwitcher buildHomeBody(bool challengeCompleteBool) {
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 500),
+      child: challengeCompleteBool
+          ? CompletedChallengeWidget()
+          : _showSucessPage
+              ? SucessScanWidget(
+                  confettiController: _confettiController,
+                  lottieController: _lottieController,
+                )
+              : TabBarView(
+                  physics: const NeverScrollableScrollPhysics(),
+                  controller: _tabController,
+                  children: [
+                    _loading || currentPuzzleImage == null
+                        ? const LoadingWidget()
+                        : Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(40.0),
+                              child: LayoutBuilder(
+                                builder: (BuildContext context,
+                                    BoxConstraints constraints) {
+                                  return (currentPuzzleImage != null)
+                                      ? Stack(
+                                          children: [
+                                            PuzzlePage(
+                                              image: currentPuzzleImage!,
+                                              constraints: constraints,
+                                              completeCallback: () {
+                                                widget._logger
+                                                    .d("Completed Puzzle!!");
+                                                setState(() {
+                                                  _confettiController.play();
+                                                });
+                                              },
+                                            ),
+                                            IscteConfetti(
+                                                confettiController:
+                                                    _confettiController)
+                                          ],
+                                        )
+                                      : const LoadingWidget();
+                                },
+                              ),
+                            ),
+                          ),
+                    QRScanPageOpenDay(
+                      changeImage: _changeCurrentImage,
+                      completedAllPuzzle: _completedAllPuzzles,
+                    )
+                  ],
+                ),
+    );
   }
 }

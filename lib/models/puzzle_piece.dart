@@ -23,7 +23,7 @@ class PuzzlePiece {
   }
 
   PuzzlePieceWidget getWidget(
-      image, imageSize, bringToTop, sendToBack, constraints) {
+      image, imageSize, bringToTop, sendToBack, constraints, completeCallback) {
     return PuzzlePieceWidget(
       image: image,
       imageSize: imageSize,
@@ -37,6 +37,7 @@ class PuzzlePiece {
       top: top,
       left: left,
       movable: (top != 0 || left != 0),
+      completeCallback: completeCallback,
     );
   }
 

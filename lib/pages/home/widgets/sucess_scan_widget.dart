@@ -3,15 +3,16 @@ import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:iscte_spots/widgets/iscte_confetti_widget.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 import 'package:lottie/lottie.dart';
 
 class SucessScanWidget extends StatelessWidget {
-  const SucessScanWidget(
-      {Key? key,
-      required this.lottieController,
-      required this.confettiController})
-      : super(key: key);
+  const SucessScanWidget({
+    Key? key,
+    required this.lottieController,
+    required this.confettiController,
+  }) : super(key: key);
 
   final AnimationController lottieController;
   final ConfettiController confettiController;
@@ -57,20 +58,7 @@ class SucessScanWidget extends StatelessWidget {
             ),
           ),
         ),
-        Align(
-          alignment: Alignment.topCenter,
-          child: ConfettiWidget(
-            confettiController: confettiController,
-            blastDirectionality: BlastDirectionality.explosive,
-            emissionFrequency: 0.1,
-            colors: [
-              IscteTheme.iscteColor,
-              IscteTheme.iscteColor.withBlue(IscteTheme.iscteColor.blue + 50),
-              IscteTheme.iscteColor.withBlue(IscteTheme.iscteColor.blue - 50),
-              Colors.white,
-            ],
-          ),
-        )
+        IscteConfetti(confettiController: confettiController),
       ],
     );
   }

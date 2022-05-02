@@ -242,6 +242,8 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                     ? PuzzlePage(
                         image: currentPuzzleImage!,
                         constraints: constraints,
+                        completeCallback: () =>
+                            widget._logger.d("Completed Puzzle!!"),
                       )
                     : const LoadingWidget();
               }),

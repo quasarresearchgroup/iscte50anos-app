@@ -9,7 +9,11 @@ import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:logger/logger.dart';
 
 class PuzzlePage extends StatefulWidget {
-  PuzzlePage({Key? key, required this.image, required this.constraints})
+  PuzzlePage(
+      {Key? key,
+      required this.image,
+      required this.constraints,
+      required this.completeCallback})
       : super(key: key);
   final Logger _logger = Logger();
   static const pageRoute = "/puzzle";
@@ -18,6 +22,7 @@ class PuzzlePage extends StatefulWidget {
   final int cols = 5;
   final Image image;
   final BoxConstraints constraints;
+  final Function completeCallback;
 
   @override
   _PuzzlePageState createState() => _PuzzlePageState();
@@ -76,8 +81,8 @@ class _PuzzlePageState extends State<PuzzlePage>
     List<Point> storedPositions = [];
     for (var element in storedPuzzlePieces) {
       storedPuzzlePieceWidgets.add(
-        element.getWidget(
-            img, imageSize, bringToTop, sendToBack, widget.constraints),
+        element.getWidget(img, imageSize, bringToTop, sendToBack,
+            widget.constraints, widget.completeCallback),
       );
       storedPositions.add(Point(element.row, element.column));
     }
@@ -90,6 +95,7 @@ class _PuzzlePageState extends State<PuzzlePage>
       rows: widget.rows,
       cols: widget.cols,
       constraints: widget.constraints,
+      completeCallback: widget.completeCallback,
     ))
             .where((PuzzlePieceWidget element) {
       Point<int> point = Point(element.row, element.col);

@@ -15,6 +15,7 @@ class PuzzlePieceWidget extends StatefulWidget {
   final Function sendToBack;
   final bool snapInPlace;
   final BoxConstraints constraints;
+  final Function completeCallback;
 
   final int row;
   final int col;
@@ -39,6 +40,7 @@ class PuzzlePieceWidget extends StatefulWidget {
     this.top,
     this.left,
     this.movable,
+    required this.completeCallback,
   }) : super(key: key);
 
   @override
@@ -173,5 +175,10 @@ class PuzzlePieceWidgetState extends State<PuzzlePieceWidget> {
       top: top!,
       left: left!,
     ));
+    DatabasePuzzlePieceTable.getAll().then((List<PuzzlePiece> value) {
+      if (value.length == (widget.maxRow * widget.maxCol)) {
+        widget.completeCallback();
+      }
+    });
   }
 }
