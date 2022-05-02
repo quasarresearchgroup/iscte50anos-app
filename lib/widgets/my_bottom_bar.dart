@@ -35,29 +35,34 @@ class _MyBottomBarState extends State<MyBottomBar> {
         topLeft: IscteTheme.appbarRadius,
         topRight: IscteTheme.appbarRadius,
       ),
-      child: BottomNavigationBar(
-        currentIndex: widget.tabController.index,
-        type: BottomNavigationBarType.shifting,
-        selectedItemColor: Theme.of(context).selectedRowColor,
-        unselectedItemColor: Theme.of(context).unselectedWidgetColor,
-        elevation: 8,
-        onTap: changePage,
-        enableFeedback: true,
-        iconSize: 30,
-        selectedFontSize: 13,
-        unselectedFontSize: 10,
-        items: [
-          BottomNavigationBarItem(
-            icon: const Icon(Icons.home),
-            label: AppLocalizations.of(context)!.mainMenu,
-            backgroundColor: Theme.of(context).primaryColor,
-          ),
-          BottomNavigationBarItem(
-              icon: const Icon(Icons.search),
-              backgroundColor: Theme.of(context).primaryColor,
-              label: AppLocalizations.of(context)!.scanCodeButton),
-        ],
-      ),
+      child: BottomAppBar(
+          shape:
+              const CircularNotchedRectangle(), // ← carves notch for FAB in BottomAppBar
+          color: Theme.of(context).primaryColor,
+          // ↑ use .withAlpha(0) to debug/peek underneath ↑ BottomAppBar
+          elevation: 0, // ← removes slight shadow under FAB, hardly noticeable
+          // ↑ default elevation is 8. Peek it by setting color ↑ alpha to 0
+          child: BottomNavigationBar(
+            backgroundColor: Theme.of(context).primaryColor.withOpacity(0),
+            selectedItemColor: Theme.of(context).selectedRowColor,
+            unselectedItemColor: Theme.of(context).unselectedWidgetColor,
+            onTap: changePage,
+            enableFeedback: true,
+            iconSize: 30,
+            selectedFontSize: 13,
+            unselectedFontSize: 10,
+            items: [
+              BottomNavigationBarItem(
+                icon: const Icon(Icons.home),
+                label: AppLocalizations.of(context)!.mainMenu,
+                //backgroundColor: Theme.of(context).primaryColor,
+              ),
+              BottomNavigationBarItem(
+                  icon: const Icon(Icons.search),
+                  //backgroundColor: Theme.of(context).primaryColor,
+                  label: AppLocalizations.of(context)!.scanCodeButton),
+            ],
+          )),
     );
   }
 }

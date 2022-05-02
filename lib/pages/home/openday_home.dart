@@ -6,7 +6,9 @@ import 'package:iscte_spots/models/database/tables/database_puzzle_piece_table.d
 import 'package:iscte_spots/pages/home/puzzle/puzzle_page.dart';
 import 'package:iscte_spots/pages/home/scanPage/openday_qr_scan_page.dart';
 import 'package:iscte_spots/pages/home/sucess_scan_widget.dart';
+import 'package:iscte_spots/pages/leaderboard/leaderboard_screen.dart';
 import 'package:iscte_spots/services/openday/openday_qr_scan_service.dart';
+import 'package:iscte_spots/services/profile/profile_service.dart';
 import 'package:iscte_spots/services/shared_prefs_service.dart';
 import 'package:iscte_spots/widgets/my_bottom_bar.dart';
 import 'package:iscte_spots/widgets/nav_drawer/navigation_drawer_openday.dart';
@@ -33,6 +35,7 @@ class _HomeOpenDayState extends State<HomeOpenDay>
   Image? currentPuzzleImage;
   bool _loading = false;
   bool _showSucessPage = false;
+  late Future<Map> futureProfile;
   final ValueNotifier<bool> _completedAllPuzzlesBool =
       SharedPrefsService().allPuzzleCompleteState;
   late final ConfettiController _confettiController;
@@ -63,7 +66,7 @@ class _HomeOpenDayState extends State<HomeOpenDay>
         }
       },
     );
-
+    futureProfile = ProfileService().fetchProfile();
     initFunc();
   }
 
@@ -113,14 +116,25 @@ class _HomeOpenDayState extends State<HomeOpenDay>
   Widget build(BuildContext context) {
     return ValueListenableBuilder<bool>(
       valueListenable: _completedAllPuzzlesBool,
-      builder: (BuildContext context, bool value, _) {
+      builder: (BuildContext context, bool challengeCompleteBool, _) {
         return Scaffold(
           extendBodyBehindAppBar: true,
           extendBody: true,
           drawer: const NavigationDrawerOpenDay(),
           appBar: AppBar(
-            title: const Text("OpenDay Home"),
-            actions: value
+            title: FutureBuilder<Map>(
+                future: futureProfile,
+                builder: (BuildContext context, AsyncSnapshot<Map> snapshot) {
+                  String spots;
+                  if (snapshot.hasData) {
+                    var profile = snapshot.data as Map;
+                    spots = "nº " + profile["num_spots_read"].toString();
+                  } else {
+                    spots = "";
+                  }
+                  return Text("Puzzle $spots");
+                }),
+            actions: challengeCompleteBool
                 ? null
                 : [
                     Padding(
@@ -135,13 +149,16 @@ class _HomeOpenDayState extends State<HomeOpenDay>
                     ),
                   ],
           ),
-          floatingActionButton: FloatingActionButton(onPressed: () {
-            widget._logger.i("playing confettis");
-            setState(() {
-              _showSucessPage = true;
-            });
-          }),
-          bottomNavigationBar: value
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerDocked,
+          floatingActionButton: FloatingActionButton(
+              backgroundColor: Theme.of(context).primaryColor,
+              child: const Icon(Icons.score, size: 30),
+              foregroundColor: Theme.of(context).unselectedWidgetColor,
+              onPressed: () {
+                Navigator.of(context).pushNamed(LeaderBoardPage.pageRoute);
+              }),
+          bottomNavigationBar: challengeCompleteBool
               ? Container()
               : MyBottomBar(
                   tabController: _tabController,
@@ -149,7 +166,7 @@ class _HomeOpenDayState extends State<HomeOpenDay>
                 ),
           body: AnimatedSwitcher(
             duration: const Duration(milliseconds: 500),
-            child: value
+            child: challengeCompleteBool
                 ? CompletedChallengeWidget()
                 : _showSucessPage
                     ? SucessScanWidget(
@@ -201,24 +218,29 @@ class CompletedChallengeWidget extends StatefulWidget {
 }
 
 class _CompletedChallengeWidgetState extends State<CompletedChallengeWidget>
-    with TickerProviderStateMixin {
-  bool _loading = false;
+    with SingleTickerProviderStateMixin {
+  bool _loading = true;
+  late AnimationController _animationController;
+
+  @override
+  void dispose() {
+    super.dispose();
+    _animationController.dispose();
+  }
+
+  @override
+  void initState() {
+    _animationController =
+        AnimationController(vsync: this, duration: const Duration(seconds: 1));
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     widget._logger.d("built CompletedChallengeWidget");
     return Center(
-      child: Lottie.asset("Resources/Lotties/thank-you-with-confetti.json",
-          controller: AnimationController(
-            vsync: this,
-            duration: const Duration(seconds: 3),
-          )..forward(),
-          repeat: true, onLoaded: (LottieComposition composition) {
-        setState(() {
-          widget._logger.d("CompletedChallengeWidget loaded lottie");
-          _loading = false;
-        });
-      }),
-    );
+        child: Lottie.asset(
+      "Resources/Lotties/thank-you-with-confetti.json",
+    ));
   }
 }

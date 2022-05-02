@@ -5,16 +5,16 @@ class OnboardTile extends StatefulWidget {
     Key? key,
     required this.color,
     required this.bottomSheetHeight,
-    required this.child,
-    required this.imageLink,
-    required this.title,
+    required this.bottom,
+    required this.center,
+    required this.top,
   }) : super(key: key);
 
   Color color;
   double bottomSheetHeight;
-  Widget child;
-  String imageLink;
-  String title;
+  Widget bottom;
+  Widget center;
+  Widget top;
 
   @override
   State<OnboardTile> createState() => _OnboardTileState();
@@ -42,33 +42,32 @@ class _OnboardTileState extends State<OnboardTile> {
     const Duration opacityAnimationDuration = const Duration(milliseconds: 500);
     return Container(
       color: widget.color,
-      child: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.only(
-              left: 20.0, right: 20.0, bottom: widget.bottomSheetHeight),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              AnimatedOpacity(
-                duration: opacityAnimationDuration,
-                opacity: textOpacity[0],
-                child: Text(
-                  widget.title,
-                  textScaleFactor: 2,
+      child: SingleChildScrollView(
+        child: SafeArea(
+          child: Padding(
+            padding: EdgeInsets.only(
+                left: 20.0, right: 20.0, bottom: widget.bottomSheetHeight),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                AnimatedOpacity(
+                  duration: opacityAnimationDuration,
+                  opacity: textOpacity[0],
+                  child: widget.top,
                 ),
-              ),
-              AnimatedOpacity(
-                duration: opacityAnimationDuration,
-                opacity: textOpacity[1],
-                child: Image.asset(widget.imageLink),
-              ),
-              AnimatedOpacity(
-                duration: opacityAnimationDuration,
-                opacity: textOpacity[2],
-                child: widget.child,
-              ),
-            ],
+                AnimatedOpacity(
+                  duration: opacityAnimationDuration,
+                  opacity: textOpacity[1],
+                  child: widget.center,
+                ),
+                AnimatedOpacity(
+                  duration: opacityAnimationDuration,
+                  opacity: textOpacity[2],
+                  child: widget.bottom,
+                ),
+              ],
+            ),
           ),
         ),
       ),

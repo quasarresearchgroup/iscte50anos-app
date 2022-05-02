@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
       darkTheme: IscteTheme.darkThemeData,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      home: const SplashScreen(),
+      home: SplashScreen(),
       onGenerateRoute: (settings) {
         Widget widget = PageRouteExtension.factory(settings.name ?? "")
             .widget(settings.arguments);
