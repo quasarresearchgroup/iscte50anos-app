@@ -43,6 +43,7 @@ class _MyBottomBarState extends State<MyBottomBar> {
           elevation: 0, // ← removes slight shadow under FAB, hardly noticeable
           // ↑ default elevation is 8. Peek it by setting color ↑ alpha to 0
           child: BottomNavigationBar(
+            currentIndex: widget.tabController.index,
             backgroundColor: Theme.of(context).primaryColor.withOpacity(0),
             selectedItemColor: Theme.of(context).selectedRowColor,
             unselectedItemColor: Theme.of(context).unselectedWidgetColor,

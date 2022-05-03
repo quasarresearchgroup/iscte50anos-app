@@ -53,11 +53,17 @@ class OpenDayNotificationService {
     _logger.i("Inserted overlay: $data");
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        duration: const Duration(milliseconds: 500),
+        //duration: const Duration(seconds: 1),
         backgroundColor: Theme.of(context).errorColor,
+        action: SnackBarAction(
+            label: 'Dismiss',
+            onPressed: () {
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+            }),
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(20)),
         ),
+
         content: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -74,8 +80,13 @@ class OpenDayNotificationService {
     _logger.i("Inserted overlay: $data");
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        duration: const Duration(milliseconds: 500),
+        //duration: const Duration(seconds: 1),
         backgroundColor: Colors.green,
+        action: SnackBarAction(
+            label: 'Dismiss',
+            onPressed: () {
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+            }),
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(20)),
         ),

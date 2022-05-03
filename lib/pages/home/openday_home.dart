@@ -36,6 +36,7 @@ class _HomeOpenDayState extends State<HomeOpenDay>
   late TabController _tabController;
   Image? currentPuzzleImage;
   bool _loading = false;
+  bool _scanning = false;
   bool _showSucessPage = false;
   late Future<Map> futureProfile;
   final ValueNotifier<bool> _completedAllPuzzlesBool =
@@ -106,6 +107,7 @@ class _HomeOpenDayState extends State<HomeOpenDay>
         futureProfile = ProfileService().fetchProfile();
       });
       _tabController.animateTo(widget.puzzleIndex);
+      setState(() => _scanning = _tabController.index == widget.puzzleIndex);
     }
   }
 
@@ -113,6 +115,7 @@ class _HomeOpenDayState extends State<HomeOpenDay>
     bool _completedAllPuzzleState =
         await SharedPrefsService.storeCompletedAllPuzzles();
     _tabController.animateTo(widget.puzzleIndex);
+    setState(() => _scanning = _tabController.index == widget.puzzleIndex);
   }
 
   @override
@@ -137,7 +140,7 @@ class _HomeOpenDayState extends State<HomeOpenDay>
                   }
                   return Text("Puzzle $spots");
                 }),
-            actions: challengeCompleteBool
+            actions: challengeCompleteBool || _scanning
                 ? null
                 : [
                     Padding(

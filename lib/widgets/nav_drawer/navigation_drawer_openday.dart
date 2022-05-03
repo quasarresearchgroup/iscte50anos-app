@@ -80,7 +80,7 @@ class NavigationDrawerOpenDay extends StatelessWidget {
             title: const Text('Onboarding'),
             onTap: () {
               //PageRoutes.animateToPage(context, page: OnboardingPage());
-              Navigator.of(context).popAndPushNamed(OnboardingPage.pageRoute);
+              Navigator.of(context).pushNamed(OnboardingPage.pageRoute);
             },
           )
         ],

@@ -115,7 +115,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage>
         ),
       )),
       home:*/
-        return Scaffold(
+    return Scaffold(
       appBar: AppBar(
         title: const Text(
             "Leaderboard"), //AppLocalizations.of(context)!.quizPageTitle)
@@ -138,7 +138,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage>
         ),
         child: BottomNavigationBar(
           //type: BottomNavigationBarType.shifting,
-          type: BottomNavigationBarType.shifting,
+          type: BottomNavigationBarType.fixed,
           backgroundColor: Theme.of(context).primaryColor,
           selectedItemColor: Theme.of(context).selectedRowColor,
           unselectedItemColor: Theme.of(context).unselectedWidgetColor,
@@ -164,7 +164,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage>
           ],
         ),
       ),
-      );
+    );
   }
 }
 
@@ -346,7 +346,6 @@ class GlobalLeaderboard extends StatelessWidget {
 
   Future<List<dynamic>> fetchLeaderboard() async {
     try {
-
       String? apiToken = await secureStorage.read(key: "backend_api_key");
 
       HttpClient client = HttpClient();
