@@ -35,8 +35,6 @@ class _HomeOpenDayState extends State<HomeOpenDay>
     with TickerProviderStateMixin {
   late TabController _tabController;
   Image? currentPuzzleImage;
-  bool _loading = false;
-  bool _scanning = false;
   bool _showSucessPage = false;
   late Future<Map> futureProfile;
   late Future<String> currentPemit;
@@ -83,7 +81,7 @@ class _HomeOpenDayState extends State<HomeOpenDay>
   }
 
   rerfeshPermit() {
-    var newPermit = OpenDayQRScanService.spotRequest();
+    Future<String> newPermit = OpenDayQRScanService.spotRequest();
     setState(() {
       currentPemit = newPermit;
     });
@@ -100,7 +98,6 @@ class _HomeOpenDayState extends State<HomeOpenDay>
         futureProfile = ProfileService().fetchProfile();
       });
       _tabController.animateTo(widget.puzzleIndex);
-      setState(() => _scanning = _tabController.index == widget.puzzleIndex);
     }
   }
 
@@ -108,7 +105,6 @@ class _HomeOpenDayState extends State<HomeOpenDay>
     bool _completedAllPuzzleState =
         await SharedPrefsService.storeCompletedAllPuzzles();
     _tabController.animateTo(widget.puzzleIndex);
-    setState(() => _scanning = _tabController.index == widget.puzzleIndex);
   }
 
   @override
@@ -133,7 +129,7 @@ class _HomeOpenDayState extends State<HomeOpenDay>
                   }
                   return Text("Puzzle $spots");
                 }),
-            actions: challengeCompleteBool || _scanning
+            actions: challengeCompleteBool
                 ? null
                 : [
                     Padding(
@@ -195,15 +191,19 @@ class _HomeOpenDayState extends State<HomeOpenDay>
                                     future: currentPemit,
                                     builder: (context, snapshot) {
                                       if (snapshot.hasData) {
+                                        if (OpenDayQRScanService.isError(
+                                            snapshot.data!)) {
+                                          return buildErrorWidget();
+                                        }
+                                        currentPuzzleImage =
+                                            Image.network(snapshot.data!);
                                         return PuzzlePage(
                                           image: Image.network(snapshot.data!),
                                           constraints: constraints,
                                           completeCallback: () {
                                             widget._logger
                                                 .d("Completed Puzzle!!");
-                                            setState(() {
-                                              _confettiController.play();
-                                            });
+                                            _confettiController.play();
                                           },
                                         );
                                       } else if (snapshot.hasError) {
@@ -231,8 +231,12 @@ class _HomeOpenDayState extends State<HomeOpenDay>
 
   GestureDetector buildErrorWidget() {
     return GestureDetector(
-      onTap: rerfeshPermit(),
+      onTap: () {
+        rerfeshPermit();
+      },
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const Icon(
             Icons.error_outline,

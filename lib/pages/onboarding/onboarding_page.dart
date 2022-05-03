@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/pages/onboarding/bottom_onboard.dart';
 import 'package:iscte_spots/pages/onboarding/onboard_tile.dart';
 import 'package:iscte_spots/pages/onboarding/skip_onboard_button.dart';
@@ -37,7 +38,7 @@ class _OnboardingPageState extends State<OnboardingPage>
             //"https://assets8.lottiefiles.com/packages/lf20_97qzkt8d.json"),
             "https://assets1.lottiefiles.com/packages/lf20_z7bpt8g7.json"),
         top: Text(
-          "Acesso à app",
+          AppLocalizations.of(context)!.logOutButton,
           textScaleFactor: 2,
         ),
         bottomSheetHeight: bottomSheetHeight,
