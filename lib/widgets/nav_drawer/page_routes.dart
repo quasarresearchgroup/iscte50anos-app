@@ -85,7 +85,9 @@ extension PageRouteExtension on PageRoute {
       case PageRoute.SETTINGS:
         return SettingsPage();
       case PageRoute.ONBOARD:
-        return OnboardingPage();
+        return OnboardingPage(
+          onLaunch: false,
+        );
     }
   }
 }

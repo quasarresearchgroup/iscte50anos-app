@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:iscte_spots/pages/profile/profile_screen.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:iscte_spots/widgets/util/constants.dart';
 
 class ProfileService {
   static final ProfileService _instance = ProfileService._internal();
@@ -16,13 +17,14 @@ class ProfileService {
 
   Future<Map> fetchProfile() async {
     try {
-      String? apiToken = await secureStorage.read(key: "backend_api_key");
+      const FlutterSecureStorage secureStorage = FlutterSecureStorage();
 
       HttpClient client = HttpClient();
       client.badCertificateCallback =
           ((X509Certificate cert, String host, int port) => true);
-      final request =
-          await client.getUrl(Uri.parse('$API_ADDRESS/api/users/profile'));
+      final request = await client.getUrl(
+          Uri.parse('${BackEndConstants.API_ADDRESS}/api/users/profile'));
+      String? apiToken = await secureStorage.read(key: "backend_api_key");
       request.headers.add("Authorization", "Token $apiToken");
 
       final response = await request.close();

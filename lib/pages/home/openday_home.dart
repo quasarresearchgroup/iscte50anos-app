@@ -39,6 +39,7 @@ class _HomeOpenDayState extends State<HomeOpenDay>
   bool _scanning = false;
   bool _showSucessPage = false;
   late Future<Map> futureProfile;
+  late Future<String> currentPemit;
   final ValueNotifier<bool> _completedAllPuzzlesBool =
       SharedPrefsService().allPuzzleCompleteState;
   late final ConfettiController _confettiController;
@@ -70,7 +71,8 @@ class _HomeOpenDayState extends State<HomeOpenDay>
       },
     );
     futureProfile = ProfileService().fetchProfile();
-    initFunc();
+    currentPemit = OpenDayQRScanService.spotRequest();
+//    initFunc();
   }
 
   @override
@@ -80,20 +82,10 @@ class _HomeOpenDayState extends State<HomeOpenDay>
     _lottieController.dispose();
   }
 
-  void initFunc() async {
+  rerfeshPermit() {
+    var newPermit = OpenDayQRScanService.spotRequest();
     setState(() {
-      _loading = true;
-    });
-    await _setupInitialImage();
-    setState(() {
-      _loading = false;
-    });
-  }
-
-  Future<void> _setupInitialImage() async {
-    String currentPemit = await OpenDayQRScanService.spotRequest();
-    setState(() {
-      currentPuzzleImage = Image.network(currentPemit);
+      currentPemit = newPermit;
     });
   }
 
@@ -101,8 +93,9 @@ class _HomeOpenDayState extends State<HomeOpenDay>
     widget._logger.d("changin imag: $imageLink");
     if (!OpenDayQRScanService.isError(imageLink)) {
       DatabasePuzzlePieceTable.removeALL();
+      rerfeshPermit();
       setState(() {
-        currentPuzzleImage = Image.network(imageLink);
+        //currentPuzzleImage = Image.network(imageLink);
         _showSucessPage = true;
         futureProfile = ProfileService().fetchProfile();
       });
@@ -126,7 +119,7 @@ class _HomeOpenDayState extends State<HomeOpenDay>
         return Scaffold(
           extendBodyBehindAppBar: true,
           extendBody: true,
-          drawer: const NavigationDrawerOpenDay(),
+          drawer: NavigationDrawerOpenDay(),
           appBar: AppBar(
             title: FutureBuilder<Map>(
                 future: futureProfile,
@@ -190,44 +183,75 @@ class _HomeOpenDayState extends State<HomeOpenDay>
                   physics: const NeverScrollableScrollPhysics(),
                   controller: _tabController,
                   children: [
-                    _loading || currentPuzzleImage == null
-                        ? const LoadingWidget()
-                        : Center(
-                            child: Padding(
-                              padding: const EdgeInsets.all(40.0),
-                              child: LayoutBuilder(
-                                builder: (BuildContext context,
-                                    BoxConstraints constraints) {
-                                  return (currentPuzzleImage != null)
-                                      ? Stack(
-                                          children: [
-                                            PuzzlePage(
-                                              image: currentPuzzleImage!,
-                                              constraints: constraints,
-                                              completeCallback: () {
-                                                widget._logger
-                                                    .d("Completed Puzzle!!");
-                                                setState(() {
-                                                  _confettiController.play();
-                                                });
-                                              },
-                                            ),
-                                            IscteConfetti(
-                                                confettiController:
-                                                    _confettiController)
-                                          ],
-                                        )
-                                      : const LoadingWidget();
-                                },
-                              ),
-                            ),
-                          ),
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(40.0),
+                        child: LayoutBuilder(
+                          builder: (BuildContext context,
+                              BoxConstraints constraints) {
+                            return Stack(
+                              children: [
+                                FutureBuilder<String>(
+                                    future: currentPemit,
+                                    builder: (context, snapshot) {
+                                      if (snapshot.hasData) {
+                                        return PuzzlePage(
+                                          image: Image.network(snapshot.data!),
+                                          constraints: constraints,
+                                          completeCallback: () {
+                                            widget._logger
+                                                .d("Completed Puzzle!!");
+                                            setState(() {
+                                              _confettiController.play();
+                                            });
+                                          },
+                                        );
+                                      } else if (snapshot.hasError) {
+                                        return buildErrorWidget();
+                                      } else {
+                                        return LoadingWidget();
+                                      }
+                                    }),
+                                IscteConfetti(
+                                    confettiController: _confettiController)
+                              ],
+                            );
+                          },
+                        ),
+                      ),
+                    ),
                     QRScanPageOpenDay(
                       changeImage: _changeCurrentImage,
                       completedAllPuzzle: _completedAllPuzzles,
                     )
                   ],
                 ),
+    );
+  }
+
+  GestureDetector buildErrorWidget() {
+    return GestureDetector(
+      onTap: rerfeshPermit(),
+      child: Column(
+        children: [
+          const Icon(
+            Icons.error_outline,
+            color: Colors.red,
+            size: 60,
+          ),
+          const Padding(
+            padding: EdgeInsets.only(top: 10),
+            child: Text('Ocorreu um erro a descarregar os dados'),
+          ),
+          const Padding(
+            padding: EdgeInsets.all(5.0),
+            child: Text(
+              'Tocar aqui para recarregar',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+          )
+        ],
+      ),
     );
   }
 }

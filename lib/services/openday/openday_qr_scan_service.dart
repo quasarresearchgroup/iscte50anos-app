@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
-import 'package:iscte_spots/pages/profile/profile_screen.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:iscte_spots/services/auth/auth_service.dart';
 import 'package:iscte_spots/widgets/util/constants.dart';
 import 'package:logger/logger.dart';
@@ -96,6 +96,8 @@ class OpenDayQRScanService {
 
   static Future<String> spotRequest({Barcode? barcode}) async {
     _logger.d("started request at ${DateTime.now()}\t${barcode?.code}");
+    const FlutterSecureStorage secureStorage = FlutterSecureStorage();
+
     String? apiToken =
         await secureStorage.read(key: AuthService.backendApiKeyStorageLocation);
     if (apiToken == null) {
@@ -125,13 +127,16 @@ class OpenDayQRScanService {
       if (responseDecoded["location_photo_link"] != null) {
         _logger.d(
             "${responseDecoded["location_photo_link"]} ${responseDecoded["description"]}");
+
         return responseDecoded["location_photo_link"];
       } else if (responseDecoded["message"] != null) {
         var responseDecoded2 = responseDecoded["message"] as String;
+
+        _logger.d(responseDecoded2);
         return responseDecoded2;
       }
     } on SocketException {
-      _logger.e("Soccket Exception");
+      _logger.e("Socket Exception");
       return connectionError;
     } catch (e) {
       _logger.e(e);

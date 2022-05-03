@@ -13,6 +13,8 @@ class BottomSheetOnboard extends StatelessWidget {
   var changePage;
   var textStyle;
 
+  bool onLaunch;
+
   BottomSheetOnboard({
     Key? key,
     required this.bottomSheetHeight,
@@ -22,6 +24,7 @@ class BottomSheetOnboard extends StatelessWidget {
     required this.currentPage,
     required this.changePage,
     required this.textStyle,
+    required this.onLaunch,
   }) : super(key: key);
 
   List<Widget> _buildPageIndicator() {
@@ -83,8 +86,9 @@ class BottomSheetOnboard extends StatelessWidget {
                   textStyle: textStyle,
                 )
               : GetStartedOnboard(
+                  onLaunch: onLaunch,
                   //key: ValueKey(_currentPage),
-                  )),
+                )),
     );
   }
 }

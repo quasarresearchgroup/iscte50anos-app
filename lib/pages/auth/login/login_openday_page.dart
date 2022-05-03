@@ -31,9 +31,14 @@ class _LoginOpendayState extends State<LoginOpendayPage>
 
   bool _hidePassword = true;
   bool _loginError = false;
+  bool _generalError = false;
   bool _isLoading = false;
 
-  String? get _errorText => _loginError ? "Invalid Credentials" : null;
+  String? get _errorText => _generalError
+      ? "Unknown Error"
+      : _loginError
+          ? "Invalid Credentials"
+          : null;
 
   String? loginValidator(String? value) {
     if (value == null || value.isEmpty) {
@@ -65,11 +70,7 @@ class _LoginOpendayState extends State<LoginOpendayPage>
           hint: "Password",
           errorText: _errorText,
           suffixIcon: IconButton(
-            onPressed: () {
-              setState(() {
-                _hidePassword = !_hidePassword;
-              });
-            },
+            onPressed: () => setState(() => _hidePassword = !_hidePassword),
             icon: AnimatedSwitcher(
               duration: Duration(milliseconds: 500),
               child: Icon(
@@ -93,8 +94,8 @@ class _LoginOpendayState extends State<LoginOpendayPage>
         style:
             ElevatedButton.styleFrom(primary: Theme.of(context).primaryColor),
         child: const Text("Login"),
-        onPressed: () async {
-          await _loginAction();
+        onPressed: () {
+          _loginAction();
         },
       ),
     ];
@@ -103,22 +104,29 @@ class _LoginOpendayState extends State<LoginOpendayPage>
   Future<void> _loginAction() async {
     setState(() {
       _loginError = false;
+      _generalError = false;
       _isLoading = true;
     });
-    if (_loginFormkey.currentState!.validate()) {
-      int statusCode = await OpenDayLoginService.login(
-        LoginFormResult(
-          username: widget.userNameController.text,
-          password: widget.passwordController.text,
-        ),
-      );
-      if (statusCode == 200) {
-        widget.loggingComplete();
-      } else {
-        setState(() {
-          _loginError = true;
-        });
+    try {
+      if (_loginFormkey.currentState!.validate()) {
+        int statusCode = await OpenDayLoginService.login(
+          LoginFormResult(
+            username: widget.userNameController.text,
+            password: widget.passwordController.text,
+          ),
+        );
+        if (statusCode == 200) {
+          widget.loggingComplete();
+        } else {
+          setState(() {
+            _loginError = true;
+          });
+        }
       }
+    } catch (e) {
+      setState(() {
+        _generalError = true;
+      });
     }
     setState(() {
       _isLoading = false;
@@ -135,7 +143,7 @@ class _LoginOpendayState extends State<LoginOpendayPage>
       child: _isLoading
           ? const LoadingWidget()
           : Padding(
-              padding: const EdgeInsets.only(bottom: 10),
+              padding: const EdgeInsets.only(bottom: 10, left: 15, right: 15),
               child: Form(
                 key: _loginFormkey,
                 child: Column(
@@ -149,7 +157,7 @@ class _LoginOpendayState extends State<LoginOpendayPage>
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [...formFields, ...formButtons]),
                     ),
-                    Flexible(
+/*                    Flexible(
                       flex: 1,
                       child: Column(
                         children: [
@@ -165,7 +173,7 @@ class _LoginOpendayState extends State<LoginOpendayPage>
                               }),
                         ],
                       ),
-                    ),
+                    ),*/
                   ],
                 ),
               ),

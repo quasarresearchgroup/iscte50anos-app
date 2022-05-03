@@ -7,8 +7,10 @@ import 'package:logger/logger.dart';
 class GetStartedOnboard extends StatelessWidget {
   GetStartedOnboard({
     Key? key,
+    required this.onLaunch,
   }) : super(key: key);
 
+  bool onLaunch;
   final Logger _logger = Logger();
 
   @override
@@ -18,7 +20,11 @@ class GetStartedOnboard extends StatelessWidget {
         _logger.i('Tapped on Get started');
         OnboadingService.storeOnboard();
         //PageRoutes.animateToPage(context, page: const AuthPage());
-        Navigator.pushNamed(context, AuthPage.pageRoute);
+        if (onLaunch) {
+          Navigator.popAndPushNamed(context, AuthPage.pageRoute);
+        } else {
+          Navigator.pushNamed(context, AuthPage.pageRoute);
+        }
       },
       child: SizedBox.expand(
         child: Container(

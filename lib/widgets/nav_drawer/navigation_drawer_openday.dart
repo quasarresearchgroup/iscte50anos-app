@@ -11,9 +11,7 @@ import 'package:iscte_spots/services/auth/openday_login_service.dart';
 import 'package:iscte_spots/widgets/splashScreen/shake.dart';
 
 class NavigationDrawerOpenDay extends StatelessWidget {
-  const NavigationDrawerOpenDay({
-    Key? key,
-  }) : super(key: key);
+  NavigationDrawerOpenDay({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +78,8 @@ class NavigationDrawerOpenDay extends StatelessWidget {
             title: const Text('Onboarding'),
             onTap: () {
               //PageRoutes.animateToPage(context, page: OnboardingPage());
-              Navigator.of(context).pushNamed(OnboardingPage.pageRoute);
+
+              Navigator.of(context).popAndPushNamed(OnboardingPage.pageRoute);
             },
           )
         ],

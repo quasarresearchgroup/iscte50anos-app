@@ -2,13 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:iscte_spots/services/device_service.dart';
 import 'package:iscte_spots/services/profile/profile_service.dart';
 import 'package:logger/logger.dart';
 
-const FlutterSecureStorage secureStorage = FlutterSecureStorage();
-const API_ADDRESS = "https://194.210.120.48";
+//const API_ADDRESS = "https://194.210.120.48";
 
 // FOR ISOLATED TESTING
 void main() {

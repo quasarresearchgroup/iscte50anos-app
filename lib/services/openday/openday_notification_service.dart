@@ -14,7 +14,7 @@ class OpenDayNotificationService {
     _openDayErrorSnackbar(
       context: context,
       data: "No Wifi",
-      icon: const Icon(Icons.wifi_off),
+      icon: Icon(Icons.wifi_off, color: Theme.of(context).selectedRowColor),
     );
   }
 
@@ -57,6 +57,7 @@ class OpenDayNotificationService {
         backgroundColor: Theme.of(context).errorColor,
         action: SnackBarAction(
             label: 'Dismiss',
+            textColor: Theme.of(context).selectedRowColor,
             onPressed: () {
               ScaffoldMessenger.of(context).hideCurrentSnackBar();
             }),
@@ -67,8 +68,11 @@ class OpenDayNotificationService {
         content: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Text(data),
-            icon ?? const FaIcon(FontAwesomeIcons.faceSadTear),
+            Text(data,
+                style: TextStyle(color: Theme.of(context).selectedRowColor)),
+            icon ??
+                FaIcon(FontAwesomeIcons.faceSadTear,
+                    color: Theme.of(context).selectedRowColor),
           ],
         ),
       ),
@@ -84,6 +88,7 @@ class OpenDayNotificationService {
         backgroundColor: Colors.green,
         action: SnackBarAction(
             label: 'Dismiss',
+            textColor: Theme.of(context).selectedRowColor,
             onPressed: () {
               ScaffoldMessenger.of(context).hideCurrentSnackBar();
             }),
@@ -93,8 +98,12 @@ class OpenDayNotificationService {
         content: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Text(data),
-            const FaIcon(FontAwesomeIcons.faceSmile),
+            Text(
+              data,
+              style: TextStyle(color: Theme.of(context).selectedRowColor),
+            ),
+            FaIcon(FontAwesomeIcons.faceSmile,
+                color: Theme.of(context).selectedRowColor),
           ],
         ),
       ),

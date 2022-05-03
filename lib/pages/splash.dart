@@ -30,7 +30,9 @@ class _SplashScreenState extends State<SplashScreen> {
         ? HomeOpenDay()
         : _isOnboarded
             ? AuthPage()
-            : OnboardingPage();
+            : OnboardingPage(
+                onLaunch: true,
+              );
   }
 
   @override

@@ -61,8 +61,8 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
       (status) {
         widget._logger.d("listenning to complete login animation $status");
         if (status == AnimationStatus.completed) {
-          Future.delayed(const Duration(milliseconds: 500)).then(
-              (value) => Navigator.pushNamed(context, HomeOpenDay.pageRoute));
+          Future.delayed(const Duration(milliseconds: 500)).then((value) =>
+              Navigator.popAndPushNamed(context, HomeOpenDay.pageRoute));
         }
       },
     );

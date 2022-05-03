@@ -39,7 +39,7 @@ class OpenDayLoginService {
       );
     } else {
       _logger.e(
-          "statusCode: ${response.statusCode} on login response: $decodedResponse");
+          "statusCode: ${response.statusCode} with login response: $decodedResponse");
     }
     return response.statusCode;
   }
@@ -65,9 +65,34 @@ class OpenDayLoginService {
   }
 
   static Future<void> logOut(BuildContext context) async {
-    await AuthService.deleteUserCredentials();
-    await OnboadingService.removeOnboard();
-    Navigator.of(context).pushReplacementNamed(AuthPage.pageRoute);
+    _logger.d("Logging Out User:");
+    const FlutterSecureStorage secureStorage = FlutterSecureStorage();
+
+    HttpClient client = HttpClient();
+    client.badCertificateCallback =
+        ((X509Certificate cert, String host, int port) => true);
+
+    final HttpClientRequest request = await client
+        .postUrl(Uri.parse('${BackEndConstants.API_ADDRESS}/api/auth/logout'));
+
+    String? apiToken = await secureStorage.read(key: "backend_api_key");
+    request.headers.add("Authorization", "Token $apiToken");
+
+    request.headers.set('content-type', 'application/json');
+
+    HttpClientResponse response = await request.close();
+    var decodedResponse =
+        await jsonDecode(await response.transform(utf8.decoder).join());
+
+    if (response.statusCode == 200) {
+      await AuthService.deleteUserCredentials();
+      await OnboadingService.removeOnboard();
+      Navigator.of(context).pushReplacementNamed(AuthPage.pageRoute);
+    } else {
+      _logger.e(
+          "statusCode: ${response.statusCode} on login response: $decodedResponse");
+    }
+
     return;
   }
 }

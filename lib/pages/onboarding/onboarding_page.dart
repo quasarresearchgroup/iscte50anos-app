@@ -9,8 +9,9 @@ import 'package:lottie/lottie.dart';
 class OnboardingPage extends StatefulWidget {
   static const pageRoute = "/onboard";
 
-  OnboardingPage({Key? key}) : super(key: key);
+  OnboardingPage({Key? key, required this.onLaunch}) : super(key: key);
 
+  bool onLaunch;
   @override
   State<OnboardingPage> createState() => _OnboardingPageState();
 }
@@ -165,6 +166,7 @@ class _OnboardingPageState extends State<OnboardingPage>
           ],
         ),
         bottomSheet: BottomSheetOnboard(
+          onLaunch: widget.onLaunch,
           bottomSheetHeight: bottomSheetHeight,
           animDuration: animDuration,
           numPages: _numPages,
