@@ -1,9 +1,9 @@
 {
     "appName":"IscteSpots",
 
-    "scanCodeButton": "Digitalizar Código",
+    "scanCodeButton": "Digitalizar Spot",
     "createCode": "Criar Código",
-    "scanACode": "Digitalize um código",
+    "scanACode": "Digitalize um Spot",
     "noPages":"Ainda não visitou páginas",
     "loading":"A carregar...",
     "advance":"Avançar",
@@ -26,9 +26,39 @@
     "flickrScreen":"Flickr",
     "shakerScreen":"Shaker",
     "settingsScreen":"Definições",
-    "registerScreen":"Registrar",
+    "registerScreen":"Registar",
     "loginScreen":"Entrar",
-    "profileScreen":"Perfil"
+    "profileScreen":"Perfil",
 
+    "loginInvalidCredentials":"Credenciais inválidos",
+    "loginDontHaveAccount":"Não tens conta?",
+    "loginRegisterButton":"Regista-te!",
+    "loginAlreadyHaveAccount":"Já tens conta?",
+    "loginLoginButton":"Entra!",
+    "loginPassword":"Palavra passe",
+    "loginUsername":"Nome de Utilizador",
+
+    "next":"Próximo",
+    "back":"Voltar",
+    "dismiss":"Ok",
+    "getStarted":"Começa!",
+
+    "onboardingTitle1" : "Acesso à app",
+    "onboardingText1" : "Usa os credenciais dados pela nossa staff para poderes participar no jogo com a app.",
+
+    "onboardingTitle2" : "O jogo dos IscteSpots",
+    "onboardingText2" : "Para conheceres melhor os Spots do Iscte criámos este jogo.\nTalvez vás encontrar alguns sitios interessantes... ou alguma história sobre a nossa Universidade",
+
+    "onboardingTitle3" : "Completa o puzzle",
+    "onboardingText3" : "Usa o puzzle para perceber onde é o próximo Spot...",
+
+    "onboardingTitle4" : "Encontra o Spot",
+    "onboardingText4" : "Depois de completar o puzzle vai lá fora e procura pelo Spot da imagem!\nPergunta aos locais se te sentires perdido.",
+
+    "onboardingTitle5" : "Vê o teu ranking",
+    "onboardingText5" : "Vê como os teus colegas se estão a safar na leaderboard!\nTu consegues ser mais rápido que eles certo?",
+
+    "onboardingTitle6" : "Repete até ganhares!",
+    "onboardingText6" : "Agora faz outra vez!\nAté encontrares todos os Spots escondidos do ISCTE"
 
 }

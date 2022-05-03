@@ -4,6 +4,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/pages/onboarding/bottom_onboard.dart';
 import 'package:iscte_spots/pages/onboarding/onboard_tile.dart';
 import 'package:iscte_spots/pages/onboarding/skip_onboard_button.dart';
+import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 import 'package:logger/logger.dart';
 import 'package:lottie/lottie.dart';
 
@@ -21,82 +22,14 @@ class _OnboardingPageState extends State<OnboardingPage>
     with SingleTickerProviderStateMixin {
   final Logger _logger = Logger();
   final PageController _pageController = PageController(initialPage: 0);
-  late final int _numPages;
   int _currentPage = 0;
   final double bottomSheetHeight = 100.0;
   late final AnimationController _controller;
   late final Tween<Offset> _offsetTween;
   final Duration animDuration = const Duration(milliseconds: 500);
-  late final List<Widget> pageViewChildren;
 
   @override
   void initState() {
-    pageViewChildren = [
-      OnboardTile(
-        bottom: const Text("Usa as informações providenciadas"),
-        center: Lottie.network(
-            //"https://assets8.lottiefiles.com/packages/lf20_97qzkt8d.json"),
-            "https://assets1.lottiefiles.com/packages/lf20_z7bpt8g7.json"),
-        top: Text(
-          AppLocalizations.of(context)!.logOutButton,
-          textScaleFactor: 2,
-        ),
-        bottomSheetHeight: bottomSheetHeight,
-        color: Colors.blue,
-      ),
-      OnboardTile(
-        bottom: const Text(""),
-        center: Container(),
-        top: Text(
-          "O jogo",
-          textScaleFactor: 2,
-        ),
-        bottomSheetHeight: bottomSheetHeight,
-        color: Colors.blue,
-      ),
-      OnboardTile(
-        bottom: const Text("com"),
-        center: Lottie.network(
-            "https://assets4.lottiefiles.com/packages/lf20_1LsvAZ.json"),
-        top: Text(
-          "Completar Puzzle",
-          textScaleFactor: 2,
-        ),
-        bottomSheetHeight: bottomSheetHeight,
-        color: Colors.yellow,
-      ),
-      OnboardTile(
-        bottom: const Text(""),
-        center: Lottie.network(
-            "https://assets9.lottiefiles.com/packages/lf20_smcd09k7.json"),
-        top: Text("Encontra o Spot", textScaleFactor: 2),
-        bottomSheetHeight: bottomSheetHeight,
-        color: Colors.green,
-      ),
-      OnboardTile(
-        bottom: const Text(""),
-        center: Lottie.network(
-            "https://assets7.lottiefiles.com/packages/lf20_bq55cmov.json"),
-        top: Text(
-          "Consulta o teu rank",
-          textScaleFactor: 2,
-        ),
-        bottomSheetHeight: bottomSheetHeight,
-        color: Colors.purple,
-      ),
-      OnboardTile(
-        bottom: Text(""),
-        center: Lottie.network(
-            "https://assets1.lottiefiles.com/packages/lf20_0YHgFn.json"),
-        top: Text(
-          "Repete",
-          textScaleFactor: 2,
-        ),
-        bottomSheetHeight: bottomSheetHeight,
-        color: Colors.orange,
-      ),
-    ];
-    _numPages = pageViewChildren.length;
     _controller = AnimationController(
       duration: const Duration(seconds: 2),
       vsync: this,
@@ -127,7 +60,7 @@ class _OnboardingPageState extends State<OnboardingPage>
       color: Theme.of(context).selectedRowColor,
       fontSize: 22.0,
     );
-
+    List<Widget> children = getChildren(context);
     return WillPopScope(
       onWillPop: () async {
         if (_currentPage == 0) {
@@ -147,7 +80,7 @@ class _OnboardingPageState extends State<OnboardingPage>
               SkipButton(
                   logger: _logger,
                   pageController: _pageController,
-                  numPages: _numPages,
+                  numPages: children.length,
                   animDuration: animDuration,
                   textStyle: textStyle)
             ]),
@@ -161,7 +94,7 @@ class _OnboardingPageState extends State<OnboardingPage>
                 onPageChanged: (int page) {
                   changePage(page);
                 },
-                children: pageViewChildren,
+                children: children,
               ),
             ),
           ],
@@ -170,7 +103,7 @@ class _OnboardingPageState extends State<OnboardingPage>
           onLaunch: widget.onLaunch,
           bottomSheetHeight: bottomSheetHeight,
           animDuration: animDuration,
-          numPages: _numPages,
+          numPages: children.length,
           pageController: _pageController,
           currentPage: _currentPage,
           changePage: changePage,
@@ -178,5 +111,95 @@ class _OnboardingPageState extends State<OnboardingPage>
         ),
       ),
     );
+  }
+
+  List<Widget> getChildren(BuildContext context) {
+    return <Widget>[
+      OnboardTile(
+        top: Text(
+          AppLocalizations.of(context)!.onboardingTitle1,
+          textScaleFactor: 2,
+        ),
+        center: Lottie.network(
+            //"https://assets8.lottiefiles.com/packages/lf20_97qzkt8d.json"),
+            "https://assets1.lottiefiles.com/packages/lf20_z7bpt8g7.json"),
+        bottom: Text(
+          AppLocalizations.of(context)!.onboardingText1,
+          textScaleFactor: 1.5,
+        ),
+        bottomSheetHeight: bottomSheetHeight,
+        color: Colors.cyan,
+      ),
+      OnboardTile(
+        top: Text(
+          AppLocalizations.of(context)!.onboardingTitle2,
+          textScaleFactor: 2,
+        ),
+        center: Image.asset("Resources/Img/Campus/campus-iscte-3.jpg"),
+        bottom: Text(
+          AppLocalizations.of(context)!.onboardingText2,
+          textScaleFactor: 1.5,
+        ),
+        bottomSheetHeight: bottomSheetHeight,
+        color: Colors.blue,
+      ),
+      OnboardTile(
+        top: Text(
+          AppLocalizations.of(context)!.onboardingTitle3,
+          textScaleFactor: 2,
+        ),
+        center: Lottie.network(
+            "https://assets7.lottiefiles.com/packages/lf20_ykxkplzg.json"),
+        //"https://assets4.lottiefiles.com/packages/lf20_1LsvAZ.json"),
+        bottom: Text(
+          AppLocalizations.of(context)!.onboardingText3,
+          textScaleFactor: 1.5,
+        ),
+        bottomSheetHeight: bottomSheetHeight,
+        color: IscteTheme.iscteColor,
+      ),
+      OnboardTile(
+        top: Text(
+          AppLocalizations.of(context)!.onboardingTitle4,
+          textScaleFactor: 2,
+        ),
+        center: Lottie.network(
+            "https://assets9.lottiefiles.com/packages/lf20_smcd09k7.json"),
+        bottom: Text(
+          AppLocalizations.of(context)!.onboardingText4,
+          textScaleFactor: 1.5,
+        ),
+        bottomSheetHeight: bottomSheetHeight,
+        color: Colors.deepOrange,
+      ),
+      OnboardTile(
+        top: Text(
+          AppLocalizations.of(context)!.onboardingTitle5,
+          textScaleFactor: 2,
+        ),
+        center: Lottie.network(
+            "https://assets7.lottiefiles.com/packages/lf20_bq55cmov.json"),
+        bottom: Text(
+          AppLocalizations.of(context)!.onboardingText5,
+          textScaleFactor: 1.5,
+        ),
+        bottomSheetHeight: bottomSheetHeight,
+        color: Colors.purple,
+      ),
+      OnboardTile(
+        top: Text(
+          AppLocalizations.of(context)!.onboardingTitle6,
+          textScaleFactor: 2,
+        ),
+        center: Lottie.network(
+            "https://assets1.lottiefiles.com/packages/lf20_0YHgFn.json"),
+        bottom: Text(
+          AppLocalizations.of(context)!.onboardingText6,
+          textScaleFactor: 1.5,
+        ),
+        bottomSheetHeight: bottomSheetHeight,
+        color: Colors.green,
+      ),
+    ];
   }
 }

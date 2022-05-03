@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/pages/auth/auth_page.dart';
 import 'package:iscte_spots/services/onboard_service.dart';
 import 'package:logger/logger.dart';
@@ -29,9 +30,9 @@ class GetStartedOnboard extends StatelessWidget {
       child: SizedBox.expand(
         child: Container(
           color: Theme.of(context).selectedRowColor,
-          child: const Center(
+          child: Center(
             child: Text(
-              'Get started',
+              AppLocalizations.of(context)!.getStarted,
               style: TextStyle(
                 color: Color(0xFF5B16D0),
                 fontSize: 20.0,

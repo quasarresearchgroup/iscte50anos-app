@@ -42,32 +42,30 @@ class _OnboardTileState extends State<OnboardTile> {
     const Duration opacityAnimationDuration = const Duration(milliseconds: 500);
     return Container(
       color: widget.color,
-      child: SingleChildScrollView(
-        child: SafeArea(
-          child: Padding(
-            padding: EdgeInsets.only(
-                left: 20.0, right: 20.0, bottom: widget.bottomSheetHeight),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                AnimatedOpacity(
-                  duration: opacityAnimationDuration,
-                  opacity: textOpacity[0],
-                  child: widget.top,
-                ),
-                AnimatedOpacity(
-                  duration: opacityAnimationDuration,
-                  opacity: textOpacity[1],
-                  child: widget.center,
-                ),
-                AnimatedOpacity(
-                  duration: opacityAnimationDuration,
-                  opacity: textOpacity[2],
-                  child: widget.bottom,
-                ),
-              ],
-            ),
+      child: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.only(
+              left: 20.0, right: 20.0, bottom: widget.bottomSheetHeight),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              AnimatedOpacity(
+                duration: opacityAnimationDuration,
+                opacity: textOpacity[0],
+                child: widget.top,
+              ),
+              AnimatedOpacity(
+                duration: opacityAnimationDuration,
+                opacity: textOpacity[1],
+                child: widget.center,
+              ),
+              AnimatedOpacity(
+                duration: opacityAnimationDuration,
+                opacity: textOpacity[2],
+                child: widget.bottom,
+              ),
+            ],
           ),
         ),
       ),

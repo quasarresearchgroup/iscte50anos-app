@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class NextOnboardButton extends StatelessWidget {
   NextOnboardButton({
@@ -47,7 +48,7 @@ class NextOnboardButton extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     Text(
-                      'Next',
+                      AppLocalizations.of(context)!.next,
                       style: textStyle,
                     ),
                     const SizedBox(width: 10.0),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/models/auth/login_form_result.dart';
 import 'package:iscte_spots/services/auth/openday_login_service.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
@@ -67,7 +68,7 @@ class _LoginOpendayState extends State<LoginOpendayPage>
         controller: widget.passwordController,
         textAlignVertical: TextAlignVertical.center,
         decoration: IscteTheme.buildInputDecoration(
-          hint: "Password",
+          hint: AppLocalizations.of(context)!.loginScreen,
           errorText: _errorText,
           suffixIcon: IconButton(
             onPressed: () => setState(() => _hidePassword = !_hidePassword),
