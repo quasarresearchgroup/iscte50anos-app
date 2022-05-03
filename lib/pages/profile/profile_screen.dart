@@ -33,7 +33,6 @@ class ProfilePage extends StatelessWidget {
         appBar: AppBar(
           title: const Text("Profile"),//AppLocalizations.of(context)!.quizPageTitle)
         ),
-        drawer: const NavigationDrawer(),
         body: NotificationListener<OverscrollIndicatorNotification>(
           onNotification: (overscroll) {
             overscroll.disallowIndicator();
@@ -138,9 +137,9 @@ class _ProfileState extends State<Profile> {
                               fontSize: 23
                           )),
                           const SizedBox(height: 20),
-                          Text(profile["affiliation_name"].toString(),
+                          const Text("Grupo do Open Day" ,//profile["affiliation_name"].toString(),
                               textAlign: TextAlign.center,
-                              style: const TextStyle(
+                              style: TextStyle(
                                   fontSize: 13
                               )),
                           const SizedBox(height: 20),
