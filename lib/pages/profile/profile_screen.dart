@@ -177,7 +177,7 @@ class _ProfileState extends State<Profile> {
                             indent: 20,
                             endIndent: 20,),
                           const Text("Ranking", style: TextStyle(
-                            fontSize: 13,
+                            fontSize: 14,
                           )),
                           const SizedBox(height: 10),
                           Row(
@@ -185,9 +185,9 @@ class _ProfileState extends State<Profile> {
                             children: [
                               Column(
                                 children: [
-                                  const Text("Global", style: TextStyle(
+                                  /*const Text("Global", style: TextStyle(
                                       fontSize: 14
-                                  )),
+                                  )),*/
                                   Text("#" + profile["ranking"].toString(),
                                       style: const TextStyle(
                                           fontWeight: FontWeight.bold,
@@ -195,7 +195,7 @@ class _ProfileState extends State<Profile> {
                                       )),
                                 ],
                               ),
-                              Column(
+                              /*Column(
                                 children: [
                                   const Text("Afiliação", style: TextStyle(
                                       fontSize: 14
@@ -207,7 +207,7 @@ class _ProfileState extends State<Profile> {
                                           fontSize: 18
                                       )),
                                 ],
-                              )
+                              )*/
                             ],
                           ),
                           const Divider(height: 30,
