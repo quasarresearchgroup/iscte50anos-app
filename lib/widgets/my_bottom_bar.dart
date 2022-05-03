@@ -18,6 +18,9 @@ class _MyBottomBarState extends State<MyBottomBar> {
   @override
   void initState() {
     super.initState();
+    widget.tabController.addListener(() {
+      setState(() {});
+    });
   }
 
   void changePage(int index) {

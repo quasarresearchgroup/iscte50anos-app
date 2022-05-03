@@ -80,6 +80,14 @@ class _HomeOpenDayState extends State<HomeOpenDay>
     _lottieController.dispose();
   }
 
+  completePuzzleCallback() {
+    widget._logger.d("Completed Puzzle!!");
+    _confettiController.play();
+    setState(() {});
+    Future.delayed(Duration(seconds: 2))
+        .then((value) => _tabController.animateTo(widget.scanSpotIndex));
+  }
+
   rerfeshPermit() {
     Future<String> newPermit = OpenDayQRScanService.spotRequest();
     setState(() {
@@ -200,11 +208,8 @@ class _HomeOpenDayState extends State<HomeOpenDay>
                                         return PuzzlePage(
                                           image: Image.network(snapshot.data!),
                                           constraints: constraints,
-                                          completeCallback: () {
-                                            widget._logger
-                                                .d("Completed Puzzle!!");
-                                            _confettiController.play();
-                                          },
+                                          completeCallback:
+                                              completePuzzleCallback,
                                         );
                                       } else if (snapshot.hasError) {
                                         return buildErrorWidget();

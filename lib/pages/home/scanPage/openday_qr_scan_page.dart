@@ -88,10 +88,16 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
           await controller?.pauseCamera();
           widget._logger.d("scanned new code");
           _lastScan = now;
-          String spotRequest =
-              await OpenDayQRScanService.spotRequest(barcode: barcode);
-          String? newImageURL =
-              await OpenDayQRScanService.requestRouter(context, spotRequest);
+          String? newImageURL;
+          try {
+            String spotRequest =
+                await OpenDayQRScanService.spotRequest(barcode: barcode);
+            newImageURL = await OpenDayQRScanService.requestRouter(
+                context, spotRequest, 200);
+          } catch (e) {
+            newImageURL =
+                await OpenDayQRScanService.requestRouter(context, "", 404);
+          }
           if (newImageURL != null) {
             if (newImageURL == OpenDayQRScanService.allVisited) {
               widget.completedAllPuzzle();

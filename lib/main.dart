@@ -8,8 +8,6 @@ import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 
 const int puzzlePageIndex = 0;
 const int qrPageIndex = 1;
-const int timelinePageIndex = 2;
-const int visitedPageIndex = 3;
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();

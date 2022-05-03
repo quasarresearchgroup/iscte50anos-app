@@ -34,63 +34,68 @@ class OpenDayQRScanService {
   }
 
   static Future<String?> requestRouter(
-      BuildContext context, String response) async {
-    switch (response) {
-      case OpenDayQRScanService.generalError:
-        {
-          OpenDayNotificationService.showErrorOverlay(context);
-          _logger.d("generalError : $response");
-        }
-        break;
-      case OpenDayQRScanService.connectionError:
-        {
-          OpenDayNotificationService.showConnectionErrorOverlay(context);
-          _logger.d("connectionError : $response");
-        }
-        break;
-      case OpenDayQRScanService.loginError:
-        {
-          OpenDayNotificationService.showLoginErrorOverlay(context);
-          _logger.d("loginError : $response");
-        }
-        break;
-      case OpenDayQRScanService.wrongSpotError:
-        {
-          OpenDayNotificationService.showWrongSpotErrorOverlay(context);
-          _logger.d("wrongSpotError : $response");
-        }
-        break;
-      case OpenDayQRScanService.alreadyVisitedError:
-        {
-          OpenDayNotificationService.showAlreadeyVisitedOverlay(context);
-          _logger.d("alreadyVisitedError : $response");
-        }
-        break;
-      case OpenDayQRScanService.invalidQRError:
-        {
-          OpenDayNotificationService.showInvalidErrorOverlay(context);
-          _logger.d("invalidQRError : $response");
-        }
-        break;
-      case OpenDayQRScanService.disabledQRError:
-        {
-          OpenDayNotificationService.showDisabledErrorOverlay(context);
-          _logger.d("disabledQRError : $response");
-        }
-        break;
-      case OpenDayQRScanService.allVisited:
-        {
-          //OpenDayNotificationService.showAllVisitedOverlay(context);
-          _logger.d("allVisited : $response");
-          return OpenDayQRScanService.allVisited;
-        }
-        break;
-      default:
-        {
-          //await OpenDayNotificationService.showNewSpotFoundOverlay(context);
-          _logger.d("changed image: $response");
-          return response;
-        }
+      BuildContext context, String response, int statusCode) async {
+    if (statusCode == 404) {
+      OpenDayNotificationService.showInvalidErrorOverlay(context);
+      _logger.d("invalidQRError : $response");
+    } else {
+      switch (response) {
+        case OpenDayQRScanService.generalError:
+          {
+            OpenDayNotificationService.showErrorOverlay(context);
+            _logger.d("generalError : $response");
+          }
+          break;
+        case OpenDayQRScanService.connectionError:
+          {
+            OpenDayNotificationService.showConnectionErrorOverlay(context);
+            _logger.d("connectionError : $response");
+          }
+          break;
+        case OpenDayQRScanService.loginError:
+          {
+            OpenDayNotificationService.showLoginErrorOverlay(context);
+            _logger.d("loginError : $response");
+          }
+          break;
+        case OpenDayQRScanService.wrongSpotError:
+          {
+            OpenDayNotificationService.showWrongSpotErrorOverlay(context);
+            _logger.d("wrongSpotError : $response");
+          }
+          break;
+        case OpenDayQRScanService.alreadyVisitedError:
+          {
+            OpenDayNotificationService.showAlreadeyVisitedOverlay(context);
+            _logger.d("alreadyVisitedError : $response");
+          }
+          break;
+        case OpenDayQRScanService.invalidQRError:
+          {
+            OpenDayNotificationService.showInvalidErrorOverlay(context);
+            _logger.d("invalidQRError : $response");
+          }
+          break;
+        case OpenDayQRScanService.disabledQRError:
+          {
+            OpenDayNotificationService.showDisabledErrorOverlay(context);
+            _logger.d("disabledQRError : $response");
+          }
+          break;
+        case OpenDayQRScanService.allVisited:
+          {
+            //OpenDayNotificationService.showAllVisitedOverlay(context);
+            _logger.d("allVisited : $response");
+            return OpenDayQRScanService.allVisited;
+          }
+          break;
+        default:
+          {
+            //await OpenDayNotificationService.showNewSpotFoundOverlay(context);
+            _logger.d("changed image: $response");
+            return response;
+          }
+      }
     }
   }
 
