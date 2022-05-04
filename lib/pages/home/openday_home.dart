@@ -2,6 +2,7 @@ import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:iscte_spots/models/database/tables/database_puzzle_piece_table.dart';
 import 'package:iscte_spots/models/spot_request.dart';
 import 'package:iscte_spots/pages/home/puzzle/puzzle_page.dart';
 import 'package:iscte_spots/pages/home/scanPage/openday_qr_scan_page.dart';
@@ -118,12 +119,14 @@ class _HomeOpenDayState extends State<HomeOpenDay>
     if (newImageURL != null) {
       if (newImageURL == OpenDayQRScanService.allVisited) {
         _completedAllPuzzles();
+      } else if (!OpenDayQRScanService.isError(newImageURL)) {
+        DatabasePuzzlePieceTable.removeALL();
+        currentPemit = request;
+        setState(() {
+          currentPemit;
+        });
+        showSuccessPage();
       }
-      currentPemit = request;
-      setState(() {
-        currentPemit;
-      });
-      showSuccessPage();
     }
 /*
     if (request.locationPhotoLink != null) {
