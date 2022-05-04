@@ -33,6 +33,9 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
       body: ListView(
         children: [
+          const Center(
+            child: Text("version: 1.0.2+12"),
+          ),
           ExpansionTile(
             title: const Text("Shared Preferences"),
             children: [
@@ -49,7 +52,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     }
                   }),
             ],
-          )
+          ),
         ],
       ),
     );
