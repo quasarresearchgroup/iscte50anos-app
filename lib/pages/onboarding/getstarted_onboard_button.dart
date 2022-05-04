@@ -34,7 +34,7 @@ class GetStartedOnboard extends StatelessWidget {
             child: Text(
               AppLocalizations.of(context)!.getStarted,
               style: TextStyle(
-                color: Color(0xFF5B16D0),
+                color: Theme.of(context).primaryColor,
                 fontSize: 20.0,
                 fontWeight: FontWeight.bold,
               ),

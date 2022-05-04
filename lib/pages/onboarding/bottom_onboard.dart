@@ -45,7 +45,7 @@ class BottomSheetOnboard extends StatelessWidget {
         decoration: BoxDecoration(
           color: isActive
               ? Theme.of(context).selectedRowColor
-              : Theme.of(context).primaryColor,
+              : Theme.of(context).unselectedWidgetColor,
           borderRadius: const BorderRadius.all(Radius.circular(12)),
         ),
       ),
@@ -54,41 +54,44 @@ class BottomSheetOnboard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: bottomSheetHeight,
-      child: AnimatedSwitcher(
-          duration: animDuration,
-          reverseDuration: animDuration,
-          switchInCurve: Curves.easeInCubic,
-          switchOutCurve: Curves.easeOutCubic,
-          transitionBuilder: (Widget child, Animation<double> animation) {
-            Animation<Offset> finalAnimation;
-            if (child is GetStartedOnboard) {
-              finalAnimation =
-                  Tween<Offset>(begin: const Offset(1, 0.0), end: Offset.zero)
-                      .animate(animation);
-            } else {
-              finalAnimation =
-                  Tween<Offset>(begin: const Offset(-1, 0.0), end: Offset.zero)
-                      .animate(animation);
-            }
-            return SlideTransition(
-              position: finalAnimation,
-              child: child,
-            );
-          },
-          child: currentPage != numPages - 1
-              ? NextOnboardButton(
-                  //key: ValueKey(_currentPage),
-                  buildPageIndicator: _buildPageIndicator,
-                  pageController: pageController,
-                  changePage: changePage,
-                  textStyle: textStyle,
-                )
-              : GetStartedOnboard(
-                  onLaunch: onLaunch,
-                  //key: ValueKey(_currentPage),
-                )),
+    return Container(
+      color: Theme.of(context).primaryColor,
+      child: SizedBox(
+        height: bottomSheetHeight,
+        child: AnimatedSwitcher(
+            duration: animDuration,
+            reverseDuration: animDuration,
+            switchInCurve: Curves.easeInCubic,
+            switchOutCurve: Curves.easeOutCubic,
+            transitionBuilder: (Widget child, Animation<double> animation) {
+              Animation<Offset> finalAnimation;
+              if (child is GetStartedOnboard) {
+                finalAnimation =
+                    Tween<Offset>(begin: const Offset(1, 0.0), end: Offset.zero)
+                        .animate(animation);
+              } else {
+                finalAnimation = Tween<Offset>(
+                        begin: const Offset(-1, 0.0), end: Offset.zero)
+                    .animate(animation);
+              }
+              return SlideTransition(
+                position: finalAnimation,
+                child: child,
+              );
+            },
+            child: currentPage != numPages - 1
+                ? NextOnboardButton(
+                    //key: ValueKey(_currentPage),
+                    buildPageIndicator: _buildPageIndicator,
+                    pageController: pageController,
+                    changePage: changePage,
+                    textStyle: textStyle,
+                  )
+                : GetStartedOnboard(
+                    onLaunch: onLaunch,
+                    //key: ValueKey(_currentPage),
+                  )),
+      ),
     );
   }
 }
