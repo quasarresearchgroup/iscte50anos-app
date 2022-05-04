@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:iscte_spots/pages/profile/placeholder.dart';
 import 'package:iscte_spots/services/device_service.dart';
 import 'package:iscte_spots/services/profile/profile_service.dart';
 import 'package:logger/logger.dart';
@@ -170,6 +171,12 @@ class _ProfileState extends State<Profile> {
                 ),
               ),
             );
+          } else if (snapshot.connectionState != ConnectionState.done) {
+            children = const <Widget>[
+              Expanded(
+                child: ProfilePlaceholder(),
+              ) //ProfilePlaceholder(),
+            ];
           } else if (snapshot.hasError) {
             children = <Widget>[
               const Icon(
@@ -191,11 +198,7 @@ class _ProfileState extends State<Profile> {
             ];
           } else {
             children = const <Widget>[
-              SizedBox(
-                child: CircularProgressIndicator.adaptive(),
-                width: 60,
-                height: 60,
-              ),
+              ProfilePlaceholder(),
             ];
           }
           return GestureDetector(
