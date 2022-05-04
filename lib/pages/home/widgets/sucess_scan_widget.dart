@@ -2,6 +2,7 @@ import 'package:confetti/confetti.dart';
 import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:iscte_spots/widgets/iscte_confetti_widget.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
@@ -48,9 +49,10 @@ class SucessScanWidget extends StatelessWidget {
                   padding: const EdgeInsets.all(20),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: const [
-                      Text("Wow you found it!!"),
-                      FaIcon(FontAwesomeIcons.faceSmile),
+                    children: [
+                      Text(AppLocalizations.of(context)!
+                          .qrScanNotificationFoundSpot),
+                      const FaIcon(FontAwesomeIcons.faceSmile),
                     ],
                   ),
                 ),

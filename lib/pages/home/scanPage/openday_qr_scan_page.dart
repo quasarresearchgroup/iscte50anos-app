@@ -12,7 +12,7 @@ class QRScanPageOpenDay extends StatefulWidget {
       {Key? key, required this.changeImage, required this.completedAllPuzzle})
       : super(key: key);
   final Logger _logger = Logger();
-  final void Function(String imageLink) changeImage;
+  final void Function(Future<SpotRequest> request) changeImage;
   final void Function() completedAllPuzzle;
   @override
   State<StatefulWidget> createState() => QRScanPageOpenDayState();
@@ -91,17 +91,19 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
           widget._logger.d("scanned new code");
           _lastScan = now;
           String? newImageURL;
-          SpotRequest spotRequest = await OpenDayQRScanService.spotRequest(
+          Future<SpotRequest> spotRequest = OpenDayQRScanService.spotRequest(
               context: context, barcode: barcode);
-          newImageURL = await OpenDayQRScanService.requestRouter(
-              context, spotRequest.location_photo_link!, 200);
           widget._logger.d("spotRequest: $spotRequest");
+/*          newImageURL =
+              await OpenDayQRScanService.requestRouter(context, spotRequest);
           if (newImageURL != null) {
             if (newImageURL == OpenDayQRScanService.allVisited) {
               widget.completedAllPuzzle();
             }
-            widget.changeImage(newImageURL);
-          }
+            widget.changeImage(spotRequest);
+          }*/
+          widget.changeImage(spotRequest);
+          await spotRequest;
           await controller?.resumeCamera();
           setState(() => _requesting = false);
         }

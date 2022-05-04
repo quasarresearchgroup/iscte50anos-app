@@ -6,6 +6,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:iscte_spots/models/spot_request.dart';
 import 'package:iscte_spots/services/auth/auth_service.dart';
 import 'package:iscte_spots/services/auth/openday_login_service.dart';
+import 'package:iscte_spots/services/shared_prefs_service.dart';
 import 'package:iscte_spots/widgets/util/constants.dart';
 import 'package:logger/logger.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
@@ -39,11 +40,12 @@ class OpenDayQRScanService {
   }
 
   static Future<String?> requestRouter(
-      BuildContext context, String response, int statusCode) async {
-    if (statusCode == 404) {
+      BuildContext context, SpotRequest request) async {
+    if (request.statusCode == 404) {
       OpenDayNotificationService.showInvalidErrorOverlay(context);
-      _logger.d("invalidQRError : $response");
+      _logger.d("invalidQRError : $request");
     } else {
+      var response = request.locationPhotoLink;
       switch (response) {
         case OpenDayQRScanService.generalError:
           {
@@ -115,7 +117,7 @@ class OpenDayQRScanService {
     String? apiToken =
         await secureStorage.read(key: AuthService.backendApiKeyStorageLocation);
     if (apiToken == null) {
-      return SpotRequest(location_photo_link: loginError);
+      return SpotRequest(locationPhotoLink: loginError, statusCode: 403);
     }
     try {
       HttpClient client = HttpClient();
@@ -136,9 +138,11 @@ class OpenDayQRScanService {
       final response = await request.close();
       if (response.statusCode == 403) {
         OpenDayLoginService.logOut(context);
-        return SpotRequest(location_photo_link: loginError);
+        return SpotRequest(
+            locationPhotoLink: loginError, statusCode: response.statusCode);
       } else if (response.statusCode == 404) {
-        return SpotRequest(location_photo_link: invalidQRError);
+        return SpotRequest(
+            locationPhotoLink: invalidQRError, statusCode: response.statusCode);
       } else {
         var responseDecoded =
             jsonDecode(await response.transform(utf8.decoder).join());
@@ -148,26 +152,30 @@ class OpenDayQRScanService {
         if (responseDecoded["location_photo_link"] != null) {
           _logger.d(
               "${responseDecoded["location_photo_link"]}; ${responseDecoded["description"]}; ${responseDecoded["spot_number"]}");
-
+          SharedPrefsService.resetCompletedAllPuzzles();
           return SpotRequest(
-              location_photo_link: responseDecoded["location_photo_link"],
-              spot_number: responseDecoded[
-                  "spot_number"]); //,responseDecoded["spot_number"];
+              statusCode: response.statusCode,
+              locationPhotoLink: responseDecoded["location_photo_link"],
+              spotNumber: responseDecoded["spot_number"]);
+          //,responseDecoded["spot_number"];
         } else if (responseDecoded["message"] != null) {
           var responseDecoded2 = responseDecoded["message"] as String;
 
           _logger.d(responseDecoded2);
-          return SpotRequest(location_photo_link: responseDecoded2);
+          return SpotRequest(
+            locationPhotoLink: responseDecoded2,
+            statusCode: response.statusCode,
+          );
         }
       }
     } on SocketException {
       _logger.e("Socket Exception");
-      return SpotRequest(location_photo_link: connectionError);
+      return SpotRequest(locationPhotoLink: connectionError, statusCode: 500);
     } catch (e) {
       _logger.e(e);
-      return SpotRequest(location_photo_link: generalError);
+      return SpotRequest(locationPhotoLink: generalError, statusCode: 500);
     }
-    return SpotRequest(location_photo_link: generalError);
+    return SpotRequest(locationPhotoLink: generalError, statusCode: 500);
     //}else{
 
     //}

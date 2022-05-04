@@ -63,12 +63,13 @@
     "onboardingText6" : "Now do it again!\nUntil you find all the spots hidden on ISCTE",
 
 
-     "qrScanNotificationLoginError": "Authentication Error",
+    "qrScanNotificationLoginError": "Authentication Error",
     "qrScanNotificationConnectionError": "Connection Error",
     "qrScanNotificationWrongSpot": "That's the wrong Spot",
     "qrScanNotificationError": "Unknown Error",
     "qrScanNotificationAlreadeyVisited": "You already visited that Spot",
     "qrScanNotificationInvalid": "Are you sure that is a Spot at Iscte?",
     "qrScanNotificationDisabled": "Spots are disabled now...",
-    "qrScanNotificationAllVisited": "Wow you won!!"
+    "qrScanNotificationAllVisited": "Good! You finished the task.\n Now go to the meeting point.",
+    "qrScanNotificationFoundSpot": "Wow you found the spot!!"
 }

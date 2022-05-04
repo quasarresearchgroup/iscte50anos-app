@@ -1,13 +1,15 @@
 class SpotRequest {
   SpotRequest({
-    required this.location_photo_link,
-    this.spot_number,
+    required this.locationPhotoLink,
+    required this.statusCode,
+    this.spotNumber,
   });
-  final String? location_photo_link;
-  final int? spot_number;
+  final String? locationPhotoLink;
+  final int? spotNumber;
+  final int statusCode;
 
   @override
   String toString() {
-    return 'SpotRequest{location_photo_link: $location_photo_link, spot_number: $spot_number}';
+    return 'SpotRequest{locationPhotoLink: $locationPhotoLink, spotNumber: $spotNumber, statusCode: $statusCode}';
   }
 }

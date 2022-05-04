@@ -76,18 +76,20 @@ class OpenDayNotificationService {
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(20)),
         ),
-        content: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Text(data,
-                  style: TextStyle(color: Theme.of(context).selectedRowColor)),
-              icon ??
-                  FaIcon(FontAwesomeIcons.faceSadTear,
-                      color: Theme.of(context).selectedRowColor),
-            ],
-          ),
+        content: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            Text(
+              data,
+              style: TextStyle(color: Theme.of(context).selectedRowColor),
+              overflow: TextOverflow.ellipsis,
+            ),
+            icon ??
+                FaIcon(FontAwesomeIcons.faceSadTear,
+                    color: Theme.of(context).selectedRowColor),
+          ],
         ),
       ),
     );
@@ -109,19 +111,19 @@ class OpenDayNotificationService {
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(20)),
         ),
-        content: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Text(
-                data,
-                style: TextStyle(color: Theme.of(context).selectedRowColor),
-              ),
-              FaIcon(FontAwesomeIcons.faceSmile,
-                  color: Theme.of(context).selectedRowColor),
-            ],
-          ),
+        content: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            Text(
+              data,
+              style: TextStyle(color: Theme.of(context).selectedRowColor),
+              overflow: TextOverflow.ellipsis,
+            ),
+            FaIcon(FontAwesomeIcons.faceSmile,
+                color: Theme.of(context).selectedRowColor),
+          ],
         ),
       ),
     );

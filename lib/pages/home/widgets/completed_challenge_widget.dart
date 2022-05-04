@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:logger/logger.dart';
 import 'package:lottie/lottie.dart';
 
@@ -32,10 +33,18 @@ class _CompletedChallengeWidgetState extends State<CompletedChallengeWidget>
   @override
   Widget build(BuildContext context) {
     widget._logger.d("built CompletedChallengeWidget");
-    return Center(
-      child: Lottie.asset(
-        "Resources/Lotties/thank-you-with-confetti.json",
-      ),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Lottie.asset(
+          "Resources/Lotties/thank-you-with-confetti.json",
+        ),
+        Text(
+          AppLocalizations.of(context)!.qrScanNotificationAllVisited,
+          textAlign: TextAlign.center,
+        )
+      ],
     );
   }
 }

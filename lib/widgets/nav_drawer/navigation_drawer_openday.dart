@@ -67,13 +67,6 @@ class NavigationDrawerOpenDay extends StatelessWidget {
                 Navigator.of(context).popAndPushNamed(SettingsPage.pageRoute);
               }),
           ListTile(
-            leading: Icon(Icons.adaptive.arrow_back_outlined),
-            title: Text(AppLocalizations.of(context)!.logOutButton),
-            onTap: () async {
-              await OpenDayLoginService.logOut(context);
-            },
-          ),
-          ListTile(
             leading: const Icon(Icons.departure_board),
             title: const Text('Onboarding'),
             onTap: () {
@@ -81,7 +74,14 @@ class NavigationDrawerOpenDay extends StatelessWidget {
 
               Navigator.of(context).popAndPushNamed(OnboardingPage.pageRoute);
             },
-          )
+          ),
+          ListTile(
+            leading: Icon(Icons.adaptive.arrow_back_outlined),
+            title: Text(AppLocalizations.of(context)!.logOutButton),
+            onTap: () async {
+              await OpenDayLoginService.logOut(context);
+            },
+          ),
         ],
       ),
     ];

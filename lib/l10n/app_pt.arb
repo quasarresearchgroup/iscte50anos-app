@@ -69,5 +69,7 @@
     "qrScanNotificationAlreadeyVisited": "Já visitaste esse Spot",
     "qrScanNotificationInvalid": "Tens a certeza que esse é um Spot do Iscte?",
     "qrScanNotificationDisabled": "Os Spots estão desabilitados agora...",
-    "qrScanNotificationAllVisited": "Wow ganhaste!!"
+    "qrScanNotificationAllVisited": "Boa! Terminaste a tarefa.\n Agora vai ter ao ponto de encontro.",
+    "qrScanNotificationFoundSpot": "Wow encontraste o Spot!!"
+
 }

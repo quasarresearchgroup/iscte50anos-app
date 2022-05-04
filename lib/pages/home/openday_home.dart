@@ -2,7 +2,6 @@ import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:iscte_spots/models/database/tables/database_puzzle_piece_table.dart';
 import 'package:iscte_spots/models/spot_request.dart';
 import 'package:iscte_spots/pages/home/puzzle/puzzle_page.dart';
 import 'package:iscte_spots/pages/home/scanPage/openday_qr_scan_page.dart';
@@ -35,6 +34,7 @@ class _HomeOpenDayState extends State<HomeOpenDay>
     with TickerProviderStateMixin {
   late TabController _tabController;
   Image? currentPuzzleImage;
+  int? currentPuzzleNumber;
   bool _showSucessPage = false;
   //late Future<Map> futureProfile;
   late Future<SpotRequest> currentPemit;
@@ -57,13 +57,14 @@ class _HomeOpenDayState extends State<HomeOpenDay>
     );
     _lottieController.addStatusListener(
       (status) {
-        widget._logger.d("listenning to sucess Puzzle animation $status");
+        widget._logger.d("listening to success Puzzle animation $status");
         if (status == AnimationStatus.completed) {
           Future.delayed(const Duration(milliseconds: 500)).then((value) {
             setState(() {
               _lottieController.reset();
               _showSucessPage = false;
             });
+            _tabController.animateTo(widget.puzzleIndex);
           });
         }
       },
@@ -84,38 +85,64 @@ class _HomeOpenDayState extends State<HomeOpenDay>
     widget._logger.d("Completed Puzzle!!");
     _confettiController.play();
     setState(() {});
-    Future.delayed(Duration(seconds: 2))
+    Future.delayed(const Duration(seconds: 2))
         .then((value) => _tabController.animateTo(widget.scanSpotIndex));
   }
 
   void rerfeshPermit() {
     Future<SpotRequest> newPermit =
         OpenDayQRScanService.spotRequest(context: context);
-    Future<String?> newImageURL = newPermit.then((value) =>
-        OpenDayQRScanService.requestRouter(
-            context, value.location_photo_link!, 200));
+    Future<String?> newImageURL = newPermit
+        .then((value) => OpenDayQRScanService.requestRouter(context, value));
     //_refreshProfile();
     setState(() {
       currentPemit = newPermit;
     });
   }
+
 /*
   void _refreshProfile() {
     futureProfile = ProfileService().fetchProfile();
   }*/
+  void showSuccessPage() {
+    setState(() {
+      _showSucessPage = true;
+    });
+  }
 
-  void changeCurrentImage(String imageLink) async {
-    widget._logger.d("changin imag: $imageLink");
-    if (!OpenDayQRScanService.isError(imageLink)) {
-      DatabasePuzzlePieceTable.removeALL();
-      rerfeshPermit();
+  void changeCurrentImage(Future<SpotRequest> request) async {
+    widget._logger.d("changin image: $request");
+    SpotRequest requestResult = await request;
+    var newImageURL =
+        await OpenDayQRScanService.requestRouter(context, requestResult);
+    if (newImageURL != null) {
+      if (newImageURL == OpenDayQRScanService.allVisited) {
+        _completedAllPuzzles();
+      }
+      currentPemit = request;
       setState(() {
-        //currentPuzzleImage = Image.network(imageLink);
-        _showSucessPage = true;
-        //_refreshProfile();
+        currentPemit;
       });
-      _tabController.animateTo(widget.puzzleIndex);
+      showSuccessPage();
     }
+/*
+    if (request.locationPhotoLink != null) {
+      if (!OpenDayQRScanService.isError(request.locationPhotoLink!)) {
+        DatabasePuzzlePieceTable.removeALL();
+        //rerfeshPermit();
+        setState(() {
+          currentPuzzleImage = Image.network(request.locationPhotoLink!);
+          currentPuzzleNumber = request.spotNumber;
+          _showSucessPage = true;
+          //_refreshProfile();
+        });
+        _tabController.animateTo(widget.puzzleIndex);
+      } else if (OpenDayQRScanService.isCompleteAll(
+          request.locationPhotoLink!)) {
+        _completedAllPuzzles();
+      }
+    }
+*/
   }
 
   void _completedAllPuzzles() async {
@@ -138,15 +165,20 @@ class _HomeOpenDayState extends State<HomeOpenDay>
                 future: currentPemit,
                 builder: (BuildContext context,
                     AsyncSnapshot<SpotRequest> snapshot) {
-                  String spots;
-                  SpotRequest spotRequest = snapshot.data as SpotRequest;
-                  if (snapshot.hasData && spotRequest.spot_number != null) {
-                    widget._logger.d(spotRequest);
-                    spots = "nº " + spotRequest.spot_number!.toString();
+                  if (snapshot.hasData) {
+                    String spots;
+                    SpotRequest spotRequest = snapshot.data as SpotRequest;
+                    if (spotRequest.spotNumber != null) {
+                      widget._logger.d(spotRequest);
+                      currentPuzzleNumber = spotRequest.spotNumber;
+                      spots = "nº " + currentPuzzleNumber!.toString();
+                    } else {
+                      spots = "";
+                    }
+                    return Text("Puzzle $spots");
                   } else {
-                    spots = "";
+                    return LoadingWidget();
                   }
-                  return Text("Puzzle $spots");
                 }),
             actions: challengeCompleteBool
                 ? null
@@ -213,22 +245,20 @@ class _HomeOpenDayState extends State<HomeOpenDay>
                                         if (snapshot.data != null &&
                                             OpenDayQRScanService.isCompleteAll(
                                                 snapshot.data!
-                                                    .location_photo_link!)) {
+                                                    .locationPhotoLink!)) {
                                           _completedAllPuzzles();
                                         }
 
                                         if (OpenDayQRScanService.isError(
                                             snapshot
-                                                .data!.location_photo_link!)) {
+                                                .data!.locationPhotoLink!)) {
                                           return buildErrorWidget();
                                         }
                                         currentPuzzleImage = Image.network(
-                                            snapshot
-                                                .data!.location_photo_link!);
+                                            snapshot.data!.locationPhotoLink!);
 
                                         return PuzzlePage(
-                                          image: Image.network(snapshot
-                                              .data!.location_photo_link!),
+                                          image: currentPuzzleImage!,
                                           constraints: constraints,
                                           completeCallback:
                                               completePuzzleCallback,
