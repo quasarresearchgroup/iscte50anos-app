@@ -68,7 +68,7 @@ class OpenDayLoginService {
 
   static Future<void> logOut(BuildContext context) async {
     _logger.d("Logging Out User:");
-    const FlutterSecureStorage secureStorage = FlutterSecureStorage();
+    /*const FlutterSecureStorage secureStorage = FlutterSecureStorage();
 
     HttpClient client = HttpClient();
     client.badCertificateCallback =
@@ -85,16 +85,17 @@ class OpenDayLoginService {
     HttpClientResponse response = await request.close();
     var decodedResponse =
         await jsonDecode(await response.transform(utf8.decoder).join());
-
     if (response.statusCode == 200) {
-      await AuthService.deleteUserCredentials();
-      await OnboadingService.removeOnboard();
-      Navigator.of(context).pushReplacementNamed(AuthPage.pageRoute);
-    } else {
+*/
+    await AuthService.deleteUserCredentials();
+    await OnboadingService.removeOnboard();
+    Navigator.of(context).popUntil(ModalRoute.withName(AuthPage.pageRoute));
+    Navigator.of(context).pushNamed(AuthPage.pageRoute);
+    /*  } else {
       _logger.e(
           "statusCode: ${response.statusCode} on login response: $decodedResponse");
     }
-
+*/
     //Resetting status of completing all puzzles
     SharedPrefsService.resetCompletedAllPuzzles();
 
