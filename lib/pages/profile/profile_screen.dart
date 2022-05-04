@@ -48,7 +48,7 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   late Future<Map> futureProfile;
   bool isLoading = false;
-  Map<String, dynamic>? deviceInformation;
+  //Map<String, dynamic>? deviceInformation;
   @override
   void initState() {
     super.initState();
@@ -57,8 +57,8 @@ class _ProfileState extends State<Profile> {
   }
 
   void initFunc() async {
-    deviceInformation = await DeviceService().initPlatformState();
-    Logger().d(deviceInformation);
+    //deviceInformation = await DeviceService().initPlatformState();
+    //Logger().d(deviceInformation);
   }
 
   Future<Map> fetchProfileProxy() async {
@@ -104,9 +104,9 @@ class _ProfileState extends State<Profile> {
                               style: const TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 23)),
                           const SizedBox(height: 20),
-                          Text(profile["affiliation_name"].toString(),
+                          const Text("Grupo do Open Day",
                               textAlign: TextAlign.center,
-                              style: const TextStyle(fontSize: 13)),
+                              style: TextStyle(fontSize: 13)),
                           const SizedBox(height: 20),
                           _buildSpotsRow(profile, totalTime),
                           const Divider(
@@ -128,11 +128,11 @@ class _ProfileState extends State<Profile> {
                             endIndent: 20,
                           ),
                           const SizedBox(height: 10),
-                          Center(
+                          /*Center(
                             child: Text(deviceInformation != null
                                 ? deviceInformation!["model"].toString()
                                 : ""),
-                          ),
+                          ),*/
                         ],
                       ),
                     ),
@@ -226,20 +226,21 @@ class _ProfileState extends State<Profile> {
       children: [
         Column(
           children: [
-            const Text("Global", style: TextStyle(fontSize: 14)),
-            Text("#" + profile["ranking"].toString(),
+            //const Text("Global", style: TextStyle(fontSize: 14)),
+            Text(profile["num_spots_read"] > 1 ? "#" + profile["ranking"].toString()
+                : "Sem classificação",
                 style:
                     const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
           ],
         ),
-        Column(
+        /*Column(
           children: [
             const Text("Afiliação", style: TextStyle(fontSize: 14)),
             Text("#" + profile["affiliation_ranking"].toString(),
                 style:
                     const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
           ],
-        )
+        )*/
       ],
     );
   }
@@ -259,7 +260,7 @@ class _ProfileState extends State<Profile> {
         Column(
           children: [
             const Text("Tempo", style: TextStyle(fontSize: 14)),
-            Text(totalTime.toString(),
+            Text(profile["num_spots_read"] > 1 ? totalTime.toString() : "NA",
                 style:
                     const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
           ],
