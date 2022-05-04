@@ -68,7 +68,7 @@ class _LoginOpendayState extends State<LoginOpendayPage>
         controller: widget.passwordController,
         textAlignVertical: TextAlignVertical.center,
         decoration: IscteTheme.buildInputDecoration(
-          hint: AppLocalizations.of(context)!.loginScreen,
+          hint: AppLocalizations.of(context)!.loginPassword,
           errorText: _errorText,
           suffixIcon: IconButton(
             onPressed: () => setState(() => _hidePassword = !_hidePassword),

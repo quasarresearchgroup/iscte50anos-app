@@ -19,7 +19,9 @@ class _MyBottomBarState extends State<MyBottomBar> {
   void initState() {
     super.initState();
     widget.tabController.addListener(() {
-      setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     });
   }
 

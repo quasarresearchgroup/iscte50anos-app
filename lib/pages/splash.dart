@@ -24,7 +24,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<Widget> initFunc() async {
     bool _isLoggedIn = await OpenDayLoginService.isLoggedIn();
-    bool _isOnboarded = await OnboadingService.shouldOnboard();
+    bool _isOnboarded = await OnboadingService.isOnboarded();
 
     return _isLoggedIn
         ? HomeOpenDay()

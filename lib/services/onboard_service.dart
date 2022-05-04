@@ -5,11 +5,11 @@ class OnboadingService {
   static const String _onboardKey = "onboard";
   static final Logger _logger = Logger();
 
-  static Future<bool> shouldOnboard() async {
+  static Future<bool> isOnboarded() async {
     final prefs = await SharedPreferences.getInstance();
-    bool? _shouldOnboard = await prefs.getBool(OnboadingService._onboardKey);
-    _logger.d("shouldOnboard : $_shouldOnboard");
-    return _shouldOnboard ?? false;
+    bool? isOnboarded = prefs.getBool(OnboadingService._onboardKey);
+    _logger.d("isOnboarded : $isOnboarded");
+    return isOnboarded ?? false;
   }
 
   static Future<bool> storeOnboard() async {

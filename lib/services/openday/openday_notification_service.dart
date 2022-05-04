@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:logger/logger.dart';
 
@@ -7,41 +8,52 @@ class OpenDayNotificationService {
   static final Logger _logger = Logger();
 
   static Future<void> showLoginErrorOverlay(BuildContext context) async {
-    _openDayErrorSnackbar(context: context, data: "Authentication Error");
+    _openDayErrorSnackbar(
+        context: context,
+        data: AppLocalizations.of(context)!.qrScanNotificationLoginError);
   }
 
   static void showConnectionErrorOverlay(BuildContext context) async {
     _openDayErrorSnackbar(
       context: context,
-      data: "No Wifi",
+      data: AppLocalizations.of(context)!.qrScanNotificationConnectionError,
       icon: Icon(Icons.wifi_off, color: Theme.of(context).selectedRowColor),
     );
   }
 
   static Future<void> showWrongSpotErrorOverlay(BuildContext context) async {
-    _openDayErrorSnackbar(context: context, data: "Wrong Spot");
+    _openDayErrorSnackbar(
+        context: context,
+        data: AppLocalizations.of(context)!.qrScanNotificationWrongSpot);
   }
 
   static Future<void> showErrorOverlay(BuildContext context) async {
-    _openDayErrorSnackbar(context: context, data: "Error");
+    _openDayErrorSnackbar(
+        context: context,
+        data: AppLocalizations.of(context)!.qrScanNotificationError);
   }
 
   static Future<void> showAlreadeyVisitedOverlay(BuildContext context) async {
     _openDayErrorSnackbar(
-        context: context, data: "You already visited that Spot");
+        context: context,
+        data: AppLocalizations.of(context)!.qrScanNotificationAlreadeyVisited);
   }
 
   static void showInvalidErrorOverlay(BuildContext context) {
     _openDayErrorSnackbar(
-        context: context, data: "Are you sure that is a Spot at Iscte?");
+        context: context,
+        data: AppLocalizations.of(context)!.qrScanNotificationInvalid);
   }
 
   static void showDisabledErrorOverlay(BuildContext context) {
-    _openDayErrorSnackbar(context: context, data: "Spots are disabled now...");
+    _openDayErrorSnackbar(
+        context: context,
+        data: AppLocalizations.of(context)!.qrScanNotificationDisabled);
   }
 
   static Future<void> showAllVisitedOverlay(BuildContext context) async {
-    _openDaySucessSnackbar(context, "Wow you won!!");
+    _openDaySucessSnackbar(
+        context, AppLocalizations.of(context)!.qrScanNotificationAllVisited);
   }
 
 /*  static Future<void> showNewSpotFoundOverlay(BuildContext context) async {
@@ -53,27 +65,29 @@ class OpenDayNotificationService {
     _logger.i("Inserted overlay: $data");
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        //duration: const Duration(seconds: 1),
+        duration: const Duration(seconds: 3),
         backgroundColor: Theme.of(context).errorColor,
-        action: SnackBarAction(
-            label: 'Dismiss',
+/*        action: SnackBarAction(
+            label: 'Ok',
             textColor: Theme.of(context).selectedRowColor,
             onPressed: () {
               ScaffoldMessenger.of(context).hideCurrentSnackBar();
-            }),
+            }),*/
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(20)),
         ),
-
-        content: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Text(data,
-                style: TextStyle(color: Theme.of(context).selectedRowColor)),
-            icon ??
-                FaIcon(FontAwesomeIcons.faceSadTear,
-                    color: Theme.of(context).selectedRowColor),
-          ],
+        content: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Text(data,
+                  style: TextStyle(color: Theme.of(context).selectedRowColor)),
+              icon ??
+                  FaIcon(FontAwesomeIcons.faceSadTear,
+                      color: Theme.of(context).selectedRowColor),
+            ],
+          ),
         ),
       ),
     );
@@ -84,27 +98,30 @@ class OpenDayNotificationService {
     _logger.i("Inserted overlay: $data");
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        //duration: const Duration(seconds: 1),
+        duration: const Duration(seconds: 3),
         backgroundColor: Colors.green,
-        action: SnackBarAction(
-            label: 'Dismiss',
+        /*       action: SnackBarAction(
+            label: 'Ok',
             textColor: Theme.of(context).selectedRowColor,
             onPressed: () {
               ScaffoldMessenger.of(context).hideCurrentSnackBar();
-            }),
+            }),*/
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(20)),
         ),
-        content: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Text(
-              data,
-              style: TextStyle(color: Theme.of(context).selectedRowColor),
-            ),
-            FaIcon(FontAwesomeIcons.faceSmile,
-                color: Theme.of(context).selectedRowColor),
-          ],
+        content: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Text(
+                data,
+                style: TextStyle(color: Theme.of(context).selectedRowColor),
+              ),
+              FaIcon(FontAwesomeIcons.faceSmile,
+                  color: Theme.of(context).selectedRowColor),
+            ],
+          ),
         ),
       ),
     );

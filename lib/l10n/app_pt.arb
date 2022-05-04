@@ -53,12 +53,21 @@
     "onboardingText3" : "Usa o puzzle para perceber onde é o próximo Spot...",
 
     "onboardingTitle4" : "Encontra o Spot",
-    "onboardingText4" : "Depois de completar o puzzle vai lá fora e procura pelo Spot da imagem!\nPergunta aos locais se te sentires perdido.",
+    "onboardingText4" : "Depois de completar o puzzle procura pelo Spot da imagem no Campus!\nPergunta aos locais se te sentires perdido.",
 
     "onboardingTitle5" : "Vê o teu ranking",
     "onboardingText5" : "Vê como os teus colegas se estão a safar na leaderboard!\nTu consegues ser mais rápido que eles certo?",
 
     "onboardingTitle6" : "Repete até ganhares!",
-    "onboardingText6" : "Agora faz outra vez!\nAté encontrares todos os Spots escondidos do ISCTE"
+    "onboardingText6" : "Agora faz outra vez!\nAté encontrares todos os Spots escondidos do ISCTE",
 
+
+    "qrScanNotificationLoginError": "Erro de Autenticação",
+    "qrScanNotificationConnectionError": "Erro de connecção",
+    "qrScanNotificationWrongSpot": "Esse é o Spot errado",
+    "qrScanNotificationError": "Erro desconhecido",
+    "qrScanNotificationAlreadeyVisited": "Já visitaste esse Spot",
+    "qrScanNotificationInvalid": "Tens a certeza que esse é um Spot do Iscte?",
+    "qrScanNotificationDisabled": "Os Spots estão desabilitados agora...",
+    "qrScanNotificationAllVisited": "Wow ganhaste!!"
 }

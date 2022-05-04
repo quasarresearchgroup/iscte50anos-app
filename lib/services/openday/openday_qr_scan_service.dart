@@ -3,7 +3,9 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:iscte_spots/models/spot_request.dart';
 import 'package:iscte_spots/services/auth/auth_service.dart';
+import 'package:iscte_spots/services/auth/openday_login_service.dart';
 import 'package:iscte_spots/widgets/util/constants.dart';
 import 'package:logger/logger.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
@@ -29,8 +31,11 @@ class OpenDayQRScanService {
         string == invalidQRError ||
         string == disabledQRError ||
         string == wrongSpotError ||
-        string == alreadyVisitedError ||
-        string == allVisited;
+        string == alreadyVisitedError;
+  }
+
+  static bool isCompleteAll(String string) {
+    return string == allVisited;
   }
 
   static Future<String?> requestRouter(
@@ -99,14 +104,18 @@ class OpenDayQRScanService {
     }
   }
 
-  static Future<String> spotRequest({Barcode? barcode}) async {
+  static Future<SpotRequest> spotRequest(
+      {required BuildContext context, Barcode? barcode}) async {
+    // int now = DateTime.now().millisecondsSinceEpoch;
+    //if (now - _lastScan >= _scanCooldown) {
+
     _logger.d("started request at ${DateTime.now()}\t${barcode?.code}");
     const FlutterSecureStorage secureStorage = FlutterSecureStorage();
 
     String? apiToken =
         await secureStorage.read(key: AuthService.backendApiKeyStorageLocation);
     if (apiToken == null) {
-      return loginError;
+      return SpotRequest(location_photo_link: loginError);
     }
     try {
       HttpClient client = HttpClient();
@@ -125,28 +134,42 @@ class OpenDayQRScanService {
       request.headers.add("Authorization", "Token $apiToken");
 
       final response = await request.close();
+      if (response.statusCode == 403) {
+        OpenDayLoginService.logOut(context);
+        return SpotRequest(location_photo_link: loginError);
+      } else if (response.statusCode == 404) {
+        return SpotRequest(location_photo_link: invalidQRError);
+      } else {
+        var responseDecoded =
+            jsonDecode(await response.transform(utf8.decoder).join());
 
-      var responseDecoded =
-          jsonDecode(await response.transform(utf8.decoder).join());
-      _logger.d(responseDecoded);
-      if (responseDecoded["location_photo_link"] != null) {
-        _logger.d(
-            "${responseDecoded["location_photo_link"]} ${responseDecoded["description"]}");
+        _logger.d(responseDecoded);
 
-        return responseDecoded["location_photo_link"];
-      } else if (responseDecoded["message"] != null) {
-        var responseDecoded2 = responseDecoded["message"] as String;
+        if (responseDecoded["location_photo_link"] != null) {
+          _logger.d(
+              "${responseDecoded["location_photo_link"]}; ${responseDecoded["description"]}; ${responseDecoded["spot_number"]}");
 
-        _logger.d(responseDecoded2);
-        return responseDecoded2;
+          return SpotRequest(
+              location_photo_link: responseDecoded["location_photo_link"],
+              spot_number: responseDecoded[
+                  "spot_number"]); //,responseDecoded["spot_number"];
+        } else if (responseDecoded["message"] != null) {
+          var responseDecoded2 = responseDecoded["message"] as String;
+
+          _logger.d(responseDecoded2);
+          return SpotRequest(location_photo_link: responseDecoded2);
+        }
       }
     } on SocketException {
       _logger.e("Socket Exception");
-      return connectionError;
+      return SpotRequest(location_photo_link: connectionError);
     } catch (e) {
       _logger.e(e);
-      return generalError;
+      return SpotRequest(location_photo_link: generalError);
     }
-    return generalError;
+    return SpotRequest(location_photo_link: generalError);
+    //}else{
+
+    //}
   }
 }
