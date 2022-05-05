@@ -7,7 +7,6 @@ import 'package:logger/logger.dart';
 import '../models/database/tables/database_content_table.dart';
 import '../services/timeline_service.dart';
 import '../widgets/timeline/timeline_body.dart';
-import '../widgets/timeline/timeline_dial.dart';
 import '../widgets/timeline/timeline_search_delegate.dart';
 import '../widgets/util/loading.dart';
 
@@ -63,10 +62,10 @@ class _TimelinePageState extends State<TimelinePage> {
             )
           ],
         ),
-        floatingActionButton: TimelineDial(
+        /* floatingActionButton: TimelineDial(
             isDialOpen: isDialOpen,
             deleteTimelineData: deleteTimelineData,
-            refreshTImelineData: refreshTimelineData),
+            refreshTImelineData: refreshTimelineData),*/
         body: FutureBuilder<List<Content>>(
           future: mapdata,
           builder: (context, snapshot) {

@@ -34,7 +34,7 @@ class _SettingsPageState extends State<SettingsPage> {
       body: ListView(
         children: const [
           Center(
-            child: Text("version: 1.0.6+12"),
+            child: Text("version: 1.0.9+12"),
           ),
 /*          ExpansionTile(
             title: const Text("Shared Preferences"),
