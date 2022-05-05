@@ -65,9 +65,13 @@ class _TimeLineBodyState extends State<TimeLineBody> {
         ),
       ),
       Expanded(
-        child: EventTimelineListView(
-          timeLineMap: widget.mapdata,
-          timelineYear: chosenYear!,
+        child: AnimatedSwitcher(
+          duration: Duration(seconds: 1),
+          child: EventTimelineListView(
+            key: UniqueKey(),
+            timeLineMap: widget.mapdata,
+            timelineYear: chosenYear!,
+          ),
         ),
       ),
     ]);

@@ -70,7 +70,7 @@ class DatabaseContentTable {
     _logger.d("Inserted: $content into $table");
   }
 
-  static void addBatch(List<Content> contents) async {
+  static Future<void> addBatch(List<Content> contents) async {
     DatabaseHelper instance = DatabaseHelper.instance;
     Database db = await instance.database;
     Batch batch = db.batch();
@@ -82,7 +82,7 @@ class DatabaseContentTable {
       );
     }
     _logger.d("Inserted as batch into $table");
-    batch.commit();
+    await batch.commit();
   }
 
   static Future<int> remove(int id) async {

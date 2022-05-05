@@ -32,27 +32,28 @@ class _SettingsPageState extends State<SettingsPage> {
         title: const Text("Settings"),
       ),
       body: ListView(
-        children: [
-          const Center(
-            child: Text("version: 1.0.5+12"),
+        children: const [
+          Center(
+            child: Text("version: 1.0.6+12"),
           ),
-          ExpansionTile(
+/*          ExpansionTile(
             title: const Text("Shared Preferences"),
             children: [
               SwitchListTile.adaptive(
-                  title: const Text("Completed All Puzzles"),
-                  value: _setting,
-                  onChanged: (bool newValue) async {
-                    if (!newValue) {
-                      SharedPrefsService.resetCompletedAllPuzzles();
-                      setState(() => _setting = newValue);
-                    } else {
-                      SharedPrefsService.storeCompletedAllPuzzles();
-                      setState(() => _setting = newValue);
-                    }
-                  }),
+                title: const Text("Completed All Puzzles"),
+                value: _setting,
+                onChanged: (bool newValue) async {
+                  if (!newValue) {
+                    SharedPrefsService.resetCompletedAllPuzzles();
+                    setState(() => _setting = newValue);
+                  } else {
+                    SharedPrefsService.storeCompletedAllPuzzles();
+                    setState(() => _setting = newValue);
+                  }
+                },
+              ),
             ],
-          ),
+          ),*/
         ],
       ),
     );
