@@ -202,7 +202,11 @@ class _HomeOpenDayState extends State<HomeOpenDay>
               FloatingActionButtonLocation.centerDocked,
           floatingActionButton: FloatingActionButton(
               backgroundColor: Theme.of(context).primaryColor,
-              child: const Icon(Icons.score, size: 30),
+              child: const FaIcon(
+                FontAwesomeIcons.rankingStar,
+                color: Colors.grey,
+                size: 30,
+              ),
               foregroundColor: Theme.of(context).unselectedWidgetColor,
               onPressed: () {
                 Navigator.of(context).pushNamed(LeaderBoardPage.pageRoute);

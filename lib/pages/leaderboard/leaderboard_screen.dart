@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:iscte_spots/widgets/util/constants.dart';
-import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 import 'package:logger/logger.dart';
 
 //const API_ADDRESS = "http://192.168.1.124";
@@ -128,12 +127,12 @@ class _LeaderBoardPageState extends State<LeaderBoardPage>
           overscroll.disallowIndicator();
           return true;
         },
-        child: const GlobalLeaderboard(),/*TabBarView(
+        child:
+            const GlobalLeaderboard(), /*TabBarView(
           physics: const NeverScrollableScrollPhysics(),
           controller: _tabController,
           children: _pages,
         ),*/ // _pages[_selectedIndex],
-
       ),
       /*bottomNavigationBar: ClipRRect(
         borderRadius: BorderRadius.only(
@@ -455,13 +454,13 @@ class _LeaderboardListState extends State<LeaderboardList> {
                                 children: <Widget>[
                                   if (index == 0)
                                     Image.asset(
-                                        "Resources/Img/LeaderBoardIcons/gold_medal.png")
-                                  else if (index == 1)
+                                        "Resources/Img/LeaderBoardIcons/gold_medal.png"),
+                                  /*else if (index == 1)
                                     Image.asset(
                                         "Resources/Img/LeaderBoardIcons/silver_medal.png")
                                   else if (index == 2)
                                     Image.asset(
-                                        "Resources/Img/LeaderBoardIcons/bronze_medal.png"),
+                                        "Resources/Img/LeaderBoardIcons/bronze_medal.png"),*/
                                   const SizedBox(width: 10),
                                   Text("#${index + 1}",
                                       style: const TextStyle(

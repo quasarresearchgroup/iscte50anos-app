@@ -41,7 +41,7 @@ class NavigationDrawerOpenDay extends StatelessWidget {
         },
       ),
       ListTile(
-        leading: const Icon(Icons.score),
+        leading: const FaIcon(FontAwesomeIcons.rankingStar),
         title: Text(AppLocalizations.of(context)!.leaderBoardScreen),
         onTap: () {
           //PageRoutes.animateToPage(context, page: const LeaderBoardPage());

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 
 class MyBottomBar extends StatefulWidget {
@@ -51,7 +52,8 @@ class _MyBottomBarState extends State<MyBottomBar> {
             currentIndex: widget.tabController.index,
             backgroundColor: Theme.of(context).primaryColor.withOpacity(0),
             selectedItemColor: Theme.of(context).selectedRowColor,
-            unselectedItemColor: Theme.of(context).unselectedWidgetColor,
+            unselectedItemColor: Colors.grey,
+            //Theme.of(context).selectedRowColor.withOpacity(90),
             onTap: changePage,
             enableFeedback: true,
             iconSize: 30,
@@ -59,7 +61,7 @@ class _MyBottomBarState extends State<MyBottomBar> {
             unselectedFontSize: 10,
             items: [
               BottomNavigationBarItem(
-                icon: const Icon(Icons.home),
+                icon: const FaIcon(FontAwesomeIcons.puzzlePiece),
                 label: AppLocalizations.of(context)!.mainMenu,
                 //backgroundColor: Theme.of(context).primaryColor,
               ),
