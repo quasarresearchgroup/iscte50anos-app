@@ -379,7 +379,7 @@ class GlobalLeaderboard extends StatelessWidget {
           // Container to hold the description
           height: 50,
           child: Center(
-            child: Text("Top 10 Global",
+            child: Text("Classificação dos Grupos",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
           ),
         ),
