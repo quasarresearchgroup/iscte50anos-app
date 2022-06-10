@@ -30,11 +30,11 @@ class _QuizState extends State<Quiz> {
   Timer? timer;
   String selectedAnswer = "";
 
-  final double time = 30000;
+  final double ANSWER_TIME = 30000;
   double countdown = 30000;
 
   double getTimePercentage() {
-    return countdown / time;
+    return countdown / ANSWER_TIME;
   }
 
   startTimer() {
