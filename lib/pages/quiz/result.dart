@@ -43,7 +43,7 @@ class Result extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Text(
-            AppLocalizations.of(context)!.quizComplete,
+            AppLocalizations.of(context)?.quizComplete ?? "Quiz",
             style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,
           ),
@@ -54,7 +54,7 @@ class Result extends StatelessWidget {
           ), //Text*/
           ElevatedButton(
             child: Text(
-              AppLocalizations.of(context)!.back,
+              AppLocalizations.of(context)?.back ?? "Back",
             ), //Te
             onPressed: () {
               Navigator.pushReplacement(

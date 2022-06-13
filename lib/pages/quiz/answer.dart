@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
 class Answer extends StatelessWidget {
-  final Function(String, bool) selectHandler;
+  final Function(int, bool) selectHandler;
 
   final String answerText;
-  final String answerId;
+  final int answerId;
 
   final bool isMultipleChoice;
-  final List<String> selectedAnswers;
-  final String selectedId;
+  final List<int> selectedAnswers;
+  final int selectedId;
 
   const Answer(this.selectHandler, this.answerText, this.answerId,
       this.isMultipleChoice, this.selectedId, this.selectedAnswers,
@@ -28,20 +28,20 @@ class Answer extends StatelessWidget {
                   dense: true,
                   value: answerId,
                   onChanged: (value) {
-                    selectHandler(value.toString(), false);
+                    selectHandler(value as int, false);
                   },
-                  groupValue: selectedId,
+                  groupValue: selectedAnswers.isEmpty ? -1 : selectedAnswers[0],
                 ),
               )
             : Card(
                 child: CheckboxListTile(
-                title: Text(answerText),
-                controlAffinity: ListTileControlAffinity.leading,
-                dense: true,
-                onChanged: (bool? value) {
-                  selectHandler(answerId, true);
-                },
-                value: selectedAnswers.contains(answerId),
+                  title: Text(answerText),
+                  controlAffinity: ListTileControlAffinity.leading,
+                  dense: true,
+                  onChanged: (bool? value) {
+                    selectHandler(answerId, true);
+                  },
+                  value: selectedAnswers.contains(answerId),
               ))); //Container
   }
 }

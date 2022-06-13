@@ -2,10 +2,13 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:iscte_spots/services/quiz/quiz_service.dart';
 import 'package:logger/logger.dart';
 
 import './answer.dart';
 import './question.dart';
+
+const double ANSWER_TIME = 10000; //ms
 
 class Quiz extends StatefulWidget {
   final List<Map<String, Object>> questions;
@@ -13,7 +16,8 @@ class Quiz extends StatefulWidget {
   final Function answerQuestion;
   final Logger logger = Logger();
 
-  final List<String> selectedAnswers = [];
+  final int trialNumber = 1;
+  final int quizNumber = 1;
 
   Quiz({
     Key? key,
@@ -27,11 +31,44 @@ class Quiz extends StatefulWidget {
 }
 
 class _QuizState extends State<Quiz> {
-  Timer? timer;
-  String selectedAnswer = "";
 
-  final double ANSWER_TIME = 30000;
-  double countdown = 30000;
+  Timer? timer;
+
+  int selectedAnswerId = 0;
+  final List<int> selectedAnswerIds = [];
+
+  late Future<Map> futureQuestion;
+
+  bool submitted = false;
+
+  double countdown = 10000;
+
+  Future<Map> getNextQuestion() async {
+    final question = await QuizService.getNextQuestion(widget.quizNumber,
+        widget.trialNumber);
+    selectedAnswerId = 0;
+    selectedAnswerIds.clear();
+    submitted = false;
+    startTimer();
+    print(question.toString());
+    return question;
+  }
+
+  submitAnswer(int question) async{
+    // TODO create answer json
+    Map answer = {"choices": selectedAnswerIds};
+    print(answer);
+    final response = await QuizService.answerQuestion(widget.quizNumber,
+        widget.trialNumber, question, answer);
+    submitted = true;
+    timer?.cancel();
+  }
+
+  @override
+  initState() {
+    super.initState();
+    futureQuestion = getNextQuestion();
+  }
 
   double getTimePercentage() {
     return countdown / ANSWER_TIME;
@@ -39,7 +76,7 @@ class _QuizState extends State<Quiz> {
 
   startTimer() {
     timer?.cancel();
-    countdown = time;
+    countdown = ANSWER_TIME;
     timer = Timer.periodic(const Duration(milliseconds: 10), (timer) {
       setState(() {
         countdown -= 10;
@@ -50,28 +87,26 @@ class _QuizState extends State<Quiz> {
     });
   }
 
-  selectAnswer(String answer, bool multiple) {
+  selectAnswer(int answer, bool multiple) {
     setState(() {
-      if (multiple) {
-        if (widget.selectedAnswers.contains(answer)) {
-          widget.selectedAnswers.remove(answer);
+      if(multiple) {
+        if (selectedAnswerIds.contains(answer)) {
+          selectedAnswerIds.remove(answer);
         } else {
-          widget.selectedAnswers.add(answer);
+          selectedAnswerIds.add(answer);
         }
-      } else {
-        selectedAnswer = answer;
+      }else{
+        if(selectedAnswerIds.isEmpty){
+          selectedAnswerIds.add(answer);
+        }else{
+          selectedAnswerIds[0]=answer;
+        }
       }
       !multiple
-          ? widget.logger.i("Selected answer:" + selectedAnswer)
+          ? widget.logger.i("Selected answer: ${selectedAnswerIds[0]}")
           : widget.logger
-              .i("Selected answers:" + widget.selectedAnswers.toString());
+          .i("Selected answers:" + selectedAnswerIds.toString());
     });
-  }
-
-  @override
-  initState() {
-    super.initState();
-    startTimer();
   }
 
   @override
@@ -82,62 +117,108 @@ class _QuizState extends State<Quiz> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        LinearProgressIndicator(
-          value: getTimePercentage(),
-          semanticsLabel: 'Linear progress indicator',
-          backgroundColor: Colors.white,
-        ),
-        Question(
-          widget.questions[widget.questionIndex]['questionText'].toString(),
-        ), //Question
-
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
-            child: AspectRatio(
-              aspectRatio: 1,
-              child: Container(
-                decoration: BoxDecoration(
-                    image: DecorationImage(
-                  fit: BoxFit.fitHeight,
-                  alignment: FractionalOffset.topCenter,
-                  image: NetworkImage(
-                      widget.questions[widget.questionIndex]['imageUrl']
-                          .toString(),
-                      scale: 0.5),
-                )),
+    return FutureBuilder(future: futureQuestion, builder: (context, snapshot) {
+      if (snapshot.hasData) {
+        Map response = snapshot.data as Map;
+        if(response["trial_score"] != null){
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text("Pontuação da tentativa: ${response["trial_score"]}"),
+                ElevatedButton(
+                  child: Text(AppLocalizations
+                      .of(context)
+                      ?.advance ?? "Return"),
+                  onPressed:() {
+                    futureQuestion = getNextQuestion();
+                  },
+                ),
+              ],
+            ),
+          );
+        }
+        Map trialQuestion = response;
+        Map question = trialQuestion["question"];
+        return Column(
+          children: [
+            LinearProgressIndicator(
+              value: getTimePercentage(),
+              semanticsLabel: 'Linear progress indicator',
+            ),
+            Question(
+              question['text'].toString(),
+            ), //Question
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
+                child: AspectRatio(
+                  aspectRatio: 1,
+                  child: Container(
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                          fit: BoxFit.fitHeight,
+                          alignment: FractionalOffset.topCenter,
+                          image: NetworkImage(
+                            // TODO handle lack of image
+                              "https://upload.wikimedia.org/wikipedia/commons/7/71/Raul_Hestnes_Ferreira_ISCTE_4042.jpg",
+                              //question['image_link'].toString(),
+                              scale: 0.5),
+                        )),
+                  ),
+                ),
               ),
             ),
-          ),
-        ),
 
-        ...(widget.questions[widget.questionIndex]['answers']
-                as List<Map<String, Object>>)
-            .map((answer) {
-          return Answer(
-              selectAnswer,
-              answer['text'].toString(),
-              answer['text'].toString(),
-              widget.questions[widget.questionIndex]["isMultipleChoice"]
-                  as bool,
-              selectedAnswer,
-              widget.selectedAnswers);
-        }).toList(),
+            ...(question['choices'] as List)
+                .map((answer) {
+              return Answer(
+                  selectAnswer,
+                  answer['text'].toString(),
+                  answer['id'] as int,
+                  question["type"] == "M",
+                  selectedAnswerId,
+                  selectedAnswerIds);
+            }).toList(),
 
-        ElevatedButton(
-          child: Text(AppLocalizations.of(context)!.advance),
-          onPressed: () {
-            widget.answerQuestion(1);
-            startTimer();
-          },
-          style: ElevatedButton.styleFrom(
-            primary: Colors.black45,
-            onPrimary: Colors.white,
-          ),
-        )
-      ],
-    ); //Column
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  child: Text(AppLocalizations
+                      .of(context)
+                      ?.advance ?? "Submit"),
+                  onPressed: countdown <= 0 || selectedAnswerIds.isEmpty || submitted ? null : () {
+                    submitAnswer(trialQuestion["number"]);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.black45,
+                    onPrimary: Colors.white,
+                  ),
+                ),
+                const SizedBox(width: 10),
+                ElevatedButton(
+                  child: Text(AppLocalizations
+                      .of(context)
+                      ?.advance ?? "Next"),
+                  onPressed: countdown > 0 && !submitted ? null : () {
+                    futureQuestion = getNextQuestion();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.black45,
+                    onPrimary: Colors.white,
+                  ),
+                )
+              ],
+            )
+          ],
+        );
+      } else {
+        return const Text("Loading...");
+      } //Column
+    }
+    );
   }
+
 }
