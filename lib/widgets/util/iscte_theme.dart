@@ -31,6 +31,9 @@ class IscteTheme {
 
   static ThemeData get lightThemeData {
     return ThemeData.light().copyWith(
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        backgroundColor: iscteColor,
+      ),
       primaryColor: iscteColor,
       primaryColorLight: iscteColorLight,
       primaryColorDark: iscteColorDark,
@@ -42,6 +45,8 @@ class IscteTheme {
 
   static ThemeData get darkThemeData {
     return ThemeData.dark().copyWith(
+      floatingActionButtonTheme:
+          FloatingActionButtonThemeData(backgroundColor: iscteColor),
       scaffoldBackgroundColor: Colors.black,
       backgroundColor: Colors.black,
       primaryColor: iscteColor,

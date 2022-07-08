@@ -30,7 +30,7 @@ class PuzzlePage extends StatefulWidget {
 
 class _PuzzlePageState extends State<PuzzlePage>
     with AutomaticKeepAliveClientMixin {
-  List<Widget> pieces = [];
+  final List<Widget> pieces = [];
   //make this a future so that previous operations get queued and complete only when this has values
   @override
   void initState() {
@@ -58,10 +58,11 @@ class _PuzzlePageState extends State<PuzzlePage>
     return SafeArea(child: widget);
   }
 
+  void refreshPieces() {
+    generatePieces(widget.image);
+  }
+
   void generatePieces(Image img) async {
-    setState(() {
-      pieces = [];
-    });
     Size imageSize = await ImageManipulation.getImageSize(img);
     final double imageWidth;
     final double imageHeight;
@@ -102,6 +103,7 @@ class _PuzzlePageState extends State<PuzzlePage>
       return !storedPositions.contains(point);
     }).toList();
 
+    pieces.clear();
     pieces.add(SizedBox.expand(child: Container()));
     pieces.add(Container(
       decoration: BoxDecoration(
@@ -119,6 +121,14 @@ class _PuzzlePageState extends State<PuzzlePage>
     //pieces.addAll(movablePuzzlePieces);
     pieces.addAll(storedPuzzlePieceWidgets);
     pieces.addAll(notStoredPieces);
+    pieces.add(Positioned(
+        right: 0,
+        bottom: 0,
+        child: FloatingActionButton(
+            heroTag: "refreshFAB",
+            child:
+                Icon(Icons.refresh, color: Theme.of(context).selectedRowColor),
+            onPressed: refreshPieces)));
     setState(() {});
   }
 
@@ -126,7 +136,7 @@ class _PuzzlePageState extends State<PuzzlePage>
     //widget._logger.d("Used bringToTop function on $targetWidget.");
     setState(() {
       pieces.remove(targetWidget);
-      pieces.add(targetWidget);
+      pieces.insert(pieces.length - 1, targetWidget);
     });
   }
 

@@ -112,7 +112,7 @@ class _HomeOpenDayState extends State<HomeOpenDay>
   }
 
   void changeCurrentImage(Future<SpotRequest> request) async {
-    widget._logger.d("changin image: $request");
+    widget._logger.d("changing image: $request");
     SpotRequest requestResult = await request;
     var newImageURL =
         await OpenDayQRScanService.requestRouter(context, requestResult);
@@ -180,7 +180,7 @@ class _HomeOpenDayState extends State<HomeOpenDay>
                     }
                     return Text("Puzzle $spots");
                   } else {
-                    return LoadingWidget();
+                    return const LoadingWidget();
                   }
                 }),
             actions: challengeCompleteBool
@@ -201,7 +201,6 @@ class _HomeOpenDayState extends State<HomeOpenDay>
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerDocked,
           floatingActionButton: FloatingActionButton(
-              backgroundColor: Theme.of(context).primaryColor,
               child: const FaIcon(
                 FontAwesomeIcons.rankingStar,
                 color: Colors.grey,
@@ -255,7 +254,6 @@ class _HomeOpenDayState extends State<HomeOpenDay>
                                                     .locationPhotoLink!)) {
                                           _completedAllPuzzles();
                                         }
-
                                         if (OpenDayQRScanService.isError(
                                             snapshot
                                                 .data!.locationPhotoLink!)) {
@@ -273,7 +271,7 @@ class _HomeOpenDayState extends State<HomeOpenDay>
                                       } else if (snapshot.hasError) {
                                         return buildErrorWidget();
                                       } else {
-                                        return LoadingWidget();
+                                        return const LoadingWidget();
                                       }
                                     }),
                                 IscteConfetti(
@@ -298,27 +296,29 @@ class _HomeOpenDayState extends State<HomeOpenDay>
       onTap: () {
         rerfeshPermit();
       },
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          const Icon(
-            Icons.error_outline,
-            color: Colors.red,
-            size: 60,
-          ),
-          const Padding(
-            padding: EdgeInsets.only(top: 10),
-            child: Text('Ocorreu um erro a descarregar os dados'),
-          ),
-          const Padding(
-            padding: EdgeInsets.all(5.0),
-            child: Text(
-              'Tocar aqui para recarregar',
-              style: TextStyle(fontWeight: FontWeight.bold),
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: const [
+            Icon(
+              Icons.error_outline,
+              color: Colors.red,
+              size: 60,
             ),
-          )
-        ],
+            Padding(
+              padding: EdgeInsets.only(top: 10),
+              child: Text('Ocorreu um erro a descarregar os dados'),
+            ),
+            Padding(
+              padding: EdgeInsets.all(5.0),
+              child: Text(
+                'Tocar aqui para recarregar',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
