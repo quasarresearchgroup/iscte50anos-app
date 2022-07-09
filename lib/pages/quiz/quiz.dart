@@ -11,7 +11,7 @@ class Quiz extends StatefulWidget {
   final List<Map<String, Object>> questions;
   final int questionIndex;
   final Function answerQuestion;
-  final Logger logger = Logger();
+  final Logger _logger = Logger();
 
   final List<String> selectedAnswers = [];
 
@@ -62,8 +62,8 @@ class _QuizState extends State<Quiz> {
         selectedAnswer = answer;
       }
       !multiple
-          ? widget.logger.i("Selected answer:" + selectedAnswer)
-          : widget.logger
+          ? widget._logger.i("Selected answer:" + selectedAnswer)
+          : widget._logger
               .i("Selected answers:" + widget.selectedAnswers.toString());
     });
   }

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:iscte_spots/services/shared_prefs_service.dart';
+import 'package:logger/logger.dart';
+import 'package:yaml/yaml.dart';
 
 class SettingsPage extends StatefulWidget {
   static const pageRoute = "/settings";
-
+  final Logger _logger = Logger();
   SettingsPage({Key? key}) : super(key: key);
 
   @override
@@ -32,8 +33,9 @@ class _SettingsPageState extends State<SettingsPage> {
         title: const Text("Settings"),
       ),
       body: ListView(
-        children: const [
-          Center(
+        children: [
+          IscteAboutListTile(),
+          const Center(
             child: Text("version: 1.0.10+12"),
           ),
 /*          ExpansionTile(
@@ -56,6 +58,32 @@ class _SettingsPageState extends State<SettingsPage> {
           ),*/
         ],
       ),
+    );
+  }
+}
+
+class IscteAboutListTile extends StatelessWidget {
+  IscteAboutListTile({Key? key}) : super(key: key);
+  final Logger _logger = Logger();
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: DefaultAssetBundle.of(context).loadString("pubspec.yaml"),
+      builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+        if (snapshot.hasData) {
+          Map yaml = loadYaml(snapshot.data!);
+          _logger.d([yaml['name'], yaml['version']]);
+          return AboutListTile(
+            icon: const Icon(Icons.info),
+            applicationName: yaml['name'],
+            applicationVersion: yaml['version'],
+            applicationLegalese: "legalese",
+          );
+        } else {
+          return Container();
+        }
+      },
     );
   }
 }
