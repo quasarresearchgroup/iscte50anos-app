@@ -8,10 +8,9 @@ class Answer extends StatelessWidget {
 
   final bool isMultipleChoice;
   final List<int> selectedAnswers;
-  final int selectedId;
 
   const Answer(this.selectHandler, this.answerText, this.answerId,
-      this.isMultipleChoice, this.selectedId, this.selectedAnswers,
+      this.isMultipleChoice, this.selectedAnswers,
       {Key? key})
       : super(key: key);
 

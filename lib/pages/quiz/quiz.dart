@@ -10,20 +10,15 @@ import './question.dart';
 
 const double ANSWER_TIME = 10000; //ms
 
+
 class Quiz extends StatefulWidget {
-  final List<Map<String, Object>> questions;
-  final int questionIndex;
-  final Function answerQuestion;
   final Logger logger = Logger();
 
-  final int trialNumber = 1;
-  final int quizNumber = 1;
+  final int trialNumber;
+  final int quizNumber;
 
   Quiz({
-    Key? key,
-    required this.questions,
-    required this.answerQuestion,
-    required this.questionIndex,
+    Key? key, required this.trialNumber, required this.quizNumber,
   }) : super(key: key);
 
   @override
@@ -40,28 +35,34 @@ class _QuizState extends State<Quiz> {
   late Future<Map> futureQuestion;
 
   bool submitted = false;
+  bool isTimed = true;
 
   double countdown = 10000;
 
   Future<Map> getNextQuestion() async {
     final question = await QuizService.getNextQuestion(widget.quizNumber,
         widget.trialNumber);
-    selectedAnswerId = 0;
     selectedAnswerIds.clear();
     submitted = false;
-    startTimer();
-    print(question.toString());
+    if(isTimed){
+      startTimer();
+    }
+    widget.logger.d(question.toString());
+    setState(() {
+
+    });
     return question;
   }
 
   submitAnswer(int question) async{
-    // TODO create answer json
     Map answer = {"choices": selectedAnswerIds};
-    print(answer);
-    final response = await QuizService.answerQuestion(widget.quizNumber,
+    widget.logger.d(answer.toString());
+    submitted = await QuizService.answerQuestion(widget.quizNumber,
         widget.trialNumber, question, answer);
-    submitted = true;
-    timer?.cancel();
+    if(submitted) {
+      timer?.cancel();
+    }
+    setState(() {});
   }
 
   @override
@@ -95,17 +96,15 @@ class _QuizState extends State<Quiz> {
         } else {
           selectedAnswerIds.add(answer);
         }
+        widget.logger.i("Selected answers:" + selectedAnswerIds.toString());
       }else{
         if(selectedAnswerIds.isEmpty){
           selectedAnswerIds.add(answer);
         }else{
           selectedAnswerIds[0]=answer;
         }
+        widget.logger.i("Selected answer: ${selectedAnswerIds[0]}");
       }
-      !multiple
-          ? widget.logger.i("Selected answer: ${selectedAnswerIds[0]}")
-          : widget.logger
-          .i("Selected answers:" + selectedAnswerIds.toString());
     });
   }
 
@@ -128,11 +127,9 @@ class _QuizState extends State<Quiz> {
               children: [
                 Text("Pontuação da tentativa: ${response["trial_score"]}"),
                 ElevatedButton(
-                  child: Text(AppLocalizations
-                      .of(context)
-                      ?.advance ?? "Return"),
+                  child: const Text("Voltar"),
                   onPressed:() {
-                    futureQuestion = getNextQuestion();
+                    Navigator.of(context).pop();
                   },
                 ),
               ],
@@ -143,10 +140,10 @@ class _QuizState extends State<Quiz> {
         Map question = trialQuestion["question"];
         return Column(
           children: [
-            LinearProgressIndicator(
+            isTimed ? LinearProgressIndicator(
               value: getTimePercentage(),
               semanticsLabel: 'Linear progress indicator',
-            ),
+            ) : const Text("Pergunta sem tempo"),
             Question(
               question['text'].toString(),
             ), //Question
@@ -162,7 +159,7 @@ class _QuizState extends State<Quiz> {
                           alignment: FractionalOffset.topCenter,
                           image: NetworkImage(
                             // TODO handle lack of image
-                              "https://upload.wikimedia.org/wikipedia/commons/7/71/Raul_Hestnes_Ferreira_ISCTE_4042.jpg",
+                              "https://live.staticflickr.com/65535/51942926652_b8d29f2cb5_z.jpg",
                               //question['image_link'].toString(),
                               scale: 0.5),
                         )),
@@ -178,19 +175,17 @@ class _QuizState extends State<Quiz> {
                   answer['text'].toString(),
                   answer['id'] as int,
                   question["type"] == "M",
-                  selectedAnswerId,
                   selectedAnswerIds);
             }).toList(),
 
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                // ----- Submit button -----
                 ElevatedButton(
-                  child: Text(AppLocalizations
-                      .of(context)
-                      ?.advance ?? "Submit"),
+                  child: Text(submitted ? "Submetido" : "Submeter"),
                   onPressed: countdown <= 0 || selectedAnswerIds.isEmpty || submitted ? null : () {
-                    submitAnswer(trialQuestion["number"]);
+                      submitAnswer(trialQuestion["number"]);
                   },
                   style: ElevatedButton.styleFrom(
                     primary: Colors.black45,
@@ -198,13 +193,38 @@ class _QuizState extends State<Quiz> {
                   ),
                 ),
                 const SizedBox(width: 10),
+                // ----- Next button -----
                 ElevatedButton(
-                  child: Text(AppLocalizations
-                      .of(context)
-                      ?.advance ?? "Next"),
-                  onPressed: countdown > 0 && !submitted ? null : () {
-                    futureQuestion = getNextQuestion();
-                  },
+                  child: Text("Seguinte"),
+                  onPressed: countdown > 0 && !submitted ?  () {
+                    setState(() {
+                      showDialog( context:context, builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text("Aviso"),
+                          content: const Text("Deseja avançar sem responder?"),
+                          actions: [
+                            TextButton(
+                              child: const Text('Não'),
+                              onPressed: () {
+                                Navigator.of(context).pop(); //Exit dialog
+                              },
+                            ),
+                            TextButton(
+                              child: const Text('Sim'),
+                              onPressed: () {
+                                setState(() {
+                                  Navigator.of(context).pop();
+                                  futureQuestion = getNextQuestion();
+                                });
+                              },
+                            ),
+                          ],
+                        );
+                      },);
+                    });
+                  } : () => setState(() {
+                      futureQuestion = getNextQuestion();
+                  }),
                   style: ElevatedButton.styleFrom(
                     primary: Colors.black45,
                     onPrimary: Colors.white,
@@ -215,7 +235,13 @@ class _QuizState extends State<Quiz> {
           ],
         );
       } else {
-        return const Text("Loading...");
+        return const Center(
+          child: SizedBox(
+            child: CircularProgressIndicator.adaptive(),
+            width: 60,
+            height: 60,
+          ),
+        );
       } //Column
     }
     );

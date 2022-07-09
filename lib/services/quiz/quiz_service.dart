@@ -11,19 +11,23 @@ import 'package:http/http.dart' as http;
 
 import '../../pages/leaderboard/leaderboard_screen.dart';
 
+const API_ADDRESS_TEST = "http://192.168.1.66";
+
 class QuizService {
   static final Logger _logger = Logger();
 
   static Future<List<dynamic>> getQuizList() async {
     try {
-      String? apiToken = await secureStorage.read(key: "backend_api_key");
+      //String? apiToken = await secureStorage.read(key: "backend_api_key");
+      String? apiToken =
+          "8eb7f1e61ef68a526cf5a1fb6ddb0903bc0678c1";
 
       HttpClient client = HttpClient();
       client.badCertificateCallback =
           ((X509Certificate cert, String host, int port) => true);
 
       final request = await client
-          .postUrl(Uri.parse('${BackEndConstants.API_ADDRESS}/api/quizzes'));
+          .getUrl(Uri.parse('$API_ADDRESS_TEST/api/quizzes'));
 
       request.headers.set('content-type', 'application/json');
       request.headers.add("Authorization", "Token $apiToken");
@@ -33,31 +37,38 @@ class QuizService {
         return jsonDecode(await response.transform(utf8.decoder).join());
       }
     } catch (e) {
-      print(e);
+      _logger.d(e);
+      rethrow;
     }
     throw Exception('Failed to load quiz list');
   }
 
   static Future<Map> startTrial(int quiz) async {
     try {
-      String? apiToken = await secureStorage.read(key: "backend_api_key");
+      //String? apiToken = await secureStorage.read(key: "backend_api_key");
+      String? apiToken =
+          "8eb7f1e61ef68a526cf5a1fb6ddb0903bc0678c1";
 
       HttpClient client = HttpClient();
       client.badCertificateCallback =
           ((X509Certificate cert, String host, int port) => true);
 
-      final request = await client.postUrl(
-          Uri.parse('${BackEndConstants.API_ADDRESS}/api/quizzes/$quiz'));
+      //final request = await client.postUrl(
+        //  Uri.parse('${BackEndConstants.API_ADDRESS}/api/quizzes/$quiz'));
+      final request = await client
+          .postUrl(Uri.parse('$API_ADDRESS_TEST/api/quizzes/$quiz/trials'));
 
       request.headers.add("Authorization", "Token $apiToken");
       request.headers.set('content-type', 'application/json');
       final response = await request.close();
+      _logger.d(response);
 
       if (response.statusCode == 201) {
         return jsonDecode(await response.transform(utf8.decoder).join());
       }
     } catch (e) {
       _logger.d(e);
+      rethrow;
     }
     throw Exception('Failed to start trial');
   }
@@ -72,7 +83,7 @@ class QuizService {
           ((X509Certificate cert, String host, int port) => true);
 
       final request = await client.postUrl(Uri.parse(
-          'http://192.168.1.66/api/quizzes/$quiz/trials/$trial/next_question'));
+          '$API_ADDRESS_TEST/api/quizzes/$quiz/trials/$trial/next_question'));
 
       request.headers.add("Authorization", "Token $apiToken");
       request.headers.set('content-type', 'application/json');
@@ -87,7 +98,7 @@ class QuizService {
     throw Exception('Failed to obtain next question');
   }
 
-  static answerQuestion(
+  static Future<bool> answerQuestion(
       int quiz, int trial, int question, Map answer) async {
     try {
       String? apiToken =
@@ -108,17 +119,16 @@ class QuizService {
 
       var response = await http.post(
           Uri.parse(
-              'http://192.168.1.66/api/quizzes/$quiz/trials/$trial/questions/$question/answer'),
+              '$API_ADDRESS_TEST/api/quizzes/$quiz/trials/$trial/questions/$question/answer'),
           headers: {
             "Authorization": "Token $apiToken",
             "Content-Type": 'application/json; charset=utf-8'
           },
           body: jsonEncode(answer));
 
-      if (response.statusCode == 201) {
+      return response.statusCode == 201;
         //return jsonDecode(await response.transform(utf8.decoder).join());
-        return;
-      }
+        return true;
     } catch (e) {
       _logger.d(e);
       rethrow;
