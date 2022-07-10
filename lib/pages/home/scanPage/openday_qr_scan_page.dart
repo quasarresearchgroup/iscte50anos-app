@@ -1,4 +1,8 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/models/spot_request.dart';
 import 'package:iscte_spots/pages/home/scanPage/qr_scan_camera_controls.dart';
 import 'package:iscte_spots/services/openday/openday_qr_scan_service.dart';
@@ -89,11 +93,13 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
           setState(() => _requesting = true);
           await controller?.pauseCamera();
           widget._logger.d("scanned new code");
-          _lastScan = now;
-          String? newImageURL;
-          Future<SpotRequest> spotRequest = OpenDayQRScanService.spotRequest(
-              context: context, barcode: barcode);
-          widget._logger.d("spotRequest: $spotRequest");
+          bool continueScan = await launchConfirmationDialog(context);
+
+          if (continueScan) {
+            _lastScan = now;
+            Future<SpotRequest> spotRequest = OpenDayQRScanService.spotRequest(
+                context: context, barcode: barcode);
+            widget._logger.d("spotRequest: $spotRequest");
 /*          newImageURL =
               await OpenDayQRScanService.requestRouter(context, spotRequest);
           if (newImageURL != null) {
@@ -102,13 +108,78 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
             }
             widget.changeImage(spotRequest);
           }*/
-          widget.changeImage(spotRequest);
-          await spotRequest;
-          await controller?.resumeCamera();
-          setState(() => _requesting = false);
+            widget.changeImage(spotRequest);
+            await spotRequest;
+          }
         }
+        await controller?.resumeCamera();
+        setState(() => _requesting = false);
       },
     );
+  }
+
+  Future<bool> launchConfirmationDialog(context) async {
+    bool continueScan = false;
+
+    if (Platform.isIOS) {
+      await showCupertinoDialog(
+          context: context,
+          builder: (context) {
+            return CupertinoAlertDialog(
+              title: Text(AppLocalizations.of(context)!.qrScanConfirmation),
+              actions: [
+                TextButton(
+                  child: Text(
+                      AppLocalizations.of(context)!.qrScanConfirmationCancel),
+                  onPressed: () {
+                    widget._logger.d("Pressed \"CANCEL\"");
+                    continueScan = false;
+                    Navigator.pop(context);
+                  },
+                ),
+                TextButton(
+                  child: Text(
+                      AppLocalizations.of(context)!.qrScanConfirmationAccept),
+                  onPressed: () {
+                    widget._logger.d("Pressed \"ACCEPT\"");
+                    continueScan = true;
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
+            );
+          });
+    } else {
+      await showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: ((BuildContext context) {
+            return AlertDialog(
+              title: Text(AppLocalizations.of(context)!.qrScanConfirmation),
+              actions: [
+                TextButton(
+                  child: Text(
+                      AppLocalizations.of(context)!.qrScanConfirmationCancel),
+                  onPressed: () {
+                    widget._logger.d("Pressed \"CANCEL\"");
+                    continueScan = false;
+                    Navigator.pop(context);
+                  },
+                ),
+                TextButton(
+                  child: Text(
+                      AppLocalizations.of(context)!.qrScanConfirmationAccept),
+                  onPressed: () {
+                    widget._logger.d("Pressed \"ACCEPT\"");
+                    continueScan = true;
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
+            );
+          }));
+    }
+    return continueScan;
   }
 
   Widget myQRView(BuildContext context) => QRView(

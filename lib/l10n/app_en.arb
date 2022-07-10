@@ -45,19 +45,14 @@
 
     "onboardingTitle1" : "Access to the App",
     "onboardingText1" : "Use the Credentials given to you by our staff so you can participate in the game using the app.",
-
     "onboardingTitle2" : "The IscteSpots game",
     "onboardingText2" : "In order to get to know Iscte's spots better we set up this game.\nMaybe you will find some interestng places... or some history about our university.",
-
     "onboardingTitle3" : "Complete the puzzle",
     "onboardingText3" : "Use the puzzle to understand where the next spot is...",
-
     "onboardingTitle4" : "Find the spot",
     "onboardingText4" : "After completing the puzzle look for the spot displayed in the puzzle!\nAsk the locals if you find yourself lost.",
-
     "onboardingTitle5" : "Check your ranking",
     "onboardingText5" : "Check how your peers are doing on the Leaderboard.\n You can be faster than them right?",
-
     "onboardingTitle6" : "Repeat until you win",
     "onboardingText6" : "Now do it again!\nUntil you find all the spots hidden on ISCTE",
 
@@ -70,5 +65,9 @@
     "qrScanNotificationInvalid": "Are you sure that is a Spot at Iscte?",
     "qrScanNotificationDisabled": "Spots are disabled now...",
     "qrScanNotificationAllVisited": "Good! You finished the task.\n Now go to the meeting point.",
-    "qrScanNotificationFoundSpot": "Wow you found the spot!!"
+    "qrScanNotificationFoundSpot": "Wow you found the spot!!",
+    "qrScanConfirmation": "Are you sure you want to scan this spot?",
+    "qrScanConfirmationAccept": "ACCEPT",
+    "qrScanConfirmationCancel": "CANCEL"
+
 }
