@@ -3,9 +3,13 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:iscte_spots/models/spot_request.dart';
+import 'package:iscte_spots/models/requests/spot_info_request.dart';
+import 'package:iscte_spots/models/requests/spot_request.dart';
+import 'package:iscte_spots/models/requests/topic_request.dart';
 import 'package:iscte_spots/pages/home/scanPage/qr_scan_camera_controls.dart';
-import 'package:iscte_spots/services/openday/openday_qr_scan_service.dart';
+import 'package:iscte_spots/pages/home/scanPage/qr_scan_results.dart';
+import 'package:iscte_spots/services/auth/exceptions.dart';
+import 'package:iscte_spots/services/qr_scan_service.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:logger/logger.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
@@ -89,28 +93,36 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
     lock.synchronized(
       () async {
         int now = DateTime.now().millisecondsSinceEpoch;
-        if (now - _lastScan >= _scanCooldown && !_requesting) {
-          setState(() => _requesting = true);
-          await controller?.pauseCamera();
-          widget._logger.d("scanned new code");
-          bool continueScan = await launchConfirmationDialog(context);
+        try {
+          if (now - _lastScan >= _scanCooldown && !_requesting) {
+            setState(() => _requesting = true);
+            await controller?.pauseCamera();
+            widget._logger.d("scanned new code");
 
-          if (continueScan) {
-            _lastScan = now;
-            Future<SpotRequest> spotRequest = OpenDayQRScanService.spotRequest(
-                context: context, barcode: barcode);
-            widget._logger.d("spotRequest: $spotRequest");
-/*          newImageURL =
-              await OpenDayQRScanService.requestRouter(context, spotRequest);
-          if (newImageURL != null) {
-            if (newImageURL == OpenDayQRScanService.allVisited) {
-              widget.completedAllPuzzle();
+            SpotInfoRequest spotInfoRequest =
+                await QRScanService.spotInfoRequest(
+                    context: context, barcode: barcode);
+            widget._logger.d(spotInfoRequest);
+            bool continueScan = await launchConfirmationDialog(
+                context, spotInfoRequest.title ?? "");
+
+            if (continueScan && spotInfoRequest.id != null) {
+              _lastScan = now;
+              Future<TopicRequest> topicRequest = QRScanService.topicRequest(
+                  context: context, topicID: spotInfoRequest.id!);
+              TopicRequest topicRequestCompleted = await topicRequest;
+              widget._logger.d("spotInfoRequest: $topicRequestCompleted");
+
+              Navigator.of(context).pushNamed(QRScanResults.pageRoute,
+                  arguments: topicRequestCompleted.contentList);
             }
-            widget.changeImage(spotRequest);
-          }*/
-            widget.changeImage(spotRequest);
-            await spotRequest;
           }
+        } on LoginException {
+          widget._logger.e("LoginException");
+        } on InvalidQRException {
+          widget._logger.e("InvalidQRException");
+        } catch (e) {
+          widget._logger.e(e);
         }
         await controller?.resumeCamera();
         setState(() => _requesting = false);
@@ -118,7 +130,7 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
     );
   }
 
-  Future<bool> launchConfirmationDialog(context) async {
+  Future<bool> launchConfirmationDialog(context, String topicTitle) async {
     bool continueScan = false;
 
     if (Platform.isIOS) {
@@ -127,6 +139,7 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
           builder: (context) {
             return CupertinoAlertDialog(
               title: Text(AppLocalizations.of(context)!.qrScanConfirmation),
+              content: Text(topicTitle),
               actions: [
                 TextButton(
                   child: Text(
@@ -156,6 +169,7 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
           builder: ((BuildContext context) {
             return AlertDialog(
               title: Text(AppLocalizations.of(context)!.qrScanConfirmation),
+              content: Text(topicTitle),
               actions: [
                 TextButton(
                   child: Text(

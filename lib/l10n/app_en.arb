@@ -29,6 +29,7 @@
     "registerScreen":"Sign In",
     "loginScreen":"Login",
     "profileScreen":"Profile",
+    "qrScanResultScreen":"Contents from the Spot",
 
     "loginInvalidCredentials":"Invalid Credentials",
     "loginDontHaveAccount":"Dont have an account?",

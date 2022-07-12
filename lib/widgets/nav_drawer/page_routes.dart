@@ -4,6 +4,7 @@ import 'package:iscte_spots/pages/auth/auth_page.dart';
 import 'package:iscte_spots/pages/flickr/flickr_page.dart';
 import 'package:iscte_spots/pages/home/home.dart';
 import 'package:iscte_spots/pages/home/openday_home.dart';
+import 'package:iscte_spots/pages/home/scanPage/qr_scan_results.dart';
 import 'package:iscte_spots/pages/leaderboard/leaderboard_screen.dart';
 import 'package:iscte_spots/pages/onboarding/onboarding_page.dart';
 import 'package:iscte_spots/pages/profile/profile_screen.dart';
@@ -26,6 +27,7 @@ enum PageRoute {
   VISITED, //VisitedPagesPage.pageRoute
   SETTINGS, //SettingsPage.pageRoute
   ONBOARD, //OnboardingPage.pageRoute
+  QRSCANRESULTS, //QRScanResults.pageRoute
 }
 
 extension PageRouteExtension on PageRoute {
@@ -55,6 +57,8 @@ extension PageRouteExtension on PageRoute {
         return PageRoute.SETTINGS;
       case OnboardingPage.pageRoute:
         return PageRoute.ONBOARD;
+      case QRScanResults.pageRoute:
+        return PageRoute.QRSCANRESULTS;
       default:
         return PageRoute.HOMEOPENDAY;
     }
@@ -88,6 +92,8 @@ extension PageRouteExtension on PageRoute {
         return OnboardingPage(
           onLaunch: false,
         );
+      case PageRoute.QRSCANRESULTS:
+        return QRScanResults(data: argument as List<Content>);
     }
   }
 }

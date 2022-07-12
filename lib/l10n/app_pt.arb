@@ -29,6 +29,7 @@
     "registerScreen":"Registar",
     "loginScreen":"Entrar",
     "profileScreen":"Perfil",
+    "qrScanResultScreen":"Conteudos do Spot",
 
     "loginInvalidCredentials":"Credenciais inválidos",
     "loginDontHaveAccount":"Não tens conta?",

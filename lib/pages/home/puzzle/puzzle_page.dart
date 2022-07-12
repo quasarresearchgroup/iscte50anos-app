@@ -126,6 +126,7 @@ class _PuzzlePageState extends State<PuzzlePage>
         bottom: 0,
         child: FloatingActionButton(
             heroTag: "refreshFAB",
+            elevation: 1,
             child:
                 Icon(Icons.refresh, color: Theme.of(context).selectedRowColor),
             onPressed: refreshPieces)));

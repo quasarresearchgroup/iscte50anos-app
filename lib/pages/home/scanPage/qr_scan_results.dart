@@ -1,21 +1,41 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:iscte_spots/helper/helper_methods.dart';
+import 'package:iscte_spots/models/content.dart';
 
 class QRScanResults extends StatelessWidget {
-  const QRScanResults(
-      {Key? key, required this.controlsDecoration, this.qrScanResult})
-      : super(key: key);
-  final Decoration controlsDecoration;
-  final String? qrScanResult;
+  static const String pageRoute = "QRScanResults";
+  QRScanResults({
+    Key? key,
+    required this.data,
+  }) : super(key: key);
+
+  List<Content> data;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: controlsDecoration,
-      child: Text(
-        //'Result : ${barcode!.code}',
-        'Result : $qrScanResult',
-        maxLines: 3,
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(AppLocalizations.of(context)!.qrScanResultScreen),
+      ),
+      body: Center(
+        child: ListView.builder(
+          itemCount: data.length,
+          itemBuilder: (context, index) {
+            return ListTile(
+              title: Text(data[index].description ?? ""),
+              subtitle: Text(data[index].link ?? ""),
+              leading: data[index].scopeIcon,
+              trailing: data[index].contentIcon,
+              onTap: () {
+                if (data[index].link != null && data[index].link!.isNotEmpty) {
+                  HelperMethods.launchURL(data[index].link!);
+                }
+              },
+            );
+          },
+        ),
       ),
     );
   }

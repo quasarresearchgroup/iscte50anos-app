@@ -8,7 +8,7 @@ class HelperMethods {
     //if (await   (url)) {
     logger.d("-------------------url---------------------");
     logger.d(url);
-    await launch(url);
+    await launchUrl(Uri.parse(url));
     //} else {
     //  throw 'Could not launch $url';
     //}

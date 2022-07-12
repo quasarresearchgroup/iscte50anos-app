@@ -41,7 +41,7 @@ class Content {
   final ContentType? type;
   final int? eventId;
 
-  static Logger logger = Logger();
+  static Logger _logger = Logger();
 
   @override
   String toString() {

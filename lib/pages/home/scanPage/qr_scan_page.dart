@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:iscte_spots/helper/helper_methods.dart';
 import 'package:iscte_spots/pages/home/scanPage/qr_scan_camera_controls.dart';
@@ -10,7 +11,7 @@ import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 class QRScanPage extends StatefulWidget {
   QRScanPage({Key? key}) : super(key: key);
-  final Logger logger = Logger();
+  final Logger _logger = Logger();
   static String titleHtmlTag = 'CGqCRe';
 
   @override
@@ -19,7 +20,6 @@ class QRScanPage extends StatefulWidget {
 
 class QRScanPageState extends State<QRScanPage> {
   final qrKey = GlobalKey(debugLabel: 'QR');
-  final Logger _logger = Logger();
   QRViewController? controller;
   Decoration controlsDecoration = BoxDecoration(
       borderRadius: BorderRadius.circular(8), color: Colors.white24);
@@ -53,14 +53,13 @@ class QRScanPageState extends State<QRScanPage> {
 
   @override
   Widget build(BuildContext context) {
-    checkLaunchBarcode(context);
-
+    Size mediaQuerySize = MediaQuery.of(context).size;
     return Stack(
       alignment: Alignment.center,
       children: <Widget>[
         myQRView(context),
         Positioned(
-          top: 10,
+          bottom: mediaQuerySize.height * 0.2,
           child: QRControlButtons(
               controlsDecoration: controlsDecoration, controller: controller),
         ),
@@ -80,7 +79,7 @@ class QRScanPageState extends State<QRScanPage> {
         });
         await HelperMethods.launchURL(barcode!.code!);
       } on SocketException {
-        showNetworkErrorOverlay(context, _logger);
+        showNetworkErrorOverlay(context, widget._logger);
       }
     }
   }
