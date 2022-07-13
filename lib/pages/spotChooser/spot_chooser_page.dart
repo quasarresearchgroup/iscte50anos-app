@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -39,24 +40,43 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
       appBar: AppBar(title: Text("SpotChooser")),
       body: Column(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+          Column(
             children: [
-              const SizedBox(width: 10),
-              Text("$blur"),
-              Expanded(
-                child: Slider(
-                    max: sliderMax,
-                    min: sliderMin,
-                    divisions: sliderMax.toInt() - sliderMin.toInt(),
-                    label: "$blur",
-                    value: blur,
-                    onChanged: (newBlur) {
-                      setState(() {
-                        blur = newBlur;
-                      });
-                    }),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(width: 10),
+                  Text("$blur"),
+                  Expanded(
+                    child: Slider(
+                        max: sliderMax,
+                        min: sliderMin,
+                        divisions: sliderMax.toInt() - sliderMin.toInt(),
+                        label: "$blur",
+                        value: blur,
+                        onChanged: (newBlur) {
+                          setState(() {
+                            blur = newBlur;
+                          });
+                        }),
+                  ),
+                ],
               ),
+              FutureBuilder<List<String>>(
+                future: future,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return TextButton(
+                        onPressed: () {
+                          chooseSpot(snapshot,
+                              Random().nextInt(snapshot.data!.length), context);
+                        },
+                        child: Text("Random"));
+                  } else {
+                    return LoadingWidget();
+                  }
+                },
+              )
             ],
           ),
           Expanded(
@@ -82,10 +102,7 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
                                 enableFeedback: true,
                                 splashColor: Colors.black,
                                 onTap: () {
-                                  SharedPrefsService.storeCurrentPuzzleIMG(
-                                      snapshot.data![index]);
-                                  DatabasePuzzlePieceTable.removeALL();
-                                  Navigator.of(context).pop();
+                                  chooseSpot(snapshot, index, context);
                                 },
                                 child: Container(
                                   decoration: BoxDecoration(),
@@ -108,5 +125,12 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
         ],
       ),
     );
+  }
+
+  void chooseSpot(
+      AsyncSnapshot<List<String>> snapshot, int index, BuildContext context) {
+    SharedPrefsService.storeCurrentPuzzleIMG(snapshot.data![index]);
+    DatabasePuzzlePieceTable.removeALL();
+    Navigator.of(context).pop();
   }
 }
