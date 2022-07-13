@@ -40,7 +40,9 @@ class _HomeOpenDayState extends State<HomeOpenDay>
   //late Future<Map> futureProfile;
   late Future<SpotRequest> currentPemit;
   final ValueNotifier<bool> _completedAllPuzzlesBool =
-      SharedPrefsService().allPuzzleCompleteState;
+      SharedPrefsService().allPuzzleCompleteNotifier;
+  final ValueNotifier<String> _currentPuzzleImg =
+      SharedPrefsService().currentPuzzleIMGNotifier;
   late final ConfettiController _confettiController;
   late final AnimationController _lottieController;
 
@@ -164,7 +166,8 @@ class _HomeOpenDayState extends State<HomeOpenDay>
           extendBody: true,
           drawer: NavigationDrawerOpenDay(),
           appBar: AppBar(
-            title: FutureBuilder<SpotRequest>(
+            title: Text("Puzzle")
+            /*FutureBuilder<SpotRequest>(
                 future: currentPemit,
                 builder: (BuildContext context,
                     AsyncSnapshot<SpotRequest> snapshot) {
@@ -182,17 +185,24 @@ class _HomeOpenDayState extends State<HomeOpenDay>
                   } else {
                     return const LoadingWidget();
                   }
-                }),
+                })*/
+            ,
             actions: challengeCompleteBool
                 ? null
                 : [
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Center(
-                        child: IconButton(
-                          icon: const FaIcon(FontAwesomeIcons.circleQuestion),
-                          onPressed: () => showHelpOverlay(
-                              context, currentPuzzleImage!, widget._logger),
+                        child: ValueListenableBuilder<String>(
+                          valueListenable: _currentPuzzleImg,
+                          builder: (context, value, _) {
+                            return IconButton(
+                              icon:
+                                  const FaIcon(FontAwesomeIcons.circleQuestion),
+                              onPressed: () => showHelpOverlay(context,
+                                  Image.network(value), widget._logger),
+                            );
+                          },
                         ),
                       ),
                     ),
@@ -244,7 +254,21 @@ class _HomeOpenDayState extends State<HomeOpenDay>
                               BoxConstraints constraints) {
                             return Stack(
                               children: [
-                                FutureBuilder<SpotRequest>(
+                                ValueListenableBuilder<String>(
+                                    valueListenable: _currentPuzzleImg,
+                                    builder: (context, value, _) {
+                                      if (value.isNotEmpty) {
+                                        return PuzzlePage(
+                                          image: Image.network(value),
+                                          constraints: constraints,
+                                          completeCallback:
+                                              completePuzzleCallback,
+                                        );
+                                      } else {
+                                        return LoadingWidget();
+                                      }
+                                    })
+/*                                FutureBuilder<String>(
                                     future: currentPemit,
                                     builder: (context, snapshot) {
                                       if (snapshot.hasData) {
@@ -273,7 +297,8 @@ class _HomeOpenDayState extends State<HomeOpenDay>
                                       } else {
                                         return const LoadingWidget();
                                       }
-                                    }),
+                                    })*/
+                                ,
                                 IscteConfetti(
                                     confettiController: _confettiController)
                               ],

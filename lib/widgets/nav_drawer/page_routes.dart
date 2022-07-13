@@ -10,6 +10,7 @@ import 'package:iscte_spots/pages/onboarding/onboarding_page.dart';
 import 'package:iscte_spots/pages/profile/profile_screen.dart';
 import 'package:iscte_spots/pages/scanned_list_page.dart';
 import 'package:iscte_spots/pages/settings/settings_page.dart';
+import 'package:iscte_spots/pages/spotChooser/spot_chooser_page.dart';
 import 'package:iscte_spots/pages/timeline_page.dart';
 import 'package:iscte_spots/widgets/splashScreen/shake.dart';
 import 'package:iscte_spots/widgets/timeline/timeline_details_page.dart';
@@ -28,6 +29,7 @@ enum PageRoute {
   SETTINGS, //SettingsPage.pageRoute
   ONBOARD, //OnboardingPage.pageRoute
   QRSCANRESULTS, //QRScanResults.pageRoute
+  SPOTCHOOSER, //SpotChooser.pageRoute
 }
 
 extension PageRouteExtension on PageRoute {
@@ -59,6 +61,8 @@ extension PageRouteExtension on PageRoute {
         return PageRoute.ONBOARD;
       case QRScanResults.pageRoute:
         return PageRoute.QRSCANRESULTS;
+      case SpotChooserPage.pageRoute:
+        return PageRoute.SPOTCHOOSER;
       default:
         return PageRoute.HOMEOPENDAY;
     }
@@ -94,6 +98,8 @@ extension PageRouteExtension on PageRoute {
         );
       case PageRoute.QRSCANRESULTS:
         return QRScanResults(data: argument as List<Content>);
+      case PageRoute.SPOTCHOOSER:
+        return SpotChooserPage();
     }
   }
 }

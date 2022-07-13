@@ -27,7 +27,7 @@ class LoadingWidget extends StatelessWidget {
               valueColor: valueColor,
             ),
             Text(
-              AppLocalizations.of(context)!.loading,
+              AppLocalizations.of(context)?.loading ?? "",
               style: messagesStyle,
             )
           ]),

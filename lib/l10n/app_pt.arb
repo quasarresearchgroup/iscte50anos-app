@@ -30,6 +30,7 @@
     "loginScreen":"Entrar",
     "profileScreen":"Perfil",
     "qrScanResultScreen":"Conteudos do Spot",
+    "spotChooserScreen":"Escolha o próximo spot",
 
     "loginInvalidCredentials":"Credenciais inválidos",
     "loginDontHaveAccount":"Não tens conta?",
