@@ -44,13 +44,14 @@ class _QuizState extends State<Quiz> {
         widget.trialNumber);
     selectedAnswerIds.clear();
     submitted = false;
-    if(isTimed){
-      startTimer();
+
+    if (!question.containsKey("trial_score")) {
+      isTimed = question["question"]["is_timed"];
+      if (isTimed) {
+        startTimer();
+      }
     }
     widget.logger.d(question.toString());
-    setState(() {
-
-    });
     return question;
   }
 
@@ -119,7 +120,7 @@ class _QuizState extends State<Quiz> {
     return FutureBuilder(future: futureQuestion, builder: (context, snapshot) {
       if (snapshot.hasData) {
         Map response = snapshot.data as Map;
-        if(response["trial_score"] != null){
+        if(response.containsKey("trial_score")){
           return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -140,10 +141,12 @@ class _QuizState extends State<Quiz> {
         Map question = trialQuestion["question"];
         return Column(
           children: [
+            Text("Pergunta ${trialQuestion["number"]}/8"),
+            const SizedBox(height:5),
             isTimed ? LinearProgressIndicator(
               value: getTimePercentage(),
               semanticsLabel: 'Linear progress indicator',
-            ) : const Text("Pergunta sem tempo"),
+            ) : const Text("Explorar o Campus (Pergunta sem tempo)"),
             Question(
               question['text'].toString(),
             ), //Question

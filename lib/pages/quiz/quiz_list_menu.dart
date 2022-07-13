@@ -207,13 +207,19 @@ class _QuizListState extends State<QuizList> {
                 return Padding(
                   padding: const EdgeInsets.only(left: 10.0, right: 10.0),
                   child: Card(
-                    child: ListTile(
+                    child: ExpansionTile(
                       title: Text("Quiz ${items[index]["number"].toString()}",//items[index]["username"].toString(),
                           style: const TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 16)),
                       subtitle: Text(
-                          "Tentativas: ${items[index]["num_trials"]}\nPontos: ${items[index]["score"]}" "\nTopicos: Década de 80; Ensino"),
-                      trailing: trials >= MAX_TRIALS ? const Text("Completo")
+                          "Pontos: ${items[index]["score"]} \nTentativas: ${items[index]["num_trials"]}" "\nTopicos: ${items[index]["topic_names"]}"),
+                      children: [
+                      trials >= MAX_TRIALS ? Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const <Widget>[
+                          Text("Completo"),
+                        ],
+                      )
                           : ElevatedButton(
                           child: const Text("Iniciar"),
                           onPressed: (){
@@ -224,11 +230,10 @@ class _QuizListState extends State<QuizList> {
                                   text: const TextSpan(
                                     style: TextStyle(
                                       fontSize: 14.0,
-                                      color: Colors.black,
                                     ),
                                     children: <TextSpan>[
-                                      TextSpan(text: 'Deseja iniciar uma tentativa de Quiz?'),
-                                      TextSpan(text: '\n\nCertifique-se que tem uma conexão estável', style: TextStyle(fontWeight: FontWeight.bold)),
+                                      TextSpan(text: 'Deseja iniciar uma tentativa de Quiz?\n'),
+                                      TextSpan(text: '(Certifique-se que tem uma conexão estável)', style: TextStyle(fontWeight: FontWeight.bold)),
                                     ],
                                   ),
                                 ),
@@ -251,7 +256,8 @@ class _QuizListState extends State<QuizList> {
                             },);
                           }
                       ),
-                      minVerticalPadding: 10.0,
+                      ],
+                      //minVerticalPadding: 10.0,
                     ),
                   ),
                 );

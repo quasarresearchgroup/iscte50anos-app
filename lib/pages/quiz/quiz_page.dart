@@ -58,7 +58,7 @@ class _QuizPageState extends State<QuizPage> {
           title: Text(AppLocalizations.of(context)?.quizPageTitle ?? "Quiz"),
         ),
         body: Padding(
-          padding: const EdgeInsets.all(20.0),
+          padding: const EdgeInsets.all(10.0),
           child: Quiz(trialNumber: widget.trialNumber, quizNumber: widget.quizNumber)
         ), //Padding
       )

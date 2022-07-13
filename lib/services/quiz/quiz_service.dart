@@ -11,6 +11,7 @@ import 'package:http/http.dart' as http;
 
 import '../../pages/leaderboard/leaderboard_screen.dart';
 
+const API_ADDRESS = "https://194.210.120.193";
 const API_ADDRESS_TEST = "http://192.168.1.66";
 
 class QuizService {
@@ -18,16 +19,15 @@ class QuizService {
 
   static Future<List<dynamic>> getQuizList() async {
     try {
-      //String? apiToken = await secureStorage.read(key: "backend_api_key");
-      String? apiToken =
-          "8eb7f1e61ef68a526cf5a1fb6ddb0903bc0678c1";
+      String? apiToken = await secureStorage.read(key: "backend_api_key");
+      //String? apiToken = "8eb7f1e61ef68a526cf5a1fb6ddb0903bc0678c1";
 
       HttpClient client = HttpClient();
       client.badCertificateCallback =
           ((X509Certificate cert, String host, int port) => true);
 
       final request = await client
-          .getUrl(Uri.parse('$API_ADDRESS_TEST/api/quizzes'));
+          .getUrl(Uri.parse('$API_ADDRESS/api/quizzes'));
 
       request.headers.set('content-type', 'application/json');
       request.headers.add("Authorization", "Token $apiToken");
@@ -45,9 +45,8 @@ class QuizService {
 
   static Future<Map> startTrial(int quiz) async {
     try {
-      //String? apiToken = await secureStorage.read(key: "backend_api_key");
-      String? apiToken =
-          "8eb7f1e61ef68a526cf5a1fb6ddb0903bc0678c1";
+      String? apiToken = await secureStorage.read(key: "backend_api_key");
+      //String? apiToken = "8eb7f1e61ef68a526cf5a1fb6ddb0903bc0678c1";
 
       HttpClient client = HttpClient();
       client.badCertificateCallback =
@@ -56,7 +55,7 @@ class QuizService {
       //final request = await client.postUrl(
         //  Uri.parse('${BackEndConstants.API_ADDRESS}/api/quizzes/$quiz'));
       final request = await client
-          .postUrl(Uri.parse('$API_ADDRESS_TEST/api/quizzes/$quiz/trials'));
+          .postUrl(Uri.parse('$API_ADDRESS/api/quizzes/$quiz/trials'));
 
       request.headers.add("Authorization", "Token $apiToken");
       request.headers.set('content-type', 'application/json');
@@ -75,15 +74,14 @@ class QuizService {
 
   static Future<Map> getNextQuestion(int quiz, int trial) async {
     try {
-      String? apiToken =
-          "8eb7f1e61ef68a526cf5a1fb6ddb0903bc0678c1"; //await secureStorage.read(key: "backend_api_key");
+      String? apiToken = await secureStorage.read(key: "backend_api_key");
 
       HttpClient client = HttpClient();
       client.badCertificateCallback =
           ((X509Certificate cert, String host, int port) => true);
 
       final request = await client.postUrl(Uri.parse(
-          '$API_ADDRESS_TEST/api/quizzes/$quiz/trials/$trial/next_question'));
+          '$API_ADDRESS/api/quizzes/$quiz/trials/$trial/next_question'));
 
       request.headers.add("Authorization", "Token $apiToken");
       request.headers.set('content-type', 'application/json');
@@ -101,30 +99,28 @@ class QuizService {
   static Future<bool> answerQuestion(
       int quiz, int trial, int question, Map answer) async {
     try {
-      String? apiToken =
-          "8eb7f1e61ef68a526cf5a1fb6ddb0903bc0678c1"; //await secureStorage.read(key: "backend_api_key");
+      String? apiToken = await secureStorage.read(key: "backend_api_key");
 
       HttpClient client = HttpClient();
       client.badCertificateCallback =
           ((X509Certificate cert, String host, int port) => true);
 
-      /*final request = await client.postUrl(Uri.parse(
-          'http://192.168.1.66/api/quizzes/$quiz/trials/$trial/questions/$question/answer'));
+      final request = await client.postUrl(Uri.parse(
+          '$API_ADDRESS/api/quizzes/$quiz/trials/$trial/questions/$question/answer'));
 
       request.headers.add("Authorization", "Token $apiToken");
       request.headers.add('Content-Type', 'application/json; charset=utf-8');
       request.add(utf8.encode(json.encode(answer)));
-      //request.write(json.encode(answer));
-      final response = await request.close();*/
+      final response = await request.close();
 
-      var response = await http.post(
+      /*var response = await http.post(
           Uri.parse(
-              '$API_ADDRESS_TEST/api/quizzes/$quiz/trials/$trial/questions/$question/answer'),
+              '$API_ADDRESS/api/quizzes/$quiz/trials/$trial/questions/$question/answer'),
           headers: {
             "Authorization": "Token $apiToken",
             "Content-Type": 'application/json; charset=utf-8'
           },
-          body: jsonEncode(answer));
+          body: jsonEncode(answer));*/
 
       return response.statusCode == 201;
         //return jsonDecode(await response.transform(utf8.decoder).join());

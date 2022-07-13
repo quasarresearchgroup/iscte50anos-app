@@ -12,6 +12,8 @@ import 'package:iscte_spots/services/auth/openday_login_service.dart';
 import 'package:iscte_spots/widgets/nav_drawer/page_routes.dart';
 import 'package:iscte_spots/widgets/splashScreen/shake.dart';
 
+import '../../pages/quiz/quiz_list_menu.dart';
+
 class NavigationDrawer extends StatelessWidget {
   const NavigationDrawer({
     Key? key,
@@ -35,13 +37,6 @@ class NavigationDrawer extends StatelessWidget {
         },
       ),
       ListTile(
-        leading: const Icon(Icons.help),
-        title: Text(AppLocalizations.of(context)!.quizScreen),
-        onTap: () {
-          PageRoutes.animateToPage(context, page: QuizPage());
-        },
-      ),
-      ListTile(
         leading: const Icon(Icons.touch_app_outlined),
         title: Text(AppLocalizations.of(context)!.shakerScreen),
         onTap: () {
@@ -55,6 +50,13 @@ class NavigationDrawer extends StatelessWidget {
           PageRoutes.animateToPage(context, page: FlickrPage());
         },
       ),*/
+      ListTile(
+        leading: const Icon(Icons.help),
+        title: Text(AppLocalizations.of(context)!.quizScreen),
+        onTap: () {
+          PageRoutes.animateToPage(context, page: const QuizMenu());
+        },
+      ),
       ListTile(
         leading: const Icon(Icons.score),
         title: Text(AppLocalizations.of(context)!.leaderBoardScreen),

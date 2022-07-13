@@ -13,7 +13,7 @@ import 'package:logger/logger.dart';
 import 'package:http/http.dart' as http;
 
 const FlutterSecureStorage secureStorage = FlutterSecureStorage();
-const API_ADDRESS = "https://194.210.120.48";
+const API_ADDRESS = "http://192.168.1.66";
 
 // FOR ISOLATED TESTING
 void main() {
@@ -64,7 +64,8 @@ class _ProfileState extends State<Profile> {
   Future<Map> fetchProfile() async {
     try {
       isLoading = true;
-      String? apiToken = await secureStorage.read(key: "backend_api_key");
+      //String? apiToken = await secureStorage.read(key: "backend_api_key");
+      String? apiToken = "8eb7f1e61ef68a526cf5a1fb6ddb0903bc0678c1";
 
       HttpClient client = HttpClient();
       client.badCertificateCallback =
@@ -94,12 +95,6 @@ class _ProfileState extends State<Profile> {
         List<Widget> children;
         if (snapshot.hasData) {
           var profile = snapshot.data as Map;
-          var spots = profile["num_spots_read"];
-          var totalTime = spots > 0 ? Duration(seconds: profile["total_time"])
-              .toString()
-              .split(".")[0]
-              : "-";
-
           return RefreshIndicator(
             onRefresh: () async {
               setState(() {
@@ -137,9 +132,9 @@ class _ProfileState extends State<Profile> {
                               fontSize: 23
                           )),
                           const SizedBox(height: 20),
-                          const Text("Grupo do Open Day" ,//profile["affiliation_name"].toString(),
+                          Text(profile["affiliation_name"].toString(),
                               textAlign: TextAlign.center,
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontSize: 13
                               )),
                           const SizedBox(height: 20),
@@ -148,10 +143,10 @@ class _ProfileState extends State<Profile> {
                             children: [
                               Column(
                                 children: [
-                                  const Text("Spots", style: TextStyle(
+                                  const Text("Nível", style: TextStyle(
                                       fontSize: 14
                                   )),
-                                  Text(profile["num_spots_read"].toString(),
+                                  Text(profile["level"].toString(),
                                       style: const TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 18
@@ -160,10 +155,10 @@ class _ProfileState extends State<Profile> {
                               ),
                               Column(
                                 children: [
-                                  const Text("Tempo", style: TextStyle(
+                                  const Text("Pontos", style: TextStyle(
                                       fontSize: 14
                                   )),
-                                  Text(totalTime.toString(),
+                                  Text(profile["points"].toString(),
                                       style: const TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 18
