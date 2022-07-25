@@ -24,33 +24,47 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      //showSemanticsDebugger: true,
-      debugShowCheckedModeBanner: false,
-      title: 'IscteSpots',
-      theme: IscteTheme.lightThemeData,
-      darkTheme: IscteTheme.darkThemeData,
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      home: SplashScreen(),
-      onGenerateRoute: (routeSettings) {
-        Widget widget = PageRouter.resolve(
-            routeSettings.name ?? "", routeSettings.arguments);
-        //var buildPageAsync = await _buildPageAsync(page: widget);
-        return PageRouteBuilder(
-          transitionDuration: const Duration(seconds: 1),
-          maintainState: true,
-          pageBuilder: (context, animation, secondaryAnimation) => widget,
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            Animatable<Offset> tween =
-                Tween(begin: const Offset(1.0, 0.0), end: Offset.zero).chain(
-              CurveTween(curve: Curves.ease),
-            );
-            return SlideTransition(
-              position: animation.drive(tween),
-              child: child,
-            );
-          },
+    if (Platform.isIOS) {
+      return CupertinoApp(
+        debugShowCheckedModeBanner: false,
+        title: 'IscteSpots',
+        theme: IscteTheme.cupertinoLightThemeData,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: SplashScreen(),
+        onGenerateRoute: generatedRoutes,
+      );
+    } else {
+      return MaterialApp(
+        //showSemanticsDebugger: true,
+        debugShowCheckedModeBanner: false,
+        title: 'IscteSpots',
+        theme: IscteTheme.lightThemeData,
+        darkTheme: IscteTheme.darkThemeData,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: SplashScreen(),
+        onGenerateRoute: generatedRoutes,
+      );
+    }
+  }
+
+  Route? generatedRoutes(RouteSettings routeSettings) {
+    Widget widget =
+        PageRouter.resolve(routeSettings.name ?? "", routeSettings.arguments);
+    //var buildPageAsync = await _buildPageAsync(page: widget);
+    return PageRouteBuilder(
+      transitionDuration: const Duration(seconds: 1),
+      maintainState: true,
+      pageBuilder: (context, animation, secondaryAnimation) => widget,
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        Animatable<Offset> tween =
+            Tween(begin: const Offset(1.0, 0.0), end: Offset.zero).chain(
+          CurveTween(curve: Curves.ease),
+        );
+        return SlideTransition(
+          position: animation.drive(tween),
+          child: child,
         );
       },
     );
