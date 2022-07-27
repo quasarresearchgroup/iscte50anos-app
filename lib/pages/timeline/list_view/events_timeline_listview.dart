@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:iscte_spots/models/content.dart';
-import 'package:iscte_spots/widgets/timeline/timeline_tile.dart';
+import 'package:iscte_spots/pages/timeline/timeline_tile.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
 class EventTimelineListView extends StatefulWidget {

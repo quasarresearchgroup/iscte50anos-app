@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:iscte_spots/models/content.dart';
+import 'package:iscte_spots/models/database/tables/database_content_table.dart';
+import 'package:iscte_spots/pages/timeline/timeline_body.dart';
+import 'package:iscte_spots/pages/timeline/timeline_search_delegate.dart';
+import 'package:iscte_spots/services/timeline_service.dart';
+import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:logger/logger.dart';
-
-import '../models/database/tables/database_content_table.dart';
-import '../services/timeline_service.dart';
-import '../widgets/timeline/timeline_body.dart';
-import '../widgets/timeline/timeline_search_delegate.dart';
-import '../widgets/util/loading.dart';
 
 class TimelinePage extends StatefulWidget {
   TimelinePage({Key? key}) : super(key: key);

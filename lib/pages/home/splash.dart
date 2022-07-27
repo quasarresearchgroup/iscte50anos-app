@@ -2,10 +2,10 @@ import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:iscte_spots/pages/auth/auth_page.dart';
 import 'package:iscte_spots/pages/home/openday_home.dart';
+import 'package:iscte_spots/pages/home/splashScreen/shake.dart';
 import 'package:iscte_spots/pages/onboarding/onboarding_page.dart';
 import 'package:iscte_spots/services/auth/openday_login_service.dart';
 import 'package:iscte_spots/services/onboard_service.dart';
-import 'package:iscte_spots/widgets/splashScreen/shake.dart';
 import 'package:logger/logger.dart';
 import 'package:page_transition/page_transition.dart';
 

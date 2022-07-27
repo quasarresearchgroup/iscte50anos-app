@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:iscte_spots/pages/flickr/flickr_page.dart';
+import 'package:iscte_spots/pages/home/splashScreen/shake.dart';
 import 'package:iscte_spots/pages/leaderboard/leaderboard_screen.dart';
 import 'package:iscte_spots/pages/onboarding/onboarding_page.dart';
 import 'package:iscte_spots/pages/profile/profile_screen.dart';
 import 'package:iscte_spots/pages/quiz/quiz_list_menu.dart';
 import 'package:iscte_spots/pages/settings/settings_page.dart';
 import 'package:iscte_spots/pages/spotChooser/spot_chooser_page.dart';
-import 'package:iscte_spots/pages/timeline_page.dart';
+import 'package:iscte_spots/pages/timeline/timeline_page.dart';
 import 'package:iscte_spots/services/auth/openday_login_service.dart';
-import 'package:iscte_spots/widgets/splashScreen/shake.dart';
 
 class NavigationDrawerOpenDay extends StatelessWidget {
   NavigationDrawerOpenDay({Key? key}) : super(key: key);

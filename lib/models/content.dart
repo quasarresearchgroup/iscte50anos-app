@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:iscte_spots/models/database/tables/database_content_table.dart';
+import 'package:iscte_spots/pages/timeline/rouded_timeline_icon.dart';
 import 'package:logger/logger.dart';
 
-import '../widgets/timeline/rouded_timeline_icon.dart';
 import 'event.dart';
 
 enum ContentType {

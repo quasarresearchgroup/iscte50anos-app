@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:iscte_spots/models/content.dart';
-import 'package:iscte_spots/widgets/timeline/timeline_body.dart';
+import 'package:iscte_spots/pages/timeline/timeline_body.dart';
+import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:logger/logger.dart';
-
-import '../util/loading.dart';
 
 class TimelineSearchDelegate extends SearchDelegate {
   final Logger _logger = Logger();

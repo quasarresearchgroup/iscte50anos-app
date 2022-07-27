@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:iscte_spots/widgets/timeline/list_view/events_timeline_listview.dart';
-import 'package:iscte_spots/widgets/timeline/list_view/year_timeline__listview.dart';
-
-import '../../models/content.dart';
+import 'package:iscte_spots/models/content.dart';
+import 'package:iscte_spots/pages/timeline/list_view/events_timeline_listview.dart';
+import 'package:iscte_spots/pages/timeline/list_view/year_timeline__listview.dart';
 
 class TimeLineBody extends StatefulWidget {
   const TimeLineBody({

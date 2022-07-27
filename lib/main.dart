@@ -1,9 +1,12 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:iscte_spots/pages/splash.dart';
-import 'package:iscte_spots/widgets/nav_drawer/page_routes.dart';
+import 'package:iscte_spots/pages/home/nav_drawer/page_routes.dart';
+import 'package:iscte_spots/pages/home/splash.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 
 const int puzzlePageIndex = 0;

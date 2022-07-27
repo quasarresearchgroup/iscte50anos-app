@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:iscte_spots/widgets/timeline/timeline_details_page.dart';
+import 'package:iscte_spots/pages/timeline/timeline_details_page.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
 import '../../models/content.dart';

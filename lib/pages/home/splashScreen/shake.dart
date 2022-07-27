@@ -6,8 +6,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:iscte_spots/helper/image_manipulation.dart';
+import 'package:iscte_spots/pages/home/splashScreen/moving_widget.dart';
 import 'package:iscte_spots/services/flickr/flickr_iscte_photos.dart';
-import 'package:iscte_spots/widgets/splashScreen/moving_widget.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:logger/logger.dart';
 
