@@ -7,7 +7,6 @@ import 'package:logger/logger.dart';
 import '../models/database/tables/database_content_table.dart';
 import '../services/timeline_service.dart';
 import '../widgets/timeline/timeline_body.dart';
-import '../widgets/timeline/timeline_dial.dart';
 import '../widgets/timeline/timeline_search_delegate.dart';
 import '../widgets/util/loading.dart';
 
@@ -27,16 +26,20 @@ class _TimelinePageState extends State<TimelinePage> {
   @override
   void initState() {
     super.initState();
-    mapdata = DatabaseContentTable.getAll();
+    setState(() {
+      mapdata = DatabaseContentTable.getAll();
+    });
   }
 
   void resetMapData() {
-    mapdata = DatabaseContentTable.getAll();
+    setState(() async {
+      mapdata = DatabaseContentTable.getAll();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    var isDialOpen = ValueNotifier<bool>(false);
+    ValueNotifier<bool> isDialOpen = ValueNotifier<bool>(false);
 
     return Theme(
       data: Theme.of(context).copyWith(
@@ -59,45 +62,44 @@ class _TimelinePageState extends State<TimelinePage> {
             )
           ],
         ),
-        floatingActionButton: TimelineDial(
+        /* floatingActionButton: TimelineDial(
             isDialOpen: isDialOpen,
             deleteTimelineData: deleteTimelineData,
-            refreshTImelineData: refreshTImelineData),
+            refreshTImelineData: refreshTimelineData),*/
         body: FutureBuilder<List<Content>>(
           future: mapdata,
           builder: (context, snapshot) {
-            Widget body = Container();
             if (snapshot.hasData) {
-              body = TimeLineBody(mapdata: snapshot.data!);
+              return TimeLineBody(mapdata: snapshot.data!);
             } else if (snapshot.hasError) {
-              body = Center(
+              return Center(
                   child: Text(AppLocalizations.of(context)!.generalError));
             } else {
-              body = const LoadingWidget();
+              return LoadingWidget();
             }
-            return body;
           },
         ),
       ),
     );
   }
 
-  void refreshTImelineData(BuildContext context) {
-    TimelineContentService.insertContentEntriesFromCSV().then((value) {
-      setState(() {
-        widget._logger.d("Inserted from CSV");
-        mapdata = DatabaseContentTable.getAll();
-        mapdata.then((value) => widget._logger.d(value.length));
-        Navigator.popAndPushNamed(context, TimelinePage.pageRoute);
-      });
+  Future<void> refreshTimelineData(BuildContext context) async {
+    await deleteTimelineData(context);
+    await TimelineContentService.insertContentEntriesFromCSV();
+    setState(() async {
+      mapdata = DatabaseContentTable.getAll();
     });
+    widget._logger.d("Inserted from CSV");
+    //List<Content> mapdataCompleted = await mapdata;
+    //widget._logger.d(mapdataCompleted.length);
+    //Navigator.popAndPushNamed(context, TimelinePage.pageRoute);
   }
 
-  void deleteTimelineData(BuildContext context) {
-    setState(() {
-      DatabaseContentTable.removeALL();
-      widget._logger.d("Removed all content");
-      Navigator.popAndPushNamed(context, TimelinePage.pageRoute);
-    });
+  Future<void> deleteTimelineData(BuildContext context) async {
+    await DatabaseContentTable.removeALL();
+    widget._logger.d("Removed all content from db");
+    //setState(() {
+    //Navigator.popAndPushNamed(context, TimelinePage.pageRoute);
+    //});
   }
 }

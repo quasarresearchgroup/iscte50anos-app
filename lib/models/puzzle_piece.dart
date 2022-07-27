@@ -1,5 +1,5 @@
 import 'package:iscte_spots/models/database/tables/database_puzzle_piece_table.dart';
-import 'package:iscte_spots/widgets/puzzle/puzzle_piece_widget.dart';
+import 'package:iscte_spots/pages/home/puzzle/puzzle_piece_widget.dart';
 
 class PuzzlePiece {
   PuzzlePiece({
@@ -23,7 +23,7 @@ class PuzzlePiece {
   }
 
   PuzzlePieceWidget getWidget(
-      image, imageSize, bringToTop, sendToBack, constraints) {
+      image, imageSize, bringToTop, sendToBack, constraints, completeCallback) {
     return PuzzlePieceWidget(
       image: image,
       imageSize: imageSize,
@@ -37,6 +37,7 @@ class PuzzlePiece {
       top: top,
       left: left,
       movable: (top != 0 || left != 0),
+      completeCallback: completeCallback,
     );
   }
 

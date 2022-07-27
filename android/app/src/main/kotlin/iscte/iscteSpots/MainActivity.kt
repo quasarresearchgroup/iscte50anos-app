@@ -1,4 +1,4 @@
-package com.example.iscteSpots
+package iscte.iscteSpots
 
 import io.flutter.embedding.android.FlutterActivity
 

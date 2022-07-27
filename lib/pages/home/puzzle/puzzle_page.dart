@@ -4,12 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:iscte_spots/helper/image_manipulation.dart';
 import 'package:iscte_spots/models/database/tables/database_puzzle_piece_table.dart';
 import 'package:iscte_spots/models/puzzle_piece.dart';
-import 'package:iscte_spots/widgets/puzzle/puzzle_piece_widget.dart';
+import 'package:iscte_spots/pages/home/puzzle/puzzle_piece_widget.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:logger/logger.dart';
 
 class PuzzlePage extends StatefulWidget {
-  PuzzlePage({Key? key, required this.image, required this.constraints})
+  PuzzlePage(
+      {Key? key,
+      required this.image,
+      required this.constraints,
+      required this.completeCallback})
       : super(key: key);
   final Logger _logger = Logger();
   static const pageRoute = "/puzzle";
@@ -18,19 +22,24 @@ class PuzzlePage extends StatefulWidget {
   final int cols = 5;
   final Image image;
   final BoxConstraints constraints;
+  final Function completeCallback;
 
   @override
   _PuzzlePageState createState() => _PuzzlePageState();
 }
 
-class _PuzzlePageState extends State<PuzzlePage> {
-  List<Widget> pieces = [];
+class _PuzzlePageState extends State<PuzzlePage>
+    with AutomaticKeepAliveClientMixin {
+  final List<Widget> pieces = [];
   //make this a future so that previous operations get queued and complete only when this has values
   @override
   void initState() {
     super.initState();
     generatePieces(widget.image);
   }
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void didUpdateWidget(PuzzlePage oldWidget) {
@@ -41,10 +50,19 @@ class _PuzzlePageState extends State<PuzzlePage> {
     super.didUpdateWidget(oldWidget);
   }
 
+  @override
+  Widget build(BuildContext context) {
+    Widget widget =
+        pieces.isNotEmpty ? Stack(children: pieces) : const LoadingWidget();
+    super.build(context);
+    return SafeArea(child: widget);
+  }
+
+  void refreshPieces() {
+    generatePieces(widget.image);
+  }
+
   void generatePieces(Image img) async {
-    setState(() {
-      pieces = [];
-    });
     Size imageSize = await ImageManipulation.getImageSize(img);
     final double imageWidth;
     final double imageHeight;
@@ -64,8 +82,8 @@ class _PuzzlePageState extends State<PuzzlePage> {
     List<Point> storedPositions = [];
     for (var element in storedPuzzlePieces) {
       storedPuzzlePieceWidgets.add(
-        element.getWidget(
-            img, imageSize, bringToTop, sendToBack, widget.constraints),
+        element.getWidget(img, imageSize, bringToTop, sendToBack,
+            widget.constraints, widget.completeCallback),
       );
       storedPositions.add(Point(element.row, element.column));
     }
@@ -78,12 +96,14 @@ class _PuzzlePageState extends State<PuzzlePage> {
       rows: widget.rows,
       cols: widget.cols,
       constraints: widget.constraints,
+      completeCallback: widget.completeCallback,
     ))
             .where((PuzzlePieceWidget element) {
       Point<int> point = Point(element.row, element.col);
       return !storedPositions.contains(point);
     }).toList();
 
+    pieces.clear();
     pieces.add(SizedBox.expand(child: Container()));
     pieces.add(Container(
       decoration: BoxDecoration(
@@ -101,21 +121,23 @@ class _PuzzlePageState extends State<PuzzlePage> {
     //pieces.addAll(movablePuzzlePieces);
     pieces.addAll(storedPuzzlePieceWidgets);
     pieces.addAll(notStoredPieces);
+    pieces.add(Positioned(
+        right: 0,
+        bottom: 0,
+        child: FloatingActionButton(
+            heroTag: "refreshFAB",
+            elevation: 1,
+            child:
+                Icon(Icons.refresh, color: Theme.of(context).selectedRowColor),
+            onPressed: refreshPieces)));
     setState(() {});
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    Widget widget =
-        pieces.isNotEmpty ? Stack(children: pieces) : const LoadingWidget();
-    return SafeArea(child: widget);
   }
 
   void bringToTop(Widget targetWidget) {
     //widget._logger.d("Used bringToTop function on $targetWidget.");
     setState(() {
       pieces.remove(targetWidget);
-      pieces.add(targetWidget);
+      pieces.insert(pieces.length - 1, targetWidget);
     });
   }
 

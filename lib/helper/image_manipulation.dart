@@ -2,9 +2,9 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
-import 'package:iscte_spots/widgets/puzzle/puzzle_piece_widget.dart';
+import 'package:iscte_spots/pages/home/puzzle/clipped_piece_widget.dart';
+import 'package:iscte_spots/pages/home/puzzle/puzzle_piece_widget.dart';
 
-import '../widgets/puzzle/clipped_piece_widget.dart';
 import '../widgets/splashScreen/moving_widget.dart';
 import 'box_size.dart';
 
@@ -33,6 +33,7 @@ class ImageManipulation {
     required bringToTop,
     required sendToBack,
     required constraints,
+    required completeCallback,
   }) async {
     //logger.d('started split');
     List<PuzzlePieceWidget> outputList = [];
@@ -50,6 +51,7 @@ class ImageManipulation {
           bringToTop: bringToTop,
           sendToBack: sendToBack,
           constraints: constraints,
+          completeCallback: completeCallback,
         );
         outputList.add(puzzlePiece);
       }

@@ -5,19 +5,32 @@ class LoadingWidget extends StatelessWidget {
   const LoadingWidget({
     Key? key,
     this.messagesStyle = const TextStyle(),
+    this.backgroundColor,
+    this.valueColor,
+    this.strokeWidth = 1,
   }) : super(key: key);
 
   final TextStyle messagesStyle;
+  final Color? backgroundColor;
+  final Animation<Color?>? valueColor;
+  final double strokeWidth;
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Column(children: [
-        const CircularProgressIndicator.adaptive(),
-        Text(
-          AppLocalizations.of(context)!.loading,
-          style: messagesStyle,
-        )
-      ]),
+      child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            CircularProgressIndicator.adaptive(
+              backgroundColor: backgroundColor,
+              strokeWidth: strokeWidth,
+              valueColor: valueColor,
+            ),
+            Text(
+              AppLocalizations.of(context)?.loading ?? "",
+              style: messagesStyle,
+            )
+          ]),
     );
   }
 }

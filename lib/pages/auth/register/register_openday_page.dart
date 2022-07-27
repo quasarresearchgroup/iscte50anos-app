@@ -1,4 +1,3 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:iscte_spots/models/auth/registration_form_result.dart';
@@ -12,15 +11,19 @@ import 'package:lottie/lottie.dart';
 import 'acount_register_widget.dart';
 
 class RegisterOpenDayPage extends StatefulWidget {
-  RegisterOpenDayPage(
-      {Key? key, required this.changeToLogIn, required this.loggingComplete})
-      : super(key: key);
+  RegisterOpenDayPage({
+    Key? key,
+    required this.changeToLogIn,
+    required this.loggingComplete,
+    required this.animatedSwitcherDuration,
+  }) : super(key: key);
 
   @override
   State<RegisterOpenDayPage> createState() => _RegisterOpenDayPageState();
   final Logger _logger = Logger();
   void Function() changeToLogIn;
   final void Function() loggingComplete;
+  final Duration animatedSwitcherDuration;
 }
 
 class _RegisterOpenDayPageState extends State<RegisterOpenDayPage>
@@ -161,7 +164,7 @@ class _RegisterOpenDayPageState extends State<RegisterOpenDayPage>
               ),
         ),
         child: AnimatedSwitcher(
-          duration: const Duration(seconds: 1),
+          duration: widget.animatedSwitcherDuration,
           child: _isLodading
               ? const LoadingWidget()
               : Padding(
@@ -170,61 +173,65 @@ class _RegisterOpenDayPageState extends State<RegisterOpenDayPage>
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Stepper(
-                        type: StepperType.vertical,
-                        currentStep: _curentStep,
-                        onStepContinue: _onStepContinue,
-                        onStepCancel: _onStepCancel,
-                        controlsBuilder:
-                            (BuildContext context, ControlsDetails details) {
-                          final bool isLastStep =
-                              _curentStep == getSteps().length - 1;
-                          final bool isFirst = _curentStep == 0;
+                      Flexible(
+                        flex: 9,
+                        child: Stepper(
+                          type: StepperType.vertical,
+                          currentStep: _curentStep,
+                          onStepContinue: _onStepContinue,
+                          onStepCancel: _onStepCancel,
+                          controlsBuilder:
+                              (BuildContext context, ControlsDetails details) {
+                            final bool isLastStep =
+                                _curentStep == getSteps().length - 1;
+                            final bool isFirst = _curentStep == 0;
 
-                          return Container(
-                            margin: const EdgeInsets.only(top: 30),
-                            child: Column(
-                              children: [
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: ElevatedButton(
-                                        child: Text(
-                                          isLastStep ? "CONFIRM" : "NEXT",
-                                        ),
-                                        onPressed: _onStepContinue,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 12),
-                                    isFirst
-                                        ? Container()
-                                        : Expanded(
-                                            child: ElevatedButton(
-                                              child: const Text("BACK"),
-                                              onPressed: _onStepCancel,
-                                            ),
+                            return Container(
+                              margin: const EdgeInsets.only(top: 30),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: ElevatedButton(
+                                          child: Text(
+                                            isLastStep ? "CONFIRM" : "NEXT",
                                           ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                        steps: getSteps(),
+                                          onPressed: _onStepContinue,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 12),
+                                      isFirst
+                                          ? Container()
+                                          : Expanded(
+                                              child: ElevatedButton(
+                                                child: const Text("BACK"),
+                                                onPressed: _onStepCancel,
+                                              ),
+                                            ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                          steps: getSteps(),
+                        ),
                       ),
-                      RichText(
-                        text: TextSpan(
-                          text: "Already have an account? ",
+                      Flexible(
+                        flex: 1,
+                        child: Column(
                           children: [
-                            TextSpan(
-                                text: "Log In!",
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    widget.changeToLogIn();
-                                  },
-                                style: TextStyle(
-                                  color: Theme.of(context).primaryColorLight,
-                                ))
+                            Text("Already have an account?"),
+                            ElevatedButton.icon(
+                                style: ElevatedButton.styleFrom(
+                                    primary: Theme.of(context).primaryColor),
+                                label: Text("Log In!"),
+                                icon: Icon(Icons.adaptive.arrow_back),
+                                onPressed: () {
+                                  widget._logger.d("change");
+                                  widget.changeToLogIn();
+                                }),
                           ],
                         ),
                       )

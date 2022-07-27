@@ -1,23 +1,17 @@
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:html/parser.dart' as parser;
-import 'package:http/http.dart' as http;
 import 'package:iscte_spots/helper/helper_methods.dart';
-import 'package:iscte_spots/models/visited_url.dart';
-import 'package:iscte_spots/pages/scanPage/qr_scan_camera_controls.dart';
+import 'package:iscte_spots/pages/home/scanPage/qr_scan_camera_controls.dart';
+import 'package:iscte_spots/services/qr_scan_service.dart';
 import 'package:iscte_spots/widgets/util/overlays.dart';
 import 'package:logger/logger.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
-import 'package:synchronized/synchronized.dart';
-
-import '../../models/database/tables/database_page_table.dart';
 
 class QRScanPage extends StatefulWidget {
   QRScanPage({Key? key}) : super(key: key);
-  final Logger logger = Logger();
-
-  static const pageRoute = "/scan";
+  final Logger _logger = Logger();
   static String titleHtmlTag = 'CGqCRe';
 
   @override
@@ -26,7 +20,6 @@ class QRScanPage extends StatefulWidget {
 
 class QRScanPageState extends State<QRScanPage> {
   final qrKey = GlobalKey(debugLabel: 'QR');
-  final Logger _logger = Logger();
   QRViewController? controller;
   Decoration controlsDecoration = BoxDecoration(
       borderRadius: BorderRadius.circular(8), color: Colors.white24);
@@ -58,53 +51,15 @@ class QRScanPageState extends State<QRScanPage> {
         .listen((scanData) => setState(() => barcode = scanData));
   }
 
-  Future<void> extractData(final String url) async {
-    _logger.d("url:$url");
-    try {
-      final response = await http.Client().get(Uri.parse(url));
-      //Status Code 200 means response has been received successfully
-      if (response.statusCode == 200) {
-        var lock = Lock();
-        int millisecondsSinceEpoch2 = DateTime.now().millisecondsSinceEpoch;
-        var title = parser
-            .parse(response.body)
-            .getElementsByClassName(QRScanPage.titleHtmlTag);
-        String name = title.map((e) => e.text).join("");
-
-        await lock.synchronized(() async {
-          DatabasePageTable.add(VisitedURL(
-              content: name, dateTime: millisecondsSinceEpoch2, url: url));
-          setState(() {
-            qrScanResult = name;
-          });
-        });
-        _logger.d("-----------------title-----------------------\n" +
-            name +
-            "\n" +
-            millisecondsSinceEpoch2.toString());
-      } else {
-        setState(() {
-          qrScanResult = 'ERROR: ${response.statusCode}.';
-        });
-        throw const SocketException('Error');
-      }
-    } on SocketException {
-      rethrow;
-    } catch (e) {
-      _logger.e(e);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    checkLaunchBarcode(context);
-
+    Size mediaQuerySize = MediaQuery.of(context).size;
     return Stack(
       alignment: Alignment.center,
       children: <Widget>[
         myQRView(context),
         Positioned(
-          top: 10,
+          bottom: mediaQuerySize.height * 0.2,
           child: QRControlButtons(
               controlsDecoration: controlsDecoration, controller: controller),
         ),
@@ -118,10 +73,13 @@ class QRScanPageState extends State<QRScanPage> {
       barcodeold = barcode;
 
       try {
-        await extractData(barcode!.code!);
+        String scanResult = await QRScanService.extractData(barcode!.code!);
+        setState(() {
+          qrScanResult = scanResult;
+        });
         await HelperMethods.launchURL(barcode!.code!);
       } on SocketException {
-        showNetworkErrorOverlay(context, _logger);
+        showNetworkErrorOverlay(context, widget._logger);
       }
     }
   }

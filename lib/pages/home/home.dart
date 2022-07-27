@@ -8,8 +8,8 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:iscte_spots/models/database/tables/database_puzzle_piece_table.dart';
 import 'package:iscte_spots/models/puzzle_piece.dart';
-import 'package:iscte_spots/pages/puzzle_page.dart';
-import 'package:iscte_spots/pages/scanPage/qr_scan_page.dart';
+import 'package:iscte_spots/pages/home/puzzle/puzzle_page.dart';
+import 'package:iscte_spots/pages/home/scanPage/qr_scan_page.dart';
 import 'package:iscte_spots/services/auth/auth_service.dart';
 import 'package:iscte_spots/services/flickr/flickr_iscte_photos.dart';
 import 'package:iscte_spots/widgets/my_bottom_bar.dart';
@@ -21,10 +21,11 @@ import 'package:motion_sensors/motion_sensors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Home extends StatefulWidget {
+  static const pageRoute = "/home";
+
   Home({
     Key? key,
   }) : super(key: key);
-  static const pageRoute = "/";
   final Logger _logger = Logger();
   final int shakerTimeThreshhold = 1000;
   final int shakerThreshhold = 5;
@@ -241,6 +242,8 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                     ? PuzzlePage(
                         image: currentPuzzleImage!,
                         constraints: constraints,
+                        completeCallback: () =>
+                            widget._logger.d("Completed Puzzle!!"),
                       )
                     : const LoadingWidget();
               }),

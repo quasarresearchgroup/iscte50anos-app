@@ -101,7 +101,7 @@ class _MovingPieceState extends State<MovingPiece> {
       });
       moveWAccell(x: roll, y: pitch);
     }));
-    widget._logger.d("added sensor subscription");
+    //widget._logger.d("added sensor subscription");
   }
 
   @override
@@ -109,7 +109,7 @@ class _MovingPieceState extends State<MovingPiece> {
     super.dispose();
     for (StreamSubscription<dynamic> subscription in _streamSubscriptions) {
       subscription.cancel();
-      widget._logger.d("canceled sensor subscription");
+      //widget._logger.d("canceled sensor subscription");
     }
   }
 

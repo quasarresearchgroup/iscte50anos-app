@@ -1,6 +1,6 @@
 // this class is used to clip the image to the puzzle piece path
 import 'package:flutter/material.dart';
-import 'package:iscte_spots/widgets/puzzle/puzzle_piece_painter.dart';
+import 'package:iscte_spots/pages/home/puzzle/puzzle_piece_painter.dart';
 
 class PuzzlePieceClipper extends CustomClipper<Path> {
   final int row;

@@ -84,7 +84,7 @@ class TimelineContentService {
       _logger.e(e);
     } finally {
       _logger.d("contentsList.length: " + contentsList.length.toString());
-      DatabaseContentTable.addBatch(contentsList);
+      await DatabaseContentTable.addBatch(contentsList);
     }
   }
 }

@@ -13,6 +13,7 @@ import 'package:logger/logger.dart';
 //const API_ADDRESS = "http://192.168.1.124";
 
 //const API_ADDRESS_PROD = "https://194.210.120.48";
+//const API_ADDRESS_TEST = "http://192.168.1.124";
 const API_ADDRESS_TEST = "http://192.168.1.66";
 
 const FlutterSecureStorage secureStorage = FlutterSecureStorage();
@@ -20,7 +21,7 @@ const FlutterSecureStorage secureStorage = FlutterSecureStorage();
 // FOR ISOLATED TESTING
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const MaterialApp(home:LeaderBoardPage()));
+  runApp(const LeaderBoardPage());
 }
 
 class LeaderBoardPage extends StatefulWidget {
@@ -41,8 +42,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage>
   late Map<String, dynamic> affiliationMap;
 
   Future<String> loadAffiliationData() async {
-    var jsonText =
-        await rootBundle.loadString('Resources/affiliations.json');
+    var jsonText = await rootBundle.loadString('Resources/affiliations.json');
     setState(
         () => affiliationMap = json.decode(utf8.decode(jsonText.codeUnits)));
     return 'success';
@@ -131,7 +131,6 @@ class _LeaderBoardPageState extends State<LeaderBoardPage>
           controller: _tabController,
           children: _pages,
         ), // _pages[_selectedIndex],
-
       ),
       bottomNavigationBar: ClipRRect(
         borderRadius: BorderRadius.only(
@@ -189,15 +188,13 @@ class _AffiliationLeaderboardState extends State<AffiliationLeaderboard>
 
   Future<List<dynamic>> fetchLeaderboard() async {
     try {
-      //String? apiToken = await secureStorage.read(key: "backend_api_key");
-
-      String? apiToken = "8eb7f1e61ef68a526cf5a1fb6ddb0903bc0678c1";
+      String? apiToken = await secureStorage.read(key: "backend_api_key");
 
       HttpClient client = HttpClient();
       client.badCertificateCallback =
           ((X509Certificate cert, String host, int port) => true);
       final request = await client.getUrl(Uri.parse(
-          '$API_ADDRESS_TEST/api/users/leaderboard?type=${selectedType}&affiliation=$selectedAffiliation'));
+          '${BackEndConstants.API_ADDRESS}/api/users/leaderboard?type=${selectedType}&affiliation=$selectedAffiliation'));
       request.headers.add("Authorization", "Token $apiToken");
       final response = await request.close();
 
@@ -211,8 +208,7 @@ class _AffiliationLeaderboardState extends State<AffiliationLeaderboard>
   }
 
   Future<String> loadAffiliationData() async {
-    var jsonText =
-        await rootBundle.loadString('Resources/affiliations.json');
+    var jsonText = await rootBundle.loadString('Resources/affiliations.json');
     readJson = true;
     setState(
         () => affiliationMap = json.decode(utf8.decode(jsonText.codeUnits)));
@@ -350,14 +346,13 @@ class GlobalLeaderboard extends StatelessWidget {
 
   Future<List<dynamic>> fetchLeaderboard() async {
     try {
-      //String? apiToken = await secureStorage.read(key: "backend_api_key");
-      String? apiToken = "8eb7f1e61ef68a526cf5a1fb6ddb0903bc0678c1";
+      String? apiToken = await secureStorage.read(key: "backend_api_key");
 
       HttpClient client = HttpClient();
       client.badCertificateCallback =
           ((X509Certificate cert, String host, int port) => true);
       final request = await client.getUrl(
-          Uri.parse('$API_ADDRESS_TEST/api/users/leaderboard'));
+          Uri.parse('${BackEndConstants.API_ADDRESS}/api/users/leaderboard'));
       request.headers.add("Authorization", "Token $apiToken");
 
       final response = await request.close();
@@ -441,7 +436,8 @@ class _LeaderboardListState extends State<LeaderboardList> {
                             title: Text(items[index]["username"].toString(),
                                 style: const TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 16)),
-                            subtitle: Text("Pontos: ${items[index]["points"]} \nAfiliação: ${items[index]["affiliation_name"]}"),
+                            subtitle: Text(
+                                "Pontos: ${items[index]["points"]} \nAfiliação: ${items[index]["affiliation_name"]}"),
                             minVerticalPadding: 10.0,
                             trailing: Row(
                                 mainAxisSize: MainAxisSize.min,
