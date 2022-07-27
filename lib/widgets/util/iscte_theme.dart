@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -41,6 +42,16 @@ class IscteTheme {
       bottomAppBarColor: iscteColor,
       appBarTheme: appBarTheme,
     );
+  }
+
+  static CupertinoThemeData get cupertinoLightThemeData {
+    return CupertinoThemeData(
+        brightness: Brightness.light, primaryColor: IscteTheme.iscteColor);
+  }
+
+  static CupertinoThemeData get cupertinoDarkThemeData {
+    return CupertinoThemeData(
+        brightness: Brightness.dark, primaryColor: IscteTheme.iscteColor);
   }
 
   static ThemeData get darkThemeData {
