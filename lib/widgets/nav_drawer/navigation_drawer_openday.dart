@@ -11,6 +11,8 @@ import 'package:iscte_spots/pages/timeline_page.dart';
 import 'package:iscte_spots/services/auth/openday_login_service.dart';
 import 'package:iscte_spots/widgets/splashScreen/shake.dart';
 
+import '../../pages/quiz/quiz_page.dart';
+
 class NavigationDrawerOpenDay extends StatelessWidget {
   NavigationDrawerOpenDay({Key? key}) : super(key: key);
 
@@ -24,7 +26,8 @@ class NavigationDrawerOpenDay extends StatelessWidget {
 //          PageRoutes.animateToPage(context, page: TimelinePage());
           Navigator.of(context).popAndPushNamed(SpotChooserPage.pageRoute);
         },
-      )    ,  ListTile(
+      ),
+      ListTile(
         leading: const Icon(Icons.timeline),
         title: Text(AppLocalizations.of(context)!.timelineScreen),
         onTap: () {
@@ -38,6 +41,14 @@ class NavigationDrawerOpenDay extends StatelessWidget {
         onTap: () {
 //          PageRoutes.animateToPage(context, page: Shaker());
           Navigator.of(context).popAndPushNamed(Shaker.pageRoute);
+        },
+      ),
+      ListTile(
+        leading: const Icon(Icons.help),
+        title: Text(AppLocalizations.of(context)!.quizScreen),
+        onTap: () {
+          //PageRoutes.animateToPage(context, page: QuizPage());
+          Navigator.of(context).popAndPushNamed(QuizPage.pageRoute);
         },
       ),
       ListTile(

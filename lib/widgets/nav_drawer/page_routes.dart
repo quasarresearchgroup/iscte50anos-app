@@ -8,6 +8,7 @@ import 'package:iscte_spots/pages/home/scanPage/qr_scan_results.dart';
 import 'package:iscte_spots/pages/leaderboard/leaderboard_screen.dart';
 import 'package:iscte_spots/pages/onboarding/onboarding_page.dart';
 import 'package:iscte_spots/pages/profile/profile_screen.dart';
+import 'package:iscte_spots/pages/quiz/quiz_page.dart';
 import 'package:iscte_spots/pages/scanned_list_page.dart';
 import 'package:iscte_spots/pages/settings/settings_page.dart';
 import 'package:iscte_spots/pages/spotChooser/spot_chooser_page.dart';
@@ -15,91 +16,43 @@ import 'package:iscte_spots/pages/timeline_page.dart';
 import 'package:iscte_spots/widgets/splashScreen/shake.dart';
 import 'package:iscte_spots/widgets/timeline/timeline_details_page.dart';
 
-enum PageRoute {
-  HOME, //Home.pageRoute
-  HOMEOPENDAY, //HomeOpenDay.pageRoute
-  AUTH, //AuthPage.pageRoute
-  TIMELINE, //TimelinePage.pageRoute
-  TIMELINEDETAIL, //TimeLineDetailsPage.pageRoute
-  SHAKER, //Shaker.pageRoute
-  FLICKR, //FlickrPage.pageRoute
-  LEADERBOARD, //LeaderBoardPage.pageRoute
-  PROFILE, //ProfilePage.pageRoute
-  VISITED, //VisitedPagesPage.pageRoute
-  SETTINGS, //SettingsPage.pageRoute
-  ONBOARD, //OnboardingPage.pageRoute
-  QRSCANRESULTS, //QRScanResults.pageRoute
-  SPOTCHOOSER, //SpotChooser.pageRoute
-}
-
-extension PageRouteExtension on PageRoute {
-  static PageRoute factory(String route) {
+class PageRouter {
+  static Widget resolve(String route, Object? argument) {
     switch (route) {
       case Home.pageRoute:
-        return PageRoute.HOME;
-      case HomeOpenDay.pageRoute:
-        return PageRoute.HOMEOPENDAY;
-      case AuthPage.pageRoute:
-        return PageRoute.AUTH;
-      case TimelinePage.pageRoute:
-        return PageRoute.TIMELINE;
-      case TimeLineDetailsPage.pageRoute:
-        return PageRoute.TIMELINEDETAIL;
-      case Shaker.pageRoute:
-        return PageRoute.SHAKER;
-      case FlickrPage.pageRoute:
-        return PageRoute.FLICKR;
-      case LeaderBoardPage.pageRoute:
-        return PageRoute.LEADERBOARD;
-      case ProfilePage.pageRoute:
-        return PageRoute.PROFILE;
-      case VisitedPagesPage.pageRoute:
-        return PageRoute.VISITED;
-      case SettingsPage.pageRoute:
-        return PageRoute.SETTINGS;
-      case OnboardingPage.pageRoute:
-        return PageRoute.ONBOARD;
-      case QRScanResults.pageRoute:
-        return PageRoute.QRSCANRESULTS;
-      case SpotChooserPage.pageRoute:
-        return PageRoute.SPOTCHOOSER;
-      default:
-        return PageRoute.HOMEOPENDAY;
-    }
-  }
-
-  Widget widget(Object? argument) {
-    switch (this) {
-      case PageRoute.HOME:
         return Home();
-      case PageRoute.HOMEOPENDAY:
+      case HomeOpenDay.pageRoute:
         return HomeOpenDay();
-      case PageRoute.AUTH:
+      case AuthPage.pageRoute:
         return AuthPage();
-      case PageRoute.TIMELINE:
+      case TimelinePage.pageRoute:
         return TimelinePage();
-      case PageRoute.SHAKER:
-        return Shaker();
-      case PageRoute.LEADERBOARD:
-        return LeaderBoardPage();
-      case PageRoute.PROFILE:
-        return ProfilePage();
-      case PageRoute.VISITED:
-        return VisitedPagesPage();
-      case PageRoute.FLICKR:
-        return FlickrPage();
-      case PageRoute.TIMELINEDETAIL:
+      case TimeLineDetailsPage.pageRoute:
         return TimeLineDetailsPage(data: argument as Content);
-      case PageRoute.SETTINGS:
+      case Shaker.pageRoute:
+        return Shaker();
+      case FlickrPage.pageRoute:
+        return FlickrPage();
+      case LeaderBoardPage.pageRoute:
+        return LeaderBoardPage();
+      case QuizPage.pageRoute:
+        return QuizPage();
+      case ProfilePage.pageRoute:
+        return ProfilePage();
+      case VisitedPagesPage.pageRoute:
+        return VisitedPagesPage();
+      case SettingsPage.pageRoute:
         return SettingsPage();
-      case PageRoute.ONBOARD:
+      case OnboardingPage.pageRoute:
         return OnboardingPage(
           onLaunch: false,
         );
-      case PageRoute.QRSCANRESULTS:
+      case QRScanResults.pageRoute:
         return QRScanResults(data: argument as List<Content>);
-      case PageRoute.SPOTCHOOSER:
+      case SpotChooserPage.pageRoute:
         return SpotChooserPage();
+      default:
+        return Home();
     }
   }
 }

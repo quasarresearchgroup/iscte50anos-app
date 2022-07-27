@@ -33,9 +33,9 @@ class MyApp extends StatelessWidget {
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       home: SplashScreen(),
-      onGenerateRoute: (settings) {
-        Widget widget = PageRouteExtension.factory(settings.name ?? "")
-            .widget(settings.arguments);
+      onGenerateRoute: (routeSettings) {
+        Widget widget = PageRouter.resolve(
+            routeSettings.name ?? "", routeSettings.arguments);
         //var buildPageAsync = await _buildPageAsync(page: widget);
         return PageRouteBuilder(
           transitionDuration: const Duration(seconds: 1),
