@@ -10,6 +10,7 @@ import 'package:logger/logger.dart';
 import 'package:http/http.dart' as http;
 
 import '../../pages/leaderboard/leaderboard_screen.dart';
+import '../flickr/flickr_service.dart';
 
 const API_ADDRESS = "https://194.210.120.193";
 const API_ADDRESS_TEST = "http://192.168.1.66";
@@ -125,6 +126,37 @@ class QuizService {
       return response.statusCode == 201;
         //return jsonDecode(await response.transform(utf8.decoder).join());
         return true;
+    } catch (e) {
+      _logger.d(e);
+      rethrow;
+    }
+  }
+
+  static Future<String> getPhotoURLfromQuizFlickrURL(String url) async {
+    try {
+
+      if(url == ""){
+        return "https://www.iscte-iul.pt/assets/files/2021/12/07/1638876926013_logo_50_anos_main.png";
+      }
+
+      var photoId = url.split("/")[5];
+      var photoData = await http.get(Uri.parse(
+          'https://www.flickr.com/services/rest/?method=flickr.photos.getContext&api_key=${FlickrService.api_key}y&photo_id=$photoId&format=json&nojsoncallback=1'));
+      if (photoData.statusCode == 200) {
+        final jsonPhotoData = jsonDecode(photoData.body);//["prevphoto"];
+        print(jsonPhotoData);
+
+        var farm = jsonPhotoData["farm"];
+        var server = jsonPhotoData["server"];
+        var photoid = jsonPhotoData["id"];
+        var photoSecret = jsonPhotoData["secret"];
+        var imagesrc =
+            "https://farm$farm.staticflickr.com/$server/$photoid\_$photoSecret.jpg";
+
+        return imagesrc;
+      }else{
+        throw Exception();
+      }
     } catch (e) {
       _logger.d(e);
       rethrow;

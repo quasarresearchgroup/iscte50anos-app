@@ -5,6 +5,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/services/quiz/quiz_service.dart';
 import 'package:logger/logger.dart';
 
+import '../../widgets/network/error.dart';
 import './answer.dart';
 import './question.dart';
 
@@ -35,6 +36,8 @@ class _QuizState extends State<Quiz> {
   late Future<Map> futureQuestion;
 
   bool submitted = false;
+  bool submitting = false;
+
   bool isTimed = true;
 
   double countdown = 10000;
@@ -49,19 +52,26 @@ class _QuizState extends State<Quiz> {
       isTimed = question["question"]["is_timed"];
       if (isTimed) {
         startTimer();
+      }else{
+        countdown=1;
       }
     }
     widget.logger.d(question.toString());
     return question;
   }
 
-  submitAnswer(int question) async{
-    Map answer = {"choices": selectedAnswerIds};
-    widget.logger.d(answer.toString());
-    submitted = await QuizService.answerQuestion(widget.quizNumber,
-        widget.trialNumber, question, answer);
-    if(submitted) {
-      timer?.cancel();
+  submitAnswer(int question) async {
+    submitting = true;
+    try {
+      Map answer = {"choices": selectedAnswerIds};
+      widget.logger.d(answer.toString());
+      submitted = await QuizService.answerQuestion(widget.quizNumber,
+          widget.trialNumber, question, answer);
+      if (submitted) {
+        timer?.cancel();
+      }
+    }finally{
+      submitting = false;
     }
     setState(() {});
   }
@@ -91,18 +101,18 @@ class _QuizState extends State<Quiz> {
 
   selectAnswer(int answer, bool multiple) {
     setState(() {
-      if(multiple) {
+      if (multiple) {
         if (selectedAnswerIds.contains(answer)) {
           selectedAnswerIds.remove(answer);
         } else {
           selectedAnswerIds.add(answer);
         }
         widget.logger.i("Selected answers:" + selectedAnswerIds.toString());
-      }else{
-        if(selectedAnswerIds.isEmpty){
+      } else {
+        if (selectedAnswerIds.isEmpty) {
           selectedAnswerIds.add(answer);
-        }else{
-          selectedAnswerIds[0]=answer;
+        } else {
+          selectedAnswerIds[0] = answer;
         }
         widget.logger.i("Selected answer: ${selectedAnswerIds[0]}");
       }
@@ -120,7 +130,7 @@ class _QuizState extends State<Quiz> {
     return FutureBuilder(future: futureQuestion, builder: (context, snapshot) {
       if (snapshot.hasData) {
         Map response = snapshot.data as Map;
-        if(response.containsKey("trial_score")){
+        if (response.containsKey("trial_score")) {
           return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -129,7 +139,7 @@ class _QuizState extends State<Quiz> {
                 Text("Pontuação da tentativa: ${response["trial_score"]}"),
                 ElevatedButton(
                   child: const Text("Voltar"),
-                  onPressed:() {
+                  onPressed: () {
                     Navigator.of(context).pop();
                   },
                 ),
@@ -142,7 +152,7 @@ class _QuizState extends State<Quiz> {
         return Column(
           children: [
             Text("Pergunta ${trialQuestion["number"]}/8"),
-            const SizedBox(height:5),
+            const SizedBox(height: 5),
             isTimed ? LinearProgressIndicator(
               value: getTimePercentage(),
               semanticsLabel: 'Linear progress indicator',
@@ -150,26 +160,7 @@ class _QuizState extends State<Quiz> {
             Question(
               question['text'].toString(),
             ), //Question
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
-                child: AspectRatio(
-                  aspectRatio: 1,
-                  child: Container(
-                    decoration: BoxDecoration(
-                        image: DecorationImage(
-                          fit: BoxFit.fitHeight,
-                          alignment: FractionalOffset.topCenter,
-                          image: NetworkImage(
-                            // TODO handle lack of image
-                              "https://live.staticflickr.com/65535/51942926652_b8d29f2cb5_z.jpg",
-                              //question['image_link'].toString(),
-                              scale: 0.5),
-                        )),
-                  ),
-                ),
-              ),
-            ),
+            Expanded(child: QuizImage(flickrUrl: question["image_link"], key: ValueKey(question["image_link"]))),
 
             ...(question['choices'] as List)
                 .map((answer) {
@@ -186,9 +177,10 @@ class _QuizState extends State<Quiz> {
               children: [
                 // ----- Submit button -----
                 ElevatedButton(
-                  child: Text(submitted ? "Submetido" : "Submeter"),
-                  onPressed: countdown <= 0 || selectedAnswerIds.isEmpty || submitted ? null : () {
-                      submitAnswer(trialQuestion["number"]);
+                  child: Text(submitted? "Submetido" : submitting? "Submetendo" : "Submeter"),
+                  onPressed: countdown <= 0 || selectedAnswerIds.isEmpty ||
+                      submitted || submitting? null : () {
+                    submitAnswer(trialQuestion["number"]);
                   },
                   style: ElevatedButton.styleFrom(
                     primary: Colors.black45,
@@ -199,35 +191,38 @@ class _QuizState extends State<Quiz> {
                 // ----- Next button -----
                 ElevatedButton(
                   child: Text("Seguinte"),
-                  onPressed: countdown > 0 && !submitted ?  () {
+                  onPressed: !submitted && !isTimed ? null : countdown > 0 && !submitted ? () {
                     setState(() {
-                      showDialog( context:context, builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: const Text("Aviso"),
-                          content: const Text("Deseja avançar sem responder?"),
-                          actions: [
-                            TextButton(
-                              child: const Text('Não'),
-                              onPressed: () {
-                                Navigator.of(context).pop(); //Exit dialog
-                              },
-                            ),
-                            TextButton(
-                              child: const Text('Sim'),
-                              onPressed: () {
-                                setState(() {
-                                  Navigator.of(context).pop();
-                                  futureQuestion = getNextQuestion();
-                                });
-                              },
-                            ),
-                          ],
-                        );
-                      },);
+                      showDialog(context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text("Aviso"),
+                            content: const Text(
+                                "Deseja avançar sem responder?"),
+                            actions: [
+                              TextButton(
+                                child: const Text('Não'),
+                                onPressed: () {
+                                  Navigator.of(context).pop(); //Exit dialog
+                                },
+                              ),
+                              TextButton(
+                                child: const Text('Sim'),
+                                onPressed: () {
+                                  setState(() {
+                                    Navigator.of(context).pop();
+                                    futureQuestion = getNextQuestion();
+                                  });
+                                },
+                              ),
+                            ],
+                          );
+                        },);
                     });
-                  } : () => setState(() {
-                      futureQuestion = getNextQuestion();
-                  }),
+                  } :  () =>
+                      setState(() {
+                        futureQuestion = getNextQuestion();
+                      }),
                   style: ElevatedButton.styleFrom(
                     primary: Colors.black45,
                     onPrimary: Colors.white,
@@ -237,7 +232,13 @@ class _QuizState extends State<Quiz> {
             )
           ],
         );
-      } else {
+      }else if (snapshot.hasError) {
+        return NetworkError(onRefresh: () {
+          setState(() {
+            futureQuestion = getNextQuestion();
+          });
+        });
+      }else {
         return const Center(
           child: SizedBox(
             child: CircularProgressIndicator.adaptive(),
@@ -250,4 +251,56 @@ class _QuizState extends State<Quiz> {
     );
   }
 
+}
+
+class QuizImage extends StatefulWidget {
+
+  final String flickrUrl;
+
+  const QuizImage({Key? key, required this.flickrUrl}) : super(key: key);
+
+  @override
+  State<QuizImage> createState() => _QuizImageState();
+}
+
+class _QuizImageState extends State<QuizImage> {
+  late Future<String> imageUrl;
+
+  @override
+  void initState() {
+    imageUrl = QuizService.getPhotoURLfromQuizFlickrURL(widget.flickrUrl);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(future: imageUrl, builder: (context, snapshot) {
+      if (snapshot.hasData) {
+        return Image.network(
+          snapshot.data.toString(),
+          loadingBuilder: (BuildContext context, Widget child,
+              ImageChunkEvent? loadingProgress) {
+            if (loadingProgress == null) {
+              return child;
+            }
+            return Center(
+              child: CircularProgressIndicator(
+                value: loadingProgress.expectedTotalBytes != null
+                    ? loadingProgress.cumulativeBytesLoaded /
+                    loadingProgress.expectedTotalBytes!
+                    : null,
+              ),
+            );
+          },
+        );
+      }else{
+        return const Center(
+          child: SizedBox(
+            child: CircularProgressIndicator.adaptive(),
+            width: 60,
+            height: 60,
+          ),
+        );
+      }
+    });
+  }
 }

@@ -10,10 +10,12 @@ import 'package:iscte_spots/widgets/util/constants.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 import 'package:logger/logger.dart';
 
-//const API_ADDRESS = "http://192.168.1.124";
 
-//const API_ADDRESS_PROD = "https://194.210.120.48";
+
+const API_ADDRESS_PROD = "https://194.210.120.193";
 const API_ADDRESS_TEST = "http://192.168.1.66";
+
+const API_ADDRESS = API_ADDRESS_PROD;
 
 const FlutterSecureStorage secureStorage = FlutterSecureStorage();
 
@@ -189,15 +191,15 @@ class _AffiliationLeaderboardState extends State<AffiliationLeaderboard>
 
   Future<List<dynamic>> fetchLeaderboard() async {
     try {
-      //String? apiToken = await secureStorage.read(key: "backend_api_key");
+      String? apiToken = await secureStorage.read(key: "backend_api_key");
 
-      String? apiToken = "8eb7f1e61ef68a526cf5a1fb6ddb0903bc0678c1";
+      //String? apiToken = "8eb7f1e61ef68a526cf5a1fb6ddb0903bc0678c1";
 
       HttpClient client = HttpClient();
       client.badCertificateCallback =
           ((X509Certificate cert, String host, int port) => true);
       final request = await client.getUrl(Uri.parse(
-          '$API_ADDRESS_TEST/api/users/leaderboard?type=${selectedType}&affiliation=$selectedAffiliation'));
+          '$API_ADDRESS/api/users/leaderboard?type=${selectedType}&affiliation=$selectedAffiliation'));
       request.headers.add("Authorization", "Token $apiToken");
       final response = await request.close();
 
@@ -350,14 +352,14 @@ class GlobalLeaderboard extends StatelessWidget {
 
   Future<List<dynamic>> fetchLeaderboard() async {
     try {
-      //String? apiToken = await secureStorage.read(key: "backend_api_key");
-      String? apiToken = "8eb7f1e61ef68a526cf5a1fb6ddb0903bc0678c1";
+      String? apiToken = await secureStorage.read(key: "backend_api_key");
+      //String? apiToken = "8eb7f1e61ef68a526cf5a1fb6ddb0903bc0678c1";
 
       HttpClient client = HttpClient();
       client.badCertificateCallback =
           ((X509Certificate cert, String host, int port) => true);
       final request = await client.getUrl(
-          Uri.parse('$API_ADDRESS_TEST/api/users/leaderboard'));
+          Uri.parse('$API_ADDRESS/api/users/leaderboard'));
       request.headers.add("Authorization", "Token $apiToken");
 
       final response = await request.close();

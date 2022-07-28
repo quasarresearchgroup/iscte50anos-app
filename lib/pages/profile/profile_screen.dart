@@ -13,12 +13,12 @@ import 'package:logger/logger.dart';
 import 'package:http/http.dart' as http;
 
 const FlutterSecureStorage secureStorage = FlutterSecureStorage();
-const API_ADDRESS = "http://192.168.1.66";
+const API_ADDRESS = "https://194.210.120.193";
 
 // FOR ISOLATED TESTING
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(ProfilePage());
+  runApp(MaterialApp(home:ProfilePage()));
 }
 
 class ProfilePage extends StatelessWidget {
@@ -64,8 +64,8 @@ class _ProfileState extends State<Profile> {
   Future<Map> fetchProfile() async {
     try {
       isLoading = true;
-      //String? apiToken = await secureStorage.read(key: "backend_api_key");
-      String? apiToken = "8eb7f1e61ef68a526cf5a1fb6ddb0903bc0678c1";
+      String? apiToken = await secureStorage.read(key: "backend_api_key");
+      //String? apiToken = "8eb7f1e61ef68a526cf5a1fb6ddb0903bc0678c1";
 
       HttpClient client = HttpClient();
       client.badCertificateCallback =
