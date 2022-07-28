@@ -7,13 +7,13 @@ workflows:
     max_build_duration: 30
     environment:
       groups:
-        - api-keys
+        - keystore_credentials
       flutter: stable
       xcode: latest
       cocoapods: default
       vars:
         FCI_KEYSTORE_PATH: /tmp/keystore.keystore
-        PACKAGE_NAME: 'io.Iscte.IscteSpots' # <-- Put your package name here e.g. "io.codemagic.flutteryaml"
+        PACKAGE_NAME: 'iscte.iscteSpots' # <-- Put your package name here e.g. "io.codemagic.flutteryaml"
         GOOGLE_PLAY_TRACK: 'alpha' # <-- Any default or custom track that is not in ‘draft’ status
     triggering:
       events:
@@ -26,18 +26,9 @@ workflows:
         - pattern: '*'
           include: true
     scripts:
-      - name: Set up key properties
-        script: |
-          echo $FCI_KEYSTORE | base64 --decode > /tmp/keystore.keystore
-          cat >> "$FCI_BUILD_DIR/android/key.properties" <<EOF
-          storePassword=$FCI_KEYSTORE_PASSWORD
-          keyPassword=$FCI_KEY_PASSWORD
-          keyAlias=$FCI_KEY_ALIAS
-          storeFile=/tmp/keystore.keystore
-          EOF
       - name: Set up local.properties
         script: |
-          echo "flutter.sdk=$HOME/programs/flutter" > "$FCI_BUILD_DIR/android/local.properties"
+            echo "flutter.sdk=$HOME/programs/flutter" > "$FCI_BUILD_DIR/android/local.properties"
       - name: Get Flutter packages
         script: |
           cd . && flutter packages pub get
@@ -52,10 +43,10 @@ workflows:
         script: |
           cd . && flutter test
         ignore_failure: true
-      - name: Build APK with Flutter
-        script: |
-          cd . && flutter build apk --release --build-name=1.0.0 --build-number=$(($(google-play get-latest-build-number --package-name "$PACKAGE_NAME" --tracks="$GOOGLE_PLAY_TRACK") + 1))
-
+      #- name: Build Android
+       # script: |
+        #  echo $CM_KEYSTORE | base64 --decode > $CM_KEYSTORE_PATH  # Not required if using team code signing identities
+         # flutter build appbundle
     artifacts:
     - build/**/outputs/apk/**/*.apk
     - build/**/outputs/bundle/**/*.aab

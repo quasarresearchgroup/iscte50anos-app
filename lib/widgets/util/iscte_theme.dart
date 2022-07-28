@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -31,6 +32,9 @@ class IscteTheme {
 
   static ThemeData get lightThemeData {
     return ThemeData.light().copyWith(
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        backgroundColor: iscteColor,
+      ),
       primaryColor: iscteColor,
       primaryColorLight: iscteColorLight,
       primaryColorDark: iscteColorDark,
@@ -40,8 +44,20 @@ class IscteTheme {
     );
   }
 
+  static CupertinoThemeData get cupertinoLightThemeData {
+    return CupertinoThemeData(
+        brightness: Brightness.light, primaryColor: IscteTheme.iscteColor);
+  }
+
+  static CupertinoThemeData get cupertinoDarkThemeData {
+    return CupertinoThemeData(
+        brightness: Brightness.dark, primaryColor: IscteTheme.iscteColor);
+  }
+
   static ThemeData get darkThemeData {
     return ThemeData.dark().copyWith(
+      floatingActionButtonTheme:
+          FloatingActionButtonThemeData(backgroundColor: iscteColor),
       scaffoldBackgroundColor: Colors.black,
       backgroundColor: Colors.black,
       primaryColor: iscteColor,
@@ -54,7 +70,7 @@ class IscteTheme {
   }
 
   static InputDecoration buildInputDecoration(
-      {required String hint, String? errorText}) {
+      {required String hint, String? errorText, Widget? suffixIcon}) {
     return InputDecoration(
       contentPadding: const EdgeInsets.only(left: 25, right: 25),
       border: UnderlineInputBorder(
@@ -62,6 +78,8 @@ class IscteTheme {
           borderRadius: BorderRadius.all(IscteTheme.appbarRadius)),
       hintText: hint,
       errorText: errorText,
+      suffixIcon: suffixIcon,
+      alignLabelWithHint: true,
     );
   }
 }
