@@ -30,6 +30,7 @@ class HomeOpenDay extends StatefulWidget {
 
   final int scanSpotIndex = 1;
   final int puzzleIndex = 0;
+
   @override
   State<HomeOpenDay> createState() => _HomeOpenDayState();
 }
@@ -40,6 +41,7 @@ class _HomeOpenDayState extends State<HomeOpenDay>
   Image? currentPuzzleImage;
   int? currentPuzzleNumber;
   bool _showSucessPage = false;
+
   //late Future<Map> futureProfile;
   late Future<SpotRequest> currentPemit;
   final ValueNotifier<bool> _completedAllPuzzlesBool =
@@ -175,26 +177,35 @@ class _HomeOpenDayState extends State<HomeOpenDay>
 
   Widget buildCupertinoScaffold(bool challengeCompleteBool) {
     return CupertinoPageScaffold(
-      child: Text("home"),
       navigationBar: CupertinoNavigationBar(
-        middle: Text("Puzzle"),
-        trailing: challengeCompleteBool
-            ? Container()
-            : Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Center(
-                  child: ValueListenableBuilder<String>(
-                    valueListenable: _currentPuzzleImg,
-                    builder: (context, value, _) {
-                      return IconButton(
-                        icon: const FaIcon(FontAwesomeIcons.circleQuestion),
-                        onPressed: () => showHelpOverlay(
-                            context, Image.network(value), widget._logger),
-                      );
-                    },
-                  ),
-                ),
-              ),
+          middle: Text("Puzzle"),
+          trailing: challengeCompleteBool
+              ? Container()
+              : ValueListenableBuilder<String>(
+                  valueListenable: _currentPuzzleImg,
+                  builder: (context, value, _) {
+                    return CupertinoButton(
+                      child: const FaIcon(FontAwesomeIcons.circleQuestion),
+                      onPressed: () => showHelpOverlay(
+                          context, Image.network(value), widget._logger),
+                    );
+                  },
+                )),
+      child: CupertinoTabScaffold(
+        tabBar: CupertinoTabBar(items: MyBottomBar.buildnavbaritems(context)),
+        tabBuilder: (context, index) {
+          if (index == 0) {
+            return buildCenter();
+          } else {
+            return Container();
+/*
+            return QRScanPageOpenDay(
+              changeImage: changeCurrentImage,
+              completedAllPuzzle: _completedAllPuzzles,
+            );
+*/
+          }
+        },
       ),
     );
   }
@@ -281,73 +292,74 @@ class _HomeOpenDayState extends State<HomeOpenDay>
                   physics: const NeverScrollableScrollPhysics(),
                   controller: _tabController,
                   children: [
-                    Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(40.0),
-                        child: LayoutBuilder(
-                          builder: (BuildContext context,
-                              BoxConstraints constraints) {
-                            return Stack(
-                              children: [
-                                ValueListenableBuilder<String>(
-                                    valueListenable: _currentPuzzleImg,
-                                    builder: (context, value, _) {
-                                      if (value.isNotEmpty) {
-                                        return PuzzlePage(
-                                          image: Image.network(value),
-                                          constraints: constraints,
-                                          completeCallback:
-                                              completePuzzleCallback,
-                                        );
-                                      } else {
-                                        return LoadingWidget();
-                                      }
-                                    })
-/*                                FutureBuilder<String>(
-                                    future: currentPemit,
-                                    builder: (context, snapshot) {
-                                      if (snapshot.hasData) {
-                                        if (snapshot.data != null &&
-                                            OpenDayQRScanService.isCompleteAll(
-                                                snapshot.data!
-                                                    .locationPhotoLink!)) {
-                                          _completedAllPuzzles();
-                                        }
-                                        if (OpenDayQRScanService.isError(
-                                            snapshot
-                                                .data!.locationPhotoLink!)) {
-                                          return buildErrorWidget();
-                                        }
-                                        currentPuzzleImage = Image.network(
-                                            snapshot.data!.locationPhotoLink!);
-
-                                        return PuzzlePage(
-                                          image: currentPuzzleImage!,
-                                          constraints: constraints,
-                                          completeCallback:
-                                              completePuzzleCallback,
-                                        );
-                                      } else if (snapshot.hasError) {
-                                        return buildErrorWidget();
-                                      } else {
-                                        return const LoadingWidget();
-                                      }
-                                    })*/
-                                ,
-                                IscteConfetti(
-                                    confettiController: _confettiController)
-                              ],
-                            );
-                          },
-                        ),
-                      ),
-                    ),
+                    buildCenter(),
                     QRScanPageOpenDay(
                       changeImage: changeCurrentImage,
                       completedAllPuzzle: _completedAllPuzzles,
                     ),
                   ],
                 ),
+    );
+  }
+
+  Center buildCenter() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(40.0),
+        child: LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints constraints) {
+            return Stack(
+              children: [
+                ValueListenableBuilder<String>(
+                    valueListenable: _currentPuzzleImg,
+                    builder: (context, value, _) {
+                      if (value.isNotEmpty) {
+                        return PuzzlePage(
+                          image: Image.network(value),
+                          constraints: constraints,
+                          completeCallback: completePuzzleCallback,
+                        );
+                      } else {
+                        return LoadingWidget();
+                      }
+                    })
+/*                                FutureBuilder<String>(
+                                  future: currentPemit,
+                                  builder: (context, snapshot) {
+                                    if (snapshot.hasData) {
+                                      if (snapshot.data != null &&
+                                          OpenDayQRScanService.isCompleteAll(
+                                              snapshot.data!
+                                                  .locationPhotoLink!)) {
+                                        _completedAllPuzzles();
+                                      }
+                                      if (OpenDayQRScanService.isError(
+                                          snapshot
+                                              .data!.locationPhotoLink!)) {
+                                        return buildErrorWidget();
+                                      }
+                                      currentPuzzleImage = Image.network(
+                                          snapshot.data!.locationPhotoLink!);
+
+                                      return PuzzlePage(
+                                        image: currentPuzzleImage!,
+                                        constraints: constraints,
+                                        completeCallback:
+                                            completePuzzleCallback,
+                                      );
+                                    } else if (snapshot.hasError) {
+                                      return buildErrorWidget();
+                                    } else {
+                                      return const LoadingWidget();
+                                    }
+                                  })*/
+                ,
+                IscteConfetti(confettiController: _confettiController)
+              ],
+            );
+          },
+        ),
+      ),
     );
   }
 
