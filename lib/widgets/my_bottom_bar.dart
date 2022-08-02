@@ -1,9 +1,8 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:iscte_spots/services/platform_service.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 
 class MyBottomBar extends StatefulWidget {
@@ -25,6 +24,14 @@ class MyBottomBar extends StatefulWidget {
         //backgroundColor: Theme.of(context).primaryColor,
       ),
       BottomNavigationBarItem(
+          icon: const FaIcon(
+            FontAwesomeIcons.rankingStar,
+            color: Colors.grey,
+            size: 30,
+          ),
+          //backgroundColor: Theme.of(context).primaryColor,
+          label: "Rankings"),
+      BottomNavigationBarItem(
           icon: const Icon(Icons.search),
           //backgroundColor: Theme.of(context).primaryColor,
           label: AppLocalizations.of(context)!.scanCodeButton),
@@ -36,6 +43,7 @@ class _MyBottomBarState extends State<MyBottomBar> {
   @override
   void initState() {
     super.initState();
+
     widget.tabController.addListener(() {
       if (mounted) {
         setState(() {});
@@ -53,7 +61,7 @@ class _MyBottomBarState extends State<MyBottomBar> {
 
   @override
   Widget build(BuildContext context) {
-    if (Platform.isIOS) {
+    if (PlatformService.instance.isIos) {
       return buildcupertino(context);
     } else {
       return buildmaterial(context);

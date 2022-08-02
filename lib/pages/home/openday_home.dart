@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:confetti/confetti.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,8 +11,10 @@ import 'package:iscte_spots/pages/home/scanPage/openday_qr_scan_page.dart';
 import 'package:iscte_spots/pages/home/widgets/sucess_scan_widget.dart';
 import 'package:iscte_spots/pages/leaderboard/leaderboard_screen.dart';
 import 'package:iscte_spots/services/openday/openday_qr_scan_service.dart';
+import 'package:iscte_spots/services/platform_service.dart';
 import 'package:iscte_spots/services/shared_prefs_service.dart';
 import 'package:iscte_spots/widgets/iscte_confetti_widget.dart';
+import 'package:iscte_spots/widgets/my_app_bar.dart';
 import 'package:iscte_spots/widgets/my_bottom_bar.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:iscte_spots/widgets/util/overlays.dart';
@@ -46,7 +46,7 @@ class _HomeOpenDayState extends State<HomeOpenDay>
   late Future<SpotRequest> currentPemit;
   final ValueNotifier<bool> _completedAllPuzzlesBool =
       SharedPrefsService().allPuzzleCompleteNotifier;
-  final ValueNotifier<String> _currentPuzzleImg =
+  final ValueNotifier<String> _currentPuzzleImageNotifier =
       SharedPrefsService().currentPuzzleIMGNotifier;
   late final ConfettiController _confettiController;
   late final AnimationController _lottieController;
@@ -54,8 +54,9 @@ class _HomeOpenDayState extends State<HomeOpenDay>
   @override
   void initState() {
     super.initState();
+
     _tabController =
-        TabController(initialIndex: widget.puzzleIndex, length: 2, vsync: this);
+        TabController(initialIndex: widget.puzzleIndex, length: 3, vsync: this);
 
     _confettiController =
         ConfettiController(duration: const Duration(seconds: 2));
@@ -166,23 +167,25 @@ class _HomeOpenDayState extends State<HomeOpenDay>
     return ValueListenableBuilder<bool>(
       valueListenable: _completedAllPuzzlesBool,
       builder: (BuildContext context, bool challengeCompleteBool, _) {
-        if (Platform.isIOS) {
+        /*if (PlatformService.instance.isIos) {
+          widget._logger.d("Built IOS");
           return buildCupertinoScaffold(challengeCompleteBool);
-        } else {
-          return buildMaterialScaffold(challengeCompleteBool);
-        }
+        } else {*/
+        // widget._logger.d("Built Android");
+        return buildMaterialScaffold(challengeCompleteBool);
+        //}
       },
     );
   }
 
-  Widget buildCupertinoScaffold(bool challengeCompleteBool) {
-    return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
+/*  Widget buildCupertinoScaffold(bool challengeCompleteBool) {
+    return Scaffold(
+      appBar: CupertinoNavigationBar(
           middle: Text("Puzzle"),
           trailing: challengeCompleteBool
               ? Container()
               : ValueListenableBuilder<String>(
-                  valueListenable: _currentPuzzleImg,
+                  valueListenable: _currentPuzzleImageNotifier,
                   builder: (context, value, _) {
                     return CupertinoButton(
                       child: const FaIcon(FontAwesomeIcons.circleQuestion),
@@ -191,73 +194,60 @@ class _HomeOpenDayState extends State<HomeOpenDay>
                     );
                   },
                 )),
-      child: CupertinoTabScaffold(
+      drawer: NavigationDrawerOpenDay(),
+      body: CupertinoTabScaffold(
         tabBar: CupertinoTabBar(items: MyBottomBar.buildnavbaritems(context)),
         tabBuilder: (context, index) {
           if (index == 0) {
             return buildCenter();
-          } else {
+          } else if (index == 1) {
             return Container();
-/*
+          } else {
+            return LeaderBoardPage();
+*/ /*
             return QRScanPageOpenDay(
               changeImage: changeCurrentImage,
               completedAllPuzzle: _completedAllPuzzles,
             );
-*/
+*/ /*
           }
         },
       ),
     );
-  }
+  }*/
 
   Widget buildMaterialScaffold(bool challengeCompleteBool) {
     return Scaffold(
       extendBodyBehindAppBar: true,
       extendBody: true,
       drawer: NavigationDrawerOpenDay(),
-      appBar: AppBar(
-        title: Text("Puzzle")
-        /*FutureBuilder<SpotRequest>(
-                future: currentPemit,
-                builder: (BuildContext context,
-                    AsyncSnapshot<SpotRequest> snapshot) {
-                  if (snapshot.hasData) {
-                    String spots;
-                    SpotRequest spotRequest = snapshot.data as SpotRequest;
-                    if (spotRequest.spotNumber != null) {
-                      widget._logger.d(spotRequest);
-                      currentPuzzleNumber = spotRequest.spotNumber;
-                      spots = "nº " + currentPuzzleNumber!.toString();
-                    } else {
-                      spots = "";
-                    }
-                    return Text("Puzzle $spots");
+      appBar: MyAppBar(
+        trailing: challengeCompleteBool
+            ? Container()
+            : ValueListenableBuilder<String>(
+                valueListenable: _currentPuzzleImageNotifier,
+                builder: (context, value, _) {
+                  if (!PlatformService.instance.isIos) {
+                    return IconButton(
+                      icon: const FaIcon(
+                        FontAwesomeIcons.circleQuestion,
+                        color: Colors.white,
+                      ),
+                      onPressed: () => showHelpOverlay(
+                          context, Image.network(value), widget._logger),
+                    );
                   } else {
-                    return const LoadingWidget();
+                    return CupertinoButton(
+                      onPressed: () => showHelpOverlay(
+                          context, Image.network(value), widget._logger),
+                      child: Icon(CupertinoIcons.question_circle),
+                      padding: EdgeInsets.zero,
+                    );
                   }
-                })*/
-        ,
-        actions: challengeCompleteBool
-            ? [Container()]
-            : [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Center(
-                    child: ValueListenableBuilder<String>(
-                      valueListenable: _currentPuzzleImg,
-                      builder: (context, value, _) {
-                        return IconButton(
-                          icon: const FaIcon(FontAwesomeIcons.circleQuestion),
-                          onPressed: () => showHelpOverlay(
-                              context, Image.network(value), widget._logger),
-                        );
-                      },
-                    ),
-                  ),
-                ),
-              ],
+                },
+              ),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+/*      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
           child: const FaIcon(
             FontAwesomeIcons.rankingStar,
@@ -267,7 +257,7 @@ class _HomeOpenDayState extends State<HomeOpenDay>
           foregroundColor: Theme.of(context).unselectedWidgetColor,
           onPressed: () {
             Navigator.of(context).pushNamed(LeaderBoardPage.pageRoute);
-          }),
+          }),*/
       bottomNavigationBar: challengeCompleteBool
           ? Container()
           : MyBottomBar(
@@ -293,6 +283,7 @@ class _HomeOpenDayState extends State<HomeOpenDay>
                   controller: _tabController,
                   children: [
                     buildCenter(),
+                    LeaderBoardPage(),
                     QRScanPageOpenDay(
                       changeImage: changeCurrentImage,
                       completedAllPuzzle: _completedAllPuzzles,
@@ -311,7 +302,7 @@ class _HomeOpenDayState extends State<HomeOpenDay>
             return Stack(
               children: [
                 ValueListenableBuilder<String>(
-                    valueListenable: _currentPuzzleImg,
+                    valueListenable: _currentPuzzleImageNotifier,
                     builder: (context, value, _) {
                       if (value.isNotEmpty) {
                         return PuzzlePage(

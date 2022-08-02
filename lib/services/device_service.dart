@@ -1,10 +1,4 @@
-import 'dart:async';
-import 'dart:io';
-
-import 'package:device_info_plus/device_info_plus.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
-
+/*
 class DeviceService {
   static final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
 
@@ -12,13 +6,13 @@ class DeviceService {
     var deviceData = <String, dynamic>{};
 
     try {
-      if (Platform.isIOS) {
+      if (PlatformService.instance.isIos) {
         return _readIosDeviceInfo(await deviceInfoPlugin.iosInfo);
-      } else if (Platform.isLinux) {
+      } else if (PlatformService.instance.isLinux) {
         return _readLinuxDeviceInfo(await deviceInfoPlugin.linuxInfo);
-      } else if (Platform.isMacOS) {
+      } else if (PlatformService.instance.isMacOS) {
         return _readMacOsDeviceInfo(await deviceInfoPlugin.macOsInfo);
-      } else if (Platform.isWindows) {
+      } else if (PlatformService.instance.isWindows) {
         return _readWindowsDeviceInfo(await deviceInfoPlugin.windowsInfo);
       } else {
         return _readAndroidBuildData(await deviceInfoPlugin.androidInfo);
@@ -138,3 +132,4 @@ class DeviceService {
     };
   }
 }
+*/
