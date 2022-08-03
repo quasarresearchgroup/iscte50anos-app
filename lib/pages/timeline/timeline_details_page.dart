@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/models/content.dart';
+import 'package:iscte_spots/widgets/dynamic_widgets.dart';
+import 'package:iscte_spots/widgets/my_app_bar.dart';
 
 class TimeLineDetailsPage extends StatelessWidget {
   static const pageRoute = "/timeline/detail";
@@ -15,8 +17,9 @@ class TimeLineDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.timelineDetailsScreen),
+      appBar: MyAppBar(
+        title: AppLocalizations.of(context)!.timelineDetailsScreen,
+        leading: DynamicBackIconButton(),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),

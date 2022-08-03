@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:iscte_spots/pages/timeline/timeline_details_page.dart';
+import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
 import '../../models/content.dart';
@@ -103,7 +104,7 @@ class TimelineInformationChild extends StatelessWidget {
             color: isEven
                 ? Colors.transparent
                 : Theme.of(context).primaryColor.withAlpha(200),
-            borderRadius: const BorderRadius.all(Radius.circular(20))),
+            borderRadius: IscteTheme.borderRadious),
         child: Padding(
           padding: const EdgeInsets.all(15),
           child: Row(

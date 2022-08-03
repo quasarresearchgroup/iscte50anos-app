@@ -8,6 +8,8 @@ class IscteTheme {
   //static Color iscteColorDark = iscteColor.withGreen(iscteColor.green - 100);
   static Radius appbarRadius = const Radius.circular(20);
 
+  static var borderRadious = const BorderRadius.all(Radius.circular(10));
+
   static AppBarTheme get _appBarTheme {
     return AppBarTheme(
       //backgroundColor: Color.fromRGBO(14, 41, 194, 1),
@@ -21,6 +23,10 @@ class IscteTheme {
         ),
       ),
       backgroundColor: iscteColor,
+      iconTheme: IconThemeData(color: Colors.white),
+      actionsIconTheme: IconThemeData(color: Colors.white),
+      toolbarTextStyle: TextStyle(color: Colors.white),
+      titleTextStyle: TextStyle(color: Colors.white),
       systemOverlayStyle: SystemUiOverlayStyle(
         statusBarColor: iscteColor,
         systemNavigationBarColor: iscteColor,
@@ -40,22 +46,23 @@ class IscteTheme {
       primaryColor: iscteColor,
       errorColor: Colors.deepOrangeAccent,
       bottomAppBarColor: iscteColor,
-      primaryIconTheme: IconThemeData(color: Colors.black),
+      iconTheme: IconThemeData(color: Colors.black),
       appBarTheme: _appBarTheme,
     );
   }
 
   static ThemeData get darkThemeData {
     return ThemeData.dark().copyWith(
-        floatingActionButtonTheme:
-            FloatingActionButtonThemeData(backgroundColor: iscteColor),
-        scaffoldBackgroundColor: Colors.black,
-        backgroundColor: Colors.black,
-        primaryColor: iscteColor,
-        errorColor: Colors.deepOrangeAccent,
-        bottomAppBarColor: iscteColor,
-        appBarTheme: _appBarTheme,
-        primaryIconTheme: IconThemeData(color: Colors.white));
+      floatingActionButtonTheme:
+          FloatingActionButtonThemeData(backgroundColor: iscteColor),
+      scaffoldBackgroundColor: Colors.black,
+      backgroundColor: Colors.black,
+      primaryColor: iscteColor,
+      errorColor: Colors.deepOrangeAccent,
+      bottomAppBarColor: iscteColor,
+      iconTheme: IconThemeData(color: Colors.white),
+      appBarTheme: _appBarTheme,
+    );
   }
 
   static CupertinoThemeData get cupertinoLightThemeData {

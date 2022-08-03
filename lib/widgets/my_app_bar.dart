@@ -1,15 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:iscte_spots/services/platform_service.dart';
+import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 import 'package:logger/logger.dart';
 
 class MyAppBar extends StatefulWidget with PreferredSizeWidget {
-  MyAppBar({Key? key, this.trailing, this.middle, this.leading})
+  MyAppBar({Key? key, this.trailing, this.title, this.leading})
       : super(key: key);
   final Logger _logger = Logger();
 
   Widget? trailing;
-  Widget? middle;
+  String? title;
   Widget? leading;
 
   @override
@@ -27,10 +28,16 @@ class _MyAppBarState extends State<MyAppBar> {
 
   @override
   Widget build(BuildContext context) {
+    var middle = widget.title != null
+        ? Text(
+            widget.title!,
+            style: TextStyle(color: Colors.white),
+          )
+        : null;
     return !PlatformService.instance.isIos
         ? AppBar(
             leading: widget.leading,
-            title: widget.middle
+            title: middle
             /*FutureBuilder<SpotRequest>(
                 future: currentPemit,
                 builder: (BuildContext context,
@@ -54,8 +61,10 @@ class _MyAppBarState extends State<MyAppBar> {
             actions: widget.trailing != null ? [widget.trailing!] : null,
           )
         : CupertinoNavigationBar(
+            backgroundColor: IscteTheme.iscteColor,
+            padding: EdgeInsetsDirectional.zero,
             leading: widget.leading,
-            middle: widget.middle,
+            middle: middle,
             trailing: widget.trailing,
           );
   }

@@ -222,9 +222,9 @@ class _HomeOpenDayState extends State<HomeOpenDay>
       extendBody: true,
       drawer: NavigationDrawerOpenDay(),
       appBar: MyAppBar(
-        middle: Text("Puzzle"),
+        title: "Puzzle",
         leading: Builder(builder: (context) {
-          if ((!PlatformService.instance.isIos)) {
+          if (!PlatformService.instance.isIos) {
             return IconButton(
               icon: const Icon(Icons.menu),
               onPressed: () {

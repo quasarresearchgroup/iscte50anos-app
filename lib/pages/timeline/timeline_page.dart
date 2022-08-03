@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -5,7 +6,10 @@ import 'package:iscte_spots/models/content.dart';
 import 'package:iscte_spots/models/database/tables/database_content_table.dart';
 import 'package:iscte_spots/pages/timeline/timeline_body.dart';
 import 'package:iscte_spots/pages/timeline/timeline_search_delegate.dart';
+import 'package:iscte_spots/services/platform_service.dart';
 import 'package:iscte_spots/services/timeline_service.dart';
+import 'package:iscte_spots/widgets/dynamic_widgets.dart';
+import 'package:iscte_spots/widgets/my_app_bar.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:logger/logger.dart';
 
@@ -28,6 +32,11 @@ class _TimelinePageState extends State<TimelinePage> {
     setState(() {
       mapdata = DatabaseContentTable.getAll();
     });
+    mapdata.then((value) {
+      if (value.isEmpty) {
+        refreshTimelineData(context);
+      }
+    });
   }
 
   void resetMapData() {
@@ -40,46 +49,62 @@ class _TimelinePageState extends State<TimelinePage> {
   Widget build(BuildContext context) {
     ValueNotifier<bool> isDialOpen = ValueNotifier<bool>(false);
 
-    return Theme(
-      data: Theme.of(context).copyWith(
-        appBarTheme: Theme.of(context).appBarTheme.copyWith(
-              shape: const ContinuousRectangleBorder(),
-            ),
+    Scaffold scaffold = Scaffold(
+      appBar: MyAppBar(
+        title: AppLocalizations.of(context)!.timelineScreen,
+        trailing: (!PlatformService.instance.isIos)
+            ? IconButton(
+                onPressed: () {
+                  showSearch(
+                    context: context,
+                    delegate: TimelineSearchDelegate(mapdata: mapdata),
+                  );
+                },
+                icon: const FaIcon(FontAwesomeIcons.magnifyingGlass),
+              )
+            : CupertinoButton(
+                child: const Icon(
+                  CupertinoIcons.search,
+                  color: CupertinoColors.white,
+                ),
+                //color: CupertinoTheme.of(context).primaryContrastingColor,
+                onPressed: () {
+                  showSearch(
+                    context: context,
+                    delegate: TimelineSearchDelegate(mapdata: mapdata),
+                  );
+                },
+              ),
+        leading: DynamicBackIconButton(),
       ),
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(AppLocalizations.of(context)!.timelineScreen),
-          actions: [
-            IconButton(
-              onPressed: () {
-                showSearch(
-                  context: context,
-                  delegate: TimelineSearchDelegate(mapdata: mapdata),
-                );
-              },
-              icon: const FaIcon(FontAwesomeIcons.magnifyingGlass),
-            )
-          ],
-        ),
-        /* floatingActionButton: TimelineDial(
+      /* floatingActionButton: TimelineDial(
             isDialOpen: isDialOpen,
             deleteTimelineData: deleteTimelineData,
             refreshTImelineData: refreshTimelineData),*/
-        body: FutureBuilder<List<Content>>(
-          future: mapdata,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return TimeLineBody(mapdata: snapshot.data!);
-            } else if (snapshot.hasError) {
-              return Center(
-                  child: Text(AppLocalizations.of(context)!.generalError));
-            } else {
-              return LoadingWidget();
-            }
-          },
-        ),
+      body: FutureBuilder<List<Content>>(
+        future: mapdata,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return TimeLineBody(mapdata: snapshot.data!);
+          } else if (snapshot.hasError) {
+            return Center(
+                child: Text(AppLocalizations.of(context)!.generalError));
+          } else {
+            return LoadingWidget();
+          }
+        },
       ),
     );
+    return PlatformService.instance.isIos
+        ? scaffold
+        : Theme(
+            data: Theme.of(context).copyWith(
+              appBarTheme: Theme.of(context).appBarTheme.copyWith(
+                    shape: const ContinuousRectangleBorder(),
+                  ),
+            ),
+            child: scaffold,
+          );
   }
 
   Future<void> refreshTimelineData(BuildContext context) async {

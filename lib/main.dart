@@ -48,27 +48,27 @@ class _MyAppState extends State<MyApp> {
     if (PlatformService.instance.isIos) {
       final Brightness platformBrightness =
           WidgetsBinding.instance!.window.platformBrightness;
-      return Theme(
-        data: (platformBrightness == Brightness.dark)
-            ? IscteTheme.darkThemeData
-            : IscteTheme.lightThemeData,
-        child: CupertinoApp(
-          builder: (context, child) => IconTheme(
-            data: IconThemeData(
+      return CupertinoApp(
+        builder: (BuildContext context, Widget? child) => Theme(
+          data: (platformBrightness == Brightness.dark)
+              ? IscteTheme.darkThemeData
+              : IscteTheme.lightThemeData,
+          child: IconTheme(
+            data: CupertinoIconThemeData(
               color: CupertinoTheme.of(context).primaryContrastingColor,
             ),
             child: child ?? Container(),
           ),
-          debugShowCheckedModeBanner: false,
-          title: 'IscteSpots',
-          theme: (platformBrightness == Brightness.dark)
-              ? IscteTheme.cupertinoDarkThemeData
-              : IscteTheme.cupertinoLightThemeData,
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: SplashScreen(),
-          onGenerateRoute: generatedRoutes,
         ),
+        debugShowCheckedModeBanner: false,
+        title: 'IscteSpots',
+        theme: (platformBrightness == Brightness.dark)
+            ? IscteTheme.cupertinoDarkThemeData
+            : IscteTheme.cupertinoLightThemeData,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: SplashScreen(),
+        onGenerateRoute: generatedRoutes,
       );
     } else {
       return MaterialApp(

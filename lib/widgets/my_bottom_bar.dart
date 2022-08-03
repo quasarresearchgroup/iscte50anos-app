@@ -69,8 +69,11 @@ class _MyBottomBarState extends State<MyBottomBar> {
   Widget buildcupertino(BuildContext context) {
     return CupertinoTabBar(
       items: MyBottomBar.buildnavbaritems(context),
+      backgroundColor: Theme.of(context).primaryColor,
       currentIndex: widget.tabController.index,
-      inactiveColor: CupertinoTheme.of(context).primaryContrastingColor,
+      activeColor: Theme.of(context).selectedRowColor,
+      inactiveColor: Theme.of(context).unselectedWidgetColor,
+      height: kToolbarHeight * 1.05,
       onTap: changePage,
     );
   }
@@ -93,7 +96,7 @@ class _MyBottomBarState extends State<MyBottomBar> {
             currentIndex: widget.tabController.index,
             backgroundColor: Theme.of(context).primaryColor.withOpacity(0),
             selectedItemColor: Theme.of(context).selectedRowColor,
-            unselectedItemColor: Colors.grey,
+            unselectedItemColor: Theme.of(context).unselectedWidgetColor,
             //Theme.of(context).selectedRowColor.withOpacity(90),
             onTap: changePage,
             enableFeedback: true,
