@@ -1,14 +1,11 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:iscte_spots/pages/quiz/quiz_page.dart';
-import 'package:iscte_spots/widgets/util/constants.dart';
-import 'package:iscte_spots/widgets/util/iscte_theme.dart';
+import 'package:iscte_spots/widgets/dynamic_widgets.dart';
+import 'package:iscte_spots/widgets/my_app_bar.dart';
 import 'package:logger/logger.dart';
 
 import '../../services/quiz/quiz_service.dart';
@@ -25,7 +22,7 @@ const FlutterSecureStorage secureStorage = FlutterSecureStorage();
 // FOR ISOLATED TESTING
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const MaterialApp(home:QuizMenu()));
+  runApp(const MaterialApp(home: QuizMenu()));
 }
 
 class QuizMenu extends StatefulWidget {
@@ -71,21 +68,22 @@ class _QuizMenuState extends State<QuizMenu>
     super.build(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-            "Quiz"), //AppLocalizations.of(context)!.quizPageTitle)
+      appBar: MyAppBar(
+        title: "Quiz",
+        leading:
+            DynamicBackIconButton(), //AppLocalizations.of(context)!.quizPageTitle)
       ),
       body: NotificationListener<OverscrollIndicatorNotification>(
         onNotification: (overscroll) {
           overscroll.disallowIndicator();
           return true;
         },
-        child: const QuizListPage(),/*TabBarView(
+        child:
+            const QuizListPage(), /*TabBarView(
           physics: const NeverScrollableScrollPhysics(),
           controller: _tabController,
           children: _pages,
         ),*/ // _pages[_selectedIndex],
-
       ),
       /*bottomNavigationBar: ClipRRect(
         borderRadius: BorderRadius.only(
@@ -146,9 +144,7 @@ class QuizListPage extends StatelessWidget {
 }
 
 class QuizList extends StatefulWidget {
-
-  const QuizList({Key? key})
-      : super(key: key);
+  const QuizList({Key? key}) : super(key: key);
 
   @override
   _QuizListState createState() => _QuizListState();
@@ -165,19 +161,21 @@ class _QuizListState extends State<QuizList> {
     futureQuizList = fetchFunction();
   }
 
-  startTrial(int quizNumber) async{
+  startTrial(int quizNumber) async {
     Map newTrialInfo = await QuizService.startTrial(quizNumber);
     int newTrialNumber = newTrialInfo["trial_number"];
 
-    Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => QuizPage(quizNumber: quizNumber, trialNumber: newTrialNumber,))
-    ).then(
-        (value) {
-          setState(() {
-            futureQuizList = fetchFunction();
-          });
-        }
-    );
+    Navigator.of(context)
+        .push(MaterialPageRoute(
+            builder: (context) => QuizPage(
+                  quizNumber: quizNumber,
+                  trialNumber: newTrialNumber,
+                )))
+        .then((value) {
+      setState(() {
+        futureQuizList = fetchFunction();
+      });
+    });
   }
 
   @override
@@ -197,73 +195,90 @@ class _QuizListState extends State<QuizList> {
               });
             },
             child: items.isEmpty
-                ? const Center(child: Text("Não existem Quizzes disponíveis de momento"))
+                ? const Center(
+                    child: Text("Não existem Quizzes disponíveis de momento"))
                 : ListView.builder(
-              //shrinkWrap: true,
-              physics: const AlwaysScrollableScrollPhysics(),
-              itemCount: items.length,
-              itemBuilder: (context, index) {
-                int quizNumber = items[index]["number"];
-                int trials = items[index]["num_trials"];
-                return Padding(
-                  padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-                  child: Card(
-                    child: ExpansionTile(
-                      title: Text("Quiz ${items[index]["number"].toString()}",//items[index]["username"].toString(),
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 16)),
-                      subtitle: Text(
-                          "Pontos: ${items[index]["score"]} \nTentativas: ${items[index]["num_trials"]}" "\nTopicos: ${items[index]["topic_names"]}"),
-                      children: [
-                      trials >= MAX_TRIALS ? Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const <Widget>[
-                          Text("Completo"),
-                        ],
-                      )
-                          : ElevatedButton(
-                          child: const Text("Iniciar"),
-                          onPressed: (){
-                            showDialog( useRootNavigator: false, context:context, builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: const Center(child: Text("Aviso")),
-                                content:  RichText(
-                                  text: const TextSpan(
-                                    style: TextStyle(
-                                      fontSize: 14.0,
-                                    ),
-                                    children: <TextSpan>[
-                                      TextSpan(text: 'Deseja iniciar uma tentativa de Quiz?\n'),
-                                      TextSpan(text: '(Certifique-se que tem uma conexão estável)', style: TextStyle(fontWeight: FontWeight.bold)),
-                                    ],
-                                  ),
-                                ),
-                                actions: [
-                                  TextButton(
-                                    child: const Text('Não'),
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                  ),
-                                  TextButton(
-                                    child: const Text('Sim'),
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                      startTrial(quizNumber);
-                                    },
-                                  ),
-                                ],
-                              );
-                            },);
-                          }
-                      ),
-                      ],
-                      //minVerticalPadding: 10.0,
-                    ),
+                    //shrinkWrap: true,
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    itemCount: items.length,
+                    itemBuilder: (context, index) {
+                      int quizNumber = items[index]["number"];
+                      int trials = items[index]["num_trials"];
+                      return Padding(
+                        padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+                        child: Card(
+                          child: ExpansionTile(
+                            title: Text(
+                                "Quiz ${items[index]["number"].toString()}", //items[index]["username"].toString(),
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 16)),
+                            subtitle: Text(
+                                "Pontos: ${items[index]["score"]} \nTentativas: ${items[index]["num_trials"]}"
+                                "\nTopicos: ${items[index]["topic_names"]}"),
+                            children: [
+                              trials >= MAX_TRIALS
+                                  ? Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: const <Widget>[
+                                        Text("Completo"),
+                                      ],
+                                    )
+                                  : ElevatedButton(
+                                      child: const Text("Iniciar"),
+                                      onPressed: () {
+                                        showDialog(
+                                          useRootNavigator: false,
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              title: const Center(
+                                                  child: Text("Aviso")),
+                                              content: RichText(
+                                                text: const TextSpan(
+                                                  style: TextStyle(
+                                                    fontSize: 14.0,
+                                                  ),
+                                                  children: <TextSpan>[
+                                                    TextSpan(
+                                                        text:
+                                                            'Deseja iniciar uma tentativa de Quiz?\n'),
+                                                    TextSpan(
+                                                        text:
+                                                            '(Certifique-se que tem uma conexão estável)',
+                                                        style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold)),
+                                                  ],
+                                                ),
+                                              ),
+                                              actions: [
+                                                TextButton(
+                                                  child: const Text('Não'),
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                ),
+                                                TextButton(
+                                                  child: const Text('Sim'),
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                    startTrial(quizNumber);
+                                                  },
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        );
+                                      }),
+                            ],
+                            //minVerticalPadding: 10.0,
+                          ),
+                        ),
+                      );
+                    },
                   ),
-                );
-              },
-            ),
           );
         } else if (snapshot.connectionState != ConnectionState.done) {
           return const Center(
@@ -274,19 +289,19 @@ class _QuizListState extends State<QuizList> {
             ),
           );
         } else if (snapshot.hasError) {
-          return NetworkError(onRefresh: (){
+          return NetworkError(onRefresh: () {
             setState(() {
               futureQuizList = fetchFunction();
             });
           });
         } else {
-            return const Center(
-              child: SizedBox(
-                child: CircularProgressIndicator.adaptive(),
-                width: 60,
-                height: 60,
-              ),
-            );
+          return const Center(
+            child: SizedBox(
+              child: CircularProgressIndicator.adaptive(),
+              width: 60,
+              height: 60,
+            ),
+          );
         }
       },
     );

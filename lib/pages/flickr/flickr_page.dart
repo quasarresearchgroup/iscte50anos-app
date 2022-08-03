@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -9,6 +10,9 @@ import 'package:iscte_spots/models/flickr/flickr_photoset.dart';
 import 'package:iscte_spots/pages/flickr/flickr_album_page.dart';
 import 'package:iscte_spots/services/flickr/flickr_iscte_album_service.dart';
 import 'package:iscte_spots/services/flickr/flickr_service.dart';
+import 'package:iscte_spots/services/platform_service.dart';
+import 'package:iscte_spots/widgets/dynamic_widgets.dart';
+import 'package:iscte_spots/widgets/my_app_bar.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:iscte_spots/widgets/util/overlays.dart';
 import 'package:logger/logger.dart';
@@ -101,30 +105,34 @@ class _FlickrPageState extends State<FlickrPage> {
   Widget build(BuildContext context) {
     hasData = fetchedPhotosets.isNotEmpty;
     return Scaffold(
-        appBar: AppBar(
-          title: Title(
-              color: Colors.black,
-              child: Text(AppLocalizations.of(context)!.flickrScreen)),
-          actions: [
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Center(
-                  child: Text(
-                "${activePage + 1} / ${fetchedPhotosets.length}",
-                textScaleFactor: 1.25,
-              )),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Center(
-                child: fetching
-                    ? const CircularProgressIndicator.adaptive()
-                    : networkError
-                        ? const Icon(Icons.signal_wifi_connected_no_internet_4)
-                        : const FaIcon(FontAwesomeIcons.check),
+        appBar: MyAppBar(
+          title: AppLocalizations.of(context)!.flickrScreen,
+          leading: DynamicBackIconButton(),
+          trailing: Container(
+            child: Row(mainAxisSize: MainAxisSize.min, children: [
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Center(
+                    child: Text(
+                  "${activePage + 1} / ${fetchedPhotosets.length}",
+                  textScaleFactor: 1.25,
+                )),
               ),
-            ),
-          ],
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Center(
+                  child: fetching
+                      ? const LoadingWidget()
+                      : networkError
+                          ? const Icon(
+                              Icons.signal_wifi_connected_no_internet_4)
+                          : PlatformService.instance.isIos
+                              ? const Icon(CupertinoIcons.check_mark)
+                              : const Icon(Icons.check),
+                ),
+              ),
+            ]),
+          ),
         ),
         floatingActionButton: FloatingActionButton(
           child: const FaIcon(FontAwesomeIcons.rotateRight),

@@ -31,6 +31,7 @@ class _MyAppBarState extends State<MyAppBar> {
     var middle = widget.title != null
         ? Text(
             widget.title!,
+            overflow: TextOverflow.ellipsis,
             style: TextStyle(color: Colors.white),
           )
         : null;
