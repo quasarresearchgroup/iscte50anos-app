@@ -23,11 +23,9 @@ class MyBottomBar extends StatefulWidget {
         label: AppLocalizations.of(context)!.mainMenu,
         //backgroundColor: Theme.of(context).primaryColor,
       ),
-      BottomNavigationBarItem(
-          icon: const FaIcon(
+      const BottomNavigationBarItem(
+          icon: FaIcon(
             FontAwesomeIcons.rankingStar,
-            color: Colors.grey,
-            size: 30,
           ),
           //backgroundColor: Theme.of(context).primaryColor,
           label: "Rankings"),
@@ -72,6 +70,7 @@ class _MyBottomBarState extends State<MyBottomBar> {
     return CupertinoTabBar(
       items: MyBottomBar.buildnavbaritems(context),
       currentIndex: widget.tabController.index,
+      inactiveColor: CupertinoTheme.of(context).primaryContrastingColor,
       onTap: changePage,
     );
   }

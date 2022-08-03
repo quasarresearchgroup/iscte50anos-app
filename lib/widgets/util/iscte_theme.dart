@@ -4,11 +4,11 @@ import 'package:flutter/services.dart';
 
 class IscteTheme {
   static Color iscteColor = const Color.fromRGBO(14, 41, 194, 1);
-  static Color iscteColorLight = iscteColor.withGreen(iscteColor.green + 100);
-  static Color iscteColorDark = iscteColor.withGreen(iscteColor.green - 100);
+  //static Color iscteColorLight = iscteColor.withGreen(iscteColor.green + 100);
+  //static Color iscteColorDark = iscteColor.withGreen(iscteColor.green - 100);
   static Radius appbarRadius = const Radius.circular(20);
 
-  static AppBarTheme get appBarTheme {
+  static AppBarTheme get _appBarTheme {
     return AppBarTheme(
       //backgroundColor: Color.fromRGBO(14, 41, 194, 1),
       elevation: 0,
@@ -35,37 +35,46 @@ class IscteTheme {
       floatingActionButtonTheme: FloatingActionButtonThemeData(
         backgroundColor: iscteColor,
       ),
+      scaffoldBackgroundColor: Colors.white,
+      backgroundColor: Colors.white,
       primaryColor: iscteColor,
-      primaryColorLight: iscteColorLight,
-      primaryColorDark: iscteColorDark,
       errorColor: Colors.deepOrangeAccent,
       bottomAppBarColor: iscteColor,
-      appBarTheme: appBarTheme,
+      primaryIconTheme: IconThemeData(color: Colors.black),
+      appBarTheme: _appBarTheme,
     );
-  }
-
-  static CupertinoThemeData get cupertinoLightThemeData {
-    return CupertinoThemeData(
-        brightness: Brightness.light, primaryColor: IscteTheme.iscteColor);
-  }
-
-  static CupertinoThemeData get cupertinoDarkThemeData {
-    return CupertinoThemeData(
-        brightness: Brightness.dark, primaryColor: IscteTheme.iscteColor);
   }
 
   static ThemeData get darkThemeData {
     return ThemeData.dark().copyWith(
-      floatingActionButtonTheme:
-          FloatingActionButtonThemeData(backgroundColor: iscteColor),
-      scaffoldBackgroundColor: Colors.black,
-      backgroundColor: Colors.black,
-      primaryColor: iscteColor,
-      primaryColorLight: iscteColorLight,
-      primaryColorDark: iscteColorDark,
-      errorColor: Colors.deepOrangeAccent,
-      bottomAppBarColor: iscteColor,
-      appBarTheme: appBarTheme,
+        floatingActionButtonTheme:
+            FloatingActionButtonThemeData(backgroundColor: iscteColor),
+        scaffoldBackgroundColor: Colors.black,
+        backgroundColor: Colors.black,
+        primaryColor: iscteColor,
+        errorColor: Colors.deepOrangeAccent,
+        bottomAppBarColor: iscteColor,
+        appBarTheme: _appBarTheme,
+        primaryIconTheme: IconThemeData(color: Colors.white));
+  }
+
+  static CupertinoThemeData get cupertinoLightThemeData {
+    return CupertinoThemeData(
+      barBackgroundColor: CupertinoColors.white,
+      scaffoldBackgroundColor: CupertinoColors.white,
+      brightness: Brightness.light,
+      primaryContrastingColor: CupertinoColors.black,
+      primaryColor: IscteTheme.iscteColor,
+    );
+  }
+
+  static CupertinoThemeData get cupertinoDarkThemeData {
+    return CupertinoThemeData(
+      barBackgroundColor: CupertinoColors.black,
+      scaffoldBackgroundColor: CupertinoColors.black,
+      primaryContrastingColor: CupertinoColors.white,
+      brightness: Brightness.dark,
+      primaryColor: IscteTheme.iscteColor,
     );
   }
 

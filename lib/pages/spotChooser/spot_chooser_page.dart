@@ -77,14 +77,6 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
         future = SpotsRequestService.getAllSpots(context: context);
         setState(() {});
       },
-      expandedHeight: 150,
-      flexibleSpace: FlexibleSpaceBar(
-        background: DecoratedBox(
-            position: DecorationPosition.foreground,
-            decoration: const BoxDecoration(),
-            child: buildTopRow(snapshot.data!)),
-        collapseMode: CollapseMode.pin,
-      ),
     );
   }
 
@@ -108,11 +100,12 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
               const SizedBox(width: 10),
               Text("$blur"),
               Expanded(
-                child: (PlatformService.instance.isIos)
+                child: (!PlatformService.instance.isIos)
                     ? Slider(
                         max: sliderMax,
                         min: sliderMin,
                         divisions: sliderMax.toInt() - sliderMin.toInt(),
+                        activeColor: CupertinoTheme.of(context).primaryColor,
                         label: "$blur",
                         value: blur,
                         onChanged: (newBlur) {
@@ -124,6 +117,9 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
                     : CupertinoSlider(
                         max: sliderMax,
                         min: sliderMin,
+                        divisions: sliderMax.toInt() - sliderMin.toInt(),
+                        thumbColor: CupertinoTheme.of(context).primaryColor,
+                        activeColor: CupertinoTheme.of(context).primaryColor,
                         value: blur,
                         onChanged: (newBlur) {
                           setState(() {
@@ -134,16 +130,23 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
               ),
             ],
           ),
-          TextButton(
-              style: Theme.of(context).textButtonTheme.style?.copyWith(
-                  overlayColor: MaterialStateColor.resolveWith(
-                      (Set<MaterialState> states) {
-                return Colors.black;
-              })),
-              onPressed: () {
-                chooseSpot(list, Random().nextInt(list.length), context);
-              },
-              child: Text(AppLocalizations.of(context)!.random)),
+          (!PlatformService.instance.isIos)
+              ? TextButton(
+                  style: Theme.of(context).textButtonTheme.style?.copyWith(
+                      overlayColor: MaterialStateColor.resolveWith(
+                          (Set<MaterialState> states) {
+                    return Colors.black;
+                  })),
+                  onPressed: () {
+                    chooseSpot(list, Random().nextInt(list.length), context);
+                  },
+                  child: Text(AppLocalizations.of(context)!.random))
+              : CupertinoButton(
+                  child: Text(AppLocalizations.of(context)!.random),
+                  onPressed: () {
+                    chooseSpot(list, Random().nextInt(list.length), context);
+                  },
+                ),
         ],
       ),
     );
@@ -165,7 +168,7 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
             fit: BoxFit.cover,
             loadingBuilder: (context, child, loadingProgress) {
               if (loadingProgress != null) {
-                return LoadingWidget();
+                return const LoadingWidget();
               } else {
                 return ClipRRect(
                   borderRadius: BorderRadius.circular(20.0),

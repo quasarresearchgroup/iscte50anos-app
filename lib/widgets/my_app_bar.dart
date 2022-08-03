@@ -29,7 +29,8 @@ class _MyAppBarState extends State<MyAppBar> {
   Widget build(BuildContext context) {
     return !PlatformService.instance.isIos
         ? AppBar(
-            title: Text("Puzzle")
+            leading: widget.leading,
+            title: widget.middle
             /*FutureBuilder<SpotRequest>(
                 future: currentPemit,
                 builder: (BuildContext context,
@@ -53,7 +54,8 @@ class _MyAppBarState extends State<MyAppBar> {
             actions: widget.trailing != null ? [widget.trailing!] : null,
           )
         : CupertinoNavigationBar(
-            middle: Text("Puzzle"),
+            leading: widget.leading,
+            middle: widget.middle,
             trailing: widget.trailing,
           );
   }

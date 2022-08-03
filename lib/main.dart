@@ -46,22 +46,37 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     if (PlatformService.instance.isIos) {
-      return CupertinoApp(
-        debugShowCheckedModeBanner: false,
-        title: 'IscteSpots',
-        theme: IscteTheme.cupertinoLightThemeData,
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        home: SplashScreen(),
-        onGenerateRoute: generatedRoutes,
+      final Brightness platformBrightness =
+          WidgetsBinding.instance!.window.platformBrightness;
+      return Theme(
+        data: (platformBrightness == Brightness.dark)
+            ? IscteTheme.darkThemeData
+            : IscteTheme.lightThemeData,
+        child: CupertinoApp(
+          builder: (context, child) => IconTheme(
+            data: IconThemeData(
+              color: CupertinoTheme.of(context).primaryContrastingColor,
+            ),
+            child: child ?? Container(),
+          ),
+          debugShowCheckedModeBanner: false,
+          title: 'IscteSpots',
+          theme: (platformBrightness == Brightness.dark)
+              ? IscteTheme.cupertinoDarkThemeData
+              : IscteTheme.cupertinoLightThemeData,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: SplashScreen(),
+          onGenerateRoute: generatedRoutes,
+        ),
       );
     } else {
       return MaterialApp(
         //showSemanticsDebugger: true,
         debugShowCheckedModeBanner: false,
         title: 'IscteSpots',
-        theme: IscteTheme.lightThemeData,
         darkTheme: IscteTheme.darkThemeData,
+        theme: IscteTheme.lightThemeData,
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: SplashScreen(),

@@ -222,6 +222,27 @@ class _HomeOpenDayState extends State<HomeOpenDay>
       extendBody: true,
       drawer: NavigationDrawerOpenDay(),
       appBar: MyAppBar(
+        middle: Text("Puzzle"),
+        leading: Builder(builder: (context) {
+          if ((!PlatformService.instance.isIos)) {
+            return IconButton(
+              icon: const Icon(Icons.menu),
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
+              },
+            );
+          } else {
+            return CupertinoButton(
+              child: Icon(
+                Icons.menu,
+                color: CupertinoTheme.of(context).primaryContrastingColor,
+              ),
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
+              },
+            );
+          }
+        }),
         trailing: challengeCompleteBool
             ? Container()
             : ValueListenableBuilder<String>(
@@ -231,7 +252,6 @@ class _HomeOpenDayState extends State<HomeOpenDay>
                     return IconButton(
                       icon: const FaIcon(
                         FontAwesomeIcons.circleQuestion,
-                        color: Colors.white,
                       ),
                       onPressed: () => showHelpOverlay(
                           context, Image.network(value), widget._logger),
@@ -240,7 +260,11 @@ class _HomeOpenDayState extends State<HomeOpenDay>
                     return CupertinoButton(
                       onPressed: () => showHelpOverlay(
                           context, Image.network(value), widget._logger),
-                      child: Icon(CupertinoIcons.question_circle),
+                      child: Icon(
+                        CupertinoIcons.question_circle,
+                        color:
+                            CupertinoTheme.of(context).primaryContrastingColor,
+                      ),
                       padding: EdgeInsets.zero,
                     );
                   }
