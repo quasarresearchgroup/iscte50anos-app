@@ -24,7 +24,7 @@ class LoadingWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              CircularProgressIndicator.adaptive(
+              CircularProgressIndicator(
                 backgroundColor: backgroundColor,
                 strokeWidth: strokeWidth,
                 valueColor: valueColor,

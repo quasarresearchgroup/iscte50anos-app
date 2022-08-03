@@ -1,8 +1,10 @@
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/models/database/tables/database_puzzle_piece_table.dart';
@@ -28,6 +30,7 @@ class SpotChooserPage extends StatefulWidget {
 class _SpotChooserPageState extends State<SpotChooserPage> {
   double blur = 10;
   late Future<List<String>> future;
+  final GlobalKey<ScaffoldState> globalKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -42,22 +45,37 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
         future: future,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            var slivers2 = [
+            List<Widget> slivers2 = [];
+            if (PlatformService.instance.isIos) {
+              slivers2.add(buildCupertinoSliverAppBar(context, snapshot));
+              slivers2.add(buildCupertinoSliverRefreshControl(context));
+            } else {
+              slivers2.add(buildSliverAppBar(context, snapshot));
+            }
+
+            slivers2.addAll([
               buildTopRow(snapshot.data!),
               buildSpotsGrid(snapshot.data!),
-            ];
-            if (PlatformService.instance.isIos) {
-              slivers2.insert(0, buildCupertinoSliverAppBar(context, snapshot));
-            } else {
-              slivers2.insert(0, buildSliverAppBar(context, snapshot));
-            }
+            ]);
             return CustomScrollView(
                 physics: const BouncingScrollPhysics(), slivers: slivers2);
           } else {
-            return LoadingWidget();
+            return Container(
+              color: Colors.yellow,
+            );
           }
         },
       ),
+    );
+  }
+
+  CupertinoSliverRefreshControl buildCupertinoSliverRefreshControl(
+      BuildContext context) {
+    return CupertinoSliverRefreshControl(
+      onRefresh: () async {
+        refreshCallback(context);
+        showRefreshSnackBar(context);
+      },
     );
   }
 
@@ -69,15 +87,53 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
       snap: true,
       stretch: true,
       onStretchTrigger: () async {
-        widget._logger.d("fetching data");
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("Refreshed"),
-          duration: Duration(seconds: 2),
-        ));
+        refreshCallback(context);
+        showRefreshSnackBar(context);
+      },
+    );
+  }
+
+  void refreshCallback(BuildContext context) {
+    SchedulerBinding.instance?.addPostFrameCallback(
+      (timeStamp) {
+        widget._logger.d("fetching spots data");
         future = SpotsRequestService.getAllSpots(context: context);
         setState(() {});
       },
     );
+  }
+
+  void showRefreshSnackBar(BuildContext context) {
+    SchedulerBinding.instance?.addPostFrameCallback(
+      (timeStamp) {
+        if (PlatformService.instance.isIos) {
+          showModalBottomSheet(
+            context: context,
+            builder: (BuildContext context) => const CupertinoPopupSurface(
+              child: SizedBox(
+                height: kToolbarHeight,
+                child: Center(
+                  child: Text("Refreshing"),
+                ),
+              ),
+            ),
+          );
+        } else {
+          //globalKey.currentState?.showBottomSheet(
+          //(context) =>
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              backgroundColor: Theme.of(context).backgroundColor,
+              content: Text("Refreshing",
+                  style: Theme.of(context).textTheme.bodyMedium),
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }
+      },
+    );
+//    if (mounted) {
+    // }
   }
 
   CupertinoSliverNavigationBar buildCupertinoSliverAppBar(
@@ -163,9 +219,47 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
       ),
       delegate: SliverChildBuilderDelegate(
         (context, index) {
+          return CachedNetworkImage(
+            imageUrl: list[index],
+            progressIndicatorBuilder: (BuildContext context, String string,
+                DownloadProgress downloadProgress) {
+              widget._logger.d(
+                  "downloaded: ${downloadProgress.downloaded}; progress:${downloadProgress.progress};");
+              return const LoadingWidget();
+            },
+            imageBuilder: (BuildContext context, ImageProvider imageProvider) {
+              return ClipRRect(
+                borderRadius: BorderRadius.circular(20.0),
+                child: ImageFiltered(
+                  imageFilter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
+                  child: InkWell(
+                    enableFeedback: true,
+                    splashColor: Colors.black,
+                    onTap: () {
+                      chooseSpot(list, index, context);
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: imageProvider,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
+          );
+/*
           return Image.network(
             list[index],
             fit: BoxFit.cover,
+            errorBuilder: (BuildContext context, Object obje, StackTrace? err) {
+              return Container(
+                child: Text("Error"),
+              );
+            },
             loadingBuilder: (context, child, loadingProgress) {
               if (loadingProgress != null) {
                 return const LoadingWidget();
@@ -187,6 +281,7 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
               }
             },
           );
+*/
         },
         childCount: list.length,
       ),
