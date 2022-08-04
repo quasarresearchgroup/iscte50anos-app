@@ -6,6 +6,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:iscte_spots/pages/profile/placeholder.dart';
 import 'package:iscte_spots/services/quiz/quiz_service.dart';
+import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_back_button.dart';
+import 'package:iscte_spots/widgets/my_app_bar.dart';
 import 'package:logger/logger.dart';
 
 //const API_ADDRESS = "https://194.210.120.48";
@@ -25,9 +27,9 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-            "Profile"), //AppLocalizations.of(context)!.quizPageTitle)
+      appBar: MyAppBar(
+        title: "Profile", //AppLocalizations.of(context)!.quizPageTitle)
+        leading: DynamicBackIconButton(),
       ),
       body: NotificationListener<OverscrollIndicatorNotification>(
         onNotification: (overscroll) {

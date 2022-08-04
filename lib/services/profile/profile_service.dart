@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:iscte_spots/widgets/util/constants.dart';
+import 'package:iscte_spots/helper/constants.dart';
 
 class ProfileService {
   static final ProfileService _instance = ProfileService._internal();

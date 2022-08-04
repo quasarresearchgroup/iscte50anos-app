@@ -140,7 +140,7 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
               title: Text(AppLocalizations.of(context)!.qrScanConfirmation),
               content: Text(topicTitle),
               actions: [
-                TextButton(
+                CupertinoButton(
                   child: Text(
                       AppLocalizations.of(context)!.qrScanConfirmationCancel),
                   onPressed: () {
@@ -149,7 +149,7 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
                     Navigator.pop(context);
                   },
                 ),
-                TextButton(
+                CupertinoButton(
                   child: Text(
                       AppLocalizations.of(context)!.qrScanConfirmationAccept),
                   onPressed: () {

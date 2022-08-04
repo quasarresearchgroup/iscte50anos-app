@@ -1,15 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/services.dart';
-import 'package:iscte_spots/models/auth/registration_form_result.dart';
-import 'package:iscte_spots/pages/auth/register/registration_error.dart';
-import 'package:iscte_spots/services/auth/auth_service.dart';
-import 'package:iscte_spots/widgets/util/constants.dart';
+import 'package:iscte_spots/pages/leaderboard/leaderboard_screen.dart';
 import 'package:logger/logger.dart';
-import 'package:http/http.dart' as http;
-
-import '../../pages/leaderboard/leaderboard_screen.dart';
 
 const API_ADDRESS = "https://194.210.120.193";
 const API_ADDRESS_TEST = "http://192.168.1.66";
@@ -26,8 +19,8 @@ class QuizService {
       client.badCertificateCallback =
           ((X509Certificate cert, String host, int port) => true);
 
-      final request = await client
-          .getUrl(Uri.parse('$API_ADDRESS/api/quizzes'));
+      final request =
+          await client.getUrl(Uri.parse('$API_ADDRESS/api/quizzes'));
 
       request.headers.set('content-type', 'application/json');
       request.headers.add("Authorization", "Token $apiToken");
@@ -53,7 +46,7 @@ class QuizService {
           ((X509Certificate cert, String host, int port) => true);
 
       //final request = await client.postUrl(
-        //  Uri.parse('${BackEndConstants.API_ADDRESS}/api/quizzes/$quiz'));
+      //  Uri.parse('${BackEndConstants.API_ADDRESS}/api/quizzes/$quiz'));
       final request = await client
           .postUrl(Uri.parse('$API_ADDRESS/api/quizzes/$quiz/trials'));
 
@@ -123,8 +116,8 @@ class QuizService {
           body: jsonEncode(answer));*/
 
       return response.statusCode == 201;
-        //return jsonDecode(await response.transform(utf8.decoder).join());
-        return true;
+      //return jsonDecode(await response.transform(utf8.decoder).join());
+      return true;
     } catch (e) {
       _logger.d(e);
       rethrow;

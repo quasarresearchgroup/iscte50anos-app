@@ -1,15 +1,16 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:iscte_spots/services/platform_service.dart';
 import 'package:iscte_spots/services/quiz/quiz_service.dart';
+import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_alert_dialog.dart';
 import 'package:logger/logger.dart';
 
 import './answer.dart';
 import './question.dart';
 
 const double ANSWER_TIME = 10000; //ms
-
 
 class Quiz extends StatefulWidget {
   final Logger logger = Logger();
@@ -18,7 +19,9 @@ class Quiz extends StatefulWidget {
   final int quizNumber;
 
   Quiz({
-    Key? key, required this.trialNumber, required this.quizNumber,
+    Key? key,
+    required this.trialNumber,
+    required this.quizNumber,
   }) : super(key: key);
 
   @override
@@ -26,7 +29,6 @@ class Quiz extends StatefulWidget {
 }
 
 class _QuizState extends State<Quiz> {
-
   Timer? timer;
 
   int selectedAnswerId = 0;
@@ -40,8 +42,8 @@ class _QuizState extends State<Quiz> {
   double countdown = 10000;
 
   Future<Map> getNextQuestion() async {
-    final question = await QuizService.getNextQuestion(widget.quizNumber,
-        widget.trialNumber);
+    final question = await QuizService.getNextQuestion(
+        widget.quizNumber, widget.trialNumber);
     selectedAnswerIds.clear();
     submitted = false;
 
@@ -55,12 +57,12 @@ class _QuizState extends State<Quiz> {
     return question;
   }
 
-  submitAnswer(int question) async{
+  submitAnswer(int question) async {
     Map answer = {"choices": selectedAnswerIds};
     widget.logger.d(answer.toString());
-    submitted = await QuizService.answerQuestion(widget.quizNumber,
-        widget.trialNumber, question, answer);
-    if(submitted) {
+    submitted = await QuizService.answerQuestion(
+        widget.quizNumber, widget.trialNumber, question, answer);
+    if (submitted) {
       timer?.cancel();
     }
     setState(() {});
@@ -91,18 +93,18 @@ class _QuizState extends State<Quiz> {
 
   selectAnswer(int answer, bool multiple) {
     setState(() {
-      if(multiple) {
+      if (multiple) {
         if (selectedAnswerIds.contains(answer)) {
           selectedAnswerIds.remove(answer);
         } else {
           selectedAnswerIds.add(answer);
         }
         widget.logger.i("Selected answers:" + selectedAnswerIds.toString());
-      }else{
-        if(selectedAnswerIds.isEmpty){
+      } else {
+        if (selectedAnswerIds.isEmpty) {
           selectedAnswerIds.add(answer);
-        }else{
-          selectedAnswerIds[0]=answer;
+        } else {
+          selectedAnswerIds[0] = answer;
         }
         widget.logger.i("Selected answer: ${selectedAnswerIds[0]}");
       }
@@ -117,137 +119,193 @@ class _QuizState extends State<Quiz> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(future: futureQuestion, builder: (context, snapshot) {
-      if (snapshot.hasData) {
-        Map response = snapshot.data as Map;
-        if(response.containsKey("trial_score")){
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text("Pontuação da tentativa: ${response["trial_score"]}"),
-                ElevatedButton(
-                  child: const Text("Voltar"),
-                  onPressed:() {
-                    Navigator.of(context).pop();
-                  },
+    return FutureBuilder(
+        future: futureQuestion,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            Map response = snapshot.data as Map;
+            if (response.containsKey("trial_score")) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text("Pontuação da tentativa: ${response["trial_score"]}"),
+                    (PlatformService.instance.isIos)
+                        ? CupertinoButton(
+                            child: const Text("Voltar"),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            })
+                        : (PlatformService.instance.isIos)
+                            ? CupertinoButton(
+                                child: const Text("Voltar"),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                })
+                            : ElevatedButton(
+                                child: const Text("Voltar"),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                  ],
                 ),
-              ],
-            ),
-          );
-        }
-        Map trialQuestion = response;
-        Map question = trialQuestion["question"];
-        return Column(
-          children: [
-            Text("Pergunta ${trialQuestion["number"]}/8"),
-            const SizedBox(height:5),
-            isTimed ? LinearProgressIndicator(
-              value: getTimePercentage(),
-              semanticsLabel: 'Linear progress indicator',
-            ) : const Text("Explorar o Campus (Pergunta sem tempo)"),
-            Question(
-              question['text'].toString(),
-            ), //Question
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
-                child: AspectRatio(
-                  aspectRatio: 1,
-                  child: Container(
-                    decoration: BoxDecoration(
-                        image: DecorationImage(
+              );
+            }
+            Map trialQuestion = response;
+            Map question = trialQuestion["question"];
+            return Column(
+              children: [
+                Text("Pergunta ${trialQuestion["number"]}/8"),
+                const SizedBox(height: 5),
+                isTimed
+                    ? LinearProgressIndicator(
+                        value: getTimePercentage(),
+                        semanticsLabel: 'Linear progress indicator',
+                      )
+                    : const Text("Explorar o Campus (Pergunta sem tempo)"),
+                Question(
+                  question['text'].toString(),
+                ), //Question
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
+                    child: AspectRatio(
+                      aspectRatio: 1,
+                      child: Container(
+                        decoration: BoxDecoration(
+                            image: DecorationImage(
                           fit: BoxFit.fitHeight,
                           alignment: FractionalOffset.topCenter,
                           image: NetworkImage(
-                            // TODO handle lack of image
+                              // TODO handle lack of image
                               "https://live.staticflickr.com/65535/51942926652_b8d29f2cb5_z.jpg",
                               //question['image_link'].toString(),
                               scale: 0.5),
                         )),
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
 
-            ...(question['choices'] as List)
-                .map((answer) {
-              return Answer(
-                  selectAnswer,
-                  answer['text'].toString(),
-                  answer['id'] as int,
-                  question["type"] == "M",
-                  selectedAnswerIds);
-            }).toList(),
+                ...(question['choices'] as List).map((answer) {
+                  return Answer(
+                      selectAnswer,
+                      answer['text'].toString(),
+                      answer['id'] as int,
+                      question["type"] == "M",
+                      selectedAnswerIds);
+                }).toList(),
 
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // ----- Submit button -----
-                ElevatedButton(
-                  child: Text(submitted ? "Submetido" : "Submeter"),
-                  onPressed: countdown <= 0 || selectedAnswerIds.isEmpty || submitted ? null : () {
-                      submitAnswer(trialQuestion["number"]);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.black45,
-                    onPrimary: Colors.white,
-                  ),
-                ),
-                const SizedBox(width: 10),
-                // ----- Next button -----
-                ElevatedButton(
-                  child: Text("Seguinte"),
-                  onPressed: countdown > 0 && !submitted ?  () {
-                    setState(() {
-                      showDialog( context:context, builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: const Text("Aviso"),
-                          content: const Text("Deseja avançar sem responder?"),
-                          actions: [
-                            TextButton(
-                              child: const Text('Não'),
-                              onPressed: () {
-                                Navigator.of(context).pop(); //Exit dialog
-                              },
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // ----- Submit button -----
+                    (PlatformService.instance.isIos)
+                        ? CupertinoButton(
+                            child: Text(submitted ? "Submetido" : "Submeter"),
+                            onPressed: () {
+                              SubmitOnPressed(trialQuestion);
+                            })
+                        : ElevatedButton(
+                            child: Text(submitted ? "Submetido" : "Submeter"),
+                            onPressed: () {
+                              SubmitOnPressed(trialQuestion);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.black45,
+                              onPrimary: Colors.white,
                             ),
-                            TextButton(
-                              child: const Text('Sim'),
-                              onPressed: () {
-                                setState(() {
-                                  Navigator.of(context).pop();
-                                  futureQuestion = getNextQuestion();
-                                });
-                              },
+                          ),
+                    const SizedBox(width: 10),
+                    // ----- Next button -----
+                    (PlatformService.instance.isIos)
+                        ? CupertinoButton(
+                            child: Text("Seguinte"),
+                            onPressed: () {
+                              NextQuizOnPressed(context);
+                            })
+                        : ElevatedButton(
+                            child: Text("Seguinte"),
+                            onPressed: () {
+                              NextQuizOnPressed(context);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.black45,
+                              onPrimary: Colors.white,
                             ),
-                          ],
-                        );
-                      },);
-                    });
-                  } : () => setState(() {
-                      futureQuestion = getNextQuestion();
-                  }),
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.black45,
-                    onPrimary: Colors.white,
-                  ),
+                          )
+                  ],
                 )
               ],
-            )
-          ],
-        );
-      } else {
-        return const Center(
-          child: SizedBox(
-            child: CircularProgressIndicator.adaptive(),
-            width: 60,
-            height: 60,
-          ),
-        );
-      } //Column
-    }
-    );
+            );
+          } else {
+            return const Center(
+              child: SizedBox(
+                child: CircularProgressIndicator.adaptive(),
+                width: 60,
+                height: 60,
+              ),
+            );
+          } //Column
+        });
   }
 
+  void SubmitOnPressed(Map<dynamic, dynamic> trialQuestion) {
+    if (!(countdown <= 0 || selectedAnswerIds.isEmpty || submitted)) {
+      submitAnswer(trialQuestion["number"]);
+    }
+  }
+
+  void NextQuizOnPressed(BuildContext context) {
+    if (countdown > 0 && !submitted) {
+      setState(
+        () {
+          DynamicAlertDialog.showDynamicDialog(
+            context: context,
+            title: const Text("Aviso"),
+            content: const Text("Deseja avançar sem responder?"),
+            actions: (PlatformService.instance.isIos)
+                ? [
+                    CupertinoButton(
+                        child: const Text('Não'),
+                        onPressed: () {
+                          Navigator.of(context).pop(); //Exit dialog
+                        }),
+                    CupertinoButton(
+                        child: const Text('Sim'),
+                        onPressed: () {
+                          setState(() {
+                            Navigator.of(context).pop();
+                            futureQuestion = getNextQuestion();
+                          });
+                        }),
+                  ]
+                : [
+                    TextButton(
+                      child: const Text('Não'),
+                      onPressed: () {
+                        Navigator.of(context).pop(); //Exit dialog
+                      },
+                    ),
+                    TextButton(
+                      child: const Text('Sim'),
+                      onPressed: () {
+                        setState(() {
+                          Navigator.of(context).pop();
+                          futureQuestion = getNextQuestion();
+                        });
+                      },
+                    ),
+                  ],
+          );
+        },
+      );
+    } else {
+      setState(() {
+        futureQuestion = getNextQuestion();
+      });
+    }
+  }
 }

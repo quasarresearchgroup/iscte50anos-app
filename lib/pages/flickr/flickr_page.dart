@@ -11,7 +11,7 @@ import 'package:iscte_spots/pages/flickr/flickr_album_page.dart';
 import 'package:iscte_spots/services/flickr/flickr_iscte_album_service.dart';
 import 'package:iscte_spots/services/flickr/flickr_service.dart';
 import 'package:iscte_spots/services/platform_service.dart';
-import 'package:iscte_spots/widgets/dynamic_widgets.dart';
+import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_back_button.dart';
 import 'package:iscte_spots/widgets/my_app_bar.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:iscte_spots/widgets/util/overlays.dart';
@@ -107,32 +107,29 @@ class _FlickrPageState extends State<FlickrPage> {
     return Scaffold(
         appBar: MyAppBar(
           title: AppLocalizations.of(context)!.flickrScreen,
-          leading: DynamicBackIconButton(),
-          trailing: Container(
-            child: Row(mainAxisSize: MainAxisSize.min, children: [
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Center(
-                    child: Text(
-                  "${activePage + 1} / ${fetchedPhotosets.length}",
-                  textScaleFactor: 1.25,
-                )),
+          leading: const DynamicBackIconButton(),
+          trailing: Row(mainAxisSize: MainAxisSize.min, children: [
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Center(
+                  child: Text(
+                "${activePage + 1} / ${fetchedPhotosets.length}",
+                textScaleFactor: 1.25,
+              )),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Center(
+                child: fetching
+                    ? const LoadingWidget()
+                    : networkError
+                        ? const Icon(Icons.signal_wifi_connected_no_internet_4)
+                        : PlatformService.instance.isIos
+                            ? const Icon(CupertinoIcons.check_mark)
+                            : const Icon(Icons.check),
               ),
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Center(
-                  child: fetching
-                      ? const LoadingWidget()
-                      : networkError
-                          ? const Icon(
-                              Icons.signal_wifi_connected_no_internet_4)
-                          : PlatformService.instance.isIos
-                              ? const Icon(CupertinoIcons.check_mark)
-                              : const Icon(Icons.check),
-                ),
-              ),
-            ]),
-          ),
+            ),
+          ]),
         ),
         floatingActionButton: FloatingActionButton(
           child: const FaIcon(FontAwesomeIcons.rotateRight),

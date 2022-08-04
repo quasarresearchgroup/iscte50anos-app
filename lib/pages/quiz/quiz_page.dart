@@ -1,13 +1,16 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:iscte_spots/services/platform_service.dart';
+import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_back_button.dart';
+import 'package:iscte_spots/widgets/my_app_bar.dart';
 import 'package:logger/logger.dart';
 
 import './quiz.dart';
-import './result.dart';
 
 //Main for isolated testing
-void main(){
-  runApp(MaterialApp(home:QuizPage(quizNumber: 1, trialNumber: 1)));
+void main() {
+  runApp(MaterialApp(home: QuizPage(quizNumber: 1, trialNumber: 1)));
 }
 
 class QuizPage extends StatefulWidget {
@@ -17,7 +20,8 @@ class QuizPage extends StatefulWidget {
   final int quizNumber;
   final int trialNumber;
 
-  QuizPage({Key? key, required this.quizNumber, required this.trialNumber}) : super(key: key);
+  QuizPage({Key? key, required this.quizNumber, required this.trialNumber})
+      : super(key: key);
   @override
   State<StatefulWidget> createState() {
     return _QuizPageState();
@@ -25,43 +29,70 @@ class QuizPage extends StatefulWidget {
 }
 
 class _QuizPageState extends State<QuizPage> {
-
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
         onWillPop: () async {
-          showDialog( useRootNavigator: false, context:context, builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Text("Aviso"),
-              content: const Text("Deseja sair do Quiz?"),
-              actions: [
-                TextButton(
-                  child: const Text('Não'),
-                  onPressed: () {
-                    Navigator.of(context).pop(); //Exit dialog
-                  },
-                ),
-                TextButton(
-                  child: const Text('Sim'),
-                  onPressed: () {
-                    Navigator.of(context).pop(); //Exit dialog
-                    Navigator.of(context).pop(); //Exit quiz
-                  },
-                ),
-              ],
-            );
-          },);
+          showDialog(
+            useRootNavigator: false,
+            context: context,
+            builder: (BuildContext context) {
+              return buildAlertDialog(context);
+            },
+          );
           return false;
         },
         child: Scaffold(
-        appBar: AppBar(
-          title: Text(AppLocalizations.of(context)?.quizPageTitle ?? "Quiz"),
-        ),
-        body: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Quiz(trialNumber: widget.trialNumber, quizNumber: widget.quizNumber)
-        ), //Padding
-      )
-    );
+          appBar: MyAppBar(
+            title: AppLocalizations.of(context)?.quizPageTitle ?? "Quiz",
+            leading: DynamicBackIconButton(),
+          ),
+          body: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Quiz(
+                  trialNumber: widget.trialNumber,
+                  quizNumber: widget.quizNumber)), //Padding
+        ));
+  }
+
+  Widget buildAlertDialog(BuildContext context) {
+    return PlatformService.instance.isIos
+        ? CupertinoAlertDialog(
+            title: const Text("Aviso"),
+            content: const Text("Deseja sair do Quiz?"),
+            actions: [
+              CupertinoButton(
+                  child: const Text('Não'),
+                  onPressed: () {
+                    Navigator.of(context).pop(); //Exit dialog
+                  }),
+              CupertinoButton(
+                child: const Text('Sim'),
+                onPressed: () {
+                  Navigator.of(context).pop(); //Exit dialog
+                  Navigator.of(context).pop(); //Exit quiz
+                },
+              )
+            ],
+          )
+        : AlertDialog(
+            title: const Text("Aviso"),
+            content: const Text("Deseja sair do Quiz?"),
+            actions: [
+              TextButton(
+                child: const Text('Não'),
+                onPressed: () {
+                  Navigator.of(context).pop(); //Exit dialog
+                },
+              ),
+              TextButton(
+                child: const Text('Sim'),
+                onPressed: () {
+                  Navigator.of(context).pop(); //Exit dialog
+                  Navigator.of(context).pop(); //Exit quiz
+                },
+              ),
+            ],
+          );
   }
 }

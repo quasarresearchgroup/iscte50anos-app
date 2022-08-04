@@ -3,11 +3,11 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:iscte_spots/helper/constants.dart';
 import 'package:iscte_spots/models/requests/spot_request.dart';
 import 'package:iscte_spots/services/auth/auth_service.dart';
 import 'package:iscte_spots/services/auth/openday_login_service.dart';
 import 'package:iscte_spots/services/shared_prefs_service.dart';
-import 'package:iscte_spots/widgets/util/constants.dart';
 import 'package:logger/logger.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
