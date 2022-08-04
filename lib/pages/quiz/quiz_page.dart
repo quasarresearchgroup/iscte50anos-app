@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/services/platform_service.dart';
+import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_alert_dialog.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_back_button.dart';
 import 'package:iscte_spots/widgets/my_app_bar.dart';
 import 'package:logger/logger.dart';
@@ -33,13 +34,7 @@ class _QuizPageState extends State<QuizPage> {
   Widget build(BuildContext context) {
     return WillPopScope(
         onWillPop: () async {
-          showDialog(
-            useRootNavigator: false,
-            context: context,
-            builder: (BuildContext context) {
-              return buildAlertDialog(context);
-            },
-          );
+          showAlertDialog(context);
           return false;
         },
         child: Scaffold(
@@ -55,12 +50,14 @@ class _QuizPageState extends State<QuizPage> {
         ));
   }
 
-  Widget buildAlertDialog(BuildContext context) {
-    return PlatformService.instance.isIos
-        ? CupertinoAlertDialog(
-            title: const Text("Aviso"),
-            content: const Text("Deseja sair do Quiz?"),
-            actions: [
+  void showAlertDialog(BuildContext context) {
+    DynamicAlertDialog.showDynamicDialog(
+      useRootNavigator: false,
+      context: context,
+      title: const Text("Aviso"),
+      content: const Text("Deseja sair do Quiz?"),
+      actions: (PlatformService.instance.isIos)
+          ? [
               CupertinoButton(
                   child: const Text('Não'),
                   onPressed: () {
@@ -73,12 +70,8 @@ class _QuizPageState extends State<QuizPage> {
                   Navigator.of(context).pop(); //Exit quiz
                 },
               )
-            ],
-          )
-        : AlertDialog(
-            title: const Text("Aviso"),
-            content: const Text("Deseja sair do Quiz?"),
-            actions: [
+            ]
+          : [
               TextButton(
                 child: const Text('Não'),
                 onPressed: () {
@@ -93,6 +86,6 @@ class _QuizPageState extends State<QuizPage> {
                 },
               ),
             ],
-          );
+    );
   }
 }

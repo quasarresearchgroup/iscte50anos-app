@@ -4,6 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:iscte_spots/pages/quiz/quiz_page.dart';
+import 'package:iscte_spots/services/platform_service.dart';
+import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_alert_dialog.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_back_button.dart';
 import 'package:iscte_spots/widgets/my_app_bar.dart';
 import 'package:logger/logger.dart';
@@ -224,54 +226,19 @@ class _QuizListState extends State<QuizList> {
                                         Text("Completo"),
                                       ],
                                     )
-                                  : ElevatedButton(
-                                      child: const Text("Iniciar"),
-                                      onPressed: () {
-                                        showDialog(
-                                          useRootNavigator: false,
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            return AlertDialog(
-                                              title: const Center(
-                                                  child: Text("Aviso")),
-                                              content: RichText(
-                                                text: const TextSpan(
-                                                  style: TextStyle(
-                                                    fontSize: 14.0,
-                                                  ),
-                                                  children: <TextSpan>[
-                                                    TextSpan(
-                                                        text:
-                                                            'Deseja iniciar uma tentativa de Quiz?\n'),
-                                                    TextSpan(
-                                                        text:
-                                                            '(Certifique-se que tem uma conexão estável)',
-                                                        style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold)),
-                                                  ],
-                                                ),
-                                              ),
-                                              actions: [
-                                                TextButton(
-                                                  child: const Text('Não'),
-                                                  onPressed: () {
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                ),
-                                                TextButton(
-                                                  child: const Text('Sim'),
-                                                  onPressed: () {
-                                                    Navigator.of(context).pop();
-                                                    startTrial(quizNumber);
-                                                  },
-                                                ),
-                                              ],
-                                            );
-                                          },
-                                        );
-                                      }),
+                                  : (PlatformService.instance.isIos)
+                                      ? CupertinoButton(
+                                          child: const Text("Iniciar"),
+                                          onPressed: () {
+                                            showStartQuizDialog(
+                                                context, quizNumber);
+                                          })
+                                      : ElevatedButton(
+                                          child: const Text("Iniciar"),
+                                          onPressed: () {
+                                            showStartQuizDialog(
+                                                context, quizNumber);
+                                          }),
                             ],
                             //minVerticalPadding: 10.0,
                           ),
@@ -304,6 +271,58 @@ class _QuizListState extends State<QuizList> {
           );
         }
       },
+    );
+  }
+
+  void showStartQuizDialog(BuildContext context, int quizNumber) {
+    DynamicAlertDialog.showDynamicDialog(
+      useRootNavigator: false,
+      context: context,
+      title: const Center(child: Text("Aviso")),
+      content: RichText(
+        text: const TextSpan(
+          style: TextStyle(
+            fontSize: 14.0,
+          ),
+          children: <TextSpan>[
+            TextSpan(text: 'Deseja iniciar uma tentativa de Quiz?\n'),
+            TextSpan(
+                text: '(Certifique-se que tem uma conexão estável)',
+                style: TextStyle(fontWeight: FontWeight.bold)),
+          ],
+        ),
+      ),
+      actions: (PlatformService.instance.isIos)
+          ? [
+              CupertinoButton(
+                child: const Text('Não'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              CupertinoButton(
+                child: const Text('Sim'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  startTrial(quizNumber);
+                },
+              ),
+            ]
+          : [
+              TextButton(
+                child: const Text('Não'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              TextButton(
+                child: const Text('Sim'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  startTrial(quizNumber);
+                },
+              ),
+            ],
     );
   }
 }

@@ -137,18 +137,12 @@ class _QuizState extends State<Quiz> {
                             onPressed: () {
                               Navigator.of(context).pop();
                             })
-                        : (PlatformService.instance.isIos)
-                            ? CupertinoButton(
-                                child: const Text("Voltar"),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                })
-                            : ElevatedButton(
-                                child: const Text("Voltar"),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                              ),
+                        : ElevatedButton(
+                            child: const Text("Voltar"),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
                   ],
                 ),
               );

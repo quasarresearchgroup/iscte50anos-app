@@ -15,10 +15,17 @@ class DynamicAlertDialog extends StatelessWidget {
     final List<Widget>? actions,
     final Widget? content,
     final Widget? title,
+    final bool barrierDismissible = true,
+    final String? barrierLabel,
+    //defaults to true
+    bool useRootNavigator = true,
   }) async {
     if (PlatformService.instance.isIos) {
       showCupertinoDialog(
+        useRootNavigator: useRootNavigator,
         context: context,
+        barrierDismissible: barrierDismissible,
+        barrierLabel: barrierLabel,
         builder: (context) {
           return DynamicAlertDialog(
             actions: actions,
@@ -29,7 +36,10 @@ class DynamicAlertDialog extends StatelessWidget {
       );
     } else {
       showDialog(
+        useRootNavigator: useRootNavigator,
         context: context,
+        barrierDismissible: barrierDismissible,
+        barrierLabel: barrierLabel,
         builder: (context) {
           return DynamicAlertDialog(
             actions: actions,
