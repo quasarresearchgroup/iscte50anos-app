@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:iscte_spots/services/platform_service.dart';
 import 'package:iscte_spots/services/shared_prefs_service.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_alert_dialog.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_back_button.dart';
+import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_text_button.dart';
 import 'package:iscte_spots/widgets/my_app_bar.dart';
 import 'package:logger/logger.dart';
 import 'package:yaml/yaml.dart';
@@ -144,22 +144,5 @@ class DynamicAboutListTile extends StatelessWidget {
       applicationVersion: yaml['version'],
       applicationLegalese: "legalese",
     );
-  }
-}
-
-class DynamicTextButton extends StatelessWidget {
-  const DynamicTextButton({
-    Key? key,
-    required this.child,
-    required this.onPressed,
-  }) : super(key: key);
-  final Widget child;
-  final void Function()? onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return (PlatformService.instance.isIos)
-        ? CupertinoButton(child: child, onPressed: onPressed)
-        : TextButton(child: child, onPressed: onPressed);
   }
 }

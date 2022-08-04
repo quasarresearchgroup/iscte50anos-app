@@ -102,32 +102,24 @@ class _FlickAlbumPageState extends State<FlickAlbumPage> {
             controller: widget.listViewController,
             itemBuilder: (context, index) {
               return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: index < fetchedPhotos.length
-                      ? InteractiveViewer(
-                          child: CachedNetworkImage(
-                              imageUrl: fetchedPhotos[index].url,
-                              fadeOutDuration: const Duration(seconds: 1),
-                              fadeInDuration: const Duration(seconds: 3),
-                              progressIndicatorBuilder: (BuildContext context,
-                                      String url, DownloadProgress progress) =>
-                                  Center(
-                                    child: SizedBox(
-                                      width: 100,
-                                      height: 100,
-                                      child: LinearProgressIndicator(
-                                        value: progress.progress,
-                                      ),
-                                    ),
-                                  )),
-                        )
-                      : noMoreData
-                          ? Center(
-                              child: Text(AppLocalizations.of(context)!
-                                  .noMoreDataError),
-                            )
-                          : const Center(
-                              child: CircularProgressIndicator.adaptive()));
+                padding: const EdgeInsets.all(8.0),
+                child: index < fetchedPhotos.length
+                    ? InteractiveViewer(
+                        child: CachedNetworkImage(
+                            imageUrl: fetchedPhotos[index].url,
+                            fadeOutDuration: const Duration(seconds: 1),
+                            fadeInDuration: const Duration(seconds: 3),
+                            progressIndicatorBuilder: (BuildContext context,
+                                    String url, DownloadProgress progress) =>
+                                LoadingWidget()),
+                      )
+                    : noMoreData
+                        ? Center(
+                            child: Text(
+                                AppLocalizations.of(context)!.noMoreDataError),
+                          )
+                        : Container(),
+              );
             }));
   }
 }

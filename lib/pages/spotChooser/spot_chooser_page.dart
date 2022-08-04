@@ -223,8 +223,6 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
             imageUrl: list[index],
             progressIndicatorBuilder: (BuildContext context, String string,
                 DownloadProgress downloadProgress) {
-              widget._logger.d(
-                  "downloaded: ${downloadProgress.downloaded}; progress:${downloadProgress.progress};");
               return const LoadingWidget();
             },
             imageBuilder: (BuildContext context, ImageProvider imageProvider) {
