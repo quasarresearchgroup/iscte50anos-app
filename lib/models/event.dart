@@ -23,17 +23,19 @@ class Event {
     this.title,
     this.date,
     this.scope,
+    this.link,
   });
   final int? id;
   final String? title;
   final int? date;
   final EventScope? scope;
+  final String? link;
 
   static Logger logger = Logger();
 
   @override
   String toString() {
-    return 'Event{id: $id, title: $title, date: $date, scope: $scope}';
+    return 'Event{id: $id, title: $title, date: $date, scope: $scope, link: $link}';
   }
 
   String getDateString() {
@@ -51,6 +53,7 @@ class Event {
         title: json[DatabaseContentTable.columnDescription],
         date: json[DatabaseContentTable.columnDate],
         scope: eventScopefromString(json[DatabaseContentTable.columnScope]),
+        link: json[DatabaseContentTable.columnLink],
       );
 
   Map<String, dynamic> toMap() {
@@ -59,6 +62,7 @@ class Event {
       DatabaseContentTable.columnDescription: title,
       DatabaseContentTable.columnDate: date,
       DatabaseContentTable.columnScope: scope != null ? scope!.name : null,
+      DatabaseContentTable.columnLink: link,
     };
   }
 

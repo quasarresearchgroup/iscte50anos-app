@@ -14,17 +14,28 @@ class DatabaseEventTable {
   static const columnDate = 'date';
   static const columnScope = 'scope';
 
+  static String initScript = '''
+      CREATE TABLE eventTable(
+      _id INTEGER PRIMARY KEY,
+      title TEXT,
+      date INTEGER,
+      scope TEXT CHECK ( scope IN ('iscte', 'portugal', 'world') ) DEFAULT 'world'
+      )
+    ''';
+
+/*
   static Future onCreate(Database db, int version) async {
     db.execute('''
-      CREATE TABLE $table(
-      $columnId INTEGER PRIMARY KEY,
-      $columnTitle TEXT,
-      $columnDate INTEGER,
-      $columnScope TEXT CHECK ( $columnScope IN ('iscte', 'portugal', 'world') ) DEFAULT 'world'
+      CREATE TABLE eventTable(
+      _id INTEGER PRIMARY KEY,
+      title TEXT,
+      date INTEGER,
+      scope TEXT CHECK ( scope IN ('iscte', 'portugal', 'world') ) DEFAULT 'world'
       )
     ''');
     _logger.d("Created $table");
   }
+*/
 
   static Future<List<Event>> getAll() async {
     DatabaseHelper instance = DatabaseHelper.instance;

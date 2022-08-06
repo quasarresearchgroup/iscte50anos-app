@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:iscte_spots/models/content.dart';
 import 'package:iscte_spots/models/database/tables/database_content_table.dart';
 import 'package:iscte_spots/pages/timeline/timeline_body.dart';
+import 'package:iscte_spots/pages/timeline/timeline_dial.dart';
 import 'package:iscte_spots/pages/timeline/timeline_search_delegate.dart';
 import 'package:iscte_spots/services/timeline_service.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
@@ -61,10 +62,11 @@ class _TimelinePageState extends State<TimelinePage> {
             )
           ],
         ),
-        /* floatingActionButton: TimelineDial(
-            isDialOpen: isDialOpen,
-            deleteTimelineData: deleteTimelineData,
-            refreshTImelineData: refreshTimelineData),*/
+        floatingActionButton: TimelineDial(
+          isDialOpen: isDialOpen,
+          deleteTimelineData: deleteTimelineData,
+          refreshTImelineData: refreshTimelineData,
+        ),
         body: FutureBuilder<List<Content>>(
           future: mapdata,
           builder: (context, snapshot) {
@@ -85,7 +87,7 @@ class _TimelinePageState extends State<TimelinePage> {
   Future<void> refreshTimelineData(BuildContext context) async {
     await deleteTimelineData(context);
     await TimelineContentService.insertContentEntriesFromCSV();
-    setState(() async {
+    setState(() {
       mapdata = DatabaseContentTable.getAll();
     });
     widget._logger.d("Inserted from CSV");

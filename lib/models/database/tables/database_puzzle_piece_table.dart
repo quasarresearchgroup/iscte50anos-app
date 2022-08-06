@@ -16,20 +16,34 @@ class DatabasePuzzlePieceTable {
   static const columnLeft = "left";
   static const columnTop = "top";
 
+  static String initScript = '''
+      CREATE TABLE puzzlePieceTable(
+      row INTEGER NOT NULL,
+      column INTEGER NOT NULL,
+      max_row INTEGER NOT NULL,
+      max_column INTEGER NOT NULL,
+      left REAL NOT NULL,
+      top REAL NOT NULL,
+      PRIMARY KEY( row,  column )
+      )
+    ''';
+
+/*
   static Future onCreate(Database db, int version) async {
     db.execute('''
-      CREATE TABLE $table(
-      $columnRow INTEGER NOT NULL,
-      $columnColumn INTEGER NOT NULL,
-      $columnMaxRow INTEGER NOT NULL,
-      $columnMaxColumn INTEGER NOT NULL,
-      $columnLeft REAL NOT NULL,
-      $columnTop REAL NOT NULL,
-      PRIMARY KEY( $columnRow,  $columnColumn )
+      CREATE TABLE puzzlePieceTable(
+      row INTEGER NOT NULL,
+      column INTEGER NOT NULL,
+      max_row INTEGER NOT NULL,
+      max_column INTEGER NOT NULL,
+      left REAL NOT NULL,
+      top REAL NOT NULL,
+      PRIMARY KEY( row,  column )
       )
     ''');
     _logger.d("Created $table");
   }
+*/
 
   static Future<List<PuzzlePiece>> getAll({int? row, int? col}) async {
     DatabaseHelper instance = DatabaseHelper.instance;
