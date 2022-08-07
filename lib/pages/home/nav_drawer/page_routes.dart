@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
-import 'package:iscte_spots/models/content.dart';
+import 'package:iscte_spots/models/timeline/content.dart';
+import 'package:iscte_spots/models/timeline/event.dart';
 import 'package:iscte_spots/pages/auth/auth_page.dart';
 import 'package:iscte_spots/pages/flickr/flickr_page.dart';
 import 'package:iscte_spots/pages/home/home.dart';
@@ -28,7 +29,7 @@ class PageRouter {
       case TimelinePage.pageRoute:
         return TimelinePage();
       case TimeLineDetailsPage.pageRoute:
-        return TimeLineDetailsPage(data: argument as Content);
+        return TimeLineDetailsPage(event: argument as Event);
       case Shaker.pageRoute:
         return Shaker();
       case FlickrPage.pageRoute:

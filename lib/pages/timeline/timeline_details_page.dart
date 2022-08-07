@@ -1,20 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:iscte_spots/models/content.dart';
+import 'package:iscte_spots/helper/helper_methods.dart';
+import 'package:iscte_spots/models/timeline/content.dart';
+import 'package:iscte_spots/models/timeline/event.dart';
+import 'package:iscte_spots/widgets/network/error.dart';
+import 'package:iscte_spots/widgets/util/loading.dart';
+import 'package:logger/logger.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class TimeLineDetailsPage extends StatelessWidget {
+class TimeLineDetailsPage extends StatefulWidget {
   static const pageRoute = "/timeline/detail";
 
-  const TimeLineDetailsPage({
-    required this.data,
+  TimeLineDetailsPage({
+    required this.event,
     Key? key,
   }) : super(key: key);
+  final Event event;
+
+  @override
+  State<TimeLineDetailsPage> createState() => _TimeLineDetailsPageState();
+}
+
+class _TimeLineDetailsPageState extends State<TimeLineDetailsPage> {
   final double textweight = 2;
-  final Content data;
+
+  final Logger _logger = Logger();
 
   @override
   Widget build(BuildContext context) {
+    Future<List<Content>> allFromEvent = widget.event.getContentList;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.timelineDetailsScreen),
@@ -22,50 +37,58 @@ class TimeLineDetailsPage extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  data.contentIcon,
-                  Text(
-                    data.getDateString(),
-                    textScaleFactor: textweight,
-                  ),
-                  data.contentIcon
-                ],
-              ),
-              data.scopeIcon,
-              data.description != null
-                  ? Text(
-                      "Description: " + data.description!,
-                      textScaleFactor: textweight,
-                    )
-                  : Container(),
-              data.id != null
-                  ? Text("id: " + data.id!.toString(),
-                      textScaleFactor: textweight)
-                  : Container(),
-              data.eventId != null
-                  ? Text("eventID: " + data.eventId!.toString(),
-                      textScaleFactor: textweight)
-                  : Container(),
-              data.link != null
-                  ? TextButton(
-                      child: Text(
-                        "link: " + data.link!,
-                        textScaleFactor: textweight,
-                      ),
-                      onPressed: () {
-                        launchLink(data.link!);
-                      },
-                    )
-                  : Container(),
-            ],
-          ),
+          child: FutureBuilder<List<Content>>(
+              future: allFromEvent,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  _logger.d("event: ${widget.event} , data:${snapshot.data!} ");
+                  return ListView.builder(
+                    addAutomaticKeepAlives: true,
+                    itemCount: (snapshot.data?.length)! + 2,
+                    itemBuilder: (context, index) {
+                      if (index == 0) {
+                        return ListTile(
+                          leading: widget.event.scopeIcon,
+                          title: Text(widget.event.title ?? ""),
+                          subtitle: Text("id: " + widget.event.id.toString()),
+                          trailing: Text(
+                            widget.event.getDateString(),
+                          ),
+                        );
+                      } else if (index == 1) {
+                        return const Divider(
+                          color: Colors.white,
+                        );
+                      } else {
+                        return buildContent(snapshot.data![index - 2]);
+                      }
+                    },
+                  );
+                } else if (snapshot.hasError) {
+                  return NetworkError(onRefresh: () {
+                    setState(() {
+                      allFromEvent = widget.event.getContentList;
+                    });
+                  });
+                } else {
+                  return const LoadingWidget();
+                }
+              }),
         ),
       ),
+    );
+  }
+
+  Widget buildContent(Content content) {
+    return ListTile(
+      leading: content.contentIcon,
+      title: Text(content.description ?? ""),
+      subtitle: Text(content.link ?? ""),
+      onTap: () {
+        if (content.link != null) {
+          HelperMethods.launchURL(content.link!);
+        }
+      },
     );
   }
 

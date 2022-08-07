@@ -53,11 +53,11 @@ flutter:
   uses-material-design: true
   assets:
     - Resources/
+    - Resources/CSVFiles/
     - Resources/Lotties/
     - Resources/Img/
     - Resources/Img/Logo/
     - Resources/Img/Campus/
     - Resources/Img/TimelineIcons/
-    - Resources/QRCodes/NewQrCodes/alternatives/
     - Resources/Img/LeaderBoardIcons/
     - pubspec.yaml

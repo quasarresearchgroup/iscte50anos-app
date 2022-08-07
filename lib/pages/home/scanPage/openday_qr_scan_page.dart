@@ -113,8 +113,10 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
               TopicRequest topicRequestCompleted = await topicRequest;
               widget._logger.d("spotInfoRequest: $topicRequestCompleted");
 
-              Navigator.of(context).pushNamed(QRScanResults.pageRoute,
-                  arguments: topicRequestCompleted.contentList);
+              Navigator.of(context).pushNamed(
+                QRScanResults.pageRoute,
+                arguments: topicRequestCompleted.contentList,
+              );
             }
           }
         } on LoginException {

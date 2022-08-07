@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:iscte_spots/models/database/tables/database_content_table.dart';
+import 'package:iscte_spots/models/database/tables/database_event_content_table.dart';
 import 'package:iscte_spots/models/database/tables/database_event_table.dart';
 import 'package:iscte_spots/models/database/tables/database_event_topic_table.dart';
 import 'package:iscte_spots/models/database/tables/database_page_table.dart';
@@ -15,7 +16,7 @@ class DatabaseHelper {
   static final Logger _logger = Logger();
   static Database? _database;
   static const _databaseName = "MyDatabase.db";
-  static const _databaseVersion = 8;
+  static const _databaseVersion = 7;
 
   //  singleton class
   DatabaseHelper._privateConstructor();
@@ -40,6 +41,7 @@ class DatabaseHelper {
     await DatabaseEventTable.onCreate(db);
     await DatabaseContentTable.onCreate(db);
     await DatabaseEventTopicTable.onCreate(db);
+    await DatabaseEventContentTable.onCreate(db);
     await DatabasePuzzlePieceTable.onCreate(db);
 
     // await _createFKs(db);
@@ -48,15 +50,13 @@ class DatabaseHelper {
 
   Future<void> _dropAll(db) async {
     _logger.d('Started DropAll to the db');
-    String sql_query = """SELECT name FROM sqlite_master WHERE type='table';""";
-    List<Map<String, Object?>> query = await db.query('sqlite_master');
-    _logger.d(query);
 
     await DatabasePageTable.drop(db);
     await DatabaseContentTable.drop(db);
     await DatabaseEventTable.drop(db);
     await DatabaseTopicTable.drop(db);
     await DatabaseEventTopicTable.drop(db);
+    await DatabaseEventContentTable.drop(db);
     await DatabasePuzzlePieceTable.drop(db);
 
     _logger.d('Finished DropAll to the db');
@@ -69,11 +69,12 @@ class DatabaseHelper {
     await DatabaseEventTable.removeALL();
     await DatabaseTopicTable.removeALL();
     await DatabaseEventTopicTable.removeALL();
+    await DatabaseEventContentTable.removeALL();
     await DatabasePuzzlePieceTable.removeALL();
     _logger.d('Finished removeAll to the db');
   }
 
-  Future<void> _upgradeDb(db, int oldversion, int newversion) async {
+  Future<void> _onUpgradeDb(db, int oldversion, int newversion) async {
     if (oldversion != newversion) {
       _logger.d('Started Upgrade to the db');
       await _dropAll(db);
@@ -93,7 +94,7 @@ class DatabaseHelper {
       version: _databaseVersion,
       onConfigure: _onConfigure,
       onCreate: _onCreate,
-      onUpgrade: onDatabaseDowngradeDelete,
+      onUpgrade: _onUpgradeDb,
       onDowngrade: onDatabaseDowngradeDelete,
     );
 

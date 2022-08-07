@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:iscte_spots/models/content.dart';
+import 'package:iscte_spots/models/timeline/event.dart';
 import 'package:iscte_spots/pages/timeline/timeline_tile.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
@@ -9,7 +9,7 @@ class EventTimelineListView extends StatefulWidget {
     required this.timeLineMap,
     required this.timelineYear,
   }) : super(key: key);
-  final List<Content> timeLineMap;
+  final List<Event> timeLineMap;
   final int timelineYear;
 
   @override
@@ -17,8 +17,8 @@ class EventTimelineListView extends StatefulWidget {
 }
 
 class _EventTimelineListViewState extends State<EventTimelineListView> {
-  List<Content> chosenTimelineList = <Content>[];
-  List<Content> originalTimelineList = <Content>[];
+  List<Event> chosenTimelineList = <Event>[];
+  List<Event> originalTimelineList = <Event>[];
   final double tileOffset = 0.4;
 
   @override
@@ -37,7 +37,7 @@ class _EventTimelineListViewState extends State<EventTimelineListView> {
   @override
   void initState() {
     super.initState();
-    for (final Content entry in widget.timeLineMap) {
+    for (final Event entry in widget.timeLineMap) {
       originalTimelineList.add(entry);
       if (entry.year == widget.timelineYear) {
         chosenTimelineList.add(entry);
@@ -52,13 +52,16 @@ class _EventTimelineListViewState extends State<EventTimelineListView> {
     List<Widget> timelineTiles = [];
 
     for (int index = 0; index < chosenTimelineList.length; index++) {
-      timelineTiles.add(EventTimelineTile(
+      timelineTiles.add(
+        EventTimelineTile(
           index: index,
           isEven: index % 2 == 0,
           data: chosenTimelineList[index],
           isFirst: index == 0,
           isLast: index == chosenTimelineList.length - 1,
-          lineStyle: lineStyle));
+          lineStyle: lineStyle,
+        ),
+      );
     }
 
     return SingleChildScrollView(

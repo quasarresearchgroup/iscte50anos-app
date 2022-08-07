@@ -1,7 +1,7 @@
 import 'package:logger/logger.dart';
 import 'package:sqflite/sqflite.dart';
 
-import '../../event.dart';
+import '../../timeline/event.dart';
 import '../database_helper.dart';
 
 class DatabaseEventTable {
@@ -46,6 +46,23 @@ class DatabaseEventTable {
     return contentList;
   }
 
+  static Future<List<Event>> where(
+      {String? where, List<Object?>? whereArgs, String? orderBy}) async {
+    DatabaseHelper instance = DatabaseHelper.instance;
+    Database db = await instance.database;
+    List<Map<String, Object?>> contents = await db.query(
+      table,
+      where: where,
+      whereArgs: whereArgs,
+      orderBy: orderBy,
+    );
+
+    List<Event> contentList = contents.isNotEmpty
+        ? contents.map((e) => Event.fromMap(e)).toList()
+        : [];
+    return contentList;
+  }
+
   static void add(Event content) async {
     DatabaseHelper instance = DatabaseHelper.instance;
     Database db = await instance.database;
@@ -57,7 +74,7 @@ class DatabaseEventTable {
     _logger.d("Inserted: $content into $table");
   }
 
-  static void addBatch(List<Event> contents) async {
+  static Future<void> addBatch(List<Event> contents) async {
     DatabaseHelper instance = DatabaseHelper.instance;
     Database db = await instance.database;
     Batch batch = db.batch();
@@ -89,5 +106,19 @@ class DatabaseEventTable {
   static Future<void> drop(Database db) async {
     _logger.d("Dropping $table");
     return await db.execute('DROP TABLE IF EXISTS $table');
+  }
+
+  static Future<List<Event>> getAllWithIds(List<int> idList) async {
+    DatabaseHelper instance = DatabaseHelper.instance;
+    Database db = await instance.database;
+    List<Map<String, Object?>> rawRows = await db.query(
+      table,
+      orderBy: columnDate,
+      where: 'id IN (${List.filled(idList.length, '?').join(',')})',
+      whereArgs: idList,
+    );
+    List<Event> rowsList =
+        rawRows.isNotEmpty ? rawRows.map((e) => Event.fromMap(e)).toList() : [];
+    return rowsList;
   }
 }

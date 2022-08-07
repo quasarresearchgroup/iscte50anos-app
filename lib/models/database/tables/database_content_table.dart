@@ -1,7 +1,7 @@
 import 'package:logger/logger.dart';
 import 'package:sqflite/sqflite.dart';
 
-import '../../content.dart';
+import '../../timeline/content.dart';
 import '../database_helper.dart';
 import 'database_event_table.dart';
 
@@ -11,25 +11,10 @@ class DatabaseContentTable {
   static const table = 'contentTable';
 
   static const columnId = '_id';
-  static const columnDescription = 'title';
+  static const columnDescription = 'description';
   static const columnLink = 'link';
-  static const columnDate = 'date';
-  static const columnScope = 'scope';
   static const columnType = 'type';
   static const columnEventId = 'event_id';
-
-/*  static String initScript = '''
-      CREATE TABLE contentTable(
-      _id INTEGER PRIMARY KEY,
-      title TEXT,
-      link TEXT,
-      date INTEGER,
-      scope TEXT CHECK ( scope IN ('iscte', 'portugal', 'world') ) DEFAULT 'world',
-      type TEXT CHECK ( type IN ('image', 'video', 'web_page', 'social_media', 'doc', 'music')) DEFAULT 'web_page',
-      event_id INTEGER,
-      FOREIGN KEY (`event_id`) REFERENCES `eventTable` (`_id`)
-      )
-    ''';*/
 
   static Future onCreate(Database db) async {
     String eventTable = DatabaseEventTable.table;
@@ -39,8 +24,6 @@ class DatabaseContentTable {
       $columnId INTEGER PRIMARY KEY,
       $columnDescription TEXT,
       $columnLink TEXT,
-      $columnDate INTEGER,
-      $columnScope TEXT CHECK ( $columnScope IN ('iscte', 'portugal', 'world') ) DEFAULT 'world',
       $columnType TEXT CHECK ( $columnType IN ('image', 'video', 'web_page', 'social_media', 'doc', 'music')) DEFAULT 'web_page',
       $columnEventId INTEGER,
       FOREIGN KEY (`$columnEventId`) REFERENCES `$eventTable` (`$eventTableID`)
@@ -49,11 +32,26 @@ class DatabaseContentTable {
     _logger.d("Created $table");
   }
 
+  static Future<List<Content>> getAllWithIds(List<int> idList) async {
+    DatabaseHelper instance = DatabaseHelper.instance;
+    Database db = await instance.database;
+    List<Map<String, Object?>> rawRows = await db.query(
+      table,
+      orderBy: columnType,
+      where: '$columnId IN (${List.filled(idList.length, '?').join(',')})',
+      whereArgs: idList,
+    );
+    List<Content> rowsList = rawRows.isNotEmpty
+        ? rawRows.map((e) => Content.fromMap(e)).toList()
+        : [];
+    return rowsList;
+  }
+
   static Future<List<Content>> getAll() async {
     DatabaseHelper instance = DatabaseHelper.instance;
     Database db = await instance.database;
     List<Map<String, Object?>> contents =
-        await db.query(table, orderBy: columnDate);
+        await db.query(table, orderBy: columnType);
 
     List<Content> contentList = contents.isNotEmpty
         ? contents.map((e) => Content.fromMap(e)).toList()
@@ -61,15 +59,16 @@ class DatabaseContentTable {
     return contentList;
   }
 
-  static void add(Content content) async {
+  static Future<int> add(Content content) async {
     DatabaseHelper instance = DatabaseHelper.instance;
     Database db = await instance.database;
-    db.insert(
+    int insertedID = await db.insert(
       table,
       content.toMap(),
       conflictAlgorithm: ConflictAlgorithm.abort,
     );
     _logger.d("Inserted: $content into $table");
+    return insertedID;
   }
 
   static Future<void> addBatch(List<Content> contents) async {

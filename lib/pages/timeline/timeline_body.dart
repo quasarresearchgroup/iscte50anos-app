@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:iscte_spots/models/content.dart';
+import 'package:iscte_spots/models/timeline/event.dart';
 import 'package:iscte_spots/pages/timeline/list_view/events_timeline_listview.dart';
 import 'package:iscte_spots/pages/timeline/list_view/year_timeline__listview.dart';
 
@@ -11,7 +11,7 @@ class TimeLineBody extends StatefulWidget {
   }) : super(key: key);
 
   final int? initialchosenYear;
-  final List<Content> mapdata;
+  final List<Event> mapdata;
 
   @override
   State<TimeLineBody> createState() => _TimeLineBodyState();
@@ -27,9 +27,9 @@ class _TimeLineBodyState extends State<TimeLineBody> {
     });
   }
 
-  List<int> createYearsList(List<Content> mapdata) {
+  List<int> createYearsList(List<Event> mapdata) {
     list = [];
-    for (Content value in mapdata) {
+    for (Event value in mapdata) {
       int year = value.year;
       if (!list.contains(year)) {
         list.add(year);

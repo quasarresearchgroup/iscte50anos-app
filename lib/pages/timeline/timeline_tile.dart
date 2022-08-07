@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:iscte_spots/models/timeline/event.dart';
 import 'package:iscte_spots/pages/timeline/timeline_details_page.dart';
 import 'package:timeline_tile/timeline_tile.dart';
-
-import '../../models/content.dart';
 
 class EventTimelineTile extends StatefulWidget {
   const EventTimelineTile({
@@ -19,7 +18,7 @@ class EventTimelineTile extends StatefulWidget {
   final bool isFirst;
   final bool isLast;
   final bool isEven;
-  final Content data;
+  final Event data;
   final LineStyle lineStyle;
 
   @override
@@ -72,7 +71,7 @@ class _EventTimelineTileState extends State<EventTimelineTile> {
             padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
             drawGap: true,
             indicator: Center(
-              child: widget.data.contentIcon,
+              child: widget.data.scopeIcon,
             ),
           ),
           endChild: TimelineInformationChild(
@@ -92,7 +91,7 @@ class TimelineInformationChild extends StatelessWidget {
   }) : super(key: key);
 
   final bool isEven;
-  final Content data;
+  final Event data;
 
   @override
   Widget build(BuildContext context) {
@@ -114,9 +113,9 @@ class TimelineInformationChild extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(data.getDateString()),
-                    data.description != null
+                    data.title != null
                         ? Text(
-                            data.description!,
+                            data.title!,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           )

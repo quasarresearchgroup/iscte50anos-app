@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:iscte_spots/models/content.dart';
 import 'package:iscte_spots/models/database/tables/database_content_table.dart';
+import 'package:iscte_spots/models/database/tables/database_event_content_table.dart';
+import 'package:iscte_spots/models/database/tables/database_event_table.dart';
+import 'package:iscte_spots/models/database/tables/database_event_topic_table.dart';
+import 'package:iscte_spots/models/database/tables/database_topic_table.dart';
+import 'package:iscte_spots/models/timeline/content.dart';
+import 'package:iscte_spots/models/timeline/event.dart';
+import 'package:iscte_spots/models/timeline/topic.dart';
 import 'package:iscte_spots/pages/timeline/timeline_body.dart';
 import 'package:iscte_spots/pages/timeline/timeline_dial.dart';
 import 'package:iscte_spots/pages/timeline/timeline_search_delegate.dart';
@@ -21,19 +27,17 @@ class TimelinePage extends StatefulWidget {
 }
 
 class _TimelinePageState extends State<TimelinePage> {
-  late Future<List<Content>> mapdata;
+  late Future<List<Event>> mapdata;
 
   @override
   void initState() {
     super.initState();
-    setState(() {
-      mapdata = DatabaseContentTable.getAll();
-    });
+    resetMapData();
   }
 
   void resetMapData() {
-    setState(() async {
-      mapdata = DatabaseContentTable.getAll();
+    setState(() {
+      mapdata = DatabaseEventTable.getAll();
     });
   }
 
@@ -65,9 +69,9 @@ class _TimelinePageState extends State<TimelinePage> {
         floatingActionButton: TimelineDial(
           isDialOpen: isDialOpen,
           deleteTimelineData: deleteTimelineData,
-          refreshTImelineData: refreshTimelineData,
+          refreshTImelineData: deleteGetAllEventsFromCsv,
         ),
-        body: FutureBuilder<List<Content>>(
+        body: FutureBuilder<List<Event>>(
           future: mapdata,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
@@ -84,12 +88,13 @@ class _TimelinePageState extends State<TimelinePage> {
     );
   }
 
-  Future<void> refreshTimelineData(BuildContext context) async {
+  Future<void> deleteGetAllEventsFromCsv(BuildContext context) async {
     await deleteTimelineData(context);
     await TimelineContentService.insertContentEntriesFromCSV();
     setState(() {
-      mapdata = DatabaseContentTable.getAll();
+      mapdata = DatabaseEventTable.getAll();
     });
+    await logAllLength();
     widget._logger.d("Inserted from CSV");
     //List<Content> mapdataCompleted = await mapdata;
     //widget._logger.d(mapdataCompleted.length);
@@ -98,9 +103,30 @@ class _TimelinePageState extends State<TimelinePage> {
 
   Future<void> deleteTimelineData(BuildContext context) async {
     await DatabaseContentTable.removeALL();
-    widget._logger.d("Removed all content from db");
+    await DatabaseEventTable.removeALL();
+    await DatabaseTopicTable.removeALL();
+    await DatabaseEventTopicTable.removeALL();
+    await DatabaseEventContentTable.removeALL();
+
+    widget._logger.d("Removed all content, events and topics from db");
     //setState(() {
     //Navigator.popAndPushNamed(context, TimelinePage.pageRoute);
     //});
+  }
+
+  Future<void> logAllLength() async {
+    List<Content> databaseContentTable = await DatabaseContentTable.getAll();
+    List<Event> databaseEventTable = await DatabaseEventTable.getAll();
+    List<Topic> databaseTopicTable = await DatabaseTopicTable.getAll();
+    List<EventTopicDBConnection> databaseEventTopicTable =
+        await DatabaseEventTopicTable.getAll();
+    List<EventContentDBConnection> databaseEventContentTable =
+        await DatabaseEventContentTable.getAll();
+
+    widget._logger.d("""databaseContentTable: ${databaseContentTable.length}
+    databaseEventTable: ${databaseEventTable.length}
+    databaseTopicTable: ${databaseTopicTable.length}
+    databaseEventTopicTable: ${databaseEventTopicTable.length}
+    databaseEventContentTable: ${databaseEventContentTable.length}""");
   }
 }

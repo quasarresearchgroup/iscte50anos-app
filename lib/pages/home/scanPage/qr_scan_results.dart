@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/helper/helper_methods.dart';
-import 'package:iscte_spots/models/content.dart';
+import 'package:iscte_spots/models/timeline/content.dart';
+import 'package:logger/logger.dart';
 
 class QRScanResults extends StatelessWidget {
   static const String pageRoute = "QRScanResults";
@@ -11,10 +12,11 @@ class QRScanResults extends StatelessWidget {
     required this.data,
   }) : super(key: key);
 
-  List<Content> data;
-
+  final List<Content> data;
+  final Logger _logger = Logger();
   @override
   Widget build(BuildContext context) {
+    _logger.d(data);
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.qrScanResultScreen),
@@ -26,7 +28,6 @@ class QRScanResults extends StatelessWidget {
             return ListTile(
               title: Text(data[index].description ?? ""),
               subtitle: Text(data[index].link ?? ""),
-              leading: data[index].scopeIcon,
               trailing: data[index].contentIcon,
               onTap: () {
                 if (data[index].link != null && data[index].link!.isNotEmpty) {
