@@ -27,11 +27,11 @@ class QRScanResults extends StatelessWidget {
           itemBuilder: (context, index) {
             return ListTile(
               title: Text(data[index].description ?? ""),
-              subtitle: Text(data[index].link ?? ""),
+              subtitle: Text(data[index].link),
               trailing: data[index].contentIcon,
               onTap: () {
-                if (data[index].link != null && data[index].link!.isNotEmpty) {
-                  HelperMethods.launchURL(data[index].link!);
+                if (data[index].link.isNotEmpty) {
+                  HelperMethods.launchURL(data[index].link);
                 }
               },
             );

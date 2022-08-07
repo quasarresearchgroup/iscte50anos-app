@@ -27,10 +27,13 @@ class _EventTimelineListViewState extends State<EventTimelineListView> {
     if (oldWidget.timelineYear != widget.timelineYear) {
       chosenTimelineList.clear();
       for (final entry in originalTimelineList) {
-        if (entry.year == widget.timelineYear) {
+        if (entry.dateTime.year == widget.timelineYear) {
           chosenTimelineList.add(entry);
         }
       }
+      chosenTimelineList.sort(
+        (a, b) => a.dateTime.compareTo(b.dateTime),
+      );
     }
   }
 
@@ -39,10 +42,13 @@ class _EventTimelineListViewState extends State<EventTimelineListView> {
     super.initState();
     for (final Event entry in widget.timeLineMap) {
       originalTimelineList.add(entry);
-      if (entry.year == widget.timelineYear) {
+      if (entry.dateTime.year == widget.timelineYear) {
         chosenTimelineList.add(entry);
       }
     }
+    chosenTimelineList.sort(
+      (a, b) => a.dateTime.compareTo(b.dateTime),
+    );
   }
 
   @override
@@ -51,23 +57,15 @@ class _EventTimelineListViewState extends State<EventTimelineListView> {
         LineStyle(color: Theme.of(context).focusColor, thickness: 6);
     List<Widget> timelineTiles = [];
 
-    for (int index = 0; index < chosenTimelineList.length; index++) {
-      timelineTiles.add(
-        EventTimelineTile(
-          index: index,
-          isEven: index % 2 == 0,
-          data: chosenTimelineList[index],
-          isFirst: index == 0,
-          isLast: index == chosenTimelineList.length - 1,
-          lineStyle: lineStyle,
-        ),
-      );
-    }
-
-    return SingleChildScrollView(
-      child: Column(
-        //addAutomaticKeepAlives: true,
-        children: timelineTiles,
+    return ListView.builder(
+      itemCount: chosenTimelineList.length,
+      itemBuilder: (context, index) => EventTimelineTile(
+        index: index,
+        isEven: index % 2 == 0,
+        data: chosenTimelineList[index],
+        isFirst: index == 0,
+        isLast: index == chosenTimelineList.length - 1,
+        lineStyle: lineStyle,
       ),
     );
   }

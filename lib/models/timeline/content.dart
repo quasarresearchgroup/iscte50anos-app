@@ -23,13 +23,13 @@ class Content {
   Content({
     this.id,
     this.description,
-    this.link,
+    required this.link,
     this.type,
     this.eventId,
   });
   final int? id;
   final String? description;
-  final String? link;
+  final String link;
   final ContentType? type;
   final int? eventId;
 

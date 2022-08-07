@@ -83,10 +83,11 @@ class _TimeLineDetailsPageState extends State<TimeLineDetailsPage> {
     return ListTile(
       leading: content.contentIcon,
       title: Text(content.description ?? ""),
-      subtitle: Text(content.link ?? ""),
+      subtitle: Text(content.link),
       onTap: () {
-        if (content.link != null) {
-          HelperMethods.launchURL(content.link!);
+        _logger.d(content);
+        if (content.link.isNotEmpty) {
+          HelperMethods.launchURL(content.link);
         }
       },
     );

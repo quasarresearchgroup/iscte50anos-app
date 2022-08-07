@@ -28,7 +28,20 @@ class EventTimelineTile extends StatefulWidget {
 class _EventTimelineTileState extends State<EventTimelineTile> {
   final Color color2 = Colors.white.withOpacity(0.3);
   double opacity = 0;
-
+  List<String> months = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec'
+  ];
   @override
   void initState() {
     super.initState();
@@ -66,12 +79,21 @@ class _EventTimelineTileState extends State<EventTimelineTile> {
           isFirst: widget.isFirst,
           isLast: widget.isLast,
           indicatorStyle: IndicatorStyle(
-            width: 25,
-            height: 25,
-            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+            width: 30,
+            height: 50,
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 5),
             drawGap: true,
-            indicator: Center(
-              child: widget.data.scopeIcon,
+            indicator: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  months[widget.data.dateTime.month - 1],
+                  textScaleFactor: 1,
+                  maxLines: 1,
+                ),
+                Text(widget.data.dateTime.day.toString()),
+              ],
             ),
           ),
           endChild: TimelineInformationChild(
@@ -111,12 +133,13 @@ class TimelineInformationChild extends StatelessWidget {
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(data.getDateString()),
+                    //Text(data.getDateString()),
                     data.title != null
                         ? Text(
                             data.title!,
-                            maxLines: 1,
+                            maxLines: 3,
                             overflow: TextOverflow.ellipsis,
                           )
                         : Container(),

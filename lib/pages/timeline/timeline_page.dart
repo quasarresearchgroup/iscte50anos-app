@@ -96,22 +96,18 @@ class _TimelinePageState extends State<TimelinePage> {
     });
     await logAllLength();
     widget._logger.d("Inserted from CSV");
-    //List<Content> mapdataCompleted = await mapdata;
-    //widget._logger.d(mapdataCompleted.length);
-    //Navigator.popAndPushNamed(context, TimelinePage.pageRoute);
   }
 
   Future<void> deleteTimelineData(BuildContext context) async {
+    await DatabaseEventTopicTable.removeALL();
+    await DatabaseEventContentTable.removeALL();
     await DatabaseContentTable.removeALL();
     await DatabaseEventTable.removeALL();
     await DatabaseTopicTable.removeALL();
-    await DatabaseEventTopicTable.removeALL();
-    await DatabaseEventContentTable.removeALL();
-
     widget._logger.d("Removed all content, events and topics from db");
-    //setState(() {
-    //Navigator.popAndPushNamed(context, TimelinePage.pageRoute);
-    //});
+    setState(() {
+      mapdata = DatabaseEventTable.getAll();
+    });
   }
 
   Future<void> logAllLength() async {

@@ -29,7 +29,7 @@ class DatabaseEventTable {
       $columnId INTEGER PRIMARY KEY,
       $columnTitle TEXT,
       $columnDate INTEGER,
-      $columnScope TEXT CHECK ( $columnScope IN ('iscte', 'portugal', 'world') ) DEFAULT 'world'
+      $columnScope TEXT CHECK ( $columnScope IN ('${EventScope.iscte}', '${EventScope.nacional}', '${EventScope.internacional}') ) DEFAULT 'world'
       )
     ''');
     _logger.d("Created $table");

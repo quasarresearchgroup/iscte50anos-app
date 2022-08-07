@@ -30,7 +30,7 @@ class _TimeLineBodyState extends State<TimeLineBody> {
   List<int> createYearsList(List<Event> mapdata) {
     list = [];
     for (Event value in mapdata) {
-      int year = value.year;
+      int year = value.dateTime.year;
       if (!list.contains(year)) {
         list.add(year);
       }

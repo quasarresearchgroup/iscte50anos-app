@@ -16,7 +16,7 @@ class DatabaseHelper {
   static final Logger _logger = Logger();
   static Database? _database;
   static const _databaseName = "MyDatabase.db";
-  static const _databaseVersion = 7;
+  static const _databaseVersion = 9;
 
   //  singleton class
   DatabaseHelper._privateConstructor();
@@ -26,7 +26,9 @@ class DatabaseHelper {
   Future<Database> get database async => _database ??= await _initDatabase();
 
   Future<void> _onConfigure(Database db) async {
-    // Add support for cascade delete
+    String dbPath = join(db.path, _databaseName);
+    _logger.d('db location : ' + dbPath);
+
     _logger.d('Started onConfigure to the db');
     String fkPragma = "PRAGMA foreign_keys = ON";
     await db.execute(fkPragma);

@@ -61,11 +61,10 @@ class TimelineContentService {
     try {
       final String file = await rootBundle.loadString(EventsCsvFile);
       List<String> splitLines = file.split("\n");
-      _logger.d(splitLines.length);
+      _logger.d("Events CSV length: ${splitLines.length}");
       for (int eventId = 1; eventId < splitLines.length; eventId++) {
         String line = splitLines[eventId];
         List<String> lineSplit = line.split("\t");
-        _logger.d(lineSplit);
 
         List<String> dateSplit = lineSplit[0].split("/");
         int dateIntFromEpoch;
@@ -80,10 +79,11 @@ class TimelineContentService {
         EventScope? eventScope = eventScopefromString(lineSplit[3]);
         eventsList.add(
           Event(
-              id: eventId,
-              date: dateIntFromEpoch,
-              title: title,
-              scope: eventScope),
+            id: eventId,
+            date: dateIntFromEpoch,
+            title: title,
+            scope: eventScope,
+          ),
         );
         for (int j = 4; j < lineSplit.length; j++) {
           if (lineSplit[j].isNotEmpty) {
@@ -126,29 +126,32 @@ class TimelineContentService {
       for (int contentId = 1; contentId < splitLines.length; contentId++) {
         String line = splitLines[contentId];
         List<String> lineSplit = line.split("\t");
-        _logger.d(lineSplit);
 
-        contents.add(
-          Content(
-            id: contentId,
-            description: lineSplit[1],
-            type: contentTypefromString(
-              lineSplit[2],
+        String description = lineSplit[1];
+        String type = lineSplit[2];
+        String link = lineSplit[3];
+
+        if (type.isNotEmpty && link.isNotEmpty) {
+          contents.add(
+            Content(
+              id: contentId,
+              description: description,
+              type: contentTypefromString(type),
+              link: link,
             ),
-            link: lineSplit[3],
-          ),
-        );
-        List<Event> list = await DatabaseEventTable.where(
-          where: "${DatabaseEventTable.columnTitle} = ?",
-          whereArgs: [lineSplit[0]],
-          orderBy: DatabaseEventTable.columnId,
-        );
-        if (list.isEmpty) {
-          throw "No event found for Title: ${lineSplit[0]}";
-        } else {
-          var eventId = list.first.id;
-          eventContentDBConnectionList.add(
-              EventContentDBConnection(contentId: contentId, eventId: eventId));
+          );
+          List<Event> list = await DatabaseEventTable.where(
+            where: "${DatabaseEventTable.columnTitle} = ?",
+            whereArgs: [lineSplit[0]],
+            orderBy: DatabaseEventTable.columnId,
+          );
+          if (list.isEmpty) {
+            throw "No event found for Title: ${lineSplit[0]}";
+          } else {
+            var eventId = list.first.id;
+            eventContentDBConnectionList.add(EventContentDBConnection(
+                contentId: contentId, eventId: eventId));
+          }
         }
       }
     } catch (e) {

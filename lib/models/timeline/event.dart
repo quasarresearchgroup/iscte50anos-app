@@ -11,13 +11,14 @@ import 'package:logger/logger.dart';
 
 enum EventScope {
   iscte,
-  portugal,
-  world,
+  nacional,
+  internacional,
 }
 
 EventScope? eventScopefromString(String? input) {
   try {
-    return EventScope.values.firstWhere((element) => element.name == input);
+    return EventScope.values.firstWhere(
+        (element) => element.name.toLowerCase() == input?.toLowerCase());
   } on StateError {
     return null;
   }
@@ -68,7 +69,7 @@ class Event {
     };
   }
 
-  Widget get scopeIcon {
+  Widget? get scopeIcon {
     final Image worldMapImage =
         Image.asset('Resources/Img/TimelineIcons/world-map-819-595.jpg');
     final Image iscte50AnosImage =
@@ -79,22 +80,18 @@ class Event {
         Image.asset('icons/flags/png/pt.png', package: 'country_icons');*/
 
     switch (scope) {
-      case EventScope.portugal:
+      case EventScope.nacional:
         return RoundedTimelineIcon(child: bandeiraPortugalImage);
-      case EventScope.world:
+      case EventScope.internacional:
         return RoundedTimelineIcon(child: worldMapImage);
       case EventScope.iscte:
         return RoundedTimelineIcon(child: iscte50AnosImage);
       default:
-        return RoundedTimelineIcon(child: worldMapImage);
+        return null;
     }
   }
 
-  int get year {
-    int actualDate = date ?? 0;
-    DateTime dateDateTime = DateTime.fromMillisecondsSinceEpoch(actualDate);
-    return dateDateTime.year;
-  }
+  DateTime get dateTime => DateTime.fromMillisecondsSinceEpoch(date ?? 0);
 
   Future<List<Topic>> get getTopicsList async {
     List<int> allIdsWithEventId =
