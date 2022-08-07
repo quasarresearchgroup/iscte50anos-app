@@ -2,6 +2,8 @@ import 'package:logger/logger.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../database_helper.dart';
+import 'database_content_table.dart';
+import 'database_event_table.dart';
 
 class DatabaseEventTopicTable {
   static final Logger _logger = Logger();
@@ -11,7 +13,7 @@ class DatabaseEventTopicTable {
   static const columnTopicId = 'topic_id';
   static const columnEventId = 'event_id';
 
-  static String initScript = '''
+/*  static String initScript = '''
       CREATE TABLE topic_eventTable(
       topic_id INTEGER,
       event_id INTEGER,
@@ -19,45 +21,20 @@ class DatabaseEventTopicTable {
       FOREIGN KEY (`event_id`) REFERENCES `eventTable` (`_id`),
       FOREIGN KEY (`topic_id`) REFERENCES `contentTable` (`_id`) 
       )
-    ''';
-  //contentTable changed to topicTable in migration
+    ''';*/
 
-/*
-  static Future onCreate(Database db, int version) async {
-    String eventTable = DatabaseEventTable.table;
-    String eventTableID = DatabaseEventTable.columnId;
-    String contentTable = DatabaseContentTable.table;
-    String contentTableID = DatabaseContentTable.columnId;
-
+  static Future onCreate(Database db) async {
     db.execute('''
-      CREATE TABLE topic_eventTable(
-      topic_id INTEGER,
-      event_id INTEGER,
-      PRIMARY KEY (`topic_id`, `event_id`),
-      FOREIGN KEY (`event_id`) REFERENCES `eventTable` (`_id`),
-      FOREIGN KEY (`topic_id`) REFERENCES `contentTable` (`_id`)
+      CREATE TABLE $table(
+      $columnTopicId INTEGER,
+      $columnEventId INTEGER,
+      PRIMARY KEY (`$columnTopicId`, `$columnEventId`),
+      FOREIGN KEY (`$columnEventId`) REFERENCES `${DatabaseEventTable.table}` (`${DatabaseEventTable.columnId}`),
+      FOREIGN KEY (`$columnTopicId`) REFERENCES `${DatabaseContentTable.table}` (`${DatabaseContentTable.columnId}`)
       )
     ''');
     _logger.d("Created $table");
   }
-*/
-
-/*
-  static Future onFKCreate(Database db) async {
-    String eventTable = DatabaseEventTable.table;
-    String eventTableID = DatabaseEventTable.columnId;
-    String contentTable = DatabaseContentTable.table;
-    String contentTableID = DatabaseContentTable.columnId;
-
-    db.execute('''
-      ALTER TABLE `$table` ADD FOREIGN KEY (`$columnEventId`) REFERENCES `$eventTable` (`$eventTableID`);
-    ''');
-    db.execute('''
-      ALTER TABLE `$table` ADD FOREIGN KEY (`$columnTopicId`) REFERENCES `$contentTable` (`$contentTableID`);
-    ''');
-    _logger.d("Added FK to $table");
-  }
-*/
 
   static Future<int> removeALL() async {
     DatabaseHelper instance = DatabaseHelper.instance;

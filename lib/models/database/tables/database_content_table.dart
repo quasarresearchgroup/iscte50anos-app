@@ -3,6 +3,7 @@ import 'package:sqflite/sqflite.dart';
 
 import '../../content.dart';
 import '../database_helper.dart';
+import 'database_event_table.dart';
 
 class DatabaseContentTable {
   static final Logger _logger = Logger();
@@ -17,7 +18,7 @@ class DatabaseContentTable {
   static const columnType = 'type';
   static const columnEventId = 'event_id';
 
-  static String initScript = '''
+/*  static String initScript = '''
       CREATE TABLE contentTable(
       _id INTEGER PRIMARY KEY,
       title TEXT,
@@ -28,38 +29,25 @@ class DatabaseContentTable {
       event_id INTEGER,
       FOREIGN KEY (`event_id`) REFERENCES `eventTable` (`_id`)
       )
-    ''';
+    ''';*/
 
-/*
-  static Future onCreate(Database db, int version) async {
+  static Future onCreate(Database db) async {
     String eventTable = DatabaseEventTable.table;
     String eventTableID = DatabaseEventTable.columnId;
     db.execute('''
-      CREATE TABLE contentTable(
-      _id INTEGER PRIMARY KEY,
-      title TEXT,
-      link TEXT,
-      date INTEGER,
-      scope TEXT CHECK ( scope IN ('iscte', 'portugal', 'world') ) DEFAULT 'world',
-      type TEXT CHECK ( type IN ('image', 'video', 'web_page', 'social_media', 'doc', 'music')) DEFAULT 'web_page',
-      event_id INTEGER,
-      FOREIGN KEY (`event_id`) REFERENCES `eventTable` (`_id`)
+      CREATE TABLE $table(
+      $columnId INTEGER PRIMARY KEY,
+      $columnDescription TEXT,
+      $columnLink TEXT,
+      $columnDate INTEGER,
+      $columnScope TEXT CHECK ( $columnScope IN ('iscte', 'portugal', 'world') ) DEFAULT 'world',
+      $columnType TEXT CHECK ( $columnType IN ('image', 'video', 'web_page', 'social_media', 'doc', 'music')) DEFAULT 'web_page',
+      $columnEventId INTEGER,
+      FOREIGN KEY (`$columnEventId`) REFERENCES `$eventTable` (`$eventTableID`)
       )
     ''');
     _logger.d("Created $table");
   }
-*/
-
-/*
-  static Future onFKCreate(Database db) async {
-    String eventTable = DatabaseEventTable.table;
-    String eventTableID = DatabaseEventTable.columnId;
-    db.execute('''
-        ALTER TABLE `$table` ADD FOREIGN KEY (`$columnEventId`) REFERENCES `$eventTable` (`$eventTableID`);
-    ''');
-    _logger.d("Added FK to $table");
-  }
-*/
 
   static Future<List<Content>> getAll() async {
     DatabaseHelper instance = DatabaseHelper.instance;

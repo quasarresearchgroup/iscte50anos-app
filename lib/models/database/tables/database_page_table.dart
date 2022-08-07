@@ -12,29 +12,27 @@ class DatabasePageTable {
   static const columnContent = 'content';
   static const columnDate = 'date';
   static const columnUrl = 'url';
-
+/*
   static String initScript = '''
       CREATE TABLE pageTable(
       _id INTEGER PRIMARY KEY,
       content TEXT UNIQUE,
-      date TEXT,
+      url TEXT,
       date INTEGER
       )
-    ''';
+    ''';*/
 
-/*
-  static Future onCreate(Database db, int version) async {
+  static Future onCreate(Database db) async {
     db.execute('''
-      CREATE TABLE pageTable(
-      _id INTEGER PRIMARY KEY,
-      content TEXT UNIQUE,
-      date TEXT,
-      date INTEGER
+      CREATE TABLE $table(
+      $columnId INTEGER PRIMARY KEY,
+      $columnContent TEXT UNIQUE,
+      $columnUrl TEXT,
+      $columnDate INTEGER
       )
     ''');
     _logger.d("Created $table");
   }
-*/
 
   static Future<List<VisitedURL>> getAll() async {
     DatabaseHelper instance = DatabaseHelper.instance;

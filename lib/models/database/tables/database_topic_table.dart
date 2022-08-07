@@ -13,26 +13,24 @@ class DatabaseTopicTable {
   static const columnDescription = 'title';
   static const columnLink = 'link';
 
-  static String initScript = '''
+/*  static String initScript = '''
       CREATE TABLE topicTable(
       _id INTEGER PRIMARY KEY,
       title TEXT,
       link TEXT
       )
-    ''';
+    ''';*/
 
-/*
-  static Future onCreate(Database db, int version) async {
+  static Future onCreate(Database db) async {
     db.execute('''
-      CREATE TABLE topicTable(
-      _id INTEGER PRIMARY KEY,
-      title TEXT,
-      link TEXT
+      CREATE TABLE $table(
+      $columnId INTEGER PRIMARY KEY,
+      $columnDescription TEXT,
+      $columnLink TEXT
       )
     ''');
     _logger.d("Created $table");
   }
-*/
 
   static Future<List<Topic>> getAll() async {
     DatabaseHelper instance = DatabaseHelper.instance;
