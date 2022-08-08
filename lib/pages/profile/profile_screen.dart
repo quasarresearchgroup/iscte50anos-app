@@ -8,12 +8,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:iscte_spots/pages/profile/placeholder.dart';
-import 'package:iscte_spots/widgets/nav_drawer/navigation_drawer.dart';
+import 'package:iscte_spots/widgets/util/constants.dart';
 import 'package:logger/logger.dart';
 import 'package:http/http.dart' as http;
 
 const FlutterSecureStorage secureStorage = FlutterSecureStorage();
-const API_ADDRESS = "https://194.210.120.193";
+const API_ADDRESS = BackEndConstants.API_ADDRESS;
 
 // FOR ISOLATED TESTING
 void main() {

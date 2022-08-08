@@ -12,8 +12,9 @@ import 'package:http/http.dart' as http;
 import '../../pages/leaderboard/leaderboard_screen.dart';
 import '../flickr/flickr_service.dart';
 
-const API_ADDRESS = "https://194.210.120.193";
+const API_ADDRESS = BackEndConstants.API_ADDRESS;
 const API_ADDRESS_TEST = "http://192.168.1.66";
+const FLICKR_API_KEY = "c16f27dcc1c8674dd6daa3a26bd24520";
 
 class QuizService {
   static final Logger _logger = Logger();
@@ -35,7 +36,9 @@ class QuizService {
       final response = await request.close();
 
       if (response.statusCode == 200) {
-        return jsonDecode(await response.transform(utf8.decoder).join());
+        var quizzes = jsonDecode(await response.transform(utf8.decoder).join());
+        _logger.d(quizzes);
+        return quizzes;
       }
     } catch (e) {
       _logger.d(e);
@@ -141,17 +144,17 @@ class QuizService {
 
       var photoId = url.split("/")[5];
       var photoData = await http.get(Uri.parse(
-          'https://www.flickr.com/services/rest/?method=flickr.photos.getContext&api_key=${FlickrService.api_key}y&photo_id=$photoId&format=json&nojsoncallback=1'));
+          'https://www.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=$FLICKR_API_KEY&photo_id=$photoId&format=json&nojsoncallback=1'));
       if (photoData.statusCode == 200) {
-        final jsonPhotoData = jsonDecode(photoData.body);//["prevphoto"];
-        print(jsonPhotoData);
+        final jsonPhotoData = jsonDecode(photoData.body)["photo"];
+        _logger.d(jsonPhotoData);
 
         var farm = jsonPhotoData["farm"];
         var server = jsonPhotoData["server"];
         var photoid = jsonPhotoData["id"];
         var photoSecret = jsonPhotoData["secret"];
         var imagesrc =
-            "https://farm$farm.staticflickr.com/$server/$photoid\_$photoSecret.jpg";
+            "https://farm$farm.staticflickr.com/$server/$photoid\_$photoSecret\_z.jpg";
 
         return imagesrc;
       }else{

@@ -38,7 +38,7 @@ class QuizMenu extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title:
-            const Text("Quiz"), //AppLocalizations.of(context)!.quizPageTitle)
+        const Text("Quiz"), //AppLocalizations.of(context)!.quizPageTitle)
       ),
       body: NotificationListener<OverscrollIndicatorNotification>(
         onNotification: (overscroll) {
@@ -81,10 +81,11 @@ class _QuizListState extends State<QuizList> {
 
       Navigator.of(context)
           .push(MaterialPageRoute(
-              builder: (context) => QuizPage(
-                    quizNumber: quizNumber,
-                    trialNumber: newTrialNumber,
-                  )))
+          builder: (context) =>
+              QuizPage(
+                quizNumber: quizNumber,
+                trialNumber: newTrialNumber,
+              )))
           .then((value) {
         setState(() {
           futureQuizList = fetchFunction();
@@ -101,159 +102,196 @@ class _QuizListState extends State<QuizList> {
   Widget build(BuildContext context) {
     return isTrialLoading
         ? Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: const <Widget>[
-                Text('Gerando Quiz...'),
-                Padding(
-                  padding: EdgeInsets.all(10.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: const <Widget>[
+          Text('Gerando Quiz... Aguarde'),
+          Padding(
+            padding: EdgeInsets.all(10.0),
+            child: SizedBox(
+              child: CircularProgressIndicator.adaptive(),
+              width: 60,
+              height: 60,
+            ),
+          ),
+        ],
+      ),
+    )
+        : Column(
+      children: [
+        const SizedBox(
+          // Container to hold the description
+          height: 50,
+          child: Center(
+            child: Text("Quizzes disponíveis",
+                style:
+                TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+          ),
+        ),
+        Expanded(
+          child: FutureBuilder(
+            future: futureQuizList,
+            builder: (context, snapshot) {
+              List<Widget> children;
+              if (snapshot.hasData) {
+                var items = snapshot.data as List<dynamic>;
+                return RefreshIndicator(
+                  onRefresh: () async {
+                    setState(() {
+                      if (!isLoading) {
+                        futureQuizList = fetchFunction();
+                      }
+                    });
+                  },
+                  child: items.isEmpty
+                      ? const Center(
+                      child: Text(
+                          "Não existem Quizzes disponíveis de momento"))
+                      : ListView.builder(
+                    //shrinkWrap: true,
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    itemCount: items.length,
+                    itemBuilder: (context, index) {
+                      int quizNumber = items[index]["number"];
+                      int trials = items[index]["num_trials"];
+                      return Padding(
+                        padding: const EdgeInsets.only(
+                            left: 10.0, right: 10.0),
+                        child: Card(
+                          child: ExpansionTile(
+                            title: Text(
+                                "Quiz ${items[index]["number"].toString()}",
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16)),
+                            subtitle: Text(
+                                "Pontos: ${items[index]["score"]} \nTentativas: ${items[index]["num_trials"]}"
+                                    "\nTopicos: ${items[index]["topic_names"]}"),
+                            children: [
+                              QuizDetail(startQuiz: () {
+                                setState(() {
+                                  Navigator.of(
+                                      context)
+                                      .pop();
+                                  startTrial(
+                                      quizNumber);
+                                });
+                              }, quiz: items[index])
+                            ],
+                            //minVerticalPadding: 10.0,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                );
+              } else if (snapshot.connectionState !=
+                  ConnectionState.done) {
+                return const Center(
                   child: SizedBox(
                     child: CircularProgressIndicator.adaptive(),
                     width: 60,
                     height: 60,
                   ),
-                ),
-              ],
-            ),
-          )
-        : Column(
-            children: [
-              const SizedBox(
-                // Container to hold the description
-                height: 50,
-                child: Center(
-                  child: Text("Quizzes disponíveis",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-                ),
-              ),
-              Expanded(
-                child: FutureBuilder(
-                  future: futureQuizList,
-                  builder: (context, snapshot) {
-                    List<Widget> children;
-                    if (snapshot.hasData) {
-                      var items = snapshot.data as List<dynamic>;
-                      return RefreshIndicator(
-                        onRefresh: () async {
-                          setState(() {
-                            if (!isLoading) {
-                              futureQuizList = fetchFunction();
-                            }
-                          });
-                        },
-                        child: items.isEmpty
-                            ? const Center(
-                                child: Text(
-                                    "Não existem Quizzes disponíveis de momento"))
-                            : ListView.builder(
-                                //shrinkWrap: true,
-                                physics: const AlwaysScrollableScrollPhysics(),
-                                itemCount: items.length,
-                                itemBuilder: (context, index) {
-                                  int quizNumber = items[index]["number"];
-                                  int trials = items[index]["num_trials"];
-                                  return Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 10.0, right: 10.0),
-                                    child: Card(
-                                      child: ExpansionTile(
-                                        title: Text(
-                                            "Quiz ${items[index]["number"].toString()}",
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 16)),
-                                        subtitle: Text(
-                                            "Pontos: ${items[index]["score"]} \nTentativas: ${items[index]["num_trials"]}"
-                                            "\nTopicos: ${items[index]["topic_names"]}"),
-                                        children: [
-                                          trials >= MAX_TRIALS
-                                              ? Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: const <Widget>[
-                                                    Text("Completo"),
-                                                  ],
-                                                )
-                                              : ElevatedButton(
-                                                  child: const Text("Iniciar"),
-                                                  onPressed: () {
-                                                    showDialog(
-                                                      useRootNavigator: false,
-                                                      context: context,
-                                                      builder: (BuildContext
-                                                          context) {
-                                                        return AlertDialog(
-                                                          title: const Center(
-                                                              child: Text(
-                                                                  "Aviso")),
-                                                          content: const Text(
-                                                              "Deseja iniciar uma tentativa de Quiz? \n(Certifique-se que tem uma conexão estável)"),
-                                                          actions: [
-                                                            TextButton(
-                                                              child: const Text(
-                                                                  'Não'),
-                                                              onPressed: () {
-                                                                Navigator.of(
-                                                                        context)
-                                                                    .pop();
-                                                              },
-                                                            ),
-                                                            TextButton(
-                                                              child: const Text(
-                                                                  'Sim'),
-                                                              onPressed: () {
-                                                                setState(() {
-                                                                  Navigator.of(
-                                                                          context)
-                                                                      .pop();
-                                                                  startTrial(
-                                                                      quizNumber);
-                                                                });
-                                                              },
-                                                            ),
-                                                          ],
-                                                        );
-                                                      },
-                                                    );
-                                                  }),
-                                        ],
-                                        //minVerticalPadding: 10.0,
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                      );
-                    } else if (snapshot.connectionState !=
-                        ConnectionState.done) {
-                      return const Center(
-                        child: SizedBox(
-                          child: CircularProgressIndicator.adaptive(),
-                          width: 60,
-                          height: 60,
-                        ),
-                      );
-                    } else if (snapshot.hasError) {
-                      return NetworkError(onRefresh: () {
-                        setState(() {
-                          futureQuizList = fetchFunction();
-                        });
-                      });
-                    } else {
-                      return const Center(
-                        child: SizedBox(
-                          child: CircularProgressIndicator.adaptive(),
-                          width: 60,
-                          height: 60,
-                        ),
-                      );
-                    }
-                  },
-                ),
-              ),
-            ],
-          );
+                );
+              } else if (snapshot.hasError) {
+                return NetworkError(onRefresh: () {
+                  setState(() {
+                    futureQuizList = fetchFunction();
+                  });
+                });
+              } else {
+                return const Center(
+                  child: SizedBox(
+                    child: CircularProgressIndicator.adaptive(),
+                    width: 60,
+                    height: 60,
+                  ),
+                );
+              }
+            },
+          ),
+        ),
+      ],
+    );
   }
 }
+
+class QuizDetail extends StatelessWidget {
+  const QuizDetail({Key? key, required this.startQuiz, required this.quiz}) : super(key: key);
+
+  final Function() startQuiz;
+  final Map quiz;
+
+  @override
+  Widget build(BuildContext context) {
+    var trials = quiz["trials"];
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Column(
+        children: [
+          ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: trials.length,
+              itemBuilder: (context, index) {
+                var trial = trials[index];
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("Tentativa ${trial["number"]}"),
+                    const SizedBox(height: 5,),
+                    Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Text("Pontos: ${trial["score"]}"),
+                          Text("Estado: ${trial["is_completed"]}"),
+                        ]),
+                    const SizedBox(height: 5,),
+                    //if (index < trials.length-1) ElevatedButton(
+                        //onPressed: (){}, child: Text("Retomar tentativa")),
+                    const Divider(thickness: 2,),
+                  ],
+                );}),
+          if (quiz["num_trials"] < MAX_TRIALS) ElevatedButton(onPressed: () {
+            showDialog(
+              useRootNavigator: false,
+              context: context,
+              builder: (BuildContext
+              context) {
+                return AlertDialog(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  title: const Center(
+                      child: Text(
+                          "Aviso")),
+                  content: const Text(
+                      "Deseja iniciar uma tentativa de Quiz? (Certifique-se que tem uma ligação de Internet estável)"),
+                  actionsAlignment: MainAxisAlignment.center,
+                  actions: [
+                    TextButton(
+                      child: const Text(
+                          'Não'),
+                      onPressed: () {
+                        Navigator.of(
+                            context)
+                            .pop();
+                      },
+                    ),
+                    TextButton(
+                        child: const Text(
+                            'Sim'),
+                        onPressed: startQuiz
+                    ),
+                  ],
+                );
+              },
+            );
+          }, child: const Text("Iniciar nova tentativa"))
+        ],
+      ),
+    );
+  }
+}
+

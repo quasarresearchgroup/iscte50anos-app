@@ -1,9 +1,12 @@
 import 'dart:async';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/services/quiz/quiz_service.dart';
+import 'package:iscte_spots/widgets/dialogs/CustomDialogs.dart';
 import 'package:logger/logger.dart';
+import 'package:pinch_zoom/pinch_zoom.dart';
 
 import '../../widgets/network/error.dart';
 import './answer.dart';
@@ -43,21 +46,30 @@ class _QuizState extends State<Quiz> {
   double countdown = 10000;
 
   Future<Map> getNextQuestion() async {
-    final question = await QuizService.getNextQuestion(widget.quizNumber,
-        widget.trialNumber);
-    selectedAnswerIds.clear();
-    submitted = false;
+    try {
+      timer?.cancel();
+      final question = await QuizService.getNextQuestion(widget.quizNumber,
+          widget.trialNumber);
+      selectedAnswerIds.clear();
+      submitted = false;
 
-    if (!question.containsKey("trial_score")) {
-      isTimed = question["question"]["is_timed"];
-      if (isTimed) {
-        startTimer();
-      }else{
-        countdown=1;
+      if (!question.containsKey("trial_score")) {
+        question["question"]["choices"].shuffle();
+        isTimed = question["question"]["is_timed"];
+        if (isTimed) {
+          startTimer();
+        } else {
+          countdown = 1;
+        }
       }
+
+      widget.logger.d(question.toString());
+      //widget.logger.d(countdown);
+      return question;
+    }catch(e){
+      widget.logger.d(e);
+      rethrow;
     }
-    widget.logger.d(question.toString());
-    return question;
   }
 
   submitAnswer(int question) async {
@@ -149,21 +161,24 @@ class _QuizState extends State<Quiz> {
         }
         Map trialQuestion = response;
         Map question = trialQuestion["question"];
+
         return Column(
           children: [
             Text("Pergunta ${trialQuestion["number"]}/8"),
             const SizedBox(height: 5),
-            isTimed ? LinearProgressIndicator(
-              value: getTimePercentage(),
-              semanticsLabel: 'Linear progress indicator',
+            isTimed ? Padding(
+              padding: const EdgeInsets.only(left:10.0, right:10.0),
+              child: LinearProgressIndicator(
+                value: getTimePercentage(),
+                semanticsLabel: 'Linear progress indicator',
+              ),
             ) : const Text("Explorar o Campus (Pergunta sem tempo)"),
             Question(
               question['text'].toString(),
             ), //Question
             Expanded(child: QuizImage(flickrUrl: question["image_link"], key: ValueKey(question["image_link"]))),
-
-            ...(question['choices'] as List)
-                .map((answer) {
+            const SizedBox(height: 5),
+            ...question["choices"].map((answer) {
               return Answer(
                   selectAnswer,
                   answer['text'].toString(),
@@ -177,7 +192,9 @@ class _QuizState extends State<Quiz> {
               children: [
                 // ----- Submit button -----
                 ElevatedButton(
-                  child: Text(submitted? "Submetido" : submitting? "Submetendo" : "Submeter"),
+                  child: submitted? const Text("Submetido") :
+                  submitting? const SizedBox(child: CircularProgressIndicator.adaptive(strokeWidth: 2), width:10, height:10)
+                      : const Text("Submeter"),
                   onPressed: countdown <= 0 || selectedAnswerIds.isEmpty ||
                       submitted || submitting? null : () {
                     submitAnswer(trialQuestion["number"]);
@@ -190,34 +207,15 @@ class _QuizState extends State<Quiz> {
                 const SizedBox(width: 10),
                 // ----- Next button -----
                 ElevatedButton(
-                  child: Text("Seguinte"),
+                  child: const Text("Seguinte"),
                   onPressed: !submitted && !isTimed ? null : countdown > 0 && !submitted ? () {
                     setState(() {
-                      showDialog(context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: const Text("Aviso"),
-                            content: const Text(
-                                "Deseja avançar sem responder?"),
-                            actions: [
-                              TextButton(
-                                child: const Text('Não'),
-                                onPressed: () {
-                                  Navigator.of(context).pop(); //Exit dialog
-                                },
-                              ),
-                              TextButton(
-                                child: const Text('Sim'),
-                                onPressed: () {
-                                  setState(() {
-                                    Navigator.of(context).pop();
-                                    futureQuestion = getNextQuestion();
-                                  });
-                                },
-                              ),
-                            ],
-                          );
-                        },);
+                      showYesNoWarningDialog("Deseja avançar sem responder?", () {
+                        setState(() {
+                          Navigator.of(context).pop();
+                          futureQuestion = getNextQuestion();
+                        });
+                      }, context);
                     });
                   } :  () =>
                       setState(() {
@@ -275,22 +273,26 @@ class _QuizImageState extends State<QuizImage> {
   Widget build(BuildContext context) {
     return FutureBuilder(future: imageUrl, builder: (context, snapshot) {
       if (snapshot.hasData) {
-        return Image.network(
-          snapshot.data.toString(),
-          loadingBuilder: (BuildContext context, Widget child,
-              ImageChunkEvent? loadingProgress) {
-            if (loadingProgress == null) {
-              return child;
-            }
-            return Center(
-              child: CircularProgressIndicator(
-                value: loadingProgress.expectedTotalBytes != null
-                    ? loadingProgress.cumulativeBytesLoaded /
-                    loadingProgress.expectedTotalBytes!
-                    : null,
-              ),
-            );
-          },
+        return Container(
+          color: Colors.white,
+          child: PinchZoom(
+            child: Image.network(snapshot.data.toString(),
+              loadingBuilder: (BuildContext context, Widget child,
+                  ImageChunkEvent? loadingProgress) {
+                if (loadingProgress == null) {
+                  return child;
+                }
+                return Center(
+                  child: CircularProgressIndicator(
+                    value: loadingProgress.expectedTotalBytes != null
+                        ? loadingProgress.cumulativeBytesLoaded /
+                        loadingProgress.expectedTotalBytes!
+                        : null,
+                  ),
+                );
+              },
+            ),
+          ),
         );
       }else{
         return const Center(

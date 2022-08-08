@@ -7,7 +7,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:iscte_spots/widgets/nav_drawer/navigation_drawer.dart';
 import 'package:logger/logger.dart';
 import 'package:http/http.dart' as http;
 
@@ -98,7 +97,6 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
         appBar: AppBar(
           title: const Text("Leaderboard"),//AppLocalizations.of(context)!.quizPageTitle)
         ),
-        drawer: const NavigationDrawer(),
         body: NotificationListener<OverscrollIndicatorNotification>(
           onNotification: (overscroll) {
             overscroll.disallowIndicator();
