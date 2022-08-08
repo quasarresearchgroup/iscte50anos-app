@@ -77,14 +77,14 @@ class TimelineContentService {
         }
         String title = lineSplit[2];
         EventScope? eventScope = eventScopefromString(lineSplit[3]);
-        eventsList.add(
-          Event(
-            id: eventId,
-            date: dateIntFromEpoch,
-            title: title,
-            scope: eventScope,
-          ),
+        var event = Event(
+          id: eventId,
+          date: dateIntFromEpoch,
+          title: title,
+          scope: eventScope,
         );
+        eventsList.add(event);
+        _logger.d(event.toMap());
         for (int j = 4; j < lineSplit.length; j++) {
           if (lineSplit[j].isNotEmpty) {
             int topicId =

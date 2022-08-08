@@ -16,7 +16,7 @@ class DatabaseHelper {
   static final Logger _logger = Logger();
   static Database? _database;
   static const _databaseName = "MyDatabase.db";
-  static const _databaseVersion = 9;
+  static const _databaseVersion = 5;
 
   //  singleton class
   DatabaseHelper._privateConstructor();
@@ -54,11 +54,11 @@ class DatabaseHelper {
     _logger.d('Started DropAll to the db');
 
     await DatabasePageTable.drop(db);
+    await DatabaseEventTopicTable.drop(db);
+    await DatabaseEventContentTable.drop(db);
     await DatabaseContentTable.drop(db);
     await DatabaseEventTable.drop(db);
     await DatabaseTopicTable.drop(db);
-    await DatabaseEventTopicTable.drop(db);
-    await DatabaseEventContentTable.drop(db);
     await DatabasePuzzlePieceTable.drop(db);
 
     _logger.d('Finished DropAll to the db');

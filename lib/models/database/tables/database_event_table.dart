@@ -24,15 +24,19 @@ class DatabaseEventTable {
     ''';*/
 
   static Future onCreate(Database db) async {
-    db.execute('''
+    var sql = '''
       CREATE TABLE $table(
       $columnId INTEGER PRIMARY KEY,
       $columnTitle TEXT,
       $columnDate INTEGER,
-      $columnScope TEXT CHECK ( $columnScope IN ('${EventScope.values.join(", ")}') )
+      $columnScope TEXT CHECK ( $columnScope IN  (${EventScope.values.map((e) => "'${e.name}'").join(", ")} ) )
       )
-    ''');
-    _logger.d("Created $table");
+    ''';
+
+    db.execute(sql);
+    //$columnScope TEXT CHECK ( $columnScope IN  ('iscte', 'nacional', 'internacional') )
+    //$columnScope TEXT CHECK ( $columnScope IN ( '${EventScope.values.join(", ")}' ) )
+    _logger.d("Created $table with sql: \n $sql");
   }
 
   static Future<List<Event>> getAll() async {
