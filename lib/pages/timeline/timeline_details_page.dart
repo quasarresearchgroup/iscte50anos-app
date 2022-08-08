@@ -8,6 +8,7 @@ import 'package:iscte_spots/widgets/network/error.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:logger/logger.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class TimeLineDetailsPage extends StatefulWidget {
   static const pageRoute = "/timeline/detail";
@@ -26,6 +27,11 @@ class _TimeLineDetailsPageState extends State<TimeLineDetailsPage> {
   final double textweight = 2;
 
   final Logger _logger = Logger();
+
+  List<YoutubePlayerController> _youtubeControllers = [];
+
+  @override
+  void initState() {}
 
   @override
   Widget build(BuildContext context) {
@@ -83,17 +89,41 @@ class _TimeLineDetailsPageState extends State<TimeLineDetailsPage> {
   }
 
   Widget buildContent(Content content) {
-    return ListTile(
-      leading: content.contentIcon,
-      title: Text(content.description ?? ""),
-      subtitle: Text(content.link),
-      onTap: () {
-        _logger.d(content);
-        if (content.link.isNotEmpty) {
-          HelperMethods.launchURL(content.link);
-        }
-      },
-    );
+    if (content.link.contains("youtube")) {
+      YoutubePlayerController _controller = YoutubePlayerController(
+        initialVideoId: YoutubePlayer.convertUrlToId(content.link)!,
+        flags: YoutubePlayerFlags(
+          autoPlay: false,
+          mute: false,
+          loop: false,
+          hideControls: false,
+          isLive: false,
+          forceHD: false,
+        ),
+      );
+      return Wrap(
+        children: [
+          YoutubePlayerBuilder(
+              player: YoutubePlayer(
+                controller: _controller,
+                showVideoProgressIndicator: true,
+              ),
+              builder: (context, player) => player),
+        ],
+      );
+    } else {
+      return ListTile(
+        leading: content.contentIcon,
+        title: Text(content.description ?? ""),
+        subtitle: Text(content.link),
+        onTap: () {
+          _logger.d(content);
+          if (content.link.isNotEmpty) {
+            HelperMethods.launchURL(content.link);
+          }
+        },
+      );
+    }
   }
 
   void launchLink(String link) async {
@@ -103,5 +133,21 @@ class _TimeLineDetailsPageState extends State<TimeLineDetailsPage> {
     } else {
       throw 'Could not launch $url';
     }
+  }
+
+  @override
+  void deactivate() {
+    for (YoutubePlayerController controller in _youtubeControllers) {
+      controller.pause();
+    }
+    super.deactivate();
+  }
+
+  @override
+  void dispose() {
+    for (YoutubePlayerController controller in _youtubeControllers) {
+      controller.dispose();
+    }
+    super.dispose();
   }
 }

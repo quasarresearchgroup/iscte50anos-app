@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:iscte_spots/helper/datetime_extension.dart';
 import 'package:iscte_spots/models/timeline/event.dart';
 import 'package:iscte_spots/pages/timeline/timeline_details_page.dart';
 import 'package:timeline_tile/timeline_tile.dart';
@@ -28,20 +29,7 @@ class EventTimelineTile extends StatefulWidget {
 class _EventTimelineTileState extends State<EventTimelineTile> {
   final Color color2 = Colors.white.withOpacity(0.3);
   double opacity = 0;
-  List<String> months = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec'
-  ];
+
   @override
   void initState() {
     super.initState();
@@ -94,11 +82,17 @@ class _EventTimelineTileState extends State<EventTimelineTile> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    months[widget.data.dateTime.month - 1],
+                    widget.data.dateTime.monthName(),
+                    style: widget.isEven
+                        ? const TextStyle(color: Colors.white)
+                        : null,
                     textScaleFactor: 1,
                     maxLines: 1,
                   ),
-                  Text(widget.data.dateTime.day.toString()),
+                  Text(widget.data.dateTime.day.toString(),
+                      style: widget.isEven
+                          ? const TextStyle(color: Colors.white)
+                          : null),
                 ],
               ),
             ),
@@ -138,11 +132,12 @@ class TimelineInformationChild extends StatelessWidget {
               Expanded(
                 child: Center(
                   child: data.title != null
-                      ? Text(
-                          data.title!,
+                      ? Text(data.title!,
                           maxLines: 3,
                           overflow: TextOverflow.ellipsis,
-                        )
+                          style: !isEven
+                              ? const TextStyle(color: Colors.white)
+                              : null)
                       : Container(),
                 ),
               ),
