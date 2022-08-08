@@ -3,6 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/helper/helper_methods.dart';
 import 'package:iscte_spots/models/timeline/content.dart';
 import 'package:iscte_spots/models/timeline/event.dart';
+import 'package:iscte_spots/models/timeline/topic.dart';
 import 'package:iscte_spots/widgets/network/error.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:logger/logger.dart';
@@ -28,7 +29,12 @@ class _TimeLineDetailsPageState extends State<TimeLineDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-    Future<List<Content>> allFromEvent = widget.event.getContentList;
+    Future<List<Content>> allContentFromEvent = widget.event.getContentList;
+    Future<List<Topic>> allTopicFromEvent = widget.event.getTopicsList;
+    String subtitleText = "id: " + widget.event.id.toString();
+    allTopicFromEvent.then((value) {
+      subtitleText += "; topics: " + value.map((e) => e.title ?? "").join(", ");
+    });
 
     return Scaffold(
       appBar: AppBar(
@@ -38,7 +44,7 @@ class _TimeLineDetailsPageState extends State<TimeLineDetailsPage> {
         padding: const EdgeInsets.all(20.0),
         child: Center(
           child: FutureBuilder<List<Content>>(
-              future: allFromEvent,
+              future: allContentFromEvent,
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   _logger.d("event: ${widget.event} , data:${snapshot.data!} ");
@@ -48,12 +54,9 @@ class _TimeLineDetailsPageState extends State<TimeLineDetailsPage> {
                     itemBuilder: (context, index) {
                       if (index == 0) {
                         return ListTile(
-                          leading: widget.event.scopeIcon,
+                          //leading: widget.event.scopeIcon,
                           title: Text(widget.event.title ?? ""),
-                          subtitle: Text("id: " + widget.event.id.toString()),
-                          trailing: Text(
-                            widget.event.getDateString(),
-                          ),
+                          subtitle: Text(subtitleText),
                         );
                       } else if (index == 1) {
                         return const Divider(
@@ -67,7 +70,7 @@ class _TimeLineDetailsPageState extends State<TimeLineDetailsPage> {
                 } else if (snapshot.hasError) {
                   return NetworkError(onRefresh: () {
                     setState(() {
-                      allFromEvent = widget.event.getContentList;
+                      allContentFromEvent = widget.event.getContentList;
                     });
                   });
                 } else {

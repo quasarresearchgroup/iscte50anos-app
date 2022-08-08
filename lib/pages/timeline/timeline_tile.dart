@@ -83,17 +83,24 @@ class _EventTimelineTileState extends State<EventTimelineTile> {
             height: 50,
             padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 5),
             drawGap: true,
-            indicator: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                  months[widget.data.dateTime.month - 1],
-                  textScaleFactor: 1,
-                  maxLines: 1,
-                ),
-                Text(widget.data.dateTime.day.toString()),
-              ],
+            indicator: Container(
+              decoration: BoxDecoration(
+                  color: !widget.isEven
+                      ? Colors.transparent
+                      : Theme.of(context).primaryColor,
+                  borderRadius: const BorderRadius.all(Radius.circular(20))),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    months[widget.data.dateTime.month - 1],
+                    textScaleFactor: 1,
+                    maxLines: 1,
+                  ),
+                  Text(widget.data.dateTime.day.toString()),
+                ],
+              ),
             ),
           ),
           endChild: TimelineInformationChild(
@@ -121,9 +128,7 @@ class TimelineInformationChild extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: Container(
         decoration: BoxDecoration(
-            color: isEven
-                ? Colors.transparent
-                : Theme.of(context).primaryColor.withAlpha(200),
+            color: isEven ? Colors.transparent : Theme.of(context).primaryColor,
             borderRadius: const BorderRadius.all(Radius.circular(20))),
         child: Padding(
           padding: const EdgeInsets.all(15),
@@ -131,19 +136,14 @@ class TimelineInformationChild extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    //Text(data.getDateString()),
-                    data.title != null
-                        ? Text(
-                            data.title!,
-                            maxLines: 3,
-                            overflow: TextOverflow.ellipsis,
-                          )
-                        : Container(),
-                  ],
+                child: Center(
+                  child: data.title != null
+                      ? Text(
+                          data.title!,
+                          maxLines: 3,
+                          overflow: TextOverflow.ellipsis,
+                        )
+                      : Container(),
                 ),
               ),
               Icon(Icons.adaptive.arrow_forward)

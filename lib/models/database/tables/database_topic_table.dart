@@ -31,6 +31,16 @@ class DatabaseTopicTable {
     _logger.d("Created $table");
   }
 
+  static Future<int> getMaxId() async {
+    DatabaseHelper instance = DatabaseHelper.instance;
+    Database db = await instance.database;
+    String query = "SELECT MAX($columnId) AS max_id FROM $table";
+    List<Map<String, Object?>> rawQuery = await db.rawQuery(query, null);
+    rawQuery.first["max_id"];
+    _logger.d(rawQuery.first["max_id"]);
+    return rawQuery.first["max_id"] as int;
+  }
+
   static Future<List<Topic>> getAll() async {
     DatabaseHelper instance = DatabaseHelper.instance;
     Database db = await instance.database;
@@ -47,7 +57,7 @@ class DatabaseTopicTable {
     List<Map<String, Object?>> rawRows = await db.query(
       table,
       orderBy: columnTitle,
-      where: 'id IN (${List.filled(idList.length, '?').join(',')})',
+      where: '$columnId IN (${List.filled(idList.length, '?').join(',')})',
       whereArgs: idList,
     );
     List<Topic> rowsList =
