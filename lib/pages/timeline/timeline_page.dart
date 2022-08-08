@@ -29,6 +29,8 @@ class TimelinePage extends StatefulWidget {
 class _TimelinePageState extends State<TimelinePage> {
   late Future<List<Event>> mapdata;
 
+  bool _loading = false;
+
   @override
   void initState() {
     super.initState();
@@ -38,6 +40,11 @@ class _TimelinePageState extends State<TimelinePage> {
   void resetMapData() {
     setState(() {
       mapdata = DatabaseEventTable.getAll();
+    });
+    mapdata.then((value) {
+      if (value.isEmpty) {
+        deleteGetAllEventsFromCsv();
+      }
     });
   }
 
@@ -69,13 +76,23 @@ class _TimelinePageState extends State<TimelinePage> {
         floatingActionButton: TimelineDial(
           isDialOpen: isDialOpen,
           deleteTimelineData: deleteTimelineData,
-          refreshTImelineData: deleteGetAllEventsFromCsv,
+          refreshTimelineData: deleteGetAllEventsFromCsv,
         ),
         body: FutureBuilder<List<Event>>(
           future: mapdata,
           builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return TimeLineBody(mapdata: snapshot.data!);
+            if (_loading) {
+              return LoadingWidget();
+            } else if (snapshot.hasData) {
+              if (snapshot.data!.isNotEmpty) {
+                return TimeLineBody(mapdata: snapshot.data!);
+              } else {
+                return const Center(
+                  child: Text("Não há eventos na timeline"),
+                );
+              }
+            } else if (snapshot.connectionState != ConnectionState.done) {
+              return LoadingWidget();
             } else if (snapshot.hasError) {
               return Center(
                   child: Text(AppLocalizations.of(context)!.generalError));
@@ -88,17 +105,21 @@ class _TimelinePageState extends State<TimelinePage> {
     );
   }
 
-  Future<void> deleteGetAllEventsFromCsv(BuildContext context) async {
-    await deleteTimelineData(context);
+  Future<void> deleteGetAllEventsFromCsv() async {
+    setState(() {
+      _loading = true;
+    });
+    await deleteTimelineData();
     await TimelineContentService.insertContentEntriesFromCSV();
     setState(() {
       mapdata = DatabaseEventTable.getAll();
+      _loading = false;
     });
     await logAllLength();
     widget._logger.d("Inserted from CSV");
   }
 
-  Future<void> deleteTimelineData(BuildContext context) async {
+  Future<void> deleteTimelineData() async {
     await DatabaseEventTopicTable.removeALL();
     await DatabaseEventContentTable.removeALL();
     await DatabaseContentTable.removeALL();
