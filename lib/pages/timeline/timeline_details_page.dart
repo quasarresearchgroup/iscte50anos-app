@@ -4,6 +4,7 @@ import 'package:iscte_spots/helper/helper_methods.dart';
 import 'package:iscte_spots/models/timeline/content.dart';
 import 'package:iscte_spots/models/timeline/event.dart';
 import 'package:iscte_spots/models/timeline/topic.dart';
+import 'package:iscte_spots/pages/timeline/timeline_page.dart';
 import 'package:iscte_spots/widgets/network/error.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:logger/logger.dart';
@@ -11,7 +12,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class TimeLineDetailsPage extends StatefulWidget {
-  static const pageRoute = "/timeline/detail";
+  static const String pageRoute = "${TimelinePage.pageRoute}/detail";
 
   TimeLineDetailsPage({
     required this.event,
@@ -92,7 +93,7 @@ class _TimeLineDetailsPageState extends State<TimeLineDetailsPage> {
     if (content.link.contains("youtube")) {
       YoutubePlayerController _controller = YoutubePlayerController(
         initialVideoId: YoutubePlayer.convertUrlToId(content.link)!,
-        flags: YoutubePlayerFlags(
+        flags: const YoutubePlayerFlags(
           autoPlay: false,
           mute: false,
           loop: false,

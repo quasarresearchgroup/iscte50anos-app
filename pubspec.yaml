@@ -53,6 +53,7 @@ flutter:
   uses-material-design: true
   assets:
     - Resources/
+    - Resources/Affiliations/
     - Resources/CSVFiles/
     - Resources/Lotties/
     - Resources/Img/

@@ -15,6 +15,7 @@ import 'package:iscte_spots/pages/scanned_list_page.dart';
 import 'package:iscte_spots/pages/settings/settings_page.dart';
 import 'package:iscte_spots/pages/spotChooser/spot_chooser_page.dart';
 import 'package:iscte_spots/pages/timeline/timeline_details_page.dart';
+import 'package:iscte_spots/pages/timeline/timeline_filter_page.dart';
 import 'package:iscte_spots/pages/timeline/timeline_page.dart';
 
 class PageRouter {
@@ -30,6 +31,8 @@ class PageRouter {
         return TimelinePage();
       case TimeLineDetailsPage.pageRoute:
         return TimeLineDetailsPage(event: argument as Event);
+      case TimelineFilterPage.pageRoute:
+        return TimelineFilterPage();
       case Shaker.pageRoute:
         return Shaker();
       case FlickrPage.pageRoute:

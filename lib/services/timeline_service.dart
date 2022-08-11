@@ -85,20 +85,21 @@ class TimelineContentService {
         );
         eventsList.add(event);
         _logger.d(event.toMap());
+        String topicName;
         for (int j = 4; j < lineSplit.length; j++) {
-          if (lineSplit[j].isNotEmpty) {
-            int topicId =
-                await DatabaseTopicTable.add(Topic(title: lineSplit[j]));
+          topicName = lineSplit[j].replaceAll("\r", "");
+          if (topicName.isNotEmpty) {
+            int topicId = await DatabaseTopicTable.add(Topic(title: topicName));
             if (topicId == 0) {
               List<Topic> list = await DatabaseTopicTable.where(
                 where: "${DatabaseTopicTable.columnTitle} = ?",
-                whereArgs: [lineSplit[j]],
+                whereArgs: [topicName],
                 orderBy: DatabaseTopicTable.columnTitle,
               );
               if (list.first.id != null) {
                 topicId = list.first.id!;
               } else {
-                throw ("No Topic found with description: ${lineSplit[j]}");
+                throw ("No Topic found with title: $topicName");
               }
             }
             eventTopicDBConnectionList.add(

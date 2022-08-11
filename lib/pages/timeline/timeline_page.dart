@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:iscte_spots/models/database/tables/database_content_table.dart';
 import 'package:iscte_spots/models/database/tables/database_event_content_table.dart';
 import 'package:iscte_spots/models/database/tables/database_event_table.dart';
@@ -11,7 +10,7 @@ import 'package:iscte_spots/models/timeline/event.dart';
 import 'package:iscte_spots/models/timeline/topic.dart';
 import 'package:iscte_spots/pages/timeline/timeline_body.dart';
 import 'package:iscte_spots/pages/timeline/timeline_dial.dart';
-import 'package:iscte_spots/pages/timeline/timeline_search_delegate.dart';
+import 'package:iscte_spots/pages/timeline/timeline_filter_page.dart';
 import 'package:iscte_spots/services/timeline_service.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:logger/logger.dart';
@@ -64,12 +63,13 @@ class _TimelinePageState extends State<TimelinePage> {
           actions: [
             IconButton(
               onPressed: () {
-                showSearch(
+                Navigator.of(context).pushNamed(TimelineFilterPage.pageRoute);
+/*                showSearch(
                   context: context,
                   delegate: TimelineSearchDelegate(mapdata: mapdata),
-                );
+                );*/
               },
-              icon: const FaIcon(FontAwesomeIcons.magnifyingGlass),
+              icon: const Icon(Icons.search),
             )
           ],
         ),
