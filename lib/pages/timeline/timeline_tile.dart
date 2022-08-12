@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:iscte_spots/helper/datetime_extension.dart';
+import 'package:iscte_spots/models/database/tables/database_event_table.dart';
 import 'package:iscte_spots/models/timeline/event.dart';
 import 'package:iscte_spots/pages/timeline/timeline_details_page.dart';
 import 'package:timeline_tile/timeline_tile.dart';
@@ -53,11 +54,17 @@ class _EventTimelineTileState extends State<EventTimelineTile> {
         highlightColor: color2,
         enableFeedback: true,
         customBorder: const StadiumBorder(),
-        onTap: () => Navigator.pushNamed(
-          context,
-          TimeLineDetailsPage.pageRoute,
-          arguments: widget.data,
-        ),
+        onTap: () async {
+          setState(() {
+            widget.data.visited = true;
+          });
+          await DatabaseEventTable.update(widget.data);
+          Navigator.pushNamed(
+            context,
+            TimeLineDetailsPage.pageRoute,
+            arguments: widget.data,
+          );
+        },
         child: TimelineTile(
           beforeLineStyle: widget.lineStyle,
           afterLineStyle: widget.lineStyle,
@@ -83,16 +90,18 @@ class _EventTimelineTileState extends State<EventTimelineTile> {
                 children: [
                   Text(
                     widget.data.dateTime.monthName(),
-                    style: widget.isEven
-                        ? const TextStyle(color: Colors.white)
-                        : null,
+                    style: TextStyle(
+                      color: widget.isEven ? Colors.white : null,
+                    ),
                     textScaleFactor: 1,
                     maxLines: 1,
                   ),
-                  Text(widget.data.dateTime.day.toString(),
-                      style: widget.isEven
-                          ? const TextStyle(color: Colors.white)
-                          : null),
+                  Text(
+                    widget.data.dateTime.day.toString(),
+                    style: TextStyle(
+                      color: widget.isEven ? Colors.white : null,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -131,15 +140,14 @@ class TimelineInformationChild extends StatelessWidget {
             children: [
               Expanded(
                 child: Center(
-                  child: data.title != null
-                      ? Text(data.title!,
-                          maxLines: 3,
-                          overflow: TextOverflow.ellipsis,
-                          style: !isEven
-                              ? const TextStyle(color: Colors.white)
-                              : null)
-                      : Container(),
-                ),
+                    child: Text(data.title,
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            color: !isEven ? Colors.white : null,
+                            decoration: data.visited
+                                ? TextDecoration.lineThrough
+                                : null))),
               ),
               Icon(Icons.adaptive.arrow_forward)
             ],

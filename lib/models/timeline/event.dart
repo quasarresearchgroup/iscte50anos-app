@@ -27,25 +27,26 @@ EventScope? eventScopefromString(String? input) {
 class Event {
   Event({
     required this.id,
-    this.title,
-    this.date,
-    this.scope,
+    required this.title,
+    required this.date,
+    required this.scope,
+    this.visited = false,
   });
   final int id;
-  final String? title;
-  final int? date;
+  final String title;
+  final int date;
   final EventScope? scope;
+  bool visited;
 
   static Logger logger = Logger();
 
   @override
   String toString() {
-    return 'Event{id: $id, title: $title, date: $date, scope: $scope}';
+    return 'Event{id: $id, title: $title, date: $date, scope: $scope, visited: $visited}';
   }
 
   String getDateString() {
-    int actualDate = date ?? 0;
-    DateTime dateDateTime = DateTime.fromMillisecondsSinceEpoch(actualDate);
+    DateTime dateDateTime = DateTime.fromMillisecondsSinceEpoch(date);
     return dateDateTime.year.toString() +
         "-" +
         dateDateTime.month.toString() +
@@ -58,6 +59,7 @@ class Event {
         title: json[DatabaseEventTable.columnTitle],
         date: json[DatabaseEventTable.columnDate],
         scope: eventScopefromString(json[DatabaseEventTable.columnScope]),
+        visited: json[DatabaseEventTable.columnA] == 1 ? true : false,
       );
 
   Map<String, dynamic> toMap() {
@@ -66,6 +68,7 @@ class Event {
       DatabaseEventTable.columnTitle: title,
       DatabaseEventTable.columnDate: date,
       DatabaseEventTable.columnScope: scope != null ? scope!.name : null,
+      DatabaseEventTable.columnA: visited ? 1 : 0,
     };
   }
 
@@ -91,7 +94,7 @@ class Event {
     }
   }
 
-  DateTime get dateTime => DateTime.fromMillisecondsSinceEpoch(date ?? 0);
+  DateTime get dateTime => DateTime.fromMillisecondsSinceEpoch(date);
 
   Future<List<Topic>> get getTopicsList async {
     List<int> allIdsWithEventId =

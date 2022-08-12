@@ -207,7 +207,7 @@ class _TimelineFilterPageState extends State<TimelineFilterPage> {
     String textSearchBar = searchBarController.text.toLowerCase();
     if (textSearchBar.isNotEmpty) {
       setOfEvents = setOfEvents.where((Event element) {
-        String eventTitle = (element.title ?? "").toLowerCase();
+        String eventTitle = (element.title).toLowerCase();
         return eventTitle.contains(textSearchBar) ||
             textSearchBar.contains(eventTitle);
       }).toSet();

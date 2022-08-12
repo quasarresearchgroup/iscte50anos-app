@@ -13,7 +13,7 @@ class DatabaseEventContentTable {
   static const columnContentId = 'content_id';
   static const columnEventId = 'event_id';
 
-  static String initScript = '''
+/*  static String initScript = '''
       CREATE TABLE event_contentTable(
       content_id INTEGER,
       event_id INTEGER,
@@ -21,7 +21,7 @@ class DatabaseEventContentTable {
       FOREIGN KEY (`event_id`) REFERENCES `eventTable` (`_id`),
       FOREIGN KEY (`content_id`) REFERENCES `contentTable` (`_id`)
       )
-    ''';
+    ''';*/
 
   static Future onCreate(Database db) async {
     db.execute('''

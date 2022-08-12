@@ -62,7 +62,7 @@ class _TimeLineDetailsPageState extends State<TimeLineDetailsPage> {
                       if (index == 0) {
                         return ListTile(
                           //leading: widget.event.scopeIcon,
-                          title: Text(widget.event.title ?? ""),
+                          title: Text(widget.event.title),
                           subtitle: Text(subtitleText),
                         );
                       } else if (index == 1) {

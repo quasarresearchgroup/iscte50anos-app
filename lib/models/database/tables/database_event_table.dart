@@ -13,6 +13,7 @@ class DatabaseEventTable {
   static const columnTitle = 'title';
   static const columnDate = 'date';
   static const columnScope = 'scope';
+  static const columnA = 'visited';
 
 /*  static String initScript = '''
       CREATE TABLE eventTable(
@@ -29,6 +30,7 @@ class DatabaseEventTable {
       $columnId INTEGER PRIMARY KEY,
       $columnTitle TEXT,
       $columnDate INTEGER,
+      $columnA BOOLEAN NOT NULL CHECK ( $columnA IN ( 0 , 1 ) ) DEFAULT 0 ,
       $columnScope TEXT CHECK ( $columnScope IN  (${EventScope.values.map((e) => "'${e.name}'").join(", ")} ) )
       )
     ''';
@@ -91,6 +93,14 @@ class DatabaseEventTable {
       //_logger.d("Inserted: $entry into $table as batch into $table");
     }
     batch.commit();
+  }
+
+  static Future<int> update(Event event) async {
+    DatabaseHelper instance = DatabaseHelper.instance;
+    Database db = await instance.database;
+    _logger.d("Updating entry:$event from $table");
+    return await db.update(table, event.toMap(),
+        where: "$columnId = ?", whereArgs: [event.id]);
   }
 
   static Future<int> remove(int id) async {
