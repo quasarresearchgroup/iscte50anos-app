@@ -95,7 +95,7 @@ class Event {
 
   Future<List<Topic>> get getTopicsList async {
     List<int> allIdsWithEventId =
-        await DatabaseEventTopicTable.getAllIdsWithEventId(this.id);
+        await DatabaseEventTopicTable.getTopicIdsFromEventId(id);
     List<Topic> topicsList =
         await DatabaseTopicTable.getAllWithIds(allIdsWithEventId);
     return topicsList;
@@ -103,7 +103,7 @@ class Event {
 
   Future<List<Content>> get getContentList async {
     List<int> allIdsWithEventId =
-        await DatabaseEventContentTable.getAllIdsWithEventId(this.id);
+        await DatabaseEventContentTable.getContendIdsFromEventId(id);
     List<Content> contentsList =
         await DatabaseContentTable.getAllWithIds(allIdsWithEventId);
     return contentsList;

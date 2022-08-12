@@ -118,7 +118,7 @@ class DatabaseEventTable {
     List<Map<String, Object?>> rawRows = await db.query(
       table,
       orderBy: columnDate,
-      where: 'id IN (${List.filled(idList.length, '?').join(',')})',
+      where: '$columnId IN (${List.filled(idList.length, '?').join(',')})',
       whereArgs: idList,
     );
     List<Event> rowsList =

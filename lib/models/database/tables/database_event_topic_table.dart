@@ -36,13 +36,13 @@ class DatabaseEventTopicTable {
     _logger.d("Created $table");
   }
 
-  static Future<List<int>> getAllIdsWithEventId(int eventId) async {
+  static Future<List<int>> getTopicIdsFromEventId(int eventId) async {
     List<EventTopicDBConnection> list =
         await _filter(id: eventId, column: columnEventId);
     return list.map((e) => e.topicId).toList();
   }
 
-  static Future<List<int>> getAllIdsWithTopicId(int topicId) async {
+  static Future<List<int>> getEventIdsFromTopicId(int topicId) async {
     List<EventTopicDBConnection> list =
         await _filter(id: topicId, column: columnTopicId);
     return list.map((e) => e.eventId).toList();

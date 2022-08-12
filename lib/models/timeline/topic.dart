@@ -32,9 +32,9 @@ class Topic {
   }
 
   Future<List<Event>> get getEventsList async {
-    assert(this.id != null);
+    assert(id != null);
     List<int> allIdsWithEventId =
-        await DatabaseEventTopicTable.getAllIdsWithTopicId(this.id!);
+        await DatabaseEventTopicTable.getEventIdsFromTopicId(id!);
     List<Event> topicsList =
         await DatabaseEventTable.getAllWithIds(allIdsWithEventId);
     return topicsList;
