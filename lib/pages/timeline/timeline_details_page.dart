@@ -1,11 +1,15 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/helper/helper_methods.dart';
+import 'package:iscte_spots/models/flickr/flickr_photo.dart';
 import 'package:iscte_spots/models/timeline/content.dart';
 import 'package:iscte_spots/models/timeline/event.dart';
 import 'package:iscte_spots/models/timeline/topic.dart';
 import 'package:iscte_spots/pages/timeline/timeline_page.dart';
+import 'package:iscte_spots/services/flickr/flickr_url_converter_service.dart';
 import 'package:iscte_spots/widgets/network/error.dart';
+import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:logger/logger.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -112,6 +116,40 @@ class _TimeLineDetailsPageState extends State<TimeLineDetailsPage> {
               builder: (context, player) => player),
         ],
       );
+    } else if (content.link.contains("www.flickr.com/photos")) {
+      return FutureBuilder<FlickrPhoto>(
+          future: FlickrUrlConverterService.getPhotofromFlickrURL(content.link),
+          builder: (BuildContext context, AsyncSnapshot<FlickrPhoto> snapshot) {
+            if (snapshot.hasData) {
+              FlickrPhoto photo = snapshot.data!;
+              return Card(
+                color: IscteTheme.iscteColor,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      ListTile(
+                        title: Text(photo.title),
+                      ),
+                      InteractiveViewer(
+                        child: CachedNetworkImage(
+                            imageUrl: photo.url,
+                            fadeOutDuration: const Duration(seconds: 1),
+                            fadeInDuration: const Duration(seconds: 3),
+                            progressIndicatorBuilder: (BuildContext context,
+                                    String url, DownloadProgress progress) =>
+                                const LoadingWidget()),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            } else if (snapshot.hasError) {
+              return NetworkError(onRefresh: () {});
+            } else {
+              return const LoadingWidget();
+            }
+          });
     } else {
       return ListTile(
         leading: content.contentIcon,

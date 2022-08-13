@@ -20,7 +20,7 @@ class FlickrIsctePhotoService extends FlickrService {
     if (!fetching) {
       http.Response response = await http
           .get(Uri.parse(
-              'https://www.flickr.com/services/rest/?method=flickr.photosets.getPhotos&api_key=$key&photoset_id=$photosetID&user_id=$userID&page=$currentPage&per_page=$perPage&format=json&nojsoncallback=1'))
+              'https://www.flickr.com/services/rest/?method=flickr.photosets.getPhotos&api_key=${FlickrService.key}&photoset_id=$photosetID&user_id=$userID&page=$currentPage&per_page=$perPage&format=json&nojsoncallback=1'))
           .timeout(const Duration(minutes: 2));
 
       if (response.statusCode == 200) {
@@ -33,7 +33,7 @@ class FlickrIsctePhotoService extends FlickrService {
         for (var photo in photos) {
           var photoId = photo["id"];
           final http.Response photoData = await http.get(Uri.parse(
-              'https://www.flickr.com/services/rest/?method=flickr.photos.getContext&api_key=$key&photo_id=$photoId&format=json&nojsoncallback=1'));
+              'https://www.flickr.com/services/rest/?method=flickr.photos.getContext&api_key=${FlickrService.key}&photo_id=$photoId&format=json&nojsoncallback=1'));
           if (photoData.statusCode == 200) {
             final jsonPhotoData = jsonDecode(photoData.body)["prevphoto"];
 

@@ -59,7 +59,7 @@ class Event {
         title: json[DatabaseEventTable.columnTitle],
         date: json[DatabaseEventTable.columnDate],
         scope: eventScopefromString(json[DatabaseEventTable.columnScope]),
-        visited: json[DatabaseEventTable.columnA] == 1 ? true : false,
+        visited: json[DatabaseEventTable.columnVisited] == 1 ? true : false,
       );
 
   Map<String, dynamic> toMap() {
@@ -68,7 +68,7 @@ class Event {
       DatabaseEventTable.columnTitle: title,
       DatabaseEventTable.columnDate: date,
       DatabaseEventTable.columnScope: scope != null ? scope!.name : null,
-      DatabaseEventTable.columnA: visited ? 1 : 0,
+      DatabaseEventTable.columnVisited: visited ? 1 : 0,
     };
   }
 

@@ -13,7 +13,7 @@ class DatabaseEventTable {
   static const columnTitle = 'title';
   static const columnDate = 'date';
   static const columnScope = 'scope';
-  static const columnA = 'visited';
+  static const columnVisited = 'visited';
 
 /*  static String initScript = '''
       CREATE TABLE eventTable(
@@ -30,7 +30,7 @@ class DatabaseEventTable {
       $columnId INTEGER PRIMARY KEY,
       $columnTitle TEXT,
       $columnDate INTEGER,
-      $columnA BOOLEAN NOT NULL CHECK ( $columnA IN ( 0 , 1 ) ) DEFAULT 0 ,
+      $columnVisited BOOLEAN NOT NULL CHECK ( $columnVisited IN ( 0 , 1 ) ) DEFAULT 0 ,
       $columnScope TEXT CHECK ( $columnScope IN  (${EventScope.values.map((e) => "'${e.name}'").join(", ")} ) )
       )
     ''';
