@@ -3,9 +3,11 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:iscte_spots/models/database/tables/database_spot_table.dart';
 import 'package:iscte_spots/models/requests/spot_info_request.dart';
 import 'package:iscte_spots/models/requests/spot_request.dart';
 import 'package:iscte_spots/models/requests/topic_request.dart';
+import 'package:iscte_spots/models/spot.dart';
 import 'package:iscte_spots/pages/home/scanPage/qr_scan_camera_controls.dart';
 import 'package:iscte_spots/pages/home/scanPage/qr_scan_results.dart';
 import 'package:iscte_spots/services/auth/exceptions.dart';
@@ -108,6 +110,14 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
 
             if (continueScan && spotInfoRequest.id != null) {
               _lastScan = now;
+
+              Spot spot =
+                  (await DatabaseSpotTable.getAllWithIds([spotInfoRequest.id!]))
+                      .first;
+              if (!spot.visited) {
+                spot.visited = true;
+                await DatabaseSpotTable.update(spot);
+              }
               Future<TopicRequest> topicRequest = QRScanService.topicRequest(
                   context: context, topicID: spotInfoRequest.id!);
               TopicRequest topicRequestCompleted = await topicRequest;

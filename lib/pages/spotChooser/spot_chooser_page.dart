@@ -28,6 +28,8 @@ class SpotChooserPage extends StatefulWidget {
 
 class _SpotChooserPageState extends State<SpotChooserPage> {
   double blur = 10;
+  double spacing = 10;
+
   late Future<List<Spot>> future;
 
   @override
@@ -89,6 +91,7 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
                       collapseMode: CollapseMode.pin,
                     ),
                   ),
+                  SliverToBoxAdapter(child: SizedBox(height: spacing)),
                   buildSpotsGrid(spotsList),
                 ]);
           } else {
@@ -160,8 +163,6 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
   }
 
   Widget buildSpotsGrid(List<Spot> list) {
-    double spacing = 10;
-
 /*    if (list.isEmpty) {
       return SliverList(
         delegate: SliverChildListDelegate.fixed([
@@ -186,22 +187,46 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
             borderRadius: BorderRadius.circular(20.0),
             child: list.isEmpty
                 ? const Center(child: Text("List is empty"))
-                : ImageFiltered(
-                    imageFilter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
-                    child: InkWell(
-                      enableFeedback: true,
-                      splashColor: Colors.black,
-                      onTap: () {
-                        chooseSpot(list[index], context);
-                      },
-                      child: Container(
-                        decoration: const BoxDecoration(),
-                        child: Image.network(
-                          list[index].photoLink,
-                          fit: BoxFit.cover,
+                : Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      ImageFiltered(
+                        imageFilter: ImageFilter.blur(
+                          sigmaX: list[index].visited ? 0 : blur,
+                          sigmaY: list[index].visited ? 0 : blur,
+                        ),
+                        child: InkWell(
+                          enableFeedback: true,
+                          splashColor: Colors.black,
+                          onTap: () {
+                            chooseSpot(list[index], context);
+                          },
+                          child: Container(
+                            decoration: const BoxDecoration(),
+                            child: Image.network(
+                              list[index].photoLink,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
+                      list[index].visited
+                          ? Positioned(
+                              right: 10,
+                              top: 10,
+                              child: Card(
+                                color: Theme.of(context)
+                                    .backgroundColor
+                                    .withAlpha(200),
+                                child: Icon(
+                                  Icons.check,
+                                  size: 50,
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                              ),
+                            )
+                          : Container(),
+                    ],
                   ),
           );
         },
@@ -211,9 +236,11 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
     //}
   }
 
-  void chooseSpot(Spot spot, BuildContext context) {
+  Future<void> chooseSpot(Spot spot, BuildContext context) async {
     SharedPrefsService.storeCurrentPuzzleIMG(spot.photoLink);
-    DatabasePuzzlePieceTable.removeALL();
+    spot.visited = true;
+    await DatabaseSpotTable.update(spot);
+    await DatabasePuzzlePieceTable.removeALL();
     Navigator.of(context).pop();
   }
 }

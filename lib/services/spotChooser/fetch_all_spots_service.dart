@@ -46,7 +46,8 @@ class SpotsRequestService {
         _logger.d(responseDecoded);
         List<Spot> spotsList = [];
         for (var item in responseDecoded) {
-          spotsList.add(Spot(photoLink: item["location_photo_link"]));
+          spotsList.add(
+              Spot(id: item["id"], photoLink: item["location_photo_link"]));
         }
         await DatabaseSpotTable.addBatch(spotsList);
         return;
