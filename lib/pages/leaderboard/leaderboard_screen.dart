@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:iscte_spots/services/leaderboard/leaderboard_service.dart';
 import 'package:iscte_spots/widgets/util/constants.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 import 'package:logger/logger.dart';
@@ -51,6 +52,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage>
   static const List<Widget> _pages = <Widget>[
     GlobalLeaderboard(),
     AffiliationLeaderboard(),
+    RelativeLeaderboard(),
   ];
 
   //Page Selection Mechanics
@@ -71,7 +73,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage>
   void initState() {
     super.initState();
     loadAffiliationData();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
   }
 
   @override
@@ -80,42 +82,6 @@ class _LeaderBoardPageState extends State<LeaderBoardPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-
-    /*AppBarTheme appBarTheme = const AppBarTheme(
-      elevation: 0, // This removes the shadow from all App Bars.
-      centerTitle: true,
-      toolbarHeight: 55,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          bottom: Radius.circular(20),
-        ),
-      ),
-    );
-
-    var darkTheme = ThemeData.dark();
-
-    return MaterialApp(
-      theme: ThemeData.light().copyWith(
-        primaryColor: const Color.fromRGBO(14, 41, 194, 1),
-        appBarTheme: appBarTheme.copyWith(
-          backgroundColor: const Color.fromRGBO(14, 41, 194, 1),
-          systemOverlayStyle: const SystemUiOverlayStyle(
-            statusBarColor: Color.fromRGBO(14, 41, 194, 1),
-            statusBarIconBrightness:
-                Brightness.light, // For Android (dark icons)
-            statusBarBrightness: Brightness.light, // For iOS (dark icons)
-          ),
-        ),
-      ),
-      darkTheme: ThemeData.dark().copyWith(
-          appBarTheme: appBarTheme.copyWith(
-        systemOverlayStyle: SystemUiOverlayStyle(
-          statusBarColor: darkTheme.bottomAppBarColor,
-          statusBarIconBrightness: Brightness.light, // For Android (dark icons)
-          statusBarBrightness: Brightness.light, // For iOS (dark icons)
-        ),
-      )),
-      home:*/
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -161,6 +127,11 @@ class _LeaderBoardPageState extends State<LeaderBoardPage>
               icon: const Icon(Icons.group),
               backgroundColor: Theme.of(context).primaryColor,
               label: 'Afiliação',
+            ),
+            BottomNavigationBarItem(
+              icon: const Icon(Icons.location_on),
+              backgroundColor: Theme.of(context).primaryColor,
+              label: 'Próximos',
             ),
           ],
         ),
@@ -344,35 +315,11 @@ class _AffiliationLeaderboardState extends State<AffiliationLeaderboard>
 class GlobalLeaderboard extends StatelessWidget {
   const GlobalLeaderboard({Key? key}) : super(key: key);
 
-  Future<List<dynamic>> fetchLeaderboard() async {
-    try {
-      String? apiToken = await secureStorage.read(key: "backend_api_key");
-
-      HttpClient client = HttpClient();
-      client.badCertificateCallback =
-          ((X509Certificate cert, String host, int port) => true);
-      final request = await client.getUrl(
-          Uri.parse('${BackEndConstants.API_ADDRESS}/api/users/leaderboard'));
-      request.headers.add("Authorization", "Token $apiToken");
-
-      final response = await request.close();
-
-      if (response.statusCode == 200) {
-        return jsonDecode(await response.transform(utf8.decoder).join());
-      } else {
-        print(response);
-      }
-    } catch (e) {
-      print(e);
-    }
-    throw Exception('Failed to load leaderboard');
-  }
-
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: [
-        const SizedBox(
+      children: const [
+        SizedBox(
           // Container to hold the description
           height: 50,
           child: Center(
@@ -380,7 +327,28 @@ class GlobalLeaderboard extends StatelessWidget {
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
           ),
         ),
-        Expanded(child: LeaderboardList(fetchFunction: fetchLeaderboard)),
+        Expanded(child: LeaderboardList(fetchFunction: LeaderboardService.fetchGlobalLeaderboard)),
+      ],
+    );
+  }
+}
+
+class RelativeLeaderboard extends StatelessWidget {
+  const RelativeLeaderboard({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: const [
+        SizedBox(
+          // Container to hold the description
+          height: 50,
+          child: Center(
+            child: Text("Concorrentes mais próximos de si",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+          ),
+        ),
+        Expanded(child: LeaderboardList(fetchFunction: LeaderboardService.fetchRelativeLeaderboard)),
       ],
     );
   }

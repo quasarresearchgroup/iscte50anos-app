@@ -12,6 +12,7 @@ import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 import 'package:logger/logger.dart';
 
 import '../../services/quiz/quiz_service.dart';
+import '../../widgets/dialogs/CustomDialogs.dart';
 import '../../widgets/network/error.dart';
 
 //const API_ADDRESS = "http://192.168.1.124";
@@ -177,7 +178,11 @@ class _QuizListState extends State<QuizList> {
                                   startTrial(
                                       quizNumber);
                                 });
-                              }, quiz: items[index])
+                              }, returnToQuizList: (){
+                                  setState(() {
+                                    futureQuizList = fetchFunction();
+                                  });
+                              },quiz: items[index])
                             ],
                             //minVerticalPadding: 10.0,
                           ),
@@ -219,9 +224,10 @@ class _QuizListState extends State<QuizList> {
 }
 
 class QuizDetail extends StatelessWidget {
-  const QuizDetail({Key? key, required this.startQuiz, required this.quiz}) : super(key: key);
+  const QuizDetail({Key? key, required this.startQuiz, required this.quiz, required this.returnToQuizList}) : super(key: key);
 
   final Function() startQuiz;
+  final Function() returnToQuizList;
   final Map quiz;
 
   @override
@@ -248,46 +254,25 @@ class QuizDetail extends StatelessWidget {
                           Text("Estado: ${trial["is_completed"]}"),
                         ]),
                     const SizedBox(height: 5,),
-                    //if (index < trials.length-1) ElevatedButton(
-                        //onPressed: (){}, child: Text("Retomar tentativa")),
+                    if (!trial["is_completed"]) ElevatedButton(
+                        onPressed: (){
+                          Navigator.of(context)
+                              .push(MaterialPageRoute(
+                              builder: (context) =>
+                                  QuizPage(
+                                    quizNumber: quiz["number"],
+                                    trialNumber: trial["number"],
+                                  )))
+                              .then((value) {
+                            returnToQuizList();
+                          });
+                        }, child: const Text("Retomar tentativa")),
                     const Divider(thickness: 2,),
                   ],
                 );}),
           if (quiz["num_trials"] < MAX_TRIALS) ElevatedButton(onPressed: () {
-            showDialog(
-              useRootNavigator: false,
-              context: context,
-              builder: (BuildContext
-              context) {
-                return AlertDialog(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  title: const Center(
-                      child: Text(
-                          "Aviso")),
-                  content: const Text(
-                      "Deseja iniciar uma tentativa de Quiz? (Certifique-se que tem uma ligação de Internet estável)"),
-                  actionsAlignment: MainAxisAlignment.center,
-                  actions: [
-                    TextButton(
-                      child: const Text(
-                          'Não'),
-                      onPressed: () {
-                        Navigator.of(
-                            context)
-                            .pop();
-                      },
-                    ),
-                    TextButton(
-                        child: const Text(
-                            'Sim'),
-                        onPressed: startQuiz
-                    ),
-                  ],
-                );
-              },
-            );
+            showYesNoWarningDialog("Deseja iniciar uma tentativa de Quiz? "
+                "(Certifique-se que tem uma ligação de Internet estável)", startQuiz, context);
           }, child: const Text("Iniciar nova tentativa"))
         ],
       ),
