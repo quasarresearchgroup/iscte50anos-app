@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:iscte_spots/helper/image_manipulation.dart';
 import 'package:iscte_spots/models/database/tables/database_puzzle_piece_table.dart';
 import 'package:iscte_spots/models/puzzle_piece.dart';
@@ -31,6 +32,8 @@ class PuzzlePage extends StatefulWidget {
 class _PuzzlePageState extends State<PuzzlePage>
     with AutomaticKeepAliveClientMixin {
   final List<Widget> pieces = [];
+
+  int quarterTurns = 0;
   //make this a future so that previous operations get queued and complete only when this has values
   @override
   void initState() {
@@ -52,13 +55,19 @@ class _PuzzlePageState extends State<PuzzlePage>
 
   @override
   Widget build(BuildContext context) {
-    Widget widget =
-        pieces.isNotEmpty ? Stack(children: pieces) : const LoadingWidget();
     super.build(context);
-    return SafeArea(child: widget);
+    return SafeArea(
+      child:
+          pieces.isNotEmpty ? Stack(children: pieces) : const LoadingWidget(),
+    );
   }
 
   void refreshPieces() {
+    generatePieces(widget.image);
+  }
+
+  void rotatePuzzle() {
+    quarterTurns += 1;
     generatePieces(widget.image);
   }
 
@@ -67,14 +76,10 @@ class _PuzzlePageState extends State<PuzzlePage>
     final double imageWidth;
     final double imageHeight;
     final double aspectRatio = imageSize.width / imageSize.height;
-    //if (imageSize.width < imageSize.height) {
-    imageWidth = min(widget.constraints.maxWidth, widget.constraints.maxWidth);
+    imageWidth = widget.constraints.maxWidth;
     imageHeight = min(widget.constraints.maxWidth / aspectRatio,
         widget.constraints.maxHeight);
-    // } else {
-    //   imageWidth = widget.constraints.maxHeight * aspectRatio;
-    //   imageHeight = widget.constraints.maxHeight;
-    // }
+
     widget._logger.d("imageWidth:$imageWidth; imageHeight:$imageHeight");
     List<PuzzlePiece> storedPuzzlePieces =
         await DatabasePuzzlePieceTable.getAll();
@@ -82,8 +87,15 @@ class _PuzzlePageState extends State<PuzzlePage>
     List<Point> storedPositions = [];
     for (var element in storedPuzzlePieces) {
       storedPuzzlePieceWidgets.add(
-        element.getWidget(img, imageSize, bringToTop, sendToBack,
-            widget.constraints, widget.completeCallback),
+        element.getWidget(
+          image: img,
+          imageSize: imageSize,
+          bringToTop: bringToTop,
+          sendToBack: sendToBack,
+          constraints: widget.constraints,
+          completeCallback: widget.completeCallback,
+          quarterTurns: quarterTurns,
+        ),
       );
       storedPositions.add(Point(element.row, element.column));
     }
@@ -97,6 +109,7 @@ class _PuzzlePageState extends State<PuzzlePage>
       cols: widget.cols,
       constraints: widget.constraints,
       completeCallback: widget.completeCallback,
+      quarterTurns: quarterTurns,
     ))
             .where((PuzzlePieceWidget element) {
       Point<int> point = Point(element.row, element.col);
@@ -122,14 +135,27 @@ class _PuzzlePageState extends State<PuzzlePage>
     pieces.addAll(storedPuzzlePieceWidgets);
     pieces.addAll(notStoredPieces);
     pieces.add(Positioned(
-        right: 0,
-        bottom: 0,
-        child: FloatingActionButton(
-            heroTag: "refreshFAB",
-            elevation: 1,
-            child:
-                Icon(Icons.refresh, color: Theme.of(context).selectedRowColor),
-            onPressed: refreshPieces)));
+      right: 0,
+      bottom: 0,
+      child: SpeedDial(
+        child: const Icon(Icons.add),
+        children: [
+          SpeedDialChild(
+              elevation: 0,
+              child: const Icon(
+                Icons.refresh,
+              ),
+              foregroundColor: Theme.of(context).unselectedWidgetColor,
+              onTap: refreshPieces),
+          SpeedDialChild(
+              child: const Icon(
+                Icons.rotate_right,
+              ),
+              foregroundColor: Theme.of(context).unselectedWidgetColor,
+              onTap: rotatePuzzle),
+        ],
+      ),
+    ));
     setState(() {});
   }
 

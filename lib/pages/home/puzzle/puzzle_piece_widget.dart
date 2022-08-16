@@ -24,6 +24,7 @@ class PuzzlePieceWidget extends StatefulWidget {
   final double? top;
   final double? left;
   final bool? movable;
+  final int quarterTurns;
 
   const PuzzlePieceWidget({
     Key? key,
@@ -41,6 +42,7 @@ class PuzzlePieceWidget extends StatefulWidget {
     this.left,
     this.movable,
     required this.completeCallback,
+    this.quarterTurns = 0,
   }) : super(key: key);
 
   @override
@@ -78,7 +80,7 @@ class PuzzlePieceWidget extends StatefulWidget {
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'PuzzlePieceWidget{row: $row, col: $col, maxRow: $maxRow, maxCol: $maxCol, top: $top, left: $left, movable: $movable,image: $image, imageSize: $imageSize, bringToTop: $bringToTop, sendToBack: $sendToBack, snapInPlace: $snapInPlace, constraints: $constraints}';
+    return 'PuzzlePieceWidget{row: $row, col: $col, maxRow: $maxRow, maxCol: $maxCol, top: $top, left: $left, movable: $movable,image: $image, imageSize: $imageSize, bringToTop: $bringToTop, sendToBack: $sendToBack, snapInPlace: $snapInPlace, constraints: $constraints, quarterTurns: $quarterTurns}';
   }
 
   @override
@@ -123,40 +125,47 @@ class PuzzlePieceWidgetState extends State<PuzzlePieceWidget> {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-        top: top,
-        left: left,
-        child: GestureDetector(
-          onTap: () {
-            if (isMovable) {
-              widget.bringToTop(widget);
-            }
-          },
-          onPanStart: (_) {
-            if (isMovable) {
-              widget.bringToTop(widget);
-            }
-          },
-          onPanUpdate: (dragUpdateDetails) {
-            if (isMovable) {
-              setState(() {
-                top = top! + dragUpdateDetails.delta.dy;
-                left = left! + dragUpdateDetails.delta.dx;
+      top: top,
+      left: left,
+      child: GestureDetector(
+        onTap: () {
+          if (isMovable) {
+            widget.bringToTop(widget);
+          }
+        },
+        onPanStart: (_) {
+          if (isMovable) {
+            widget.bringToTop(widget);
+          }
+        },
+        onPanUpdate: (dragUpdateDetails) {
+          if (isMovable) {
+            setState(() {
+              top = top! + dragUpdateDetails.delta.dy;
+              left = left! + dragUpdateDetails.delta.dx;
 
-                if (-10 < top! && top! < 10 && -10 < left! && left! < 10) {
-                  snapInPlace();
-                }
-                //widget._logger.d("top:$top; left: $left");
-              });
-            }
-          },
+              if (-10 < top! && top! < 10 && -10 < left! && left! < 10) {
+                snapInPlace();
+              }
+              //widget._logger.d("top:$top; left: $left");
+            });
+          }
+        },
+        child: RotatedBox(
+          quarterTurns: widget.quarterTurns,
           child: ClippedPieceWidget(
-              image: widget.image,
-              row: widget.row,
-              col: widget.col,
-              maxRow: widget.maxRow,
-              width: widget.constraints.maxWidth,
-              maxCol: widget.maxCol),
-        ));
+            image: widget.image,
+            row: widget.row,
+            col: widget.col,
+            maxRow: widget.maxRow,
+            width: widget.quarterTurns.isEven
+                ? widget.constraints.maxWidth
+                : widget.imageSize.aspectRatio * widget.constraints.maxWidth,
+            maxCol: widget.maxCol,
+          ),
+        ),
+      ),
+    );
   }
 
   void snapInPlace() {

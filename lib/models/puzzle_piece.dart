@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:iscte_spots/models/database/tables/database_puzzle_piece_table.dart';
 import 'package:iscte_spots/pages/home/puzzle/puzzle_piece_widget.dart';
 
@@ -22,8 +23,15 @@ class PuzzlePiece {
     return 'PuzzlePiece{left: $left, top: $top, row: $row, column: $column, maxRow: $maxRow, maxColumn: $maxColumn}';
   }
 
-  PuzzlePieceWidget getWidget(
-      image, imageSize, bringToTop, sendToBack, constraints, completeCallback) {
+  PuzzlePieceWidget getWidget({
+    required Image image,
+    required Size imageSize,
+    required bringToTop,
+    required sendToBack,
+    required BoxConstraints constraints,
+    required completeCallback,
+    required int quarterTurns,
+  }) {
     return PuzzlePieceWidget(
       image: image,
       imageSize: imageSize,
@@ -38,6 +46,7 @@ class PuzzlePiece {
       left: left,
       movable: (top != 0 || left != 0),
       completeCallback: completeCallback,
+      quarterTurns: quarterTurns,
     );
   }
 
