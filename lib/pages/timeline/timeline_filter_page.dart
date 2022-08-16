@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/models/database/tables/database_event_table.dart';
 import 'package:iscte_spots/models/database/tables/database_topic_table.dart';
 import 'package:iscte_spots/models/timeline/event.dart';
@@ -62,11 +63,12 @@ class _TimelineFilterPageState extends State<TimelineFilterPage> {
           ...(isEmptySelectedTopics)
               ? []
               : [
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8.0),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
                     child: Align(
                         alignment: Alignment.centerLeft,
-                        child: Text("Selected Topics:")),
+                        child: Text(AppLocalizations.of(context)!
+                            .timelineSelectedTopics)),
                   ),
                   Wrap(
                     alignment: WrapAlignment.start,
@@ -81,7 +83,7 @@ class _TimelineFilterPageState extends State<TimelineFilterPage> {
                                   e.title ?? "",
                                   overflow: TextOverflow.clip,
                                   maxLines: 1,
-                                  style: TextStyle(color: Colors.white),
+                                  style: const TextStyle(color: Colors.white),
                                 ),
                               ),
                             ))
@@ -89,11 +91,12 @@ class _TimelineFilterPageState extends State<TimelineFilterPage> {
                   ),
                   const Divider(height: 20, thickness: 2),
                 ],
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8.0),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: Align(
                 alignment: Alignment.centerLeft,
-                child: Text("Available Topics:")),
+                child: Text(
+                    AppLocalizations.of(context)!.timelineAvailableTopics)),
           ),
           Expanded(
             child: buildTopicsCheckBoxList(),
@@ -104,7 +107,7 @@ class _TimelineFilterPageState extends State<TimelineFilterPage> {
               backgroundColor: MaterialStateColor.resolveWith(
                   (Set<MaterialState> states) => IscteTheme.iscteColor),
             ),
-            child: const Text("Submit"),
+            child: Text(AppLocalizations.of(context)!.timelineSearchButton),
             onPressed: () {
               _submitSelection(context);
             },
@@ -137,8 +140,8 @@ class _TimelineFilterPageState extends State<TimelineFilterPage> {
               ),
               onPressed: searchBarController.clear),
           hintText: isEmptySelectedTopics
-              ? 'Search...'
-              : 'Search inside the selected Topics...',
+              ? AppLocalizations.of(context)!.timelineSearchHint
+              : AppLocalizations.of(context)!.timelineSearchHintInsideTopic,
           border: InputBorder.none,
         ),
       ),
@@ -183,7 +186,7 @@ class _TimelineFilterPageState extends State<TimelineFilterPage> {
                 );
               });
         } else if (snapshot.hasError) {
-          return ErrorWidget("Error on Topic load");
+          return ErrorWidget(AppLocalizations.of(context)!.generalError);
         } else {
           return const LoadingWidget();
         }
@@ -223,7 +226,7 @@ class _TimelineFilterPageState extends State<TimelineFilterPage> {
         ),
         child: Scaffold(
           appBar: AppBar(
-            title: const Text("Search results"),
+            title: Text(AppLocalizations.of(context)!.timelineSearchResults),
           ),
           body: TimeLineBody(
             mapdata: setOfEvents.toList(),
