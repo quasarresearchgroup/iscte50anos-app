@@ -28,7 +28,7 @@ class PuzzlePiece {
     required Size imageSize,
     required bringToTop,
     required sendToBack,
-    required BoxConstraints constraints,
+    //required BoxConstraints constraints,
     required completeCallback,
     required int quarterTurns,
   }) {
@@ -37,7 +37,7 @@ class PuzzlePiece {
       imageSize: imageSize,
       bringToTop: bringToTop,
       sendToBack: sendToBack,
-      constraints: constraints,
+      //constraints: constraints,
       row: row,
       col: column,
       maxRow: maxRow,

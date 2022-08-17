@@ -72,15 +72,22 @@ class _PuzzlePageState extends State<PuzzlePage>
   }
 
   void generatePieces(Image img) async {
-    Size imageSize = await ImageManipulation.getImageSize(img);
+    Size originalSize = await ImageManipulation.getImageSize(img);
     final double imageWidth;
     final double imageHeight;
-    final double aspectRatio = imageSize.width / imageSize.height;
-    imageWidth = widget.constraints.maxWidth;
-    imageHeight = min(widget.constraints.maxWidth / aspectRatio,
+    imageWidth = quarterTurns.isEven
+        ? widget.constraints.maxWidth
+        : widget.constraints.maxWidth * originalSize.aspectRatio;
+    //imageHeight = imageWidth / originalSize.aspectRatio;
+    imageHeight = min(widget.constraints.maxWidth * originalSize.aspectRatio,
         widget.constraints.maxHeight);
+    //imageHeight = widget.constraints.maxHeight *
+    //    widget.constraints.maxWidth /
+    //    originalSize.width;
 
-    widget._logger.d("imageWidth:$imageWidth; imageHeight:$imageHeight");
+    final Size imageSize = Size(imageWidth, imageHeight);
+
+    widget._logger.d("imageSize: $imageSize");
     List<PuzzlePiece> storedPuzzlePieces =
         await DatabasePuzzlePieceTable.getAll();
     List<PuzzlePieceWidget> storedPuzzlePieceWidgets = [];
@@ -92,7 +99,7 @@ class _PuzzlePageState extends State<PuzzlePage>
           imageSize: imageSize,
           bringToTop: bringToTop,
           sendToBack: sendToBack,
-          constraints: widget.constraints,
+          //constraints: widget.constraints,
           completeCallback: widget.completeCallback,
           quarterTurns: quarterTurns,
         ),
@@ -107,7 +114,8 @@ class _PuzzlePageState extends State<PuzzlePage>
       sendToBack: sendToBack,
       rows: widget.rows,
       cols: widget.cols,
-      constraints: widget.constraints,
+      imageSize: imageSize,
+      //constraints: widget.constraints,
       completeCallback: widget.completeCallback,
       quarterTurns: quarterTurns,
     ))
@@ -126,8 +134,8 @@ class _PuzzlePageState extends State<PuzzlePage>
         ),
       ),
       child: SizedBox(
-        width: imageWidth,
-        height: imageHeight,
+        width: imageSize.width,
+        height: imageSize.height,
       ),
     ));
     //pieces.addAll(snappedPuzzlePieces);

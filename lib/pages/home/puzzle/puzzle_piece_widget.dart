@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:iscte_spots/models/database/tables/database_puzzle_piece_table.dart';
 import 'package:iscte_spots/models/puzzle_piece.dart';
+import 'package:logger/logger.dart';
 
 import 'clipped_piece_widget.dart';
 
@@ -14,7 +15,7 @@ class PuzzlePieceWidget extends StatefulWidget {
   final Function bringToTop;
   final Function sendToBack;
   final bool snapInPlace;
-  final BoxConstraints constraints;
+  //final BoxConstraints constraints;
   final Function completeCallback;
 
   final int row;
@@ -32,7 +33,7 @@ class PuzzlePieceWidget extends StatefulWidget {
     required this.imageSize,
     required this.bringToTop,
     required this.sendToBack,
-    required this.constraints,
+    //required this.constraints,
     required this.row,
     required this.col,
     required this.maxRow,
@@ -56,7 +57,7 @@ class PuzzlePieceWidget extends StatefulWidget {
           bringToTop == other.bringToTop &&
           sendToBack == other.sendToBack &&
           snapInPlace == other.snapInPlace &&
-          constraints == other.constraints &&
+          //constraints == other.constraints &&
           row == other.row &&
           col == other.col &&
           maxRow == other.maxRow &&
@@ -71,7 +72,7 @@ class PuzzlePieceWidget extends StatefulWidget {
       bringToTop.hashCode ^
       sendToBack.hashCode ^
       snapInPlace.hashCode ^
-      constraints.hashCode ^
+      //constraints.hashCode ^
       row.hashCode ^
       col.hashCode ^
       maxRow.hashCode ^
@@ -80,7 +81,7 @@ class PuzzlePieceWidget extends StatefulWidget {
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'PuzzlePieceWidget{row: $row, col: $col, maxRow: $maxRow, maxCol: $maxCol, top: $top, left: $left, movable: $movable,image: $image, imageSize: $imageSize, bringToTop: $bringToTop, sendToBack: $sendToBack, snapInPlace: $snapInPlace, constraints: $constraints, quarterTurns: $quarterTurns}';
+    return 'PuzzlePieceWidget{row: $row, col: $col, maxRow: $maxRow, maxCol: $maxCol, top: $top, left: $left, movable: $movable,image: $image, imageSize: $imageSize, bringToTop: $bringToTop, sendToBack: $sendToBack, snapInPlace: $snapInPlace, quarterTurns: $quarterTurns}';
   }
 
   @override
@@ -105,21 +106,34 @@ class PuzzlePieceWidgetState extends State<PuzzlePieceWidget> {
     }
 
     if (top == null || left == null) {
-      final imageWidth = widget.constraints.maxWidth;
-      final imageHeight = widget.constraints.maxHeight *
-          widget.constraints.maxWidth /
-          widget.imageSize.width;
-      final double pieceWidth = imageWidth / widget.maxCol;
-      final double pieceHeight = imageHeight / widget.maxRow;
+      final double pieceHeight = widget.imageSize.height / widget.maxRow;
+      double zeroHeight = (-widget.row) * pieceHeight;
+      double maxHeight = zeroHeight + (widget.maxRow - 1) * pieceHeight;
 
-      double maxHeight = widget.maxRow * pieceHeight * 0.5;
-      double minHeight = widget.row * pieceHeight * 0.5;
-      double maxWidth = widget.maxCol * pieceWidth * 0.5;
-      double minWidth = widget.col * pieceWidth * 0.5;
-      top ??= (Random().nextDouble() * maxHeight) - minHeight;
-      left ??= (Random().nextDouble() * maxWidth) - minWidth;
+      double minHeight = zeroHeight + (widget.maxRow - 2) * pieceHeight;
+
+      final double pieceWidth = widget.imageSize.width / widget.maxCol;
+      double zeroWidth = (-widget.col) * pieceWidth;
+      double maxWidth = zeroWidth + (widget.maxCol - 1) * pieceWidth;
+      double minWidth = zeroWidth;
+      top ??= ((Random().nextDouble() * (maxHeight - minHeight)) + minHeight);
+      left ??= ((Random().nextDouble() * (maxWidth - minWidth)) + minWidth);
+      if (widget.quarterTurns.isOdd) {
+        double temp = top!;
+        top = left;
+        left = top;
+      }
+      Logger().d(
+        "col:${widget.col};"
+        "row:${widget.row};"
+        "maxHeight: $maxHeight;"
+        "minHeight: $minHeight;"
+        "maxWidth: $maxWidth;"
+        "minWidth: $minWidth;"
+        "top:$top;"
+        "left:$left;",
+      );
     }
-    //widget._logger.d("col:${widget.col}; row:${widget.row}; pieceHeight:$pieceHeight; pieceWidth:$pieceWidth; top:$top; left:$left;");
   }
 
   @override
@@ -158,9 +172,7 @@ class PuzzlePieceWidgetState extends State<PuzzlePieceWidget> {
             row: widget.row,
             col: widget.col,
             maxRow: widget.maxRow,
-            width: widget.quarterTurns.isEven
-                ? widget.constraints.maxWidth
-                : widget.imageSize.aspectRatio * widget.constraints.maxWidth,
+            width: widget.imageSize.width,
             maxCol: widget.maxCol,
           ),
         ),
@@ -168,7 +180,7 @@ class PuzzlePieceWidgetState extends State<PuzzlePieceWidget> {
     );
   }
 
-  void snapInPlace() {
+  void snapInPlace() async {
     top = 0;
     left = 0;
     if (widget.snapInPlace) {
@@ -176,7 +188,7 @@ class PuzzlePieceWidgetState extends State<PuzzlePieceWidget> {
     }
     widget.sendToBack(widget);
 
-    DatabasePuzzlePieceTable.add(PuzzlePiece(
+    await DatabasePuzzlePieceTable.add(PuzzlePiece(
       row: widget.row,
       column: widget.col,
       maxRow: widget.maxRow,
@@ -184,10 +196,11 @@ class PuzzlePieceWidgetState extends State<PuzzlePieceWidget> {
       top: top!,
       left: left!,
     ));
-    DatabasePuzzlePieceTable.getAll().then((List<PuzzlePiece> value) {
-      if (value.length == (widget.maxRow * widget.maxCol)) {
-        widget.completeCallback();
-      }
-    });
+
+    List<PuzzlePiece> listPuzzlePieces =
+        await DatabasePuzzlePieceTable.getAll();
+    if (listPuzzlePieces.length == (widget.maxRow * widget.maxCol)) {
+      widget.completeCallback();
+    }
   }
 }

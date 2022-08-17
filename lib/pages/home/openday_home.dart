@@ -98,8 +98,8 @@ class _HomeOpenDayState extends State<HomeOpenDay>
   void rerfeshPermit() {
     Future<SpotRequest> newPermit =
         OpenDayQRScanService.spotRequest(context: context);
-    Future<String?> newImageURL = newPermit
-        .then((value) => OpenDayQRScanService.requestRouter(context, value));
+    //Future<String?> newImageURL = newPermit
+    //  .then((value) => OpenDayQRScanService.requestRouter(context, value));
     //_refreshProfile();
     setState(() {
       currentPemit = newPermit;
@@ -278,7 +278,7 @@ class _HomeOpenDayState extends State<HomeOpenDay>
                   children: [
                     Center(
                       child: Padding(
-                        padding: const EdgeInsets.all(40.0),
+                        padding: const EdgeInsets.all(10.0),
                         child: LayoutBuilder(
                           builder: (BuildContext context,
                               BoxConstraints constraints) {
@@ -363,12 +363,12 @@ class _HomeOpenDayState extends State<HomeOpenDay>
             ),
             Padding(
               padding: EdgeInsets.only(top: 10),
-              child: Text('Ocorreu um erro a descarregar os dados'),
+              child: Text('Ocorreu um erro a descarregar os dados'), //TODO
             ),
             Padding(
               padding: EdgeInsets.all(5.0),
               child: Text(
-                'Tocar aqui para recarregar',
+                'Tocar aqui para recarregar', //TODO
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
             )
