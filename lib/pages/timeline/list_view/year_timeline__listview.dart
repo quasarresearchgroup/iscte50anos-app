@@ -19,14 +19,14 @@ class YearTimelineListView extends StatefulWidget {
 }
 
 class _YearTimelineListViewState extends State<YearTimelineListView> {
-  late ScrollController scrollController;
+  //late ScrollController scrollController;
   List<Widget> yearsList = [];
 
   @override
   void initState() {
     super.initState();
-    scrollController = ScrollController();
-
+    //scrollController = ScrollController();
+/*
     for (int index in widget.yearsList) {
       yearsList.add(
         Padding(
@@ -34,20 +34,20 @@ class _YearTimelineListViewState extends State<YearTimelineListView> {
           padding: const EdgeInsets.only(bottom: 8.0),
           child: YearTimelineTile(
             changeYearFunction: widget.changeYearFunction,
-            year: widget.yearsList[index],
-            isSelected: widget.selectedYear == widget.yearsList[index],
+            year: index,
+            isSelected: widget.selectedYear == index,
             isFirst: index == 0,
             isLast: index == widget.yearsList.length - 1,
           ),
         ),
       );
-    }
+    }*/
   }
 
   @override
   void dispose() {
     super.dispose();
-    scrollController.dispose();
+    //scrollController.dispose();
   }
 
   @override
@@ -56,12 +56,21 @@ class _YearTimelineListViewState extends State<YearTimelineListView> {
     return Container(
       decoration: BoxDecoration(color: Theme.of(context).primaryColor),
       child: ListView.builder(
-          controller: scrollController,
+          //controller: scrollController,
           scrollDirection: Axis.horizontal,
           itemCount: widget.yearsList.length,
           shrinkWrap: true,
           itemBuilder: (BuildContext context, int index) {
-            return yearsList[index];
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 8.0),
+              child: YearTimelineTile(
+                changeYearFunction: widget.changeYearFunction,
+                year: widget.yearsList[index],
+                isSelected: widget.selectedYear == widget.yearsList[index],
+                isFirst: index == 0,
+                isLast: index == widget.yearsList.length - 1,
+              ),
+            );
           }),
     );
   }

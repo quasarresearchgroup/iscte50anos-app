@@ -78,7 +78,9 @@
     "timelineAvailableTopics" : "Available Topics...",
     "timelineSelectedTopics" : "Selected Topics",
     "timelineSearchHint" : "Search",
-    "timelineSearchHintInsideTopic" : "Search inside the selection...",
-    "timelineSearchButton" : "Submit"
+    "timelineSearchHintInsideTopic" : "Advanced search",
+    "timelineSearchButton" : "Submit",
+    "timelineSelectAllButton" : "Select all",
+    "timelineSelectClearButton" : "Clear selection"
 
 }

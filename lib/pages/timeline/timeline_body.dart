@@ -43,7 +43,7 @@ class _TimeLineBodyState extends State<TimeLineBody> {
   @override
   void initState() {
     list = createYearsList(widget.mapdata);
-    chosenYear = widget.initialchosenYear ?? (list.length > 1 ? list.last : 0);
+    chosenYear = widget.initialchosenYear ?? (list.length > 1 ? list.first : 0);
 
     super.initState();
   }
@@ -67,7 +67,7 @@ class _TimeLineBodyState extends State<TimeLineBody> {
           child: YearTimelineListView(
             yearsList: list,
             changeYearFunction: changeChosenYear,
-            selectedYear: chosenYear != null ? chosenYear! : list.last,
+            selectedYear: chosenYear ?? list.last,
           ),
         ),
         Expanded(

@@ -41,17 +41,21 @@ class IscteTheme {
       errorColor: Colors.deepOrangeAccent,
       bottomAppBarColor: iscteColor,
       appBarTheme: appBarTheme,
+      textButtonTheme: TextButtonThemeData(
+        style: ButtonStyle(
+          foregroundColor:
+              MaterialStateColor.resolveWith((states) => iscteColor),
+        ),
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ButtonStyle(
+          foregroundColor:
+              MaterialStateColor.resolveWith((states) => Colors.white),
+          backgroundColor:
+              MaterialStateColor.resolveWith((states) => iscteColor),
+        ),
+      ),
     );
-  }
-
-  static CupertinoThemeData get cupertinoLightThemeData {
-    return CupertinoThemeData(
-        brightness: Brightness.light, primaryColor: IscteTheme.iscteColor);
-  }
-
-  static CupertinoThemeData get cupertinoDarkThemeData {
-    return CupertinoThemeData(
-        brightness: Brightness.dark, primaryColor: IscteTheme.iscteColor);
   }
 
   static ThemeData get darkThemeData {
@@ -66,7 +70,31 @@ class IscteTheme {
       errorColor: Colors.deepOrangeAccent,
       bottomAppBarColor: iscteColor,
       appBarTheme: appBarTheme,
+      textButtonTheme: TextButtonThemeData(
+        style: ButtonStyle(
+          foregroundColor:
+              MaterialStateColor.resolveWith((states) => iscteColor),
+        ),
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ButtonStyle(
+          foregroundColor:
+              MaterialStateColor.resolveWith((states) => Colors.white),
+          backgroundColor:
+              MaterialStateColor.resolveWith((states) => iscteColor),
+        ),
+      ),
     );
+  }
+
+  static CupertinoThemeData get cupertinoLightThemeData {
+    return CupertinoThemeData(
+        brightness: Brightness.light, primaryColor: IscteTheme.iscteColor);
+  }
+
+  static CupertinoThemeData get cupertinoDarkThemeData {
+    return CupertinoThemeData(
+        brightness: Brightness.dark, primaryColor: IscteTheme.iscteColor);
   }
 
   static InputDecoration buildInputDecoration(

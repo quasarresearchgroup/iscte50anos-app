@@ -15,19 +15,19 @@ import 'package:logger/logger.dart';
 class TimelineFilterPage extends StatefulWidget {
   TimelineFilterPage({Key? key}) : super(key: key);
   static const String pageRoute = "${TimelinePage.pageRoute}/filter";
+  final Logger _logger = Logger();
 
   @override
   State<TimelineFilterPage> createState() => _TimelineFilterPageState();
 }
 
 class _TimelineFilterPageState extends State<TimelineFilterPage> {
-  Topic? selectedTopic;
-  List<Topic> selectedTopics = [];
+  Set<Topic> selectedTopics = {};
 
   late final Future<List<Topic>> availableTopics;
   late final TextEditingController searchBarController;
 
-  final Logger _logger = Logger();
+  bool advancedSearch = false;
 
   @override
   void initState() {
@@ -46,6 +46,17 @@ class _TimelineFilterPageState extends State<TimelineFilterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          IconButton(
+              tooltip:
+                  AppLocalizations.of(context)!.timelineSearchHintInsideTopic,
+              onPressed: _enableAdvancedSearch,
+              icon: Icon(
+                advancedSearch ? Icons.filter_alt : Icons.filter_alt_outlined,
+                semanticLabel:
+                    AppLocalizations.of(context)!.timelineSearchHintInsideTopic,
+              ))
+        ],
         title: buildSearchBar(context, selectedTopics.isEmpty),
       ),
       body: buildBody(context, selectedTopics.isEmpty),
@@ -55,65 +66,108 @@ class _TimelineFilterPageState extends State<TimelineFilterPage> {
   Padding buildBody(BuildContext context, bool isEmptySelectedTopics) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 20),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ...(isEmptySelectedTopics)
-              ? []
-              : [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(AppLocalizations.of(context)!
-                            .timelineSelectedTopics)),
+      child: AnimatedSwitcher(
+        duration: Duration(milliseconds: 500),
+        child: !advancedSearch
+            ? Center(
+                child: ElevatedButton(
+                  child:
+                      Text(AppLocalizations.of(context)!.timelineSearchButton),
+                  onPressed: () {
+                    _submitSelection(context);
+                  },
+                ),
+              )
+            : Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  AnimatedSwitcher(
+                    duration: Duration(milliseconds: 500),
+                    child: isEmptySelectedTopics
+                        ? Container()
+                        : Column(children: [
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(AppLocalizations.of(context)!
+                                      .timelineSelectedTopics)),
+                            ),
+                            buildSelectedTopics(),
+                            const Divider(height: 20, thickness: 2),
+                          ]),
                   ),
-                  Wrap(
-                    alignment: WrapAlignment.start,
-                    direction: Axis.horizontal,
-                    children: selectedTopics
-                        .map((e) => Card(
-                              color: IscteTheme.iscteColor,
-                              shape: const StadiumBorder(),
-                              child: Padding(
-                                padding: const EdgeInsets.all(5.0),
-                                child: Text(
-                                  e.title ?? "",
-                                  overflow: TextOverflow.clip,
-                                  maxLines: 1,
-                                  style: const TextStyle(color: Colors.white),
-                                ),
-                              ),
-                            ))
-                        .toList(),
+                  buildAvailableTopicsHeader(context),
+                  buildTopicsCheckBoxList(),
+                  const Divider(),
+                  ElevatedButton(
+                    child: Text(
+                        AppLocalizations.of(context)!.timelineSearchButton),
+                    onPressed: () {
+                      _submitSelection(context);
+                    },
                   ),
-                  const Divider(height: 20, thickness: 2),
                 ],
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                    AppLocalizations.of(context)!.timelineAvailableTopics)),
-          ),
+              ),
+      ),
+    );
+  }
+
+  Padding buildAvailableTopicsHeader(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: Row(
+        children: [
+          Align(
+              alignment: Alignment.centerLeft,
+              child:
+                  Text(AppLocalizations.of(context)!.timelineAvailableTopics)),
           Expanded(
-            child: buildTopicsCheckBoxList(),
+            child: Container(),
           ),
-          const Divider(height: 20, thickness: 2),
-          ElevatedButton(
-            style: ButtonStyle(
-              backgroundColor: MaterialStateColor.resolveWith(
-                  (Set<MaterialState> states) => IscteTheme.iscteColor),
-            ),
-            child: Text(AppLocalizations.of(context)!.timelineSearchButton),
-            onPressed: () {
-              _submitSelection(context);
-            },
+          TextButton(
+            child: Text(AppLocalizations.of(context)!.timelineSelectAllButton),
+            onPressed: _selectAllTopics,
+          ),
+          TextButton(
+            child:
+                Text(AppLocalizations.of(context)!.timelineSelectClearButton),
+            onPressed: _clearTopicsList,
           ),
         ],
       ),
+    );
+  }
+
+  Wrap buildSelectedTopics() {
+    return Wrap(
+      alignment: WrapAlignment.start,
+      direction: Axis.horizontal,
+      children: selectedTopics
+          .map((e) => Card(
+                color: IscteTheme.iscteColor,
+                shape: const StadiumBorder(),
+                child: InkWell(
+                  customBorder: const StadiumBorder(),
+                  onTap: () {
+                    setState(() {
+                      selectedTopics.remove(e);
+                    });
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: Text(
+                      e.title ?? "",
+                      overflow: TextOverflow.clip,
+                      maxLines: 1,
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
+              ))
+          .toList(),
     );
   }
 
@@ -139,7 +193,7 @@ class _TimelineFilterPageState extends State<TimelineFilterPage> {
                 color: Colors.white,
               ),
               onPressed: searchBarController.clear),
-          hintText: isEmptySelectedTopics
+          hintText: !advancedSearch
               ? AppLocalizations.of(context)!.timelineSearchHint
               : AppLocalizations.of(context)!.timelineSearchHintInsideTopic,
           border: InputBorder.none,
@@ -149,49 +203,74 @@ class _TimelineFilterPageState extends State<TimelineFilterPage> {
   }
 
   Widget buildTopicsCheckBoxList() {
-    return FutureBuilder<List<Topic>>(
-      future: availableTopics,
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          List<Topic> data = snapshot.data!;
-          return GridView.builder(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2, childAspectRatio: 16 / 4),
-              semanticChildCount: data.length,
-              shrinkWrap: true,
-              itemCount: data.length,
-              itemBuilder: (context, index) {
-                return CheckboxListTile(
-                  activeColor: IscteTheme.iscteColor,
-                  value: selectedTopics.contains(data[index]),
-                  title: SingleChildScrollView(
-                    controller: ScrollController(),
-                    scrollDirection: Axis.horizontal,
-                    child: Text(data[index].title ?? ""),
-                  ),
-                  onChanged: (bool? bool) {
-                    if (bool != null) {
-                      if (bool) {
-                        setState(() {
-                          selectedTopics.add(data[index]);
-                        });
-                      } else {
-                        setState(() {
-                          selectedTopics.remove(data[index]);
-                        });
+    return Expanded(
+      child: FutureBuilder<List<Topic>>(
+        future: availableTopics,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            List<Topic> data = snapshot.data!;
+            return GridView.builder(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2, childAspectRatio: 16 / 4),
+                semanticChildCount: data.length,
+                shrinkWrap: true,
+                itemCount: data.length,
+                itemBuilder: (context, index) {
+                  return CheckboxListTile(
+                    activeColor: IscteTheme.iscteColor,
+                    value: selectedTopics.contains(data[index]),
+                    title: SingleChildScrollView(
+                      controller: ScrollController(),
+                      scrollDirection: Axis.horizontal,
+                      child: Text(data[index].title ?? ""),
+                    ),
+                    onChanged: (bool? bool) {
+                      if (bool != null) {
+                        if (bool) {
+                          setState(() {
+                            selectedTopics.add(data[index]);
+                          });
+                        } else {
+                          setState(() {
+                            selectedTopics.remove(data[index]);
+                          });
+                        }
+                        widget._logger.d(selectedTopics);
                       }
-                      _logger.d(selectedTopics);
-                    }
-                  },
-                );
-              });
-        } else if (snapshot.hasError) {
-          return ErrorWidget(AppLocalizations.of(context)!.generalError);
-        } else {
-          return const LoadingWidget();
-        }
-      },
+                    },
+                  );
+                });
+          } else if (snapshot.hasError) {
+            return ErrorWidget(AppLocalizations.of(context)!.generalError);
+          } else {
+            return const LoadingWidget();
+          }
+        },
+      ),
     );
+  }
+
+  void _selectAllTopics() async {
+    List<Topic> allTopics = await availableTopics;
+    setState(() {
+      selectedTopics.addAll(allTopics);
+    });
+  }
+
+  void _clearTopicsList() {
+    setState(() {
+      selectedTopics.clear();
+    });
+  }
+
+  void _enableAdvancedSearch() {
+    setState(() {
+      advancedSearch = !advancedSearch;
+      if (!advancedSearch) {
+        selectedTopics.clear();
+      }
+    });
+    widget._logger.d("advancedSearch: $advancedSearch");
   }
 
   void _submitSelection(BuildContext context) async {
@@ -206,7 +285,7 @@ class _TimelineFilterPageState extends State<TimelineFilterPage> {
       setOfEvents.addAll(await DatabaseEventTable.getAll());
     }
 
-    _logger.d("events from topics: $setOfEvents");
+    widget._logger.d("events from topics: $setOfEvents");
     String textSearchBar = searchBarController.text.toLowerCase();
     if (textSearchBar.isNotEmpty) {
       setOfEvents = setOfEvents.where((Event element) {
@@ -214,7 +293,7 @@ class _TimelineFilterPageState extends State<TimelineFilterPage> {
         return eventTitle.contains(textSearchBar) ||
             textSearchBar.contains(eventTitle);
       }).toSet();
-      _logger.d("filtered events: $setOfEvents");
+      widget._logger.d("filtered events: $setOfEvents");
     }
 
     Navigator.of(context).push(MaterialPageRoute(
