@@ -276,7 +276,7 @@ class _HomeOpenDayState extends State<HomeOpenDay>
                   physics: const NeverScrollableScrollPhysics(),
                   controller: _tabController,
                   children: [
-                    Center(
+                    SafeArea(
                       child: Padding(
                         padding: const EdgeInsets.all(10.0),
                         child: LayoutBuilder(
