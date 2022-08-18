@@ -16,7 +16,7 @@ class PuzzlePage extends StatefulWidget {
       required this.constraints,
       required this.completeCallback})
       : super(key: key);
-  final Logger _logger = Logger();
+  final Logger _logger = Logger(printer: PrettyPrinter(methodCount: 4));
   static const pageRoute = "/puzzle";
 
   final int rows = 5;
@@ -47,7 +47,6 @@ class _PuzzlePageState extends State<PuzzlePage>
   @override
   void didUpdateWidget(PuzzlePage oldWidget) {
     if (oldWidget.image != widget.image) {
-      widget._logger.d("changing image");
       generatePieces(widget.image);
     }
     super.didUpdateWidget(oldWidget);
@@ -56,10 +55,7 @@ class _PuzzlePageState extends State<PuzzlePage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return SafeArea(
-      child:
-          pieces.isNotEmpty ? Stack(children: pieces) : const LoadingWidget(),
-    );
+    return pieces.isNotEmpty ? Stack(children: pieces) : const LoadingWidget();
   }
 
   void refreshPieces() {
@@ -73,21 +69,54 @@ class _PuzzlePageState extends State<PuzzlePage>
 
   void generatePieces(Image img) async {
     Size originalSize = await ImageManipulation.getImageSize(img);
-    final double imageWidth;
-    final double imageHeight;
+    double imageWidth;
+    double imageHeight;
     imageWidth = quarterTurns.isEven
         ? widget.constraints.maxWidth
         : widget.constraints.maxWidth * originalSize.aspectRatio;
-    //imageHeight = imageWidth / originalSize.aspectRatio;
-    imageHeight = min(widget.constraints.maxWidth * originalSize.aspectRatio,
-        widget.constraints.maxHeight);
+    imageHeight = imageWidth / originalSize.aspectRatio;
+
+    if (quarterTurns.isEven) {
+      if (imageWidth > widget.constraints.maxWidth) {
+        imageWidth = widget.constraints.maxWidth;
+        imageHeight = widget.constraints.maxWidth / originalSize.aspectRatio;
+      } else if (imageHeight > widget.constraints.maxHeight) {
+        imageHeight = widget.constraints.maxHeight;
+        imageWidth = widget.constraints.maxHeight * originalSize.aspectRatio;
+      }
+    } else {
+      if (imageWidth > widget.constraints.maxHeight) {
+        imageWidth = widget.constraints.maxHeight;
+        imageHeight = widget.constraints.maxHeight / originalSize.aspectRatio;
+      } else if (imageHeight > widget.constraints.maxWidth) {
+        imageHeight = widget.constraints.maxWidth;
+        imageWidth = widget.constraints.maxWidth * originalSize.aspectRatio;
+      }
+    }
+
+    /*imageHeight = min(
+        imageWidth * originalSize.aspectRatio,
+        quarterTurns.isEven
+            ? widget.constraints.maxHeight
+            : widget.constraints.maxWidth);
+    if (imageHeight >= widget.constraints.maxHeight) {
+      imageHeight = widget.constraints.maxHeight;
+      imageWidth = imageHeight * originalSize.aspectRatio;
+    } else if (imageWidth >= widget.constraints.maxWidth) {
+      imageWidth = widget.constraints.maxWidth;
+      imageHeight = imageWidth * originalSize.aspectRatio;
+    }*/
+
+    //imageHeight = min(widget.constraints.maxWidth * originalSize.aspectRatio, widget.constraints.maxHeight);
+
     //imageHeight = widget.constraints.maxHeight *
     //    widget.constraints.maxWidth /
     //    originalSize.width;
 
     final Size imageSize = Size(imageWidth, imageHeight);
 
-    widget._logger.d("imageSize: $imageSize");
+    widget._logger.d(
+        "quarterTurns: $quarterTurns ; imageSize.width: ${imageSize.width} ; imageSize.height: ${imageSize.height}");
     List<PuzzlePiece> storedPuzzlePieces =
         await DatabasePuzzlePieceTable.getAll();
     List<PuzzlePieceWidget> storedPuzzlePieceWidgets = [];
@@ -126,16 +155,19 @@ class _PuzzlePageState extends State<PuzzlePage>
 
     pieces.clear();
     pieces.add(SizedBox.expand(child: Container()));
-    pieces.add(Container(
-      decoration: BoxDecoration(
-        color: Colors.brown,
-        border: Border.all(
-          color: Theme.of(context).shadowColor.withAlpha(100),
+    pieces.add(RotatedBox(
+      quarterTurns: quarterTurns,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.brown,
+          border: Border.all(
+            color: Theme.of(context).shadowColor.withAlpha(100),
+          ),
         ),
-      ),
-      child: SizedBox(
-        width: imageSize.width,
-        height: imageSize.height,
+        child: SizedBox(
+          width: imageSize.width,
+          height: imageSize.height,
+        ),
       ),
     ));
     //pieces.addAll(snappedPuzzlePieces);

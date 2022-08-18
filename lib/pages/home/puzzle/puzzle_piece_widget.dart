@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:iscte_spots/models/database/tables/database_puzzle_piece_table.dart';
 import 'package:iscte_spots/models/puzzle_piece.dart';
-import 'package:logger/logger.dart';
 
 import 'clipped_piece_widget.dart';
 
@@ -94,6 +93,12 @@ class PuzzlePieceWidgetState extends State<PuzzlePieceWidget> {
   double? top;
   double? left;
   bool isMovable = true;
+  late double zeroWidth;
+  late double zeroHeight;
+  late double maxHeight;
+  late double minHeight;
+  late double maxWidth;
+  late double minWidth;
 
   @override
   void initState() {
@@ -107,23 +112,25 @@ class PuzzlePieceWidgetState extends State<PuzzlePieceWidget> {
 
     if (top == null || left == null) {
       final double pieceHeight = widget.imageSize.height / widget.maxRow;
-      double zeroHeight = (-widget.row) * pieceHeight;
-      double maxHeight = zeroHeight + (widget.maxRow - 1) * pieceHeight;
+      zeroHeight = (-widget.row) * pieceHeight;
+      maxHeight = zeroHeight + (widget.maxRow - 1) * pieceHeight;
 
-      double minHeight = zeroHeight + (widget.maxRow - 2) * pieceHeight;
+      minHeight = zeroHeight + (widget.maxRow - 2) * pieceHeight;
 
       final double pieceWidth = widget.imageSize.width / widget.maxCol;
-      double zeroWidth = (-widget.col) * pieceWidth;
-      double maxWidth = zeroWidth + (widget.maxCol - 1) * pieceWidth;
-      double minWidth = zeroWidth;
-      top ??= ((Random().nextDouble() * (maxHeight - minHeight)) + minHeight);
-      left ??= ((Random().nextDouble() * (maxWidth - minWidth)) + minWidth);
-      if (widget.quarterTurns.isOdd) {
-        double temp = top!;
-        top = left;
-        left = top;
-      }
-      Logger().d(
+      zeroWidth = (-widget.col) * pieceWidth;
+      maxWidth = zeroWidth + (widget.maxCol - 1) * pieceWidth;
+      minWidth = zeroWidth;
+
+      double x =
+          ((Random().nextDouble() * (maxHeight - minHeight)) + minHeight);
+      double y = ((Random().nextDouble() * (maxWidth - minWidth)) + minWidth);
+
+      top ??= x;
+      left ??= y;
+
+      /*
+        Logger().d(
         "col:${widget.col};"
         "row:${widget.row};"
         "maxHeight: $maxHeight;"
@@ -133,6 +140,7 @@ class PuzzlePieceWidgetState extends State<PuzzlePieceWidget> {
         "top:$top;"
         "left:$left;",
       );
+      */
     }
   }
 
@@ -141,39 +149,43 @@ class PuzzlePieceWidgetState extends State<PuzzlePieceWidget> {
     return Positioned(
       top: top,
       left: left,
-      child: GestureDetector(
-        onTap: () {
-          if (isMovable) {
-            widget.bringToTop(widget);
-          }
-        },
-        onPanStart: (_) {
-          if (isMovable) {
-            widget.bringToTop(widget);
-          }
-        },
-        onPanUpdate: (dragUpdateDetails) {
-          if (isMovable) {
-            setState(() {
-              top = top! + dragUpdateDetails.delta.dy;
-              left = left! + dragUpdateDetails.delta.dx;
+      child: LayoutBuilder(
+        builder: (context, constraints) => GestureDetector(
+          onTap: () {
+            if (isMovable) {
+              widget.bringToTop(widget);
+            }
+          },
+          onPanStart: (_) {
+            if (isMovable) {
+              widget.bringToTop(widget);
+            }
+          },
+          onPanUpdate: (dragUpdateDetails) {
+            if (isMovable) {
+              setState(() {
+                top = min(top! + dragUpdateDetails.delta.dy,
+                    constraints.maxHeight - zeroHeight - 100);
+                left = min(left! + dragUpdateDetails.delta.dx,
+                    constraints.maxWidth - zeroWidth - 100);
 
-              if (-10 < top! && top! < 10 && -10 < left! && left! < 10) {
-                snapInPlace();
-              }
-              //widget._logger.d("top:$top; left: $left");
-            });
-          }
-        },
-        child: RotatedBox(
-          quarterTurns: widget.quarterTurns,
-          child: ClippedPieceWidget(
-            image: widget.image,
-            row: widget.row,
-            col: widget.col,
-            maxRow: widget.maxRow,
-            width: widget.imageSize.width,
-            maxCol: widget.maxCol,
+                if (-10 < top! && top! < 10 && -10 < left! && left! < 10) {
+                  snapInPlace();
+                }
+                //widget._logger.d("top:$top; left: $left");
+              });
+            }
+          },
+          child: RotatedBox(
+            quarterTurns: widget.quarterTurns,
+            child: ClippedPieceWidget(
+              image: widget.image,
+              row: widget.row,
+              col: widget.col,
+              maxRow: widget.maxRow,
+              width: widget.imageSize.width,
+              maxCol: widget.maxCol,
+            ),
           ),
         ),
       ),
