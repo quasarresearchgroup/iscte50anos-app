@@ -158,6 +158,7 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
   void chooseSpot(List<String> list, int index, BuildContext context) {
     SharedPrefsService.storeCurrentPuzzleIMG(list[index]);
     DatabasePuzzlePieceTable.removeALL();
+    setState(() {});
     Navigator.of(context).pop();
   }
 }

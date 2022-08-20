@@ -30,7 +30,7 @@ class PuzzlePiece {
     required sendToBack,
     //required BoxConstraints constraints,
     required completeCallback,
-    required int quarterTurns,
+    bool isTurned = false,
   }) {
     return PuzzlePieceWidget(
       image: image,
@@ -46,7 +46,7 @@ class PuzzlePiece {
       left: left,
       movable: (top != 0 || left != 0),
       completeCallback: completeCallback,
-      quarterTurns: quarterTurns,
+      isTurned: isTurned,
     );
   }
 

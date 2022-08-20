@@ -24,7 +24,7 @@ class PuzzlePieceWidget extends StatefulWidget {
   final double? top;
   final double? left;
   final bool? movable;
-  final int quarterTurns;
+  final bool isTurned;
 
   const PuzzlePieceWidget({
     Key? key,
@@ -42,7 +42,7 @@ class PuzzlePieceWidget extends StatefulWidget {
     this.left,
     this.movable,
     required this.completeCallback,
-    this.quarterTurns = 0,
+    this.isTurned = false,
   }) : super(key: key);
 
   @override
@@ -80,7 +80,7 @@ class PuzzlePieceWidget extends StatefulWidget {
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'PuzzlePieceWidget{row: $row, col: $col, maxRow: $maxRow, maxCol: $maxCol, top: $top, left: $left, movable: $movable,image: $image, imageSize: $imageSize, bringToTop: $bringToTop, sendToBack: $sendToBack, snapInPlace: $snapInPlace, quarterTurns: $quarterTurns}';
+    return 'PuzzlePieceWidget{row: $row, col: $col, maxRow: $maxRow, maxCol: $maxCol, top: $top, left: $left, movable: $movable,image: $image, imageSize: $imageSize, bringToTop: $bringToTop, sendToBack: $sendToBack, snapInPlace: $snapInPlace, quarterTurns: $isTurned}';
   }
 
   @override
@@ -177,7 +177,7 @@ class PuzzlePieceWidgetState extends State<PuzzlePieceWidget> {
             }
           },
           child: RotatedBox(
-            quarterTurns: widget.quarterTurns,
+            quarterTurns: widget.isTurned ? 1 : 0,
             child: ClippedPieceWidget(
               image: widget.image,
               row: widget.row,

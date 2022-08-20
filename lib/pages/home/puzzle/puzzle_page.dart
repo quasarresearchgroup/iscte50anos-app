@@ -33,7 +33,7 @@ class _PuzzlePageState extends State<PuzzlePage>
     with AutomaticKeepAliveClientMixin {
   final List<Widget> pieces = [];
 
-  int quarterTurns = 0;
+  bool isTurned = false;
   //make this a future so that previous operations get queued and complete only when this has values
   @override
   void initState() {
@@ -63,7 +63,7 @@ class _PuzzlePageState extends State<PuzzlePage>
   }
 
   void rotatePuzzle() {
-    quarterTurns += 1;
+    isTurned = !isTurned;
     generatePieces(widget.image);
   }
 
@@ -71,12 +71,12 @@ class _PuzzlePageState extends State<PuzzlePage>
     Size originalSize = await ImageManipulation.getImageSize(img);
     double imageWidth;
     double imageHeight;
-    imageWidth = quarterTurns.isEven
+    imageWidth = !isTurned
         ? widget.constraints.maxWidth
         : widget.constraints.maxWidth * originalSize.aspectRatio;
     imageHeight = imageWidth / originalSize.aspectRatio;
 
-    if (quarterTurns.isEven) {
+    if (!isTurned) {
       if (imageWidth > widget.constraints.maxWidth) {
         imageWidth = widget.constraints.maxWidth;
         imageHeight = widget.constraints.maxWidth / originalSize.aspectRatio;
@@ -116,7 +116,7 @@ class _PuzzlePageState extends State<PuzzlePage>
     final Size imageSize = Size(imageWidth, imageHeight);
 
     widget._logger.d(
-        "quarterTurns: $quarterTurns ; imageSize.width: ${imageSize.width} ; imageSize.height: ${imageSize.height}");
+        "quarterTurns: $isTurned ; imageSize.width: ${imageSize.width} ; imageSize.height: ${imageSize.height}");
     List<PuzzlePiece> storedPuzzlePieces =
         await DatabasePuzzlePieceTable.getAll();
     List<PuzzlePieceWidget> storedPuzzlePieceWidgets = [];
@@ -130,7 +130,7 @@ class _PuzzlePageState extends State<PuzzlePage>
           sendToBack: sendToBack,
           //constraints: widget.constraints,
           completeCallback: widget.completeCallback,
-          quarterTurns: quarterTurns,
+          isTurned: isTurned,
         ),
       );
       storedPositions.add(Point(element.row, element.column));
@@ -146,7 +146,7 @@ class _PuzzlePageState extends State<PuzzlePage>
       imageSize: imageSize,
       //constraints: widget.constraints,
       completeCallback: widget.completeCallback,
-      quarterTurns: quarterTurns,
+      isTurned: isTurned,
     ))
             .where((PuzzlePieceWidget element) {
       Point<int> point = Point(element.row, element.col);
@@ -156,7 +156,7 @@ class _PuzzlePageState extends State<PuzzlePage>
     pieces.clear();
     pieces.add(SizedBox.expand(child: Container()));
     pieces.add(RotatedBox(
-      quarterTurns: quarterTurns,
+      quarterTurns: isTurned ? 1 : 0,
       child: Container(
         decoration: BoxDecoration(
           color: Colors.brown,

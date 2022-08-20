@@ -34,7 +34,7 @@ class ImageManipulation {
     required sendToBack,
     //required constraints,
     required completeCallback,
-    int quarterTurns = 0,
+    bool isTurned = false,
     required Size imageSize,
   }) async {
     //logger.d('started split');
@@ -53,7 +53,7 @@ class ImageManipulation {
           sendToBack: sendToBack,
           //constraints: constraints,
           completeCallback: completeCallback,
-          quarterTurns: quarterTurns,
+          isTurned: isTurned,
         );
         outputList.add(puzzlePiece);
       }

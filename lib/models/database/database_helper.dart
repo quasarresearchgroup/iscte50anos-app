@@ -46,19 +46,20 @@ class DatabaseHelper {
     _logger.d('Finished OnCreate to the db');
   }
 
-  Future _dropAll(db) async {
+  Future _dropAll(Database db) async {
     _logger.d('Started DropAll to the db');
 /*
     String sql_query = """SELECT name FROM sqlite_master WHERE type='table';""";
     List<Map<String, Object?>> query = await db.query('sqlite_master');
     _logger.d(query);*/
-
-    await DatabasePageTable.drop(db);
-    await DatabaseContentTable.drop(db);
-    await DatabaseEventTable.drop(db);
-    await DatabaseTopicTable.drop(db);
-    await DatabaseTopicEventTable.drop(db);
-    await DatabasePuzzlePieceTable.drop(db);
+    databaseFactory.deleteDatabase(db.path);
+    //await DatabasePageTable.drop(db);
+    //await DatabaseContentTable.drop(db);
+    //await DatabaseEventTable.drop(db);
+    //await DatabaseTopicTable.drop(db);
+    //await DatabaseTopicEventTable.drop(db);
+    //await DatabaseTopicEventTable.drop(db);
+    //await DatabasePuzzlePieceTable.drop(db);
 
     _logger.d('Finished DropAll to the db');
   }
@@ -74,7 +75,7 @@ class DatabaseHelper {
     _logger.d('Finished removeAll to the db');
   }
 
-  Future<void> _upgradeDb(db, int oldversion, int newversion) async {
+  Future<void> _upgradeDb(Database db, int oldversion, int newversion) async {
     if (oldversion != newversion) {
       _logger.d('Started Upgrade to the db');
       await _dropAll(db);
