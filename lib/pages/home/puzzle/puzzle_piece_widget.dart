@@ -95,10 +95,10 @@ class PuzzlePieceWidgetState extends State<PuzzlePieceWidget> {
       widget._logger.d(
           " row: ${widget.row}; col: ${widget.col} ;pieceHeight: $pieceHeight; pieceWidth: $pieceWidth; zeroHeight: $zeroHeight; zeroWidth: $zeroWidth; ");
 
-      maxHeight = zeroHeight + (widget.maxRow - 1) * pieceHeight;
-      minHeight = zeroHeight + (widget.maxRow - 2) * pieceHeight;
+      maxHeight = zeroHeight - pieceHeight + widget.constraints.maxHeight;
+      minHeight = zeroHeight - 2 * pieceHeight + widget.constraints.maxHeight;
 
-      maxWidth = zeroWidth + (widget.maxCol - 1) * pieceWidth;
+      maxWidth = zeroWidth + widget.constraints.maxWidth - pieceWidth;
       minWidth = zeroWidth;
 
       double x =
