@@ -3,18 +3,19 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:iscte_spots/models/database/tables/database_puzzle_piece_table.dart';
 import 'package:iscte_spots/models/puzzle_piece.dart';
+import 'package:logger/logger.dart';
 
 import 'clipped_piece_widget.dart';
 
 class PuzzlePieceWidget extends StatefulWidget {
-  //final Logger _logger = Logger();
+  final Logger _logger = Logger();
 
   final Image image;
   final Size imageSize;
   final Function bringToTop;
   final Function sendToBack;
   final bool snapInPlace;
-  //final BoxConstraints constraints;
+  final BoxConstraints constraints;
   final Function completeCallback;
 
   final int row;
@@ -26,13 +27,13 @@ class PuzzlePieceWidget extends StatefulWidget {
   final bool? movable;
   final bool isTurned;
 
-  const PuzzlePieceWidget({
+  PuzzlePieceWidget({
     Key? key,
     required this.image,
     required this.imageSize,
     required this.bringToTop,
     required this.sendToBack,
-    //required this.constraints,
+    required this.constraints,
     required this.row,
     required this.col,
     required this.maxRow,
@@ -44,39 +45,6 @@ class PuzzlePieceWidget extends StatefulWidget {
     required this.completeCallback,
     this.isTurned = false,
   }) : super(key: key);
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      super == other &&
-          other is PuzzlePieceWidget &&
-          runtimeType == other.runtimeType &&
-          image == other.image &&
-          imageSize == other.imageSize &&
-          bringToTop == other.bringToTop &&
-          sendToBack == other.sendToBack &&
-          snapInPlace == other.snapInPlace &&
-          //constraints == other.constraints &&
-          row == other.row &&
-          col == other.col &&
-          maxRow == other.maxRow &&
-          maxCol == other.maxCol &&
-          movable == other.movable;
-
-  @override
-  int get hashCode =>
-      super.hashCode ^
-      image.hashCode ^
-      imageSize.hashCode ^
-      bringToTop.hashCode ^
-      sendToBack.hashCode ^
-      snapInPlace.hashCode ^
-      //constraints.hashCode ^
-      row.hashCode ^
-      col.hashCode ^
-      maxRow.hashCode ^
-      maxCol.hashCode ^
-      movable.hashCode;
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
@@ -99,6 +67,8 @@ class PuzzlePieceWidgetState extends State<PuzzlePieceWidget> {
   late double minHeight;
   late double maxWidth;
   late double minWidth;
+  late final double pieceWidth;
+  late final double pieceHeight;
 
   @override
   void initState() {
@@ -111,14 +81,23 @@ class PuzzlePieceWidgetState extends State<PuzzlePieceWidget> {
     }
 
     if (top == null || left == null) {
-      final double pieceHeight = widget.imageSize.height / widget.maxRow;
-      zeroHeight = (-widget.row) * pieceHeight;
-      maxHeight = zeroHeight + (widget.maxRow - 1) * pieceHeight;
+      if (widget.isTurned) {
+        pieceHeight = widget.imageSize.width / widget.maxCol;
+        pieceWidth = widget.imageSize.height / widget.maxRow;
+        zeroHeight = -widget.col * pieceHeight;
+        zeroWidth = (widget.row - widget.maxRow + 1) * pieceWidth;
+      } else {
+        pieceHeight = widget.imageSize.height / widget.maxRow;
+        pieceWidth = widget.imageSize.width / widget.maxCol;
+        zeroHeight = -widget.row * pieceHeight;
+        zeroWidth = -widget.col * pieceWidth;
+      }
+      widget._logger.d(
+          " row: ${widget.row}; col: ${widget.col} ;pieceHeight: $pieceHeight; pieceWidth: $pieceWidth; zeroHeight: $zeroHeight; zeroWidth: $zeroWidth; ");
 
+      maxHeight = zeroHeight + (widget.maxRow - 1) * pieceHeight;
       minHeight = zeroHeight + (widget.maxRow - 2) * pieceHeight;
 
-      final double pieceWidth = widget.imageSize.width / widget.maxCol;
-      zeroWidth = (-widget.col) * pieceWidth;
       maxWidth = zeroWidth + (widget.maxCol - 1) * pieceWidth;
       minWidth = zeroWidth;
 
@@ -149,47 +128,75 @@ class PuzzlePieceWidgetState extends State<PuzzlePieceWidget> {
     return Positioned(
       top: top,
       left: left,
-      child: LayoutBuilder(
-        builder: (context, constraints) => GestureDetector(
-          onTap: () {
-            if (isMovable) {
-              widget.bringToTop(widget);
-            }
-          },
-          onPanStart: (_) {
-            if (isMovable) {
-              widget.bringToTop(widget);
-            }
-          },
-          onPanUpdate: (dragUpdateDetails) {
-            if (isMovable) {
-              setState(() {
-                top = min(top! + dragUpdateDetails.delta.dy,
-                    constraints.maxHeight - zeroHeight - 100);
-                left = min(left! + dragUpdateDetails.delta.dx,
-                    constraints.maxWidth - zeroWidth - 100);
-
-                if (-10 < top! && top! < 10 && -10 < left! && left! < 10) {
-                  snapInPlace();
-                }
-                //widget._logger.d("top:$top; left: $left");
-              });
-            }
-          },
-          child: RotatedBox(
-            quarterTurns: widget.isTurned ? 1 : 0,
-            child: ClippedPieceWidget(
-              image: widget.image,
-              row: widget.row,
-              col: widget.col,
-              maxRow: widget.maxRow,
-              width: widget.imageSize.width,
-              maxCol: widget.maxCol,
-            ),
+      child: GestureDetector(
+        onTap: () {
+          if (isMovable) {
+            widget.bringToTop(widget);
+          }
+        },
+        onPanStart: (_) {
+          if (isMovable) {
+            widget.bringToTop(widget);
+          }
+        },
+        onPanUpdate: (dragUpdateDetails) {
+          move(
+            dx: dragUpdateDetails.delta.dx,
+            dy: dragUpdateDetails.delta.dy,
+            constraints: widget.constraints,
+          );
+        },
+        child: RotatedBox(
+          quarterTurns: widget.isTurned ? 1 : 0,
+          child: ClippedPieceWidget(
+            image: widget.image,
+            row: widget.row,
+            col: widget.col,
+            maxRow: widget.maxRow,
+            width: widget.imageSize.width,
+            maxCol: widget.maxCol,
           ),
         ),
       ),
     );
+  }
+
+  void move({
+    required double dx,
+    required double dy,
+    required BoxConstraints constraints,
+  }) {
+    double maxTop = zeroHeight + constraints.maxHeight - pieceHeight;
+    double maxLeft = zeroWidth + constraints.maxWidth - pieceWidth;
+
+    if (isMovable) {
+      top = max(
+        zeroHeight,
+        min(
+          maxTop,
+          top != null ? (top! + dy) : dy,
+        ),
+      );
+      left = max(
+        zeroWidth,
+        min(
+          maxLeft,
+          left != null ? (left! + dx) : dx,
+        ),
+      );
+      //top = min(top != null ? (top! + dy) : dy,
+      //    constraints.maxHeight - zeroHeight - 100);
+      //left = min(left != null ? (left! + dx) : dx,
+      //    constraints.maxWidth - zeroWidth - 100);
+
+      if (-10 < top! && top! < 10 && -10 < left! && left! < 10) {
+        snapInPlace();
+      }
+      widget._logger.d(
+          "top:$top; left: $left, pieceHeight: $pieceHeight; pieceWIdth: $pieceWidth; maxTop: $maxTop ;maxLeft: $maxLeft ;");
+      //widget._logger.d(constraints);
+      setState(() {});
+    }
   }
 
   void snapInPlace() async {

@@ -32,7 +32,7 @@ class ImageManipulation {
     required cols,
     required bringToTop,
     required sendToBack,
-    //required constraints,
+    required constraints,
     required completeCallback,
     bool isTurned = false,
     required Size imageSize,
@@ -51,7 +51,7 @@ class ImageManipulation {
           maxCol: cols,
           bringToTop: bringToTop,
           sendToBack: sendToBack,
-          //constraints: constraints,
+          constraints: constraints,
           completeCallback: completeCallback,
           isTurned: isTurned,
         );

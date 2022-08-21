@@ -10,12 +10,12 @@ import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:logger/logger.dart';
 
 class PuzzlePage extends StatefulWidget {
-  PuzzlePage(
-      {Key? key,
-      required this.image,
-      required this.constraints,
-      required this.completeCallback})
-      : super(key: key);
+  PuzzlePage({
+    Key? key,
+    required this.image,
+    required this.constraints,
+    required this.completeCallback,
+  }) : super(key: key);
   final Logger _logger = Logger(printer: PrettyPrinter(methodCount: 4));
   static const pageRoute = "/puzzle";
 
@@ -128,7 +128,7 @@ class _PuzzlePageState extends State<PuzzlePage>
           imageSize: imageSize,
           bringToTop: bringToTop,
           sendToBack: sendToBack,
-          //constraints: widget.constraints,
+          constraints: widget.constraints,
           completeCallback: widget.completeCallback,
           isTurned: isTurned,
         ),
@@ -144,7 +144,7 @@ class _PuzzlePageState extends State<PuzzlePage>
       rows: widget.rows,
       cols: widget.cols,
       imageSize: imageSize,
-      //constraints: widget.constraints,
+      constraints: widget.constraints,
       completeCallback: widget.completeCallback,
       isTurned: isTurned,
     ))

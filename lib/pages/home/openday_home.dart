@@ -262,7 +262,7 @@ class _HomeOpenDayState extends State<HomeOpenDay>
     );
   }
 
-  AnimatedSwitcher buildHomeBody(bool challengeCompleteBool) {
+  Widget buildHomeBody(bool challengeCompleteBool) {
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 500),
       child: challengeCompleteBool
@@ -278,64 +278,30 @@ class _HomeOpenDayState extends State<HomeOpenDay>
                   children: [
                     SafeArea(
                       child: Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: LayoutBuilder(
-                          builder: (BuildContext context,
-                              BoxConstraints constraints) {
-                            return Stack(
-                              children: [
-                                ValueListenableBuilder<String>(
-                                    valueListenable: _currentPuzzleImg,
-                                    builder: (context, value, _) {
-                                      if (value.isNotEmpty) {
+                          padding: const EdgeInsets.all(10.0),
+                          child: Stack(
+                            children: [
+                              ValueListenableBuilder<String>(
+                                  valueListenable: _currentPuzzleImg,
+                                  builder: (context, value, _) {
+                                    if (value.isNotEmpty) {
+                                      return LayoutBuilder(
+                                          builder: (context, constraints) {
                                         return PuzzlePage(
                                           image: Image.network(value),
-                                          constraints: constraints,
                                           completeCallback:
                                               completePuzzleCallback,
-                                        );
-                                      } else {
-                                        return LoadingWidget();
-                                      }
-                                    })
-/*                                FutureBuilder<String>(
-                                    future: currentPemit,
-                                    builder: (context, snapshot) {
-                                      if (snapshot.hasData) {
-                                        if (snapshot.data != null &&
-                                            OpenDayQRScanService.isCompleteAll(
-                                                snapshot.data!
-                                                    .locationPhotoLink!)) {
-                                          _completedAllPuzzles();
-                                        }
-                                        if (OpenDayQRScanService.isError(
-                                            snapshot
-                                                .data!.locationPhotoLink!)) {
-                                          return buildErrorWidget();
-                                        }
-                                        currentPuzzleImage = Image.network(
-                                            snapshot.data!.locationPhotoLink!);
-
-                                        return PuzzlePage(
-                                          image: currentPuzzleImage!,
                                           constraints: constraints,
-                                          completeCallback:
-                                              completePuzzleCallback,
                                         );
-                                      } else if (snapshot.hasError) {
-                                        return buildErrorWidget();
-                                      } else {
-                                        return const LoadingWidget();
-                                      }
-                                    })*/
-                                ,
-                                IscteConfetti(
-                                    confettiController: _confettiController)
-                              ],
-                            );
-                          },
-                        ),
-                      ),
+                                      });
+                                    } else {
+                                      return const LoadingWidget();
+                                    }
+                                  }),
+                              IscteConfetti(
+                                  confettiController: _confettiController)
+                            ],
+                          )),
                     ),
                     QRScanPageOpenDay(
                       changeImage: changeCurrentImage,
