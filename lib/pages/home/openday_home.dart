@@ -49,6 +49,8 @@ class _HomeOpenDayState extends State<HomeOpenDay>
   late final ConfettiController _confettiController;
   late final AnimationController _lottieController;
 
+  GlobalKey<State<StatefulWidget>> _key = GlobalKey();
+
   @override
   void initState() {
     super.initState();
@@ -161,65 +163,19 @@ class _HomeOpenDayState extends State<HomeOpenDay>
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<bool>(
-      valueListenable: _completedAllPuzzlesBool,
-      builder: (BuildContext context, bool challengeCompleteBool, _) {
-        if (Platform.isIOS) {
-          return CupertinoPageScaffold(
-            child: Text("home"),
-            navigationBar: CupertinoNavigationBar(
-              middle: Text("Puzzle"),
-              trailing: challengeCompleteBool
-                  ? Container()
-                  : Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Center(
-                        child: ValueListenableBuilder<String>(
-                          valueListenable: _currentPuzzleImg,
-                          builder: (context, value, _) {
-                            return IconButton(
-                              icon:
-                                  const FaIcon(FontAwesomeIcons.circleQuestion),
-                              onPressed: () => showHelpOverlay(context,
-                                  Image.network(value), widget._logger),
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-            ),
-          );
-        } else {
-          return Scaffold(
-            extendBodyBehindAppBar: true,
-            extendBody: true,
-            drawer: NavigationDrawerOpenDay(),
-            appBar: AppBar(
-              title: Text("Puzzle")
-              /*FutureBuilder<SpotRequest>(
-                future: currentPemit,
-                builder: (BuildContext context,
-                    AsyncSnapshot<SpotRequest> snapshot) {
-                  if (snapshot.hasData) {
-                    String spots;
-                    SpotRequest spotRequest = snapshot.data as SpotRequest;
-                    if (spotRequest.spotNumber != null) {
-                      widget._logger.d(spotRequest);
-                      currentPuzzleNumber = spotRequest.spotNumber;
-                      spots = "nº " + currentPuzzleNumber!.toString();
-                    } else {
-                      spots = "";
-                    }
-                    return Text("Puzzle $spots");
-                  } else {
-                    return const LoadingWidget();
-                  }
-                })*/
-              ,
-              actions: challengeCompleteBool
-                  ? null
-                  : [
-                      Padding(
+    return OrientationBuilder(
+        builder: (BuildContext context, Orientation orientation) {
+      return ValueListenableBuilder<bool>(
+        valueListenable: _completedAllPuzzlesBool,
+        builder: (BuildContext context, bool challengeCompleteBool, _) {
+          if (Platform.isIOS) {
+            return CupertinoPageScaffold(
+              child: Text("home"),
+              navigationBar: CupertinoNavigationBar(
+                middle: Text("Puzzle"),
+                trailing: challengeCompleteBool
+                    ? Container()
+                    : Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Center(
                           child: ValueListenableBuilder<String>(
@@ -228,38 +184,125 @@ class _HomeOpenDayState extends State<HomeOpenDay>
                               return IconButton(
                                 icon: const FaIcon(
                                     FontAwesomeIcons.circleQuestion),
-                                onPressed: () => showHelpOverlay(context,
-                                    Image.network(value), widget._logger),
+                                onPressed: () => showHelpOverlay(
+                                  context,
+                                  Image.network(value),
+                                  orientation,
+                                ),
                               );
                             },
                           ),
                         ),
                       ),
-                    ],
-            ),
-            floatingActionButtonLocation:
-                FloatingActionButtonLocation.centerDocked,
-            floatingActionButton: FloatingActionButton(
-                child: const FaIcon(
-                  FontAwesomeIcons.rankingStar,
-                  color: Colors.grey,
-                  size: 30,
-                ),
-                foregroundColor: Theme.of(context).unselectedWidgetColor,
-                onPressed: () {
-                  Navigator.of(context).pushNamed(LeaderBoardPage.pageRoute);
-                }),
-            bottomNavigationBar: challengeCompleteBool
-                ? Container()
-                : MyBottomBar(
-                    tabController: _tabController,
-                    initialIndex: 0,
-                  ),
-            body: buildHomeBody(challengeCompleteBool),
-          );
-        }
-      },
-    );
+              ),
+            );
+          } else {
+            return Scaffold(
+              key: _key,
+              extendBodyBehindAppBar: orientation == Orientation.portrait,
+              extendBody: orientation == Orientation.portrait,
+              drawer: NavigationDrawerOpenDay(),
+              appBar: orientation == Orientation.landscape
+                  ? null
+                  : AppBar(
+                      title: Text("Puzzle"),
+                      actions: challengeCompleteBool
+                          ? null
+                          : [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Center(
+                                  child: ValueListenableBuilder<String>(
+                                    valueListenable: _currentPuzzleImg,
+                                    builder: (context, value, _) {
+                                      return IconButton(
+                                        icon: const Icon(Icons.help),
+                                        onPressed: () => showHelpOverlay(
+                                          context,
+                                          Image.network(value),
+                                          orientation,
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ],
+                    ),
+              floatingActionButtonLocation: orientation == Orientation.landscape
+                  ? null
+                  : FloatingActionButtonLocation.centerDocked,
+              floatingActionButton: orientation == Orientation.landscape
+                  ? null
+                  : FloatingActionButton(
+                      child: const FaIcon(
+                        FontAwesomeIcons.rankingStar,
+                        color: Colors.grey,
+                        size: 30,
+                      ),
+                      foregroundColor: Theme.of(context).unselectedWidgetColor,
+                      onPressed: () {
+                        Navigator.of(context)
+                            .pushNamed(LeaderBoardPage.pageRoute);
+                      }),
+              bottomNavigationBar: (challengeCompleteBool ||
+                      orientation == Orientation.landscape)
+                  ? null
+                  : MyBottomBar(
+                      tabController: _tabController,
+                      initialIndex: 0,
+                    ),
+              body: Builder(builder: (context) {
+                return orientation == Orientation.landscape
+                    ? Row(
+                        children: [
+                          ValueListenableBuilder<String>(
+                              valueListenable: _currentPuzzleImg,
+                              builder: (context, value, _) {
+                                return NavigationRail(
+                                  onDestinationSelected: (index) {
+                                    if (index == 0) {
+                                      Scaffold.of(context).openDrawer();
+                                    } else {
+                                      showHelpOverlay(
+                                        context,
+                                        Image.network(value),
+                                        orientation,
+                                      );
+                                    }
+                                  },
+                                  selectedIndex: 0,
+                                  destinations: const <
+                                      NavigationRailDestination>[
+                                    NavigationRailDestination(
+                                      icon: Icon(Icons.menu),
+                                      selectedIcon: Icon(Icons.menu),
+                                      label: Text('Drawer'),
+                                    ),
+                                    NavigationRailDestination(
+                                      icon: const Icon(Icons.help),
+                                      label: Text('First'),
+                                    ),
+                                  ],
+                                );
+                              }),
+                          VerticalDivider(),
+                          Expanded(child: buildHomeBody(challengeCompleteBool)),
+                          VerticalDivider(),
+                          MyBottomBar(
+                            initialIndex: 0,
+                            tabController: _tabController,
+                            orientation: orientation,
+                          ),
+                        ],
+                      )
+                    : buildHomeBody(challengeCompleteBool);
+              }),
+            );
+          }
+        },
+      );
+    });
   }
 
   Widget buildHomeBody(bool challengeCompleteBool) {

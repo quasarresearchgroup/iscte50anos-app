@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:iscte_spots/helper/image_manipulation.dart';
 import 'package:iscte_spots/models/database/tables/database_puzzle_piece_table.dart';
 import 'package:iscte_spots/models/puzzle_piece.dart';
@@ -33,7 +32,6 @@ class _PuzzlePageState extends State<PuzzlePage>
     with AutomaticKeepAliveClientMixin {
   final List<Widget> pieces = [];
 
-  bool isTurned = false;
   //make this a future so that previous operations get queued and complete only when this has values
   @override
   void initState() {
@@ -61,37 +59,25 @@ class _PuzzlePageState extends State<PuzzlePage>
   void refreshPieces() {
     generatePieces(widget.image);
   }
-
+/*
   void rotatePuzzle() {
     isTurned = !isTurned;
     generatePieces(widget.image);
-  }
+  }*/
 
   void generatePieces(Image img) async {
     Size originalSize = await ImageManipulation.getImageSize(img);
     double imageWidth;
     double imageHeight;
-    imageWidth = !isTurned
-        ? widget.constraints.maxWidth
-        : widget.constraints.maxWidth * originalSize.aspectRatio;
+    imageWidth = widget.constraints.maxWidth;
     imageHeight = imageWidth / originalSize.aspectRatio;
 
-    if (!isTurned) {
-      if (imageWidth > widget.constraints.maxWidth) {
-        imageWidth = widget.constraints.maxWidth;
-        imageHeight = widget.constraints.maxWidth / originalSize.aspectRatio;
-      } else if (imageHeight > widget.constraints.maxHeight) {
-        imageHeight = widget.constraints.maxHeight;
-        imageWidth = widget.constraints.maxHeight * originalSize.aspectRatio;
-      }
-    } else {
-      if (imageWidth > widget.constraints.maxHeight) {
-        imageWidth = widget.constraints.maxHeight;
-        imageHeight = widget.constraints.maxHeight / originalSize.aspectRatio;
-      } else if (imageHeight > widget.constraints.maxWidth) {
-        imageHeight = widget.constraints.maxWidth;
-        imageWidth = widget.constraints.maxWidth * originalSize.aspectRatio;
-      }
+    if (imageWidth > widget.constraints.maxWidth) {
+      imageWidth = widget.constraints.maxWidth;
+      imageHeight = widget.constraints.maxWidth / originalSize.aspectRatio;
+    } else if (imageHeight > widget.constraints.maxHeight) {
+      imageHeight = widget.constraints.maxHeight;
+      imageWidth = widget.constraints.maxHeight * originalSize.aspectRatio;
     }
 
     /*imageHeight = min(
@@ -116,7 +102,7 @@ class _PuzzlePageState extends State<PuzzlePage>
     final Size imageSize = Size(imageWidth, imageHeight);
 
     widget._logger.d(
-        "quarterTurns: $isTurned ; imageSize.width: ${imageSize.width} ; imageSize.height: ${imageSize.height}");
+        "imageSize.width: ${imageSize.width} ; imageSize.height: ${imageSize.height}");
     List<PuzzlePiece> storedPuzzlePieces =
         await DatabasePuzzlePieceTable.getAll();
     List<PuzzlePieceWidget> storedPuzzlePieceWidgets = [];
@@ -130,7 +116,6 @@ class _PuzzlePageState extends State<PuzzlePage>
           sendToBack: sendToBack,
           constraints: widget.constraints,
           completeCallback: widget.completeCallback,
-          isTurned: isTurned,
         ),
       );
       storedPositions.add(Point(element.row, element.column));
@@ -146,7 +131,6 @@ class _PuzzlePageState extends State<PuzzlePage>
       imageSize: imageSize,
       constraints: widget.constraints,
       completeCallback: widget.completeCallback,
-      isTurned: isTurned,
     ))
             .where((PuzzlePieceWidget element) {
       Point<int> point = Point(element.row, element.col);
@@ -155,26 +139,23 @@ class _PuzzlePageState extends State<PuzzlePage>
 
     pieces.clear();
     pieces.add(SizedBox.expand(child: Container()));
-    pieces.add(RotatedBox(
-      quarterTurns: isTurned ? 1 : 0,
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.brown,
-          border: Border.all(
-            color: Theme.of(context).shadowColor.withAlpha(100),
-          ),
+    pieces.add(Container(
+      decoration: BoxDecoration(
+        color: Colors.brown,
+        border: Border.all(
+          color: Theme.of(context).shadowColor.withAlpha(100),
         ),
-        child: SizedBox(
-          width: imageSize.width,
-          height: imageSize.height,
-        ),
+      ),
+      child: SizedBox(
+        width: imageSize.width,
+        height: imageSize.height,
       ),
     ));
     //pieces.addAll(snappedPuzzlePieces);
     //pieces.addAll(movablePuzzlePieces);
     pieces.addAll(storedPuzzlePieceWidgets);
     pieces.addAll(notStoredPieces);
-    pieces.add(Positioned(
+/*    pieces.add(Positioned(
       right: 0,
       bottom: 0,
       child: SpeedDial(
@@ -187,15 +168,16 @@ class _PuzzlePageState extends State<PuzzlePage>
               ),
               foregroundColor: Theme.of(context).unselectedWidgetColor,
               onTap: refreshPieces),
+          */ /*
           SpeedDialChild(
               child: const Icon(
                 Icons.rotate_right,
               ),
               foregroundColor: Theme.of(context).unselectedWidgetColor,
-              onTap: rotatePuzzle),
+              onTap: rotatePuzzle),*/ /*
         ],
       ),
-    ));
+    ));*/
     setState(() {});
   }
 

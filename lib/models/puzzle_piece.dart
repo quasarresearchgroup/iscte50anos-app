@@ -46,7 +46,6 @@ class PuzzlePiece {
       left: left,
       movable: (top != 0 || left != 0),
       completeCallback: completeCallback,
-      isTurned: isTurned,
     );
   }
 

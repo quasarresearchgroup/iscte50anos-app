@@ -25,7 +25,6 @@ class PuzzlePieceWidget extends StatefulWidget {
   final double? top;
   final double? left;
   final bool? movable;
-  final bool isTurned;
 
   PuzzlePieceWidget({
     Key? key,
@@ -43,12 +42,11 @@ class PuzzlePieceWidget extends StatefulWidget {
     this.left,
     this.movable,
     required this.completeCallback,
-    this.isTurned = false,
   }) : super(key: key);
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'PuzzlePieceWidget{row: $row, col: $col, maxRow: $maxRow, maxCol: $maxCol, top: $top, left: $left, movable: $movable,image: $image, imageSize: $imageSize, bringToTop: $bringToTop, sendToBack: $sendToBack, snapInPlace: $snapInPlace, quarterTurns: $isTurned}';
+    return 'PuzzlePieceWidget{row: $row, col: $col, maxRow: $maxRow, maxCol: $maxCol, top: $top, left: $left, movable: $movable,image: $image, imageSize: $imageSize, bringToTop: $bringToTop, sendToBack: $sendToBack, snapInPlace: $snapInPlace}';
   }
 
   @override
@@ -81,17 +79,10 @@ class PuzzlePieceWidgetState extends State<PuzzlePieceWidget> {
     }
 
     if (top == null || left == null) {
-      if (widget.isTurned) {
-        pieceHeight = widget.imageSize.width / widget.maxCol;
-        pieceWidth = widget.imageSize.height / widget.maxRow;
-        zeroHeight = -widget.col * pieceHeight;
-        zeroWidth = (widget.row - widget.maxRow + 1) * pieceWidth;
-      } else {
-        pieceHeight = widget.imageSize.height / widget.maxRow;
-        pieceWidth = widget.imageSize.width / widget.maxCol;
-        zeroHeight = -widget.row * pieceHeight;
-        zeroWidth = -widget.col * pieceWidth;
-      }
+      pieceHeight = widget.imageSize.height / widget.maxRow;
+      pieceWidth = widget.imageSize.width / widget.maxCol;
+      zeroHeight = -widget.row * pieceHeight;
+      zeroWidth = -widget.col * pieceWidth;
       widget._logger.d(
           " row: ${widget.row}; col: ${widget.col} ;pieceHeight: $pieceHeight; pieceWidth: $pieceWidth; zeroHeight: $zeroHeight; zeroWidth: $zeroWidth; ");
 
@@ -146,16 +137,13 @@ class PuzzlePieceWidgetState extends State<PuzzlePieceWidget> {
             constraints: widget.constraints,
           );
         },
-        child: RotatedBox(
-          quarterTurns: widget.isTurned ? 1 : 0,
-          child: ClippedPieceWidget(
-            image: widget.image,
-            row: widget.row,
-            col: widget.col,
-            maxRow: widget.maxRow,
-            width: widget.imageSize.width,
-            maxCol: widget.maxCol,
-          ),
+        child: ClippedPieceWidget(
+          image: widget.image,
+          row: widget.row,
+          col: widget.col,
+          maxRow: widget.maxRow,
+          width: widget.imageSize.width,
+          maxCol: widget.maxCol,
         ),
       ),
     );
@@ -192,8 +180,7 @@ class PuzzlePieceWidgetState extends State<PuzzlePieceWidget> {
       if (-10 < top! && top! < 10 && -10 < left! && left! < 10) {
         snapInPlace();
       }
-      widget._logger.d(
-          "top:$top; left: $left, pieceHeight: $pieceHeight; pieceWIdth: $pieceWidth; maxTop: $maxTop ;maxLeft: $maxLeft ;");
+      //widget._logger.d("top:$top; left: $left, pieceHeight: $pieceHeight; pieceWIdth: $pieceWidth; maxTop: $maxTop ;maxLeft: $maxLeft ;");
       //widget._logger.d(constraints);
       setState(() {});
     }

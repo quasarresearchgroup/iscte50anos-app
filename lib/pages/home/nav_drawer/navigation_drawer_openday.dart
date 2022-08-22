@@ -105,6 +105,7 @@ class NavigationDrawerOpenDay extends StatelessWidget {
     ];
 
     return Drawer(
+      key: key,
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       child: Column(
         children: [
