@@ -127,6 +127,7 @@ class TimelineInformationChild extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Color? textColor = !isEven ? Colors.white : null;
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
@@ -144,12 +145,22 @@ class TimelineInformationChild extends StatelessWidget {
                         maxLines: 3,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
-                            color: !isEven ? Colors.white : null,
-                            decoration: data.visited
-                                ? TextDecoration.lineThrough
-                                : null))),
+                          color: textColor,
+                        ))),
               ),
-              Icon(Icons.adaptive.arrow_forward)
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Icon(
+                    Icons.adaptive.arrow_forward,
+                    color: textColor,
+                  ),
+                  data.visited
+                      ? Icon(Icons.check, color: textColor)
+                      //? const Icon(Icons.check, color: Colors.lightGreenAccent)
+                      : Container(),
+                ],
+              )
             ],
           ),
         ),

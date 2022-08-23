@@ -82,22 +82,23 @@ class _TimelinePageState extends State<TimelinePage> {
           future: mapdata,
           builder: (context, snapshot) {
             if (_loading) {
-              return LoadingWidget();
+              return const LoadingWidget();
             } else if (snapshot.hasData) {
               if (snapshot.data!.isNotEmpty) {
                 return TimeLineBody(mapdata: snapshot.data!);
               } else {
-                return const Center(
-                  child: Text("Não há eventos na timeline"),
+                return Center(
+                  child:
+                      Text(AppLocalizations.of(context)!.timelineNothingFound),
                 );
               }
             } else if (snapshot.connectionState != ConnectionState.done) {
-              return LoadingWidget();
+              return const LoadingWidget();
             } else if (snapshot.hasError) {
               return Center(
                   child: Text(AppLocalizations.of(context)!.generalError));
             } else {
-              return LoadingWidget();
+              return const LoadingWidget();
             }
           },
         ),
