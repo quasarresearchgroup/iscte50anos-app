@@ -8,17 +8,16 @@ import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:iscte_spots/pages/profile/placeholder.dart';
-import 'package:iscte_spots/widgets/util/constants.dart';
 import 'package:logger/logger.dart';
 import 'package:http/http.dart' as http;
 
 const FlutterSecureStorage secureStorage = FlutterSecureStorage();
-const API_ADDRESS = BackEndConstants.API_ADDRESS;
+const API_ADDRESS = "http://192.168.1.66";
 
 // FOR ISOLATED TESTING
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(MaterialApp(home:ProfilePage()));
+  runApp(ProfilePage());
 }
 
 class ProfilePage extends StatelessWidget {
@@ -64,8 +63,8 @@ class _ProfileState extends State<Profile> {
   Future<Map> fetchProfile() async {
     try {
       isLoading = true;
-      String? apiToken = await secureStorage.read(key: "backend_api_key");
-      //String? apiToken = "8eb7f1e61ef68a526cf5a1fb6ddb0903bc0678c1";
+      //String? apiToken = await secureStorage.read(key: "backend_api_key");
+      String? apiToken = "8eb7f1e61ef68a526cf5a1fb6ddb0903bc0678c1";
 
       HttpClient client = HttpClient();
       client.badCertificateCallback =
@@ -95,6 +94,12 @@ class _ProfileState extends State<Profile> {
         List<Widget> children;
         if (snapshot.hasData) {
           var profile = snapshot.data as Map;
+          var spots = profile["num_spots_read"];
+          var totalTime = spots > 0 ? Duration(seconds: profile["total_time"])
+              .toString()
+              .split(".")[0]
+              : "-";
+
           return RefreshIndicator(
             onRefresh: () async {
               setState(() {
@@ -132,9 +137,9 @@ class _ProfileState extends State<Profile> {
                               fontSize: 23
                           )),
                           const SizedBox(height: 20),
-                          Text(profile["affiliation_name"].toString(),
+                          const Text("Grupo do Open Day" ,//profile["affiliation_name"].toString(),
                               textAlign: TextAlign.center,
-                              style: const TextStyle(
+                              style: TextStyle(
                                   fontSize: 13
                               )),
                           const SizedBox(height: 20),
@@ -143,10 +148,10 @@ class _ProfileState extends State<Profile> {
                             children: [
                               Column(
                                 children: [
-                                  const Text("Nível", style: TextStyle(
+                                  const Text("Spots", style: TextStyle(
                                       fontSize: 14
                                   )),
-                                  Text(profile["level"].toString(),
+                                  Text(profile["num_spots_read"].toString(),
                                       style: const TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 18
@@ -155,10 +160,10 @@ class _ProfileState extends State<Profile> {
                               ),
                               Column(
                                 children: [
-                                  const Text("Pontos", style: TextStyle(
+                                  const Text("Tempo", style: TextStyle(
                                       fontSize: 14
                                   )),
-                                  Text(profile["points"].toString(),
+                                  Text(totalTime.toString(),
                                       style: const TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 18
