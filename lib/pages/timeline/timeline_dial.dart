@@ -8,12 +8,12 @@ class TimelineDial extends StatelessWidget {
     Key? key,
     required this.isDialOpen,
     required this.deleteTimelineData,
-    required this.refreshTImelineData,
+    required this.refreshTimelineData,
   }) : super(key: key);
 
   final ValueNotifier<bool>? isDialOpen;
   final Function deleteTimelineData;
-  final Function refreshTImelineData;
+  final Function refreshTimelineData;
 
   @override
   Widget build(BuildContext context) {
@@ -29,14 +29,14 @@ class TimelineDial extends StatelessWidget {
             backgroundColor: Colors.red,
             label: 'Delete',
             onTap: () {
-              deleteTimelineData(context);
+              deleteTimelineData();
             }),
         SpeedDialChild(
             child: const Icon(Icons.refresh),
             backgroundColor: Colors.green,
             label: 'Refresh',
             onTap: () {
-              refreshTImelineData(context);
+              refreshTimelineData();
             }),
       ],
     );

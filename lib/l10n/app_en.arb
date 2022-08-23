@@ -8,12 +8,11 @@
     "loading":"Loading...",
     "advance":"Forward",
     "quizComplete":"Quiz completed",
-    "back":"Go Back",
+    "logOutButton":"Log Out",
 
     "generalError":"Error",
     "noMoreDataError":"No more Data",
     "networkError":"Network Error",
-    "logOutButton":"Log Out",
     "random":"Random",
 
     "mainMenu": "Puzzle",
@@ -71,6 +70,17 @@
     "qrScanNotificationFoundSpot": "Wow you found the spot!!",
     "qrScanConfirmation": "Are you sure you want to scan this spot?",
     "qrScanConfirmationAccept": "ACCEPT",
-    "qrScanConfirmationCancel": "CANCEL"
+    "qrScanConfirmationCancel": "CANCEL",
+
+
+    "timelineSearchResults" : "Search results",
+    "timelineNothingFound" : "Nothing found...",
+    "timelineAvailableTopics" : "Available Topics...",
+    "timelineSelectedTopics" : "Selected Topics",
+    "timelineSearchHint" : "Search",
+    "timelineSearchHintInsideTopic" : "Advanced search",
+    "timelineSearchButton" : "Submit",
+    "timelineSelectAllButton" : "Select all",
+    "timelineSelectClearButton" : "Clear selection"
 
 }

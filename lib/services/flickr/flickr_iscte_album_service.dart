@@ -25,7 +25,7 @@ class FlickrIscteAlbumService extends FlickrService {
       try {
         http.Response response = await http
             .get(Uri.parse(
-                'https://www.flickr.com/services/rest/?method=flickr.photosets.getList&api_key=$key&user_id=${FlickrService.userID}&page=$currentPage&per_page=$perPage&format=json&nojsoncallback=1'))
+                'https://www.flickr.com/services/rest/?method=flickr.photosets.getList&api_key=${FlickrService.key}&user_id=${FlickrService.userID}&page=$currentPage&per_page=$perPage&format=json&nojsoncallback=1'))
             .timeout(const Duration(minutes: 2));
         if (response.statusCode == 200) {
           logger.d("Started fetching image urls");

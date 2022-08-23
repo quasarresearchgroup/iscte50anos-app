@@ -4,8 +4,8 @@ class FlickrPhoto {
     required this.id,
     required this.server,
     required this.secret,
-    required this.isPrimary,
     required this.farm,
+    this.isPrimary,
   });
   //<photo id="2484" secret="123456" server="1" title="my photo" isprimary="0" />
   String id;
@@ -13,10 +13,10 @@ class FlickrPhoto {
   String server;
   String title;
   int farm;
-  bool isPrimary;
+  bool? isPrimary;
 
   String get url =>
-      "https://farm$farm.staticflickr.com/$server/$id\_$secret.jpg";
+      "https://farm$farm.staticflickr.com/$server/$id\_$secret\_z.jpg";
 
   @override
   String toString() {

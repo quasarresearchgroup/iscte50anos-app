@@ -6,8 +6,7 @@ class HelperMethods {
     Logger logger = Logger();
 
     //if (await   (url)) {
-    logger.d("-------------------url---------------------");
-    logger.d(url);
+    logger.d("url: $url");
     await launchUrl(Uri.parse(url));
     //} else {
     //  throw 'Could not launch $url';

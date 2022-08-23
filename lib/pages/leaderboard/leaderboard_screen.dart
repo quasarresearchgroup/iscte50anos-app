@@ -43,7 +43,8 @@ class _LeaderBoardPageState extends State<LeaderBoardPage>
   late Map<String, dynamic> affiliationMap;
 
   Future<String> loadAffiliationData() async {
-    var jsonText = await rootBundle.loadString('Resources/affiliations.json');
+    var jsonText =
+        await rootBundle.loadString('Resources/Affiliations/affiliations.json');
     setState(
         () => affiliationMap = json.decode(utf8.decode(jsonText.codeUnits)));
     return 'success';
@@ -179,7 +180,8 @@ class _AffiliationLeaderboardState extends State<AffiliationLeaderboard>
   }
 
   Future<String> loadAffiliationData() async {
-    var jsonText = await rootBundle.loadString('Resources/affiliations.json');
+    var jsonText =
+        await rootBundle.loadString('Resources/Affiliations/affiliations.json');
     readJson = true;
     setState(
         () => affiliationMap = json.decode(utf8.decode(jsonText.codeUnits)));
