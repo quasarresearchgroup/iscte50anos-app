@@ -16,31 +16,32 @@ class Answer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-        // width: double.infinity,
-        height: 50,
-        //padding: const EdgeInsets.all(5.0),
-        child: !isMultipleChoice
-            ? Card(
-                child: RadioListTile(
-                  title: Text(answerText),
-                  dense: true,
-                  value: answerId,
-                  onChanged: (value) {
-                    selectHandler(value as int, false);
-                  },
-                  groupValue: selectedAnswers.isEmpty ? -1 : selectedAnswers[0],
-                ),
-              )
-            : Card(
-                child: CheckboxListTile(
-                  title: Text(answerText),
-                  controlAffinity: ListTileControlAffinity.leading,
-                  dense: true,
-                  onChanged: (bool? value) {
-                    selectHandler(answerId, true);
-                  },
-                  value: selectedAnswers.contains(answerId),
-              ))); //Container
+    return !isMultipleChoice
+        ? Card(
+            child: RadioListTile(
+              key: ValueKey(answerId),
+              title: Text(answerText),
+              dense: true,
+              value: answerId,
+              onChanged: (value) {
+                selectHandler(value as int, false);
+              },
+              groupValue: selectedAnswers.isEmpty ? -1 : selectedAnswers[0],
+              visualDensity: const VisualDensity(horizontal: -4),
+            ),
+          )
+        : Card(
+            child: CheckboxListTile(
+              key: ValueKey(answerId),
+              title: Text(answerText),
+              controlAffinity: ListTileControlAffinity.leading,
+
+              dense: true,
+              onChanged: (bool? value) {
+                selectHandler(answerId, true);
+              },
+              value: selectedAnswers.contains(answerId),
+              visualDensity: const VisualDensity(horizontal: -4),
+          )); //Container
   }
 }

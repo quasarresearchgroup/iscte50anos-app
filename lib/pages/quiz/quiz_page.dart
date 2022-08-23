@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:logger/logger.dart';
 
+import '../../widgets/dialogs/CustomDialogs.dart';
 import './quiz.dart';
 import './result.dart';
 
@@ -30,36 +31,21 @@ class _QuizPageState extends State<QuizPage> {
   Widget build(BuildContext context) {
     return WillPopScope(
         onWillPop: () async {
-          showDialog( useRootNavigator: false, context:context, builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Text("Aviso"),
-              content: const Text("Deseja sair do Quiz?"),
-              actions: [
-                TextButton(
-                  child: const Text('Não'),
-                  onPressed: () {
-                    Navigator.of(context).pop(); //Exit dialog
-                  },
-                ),
-                TextButton(
-                  child: const Text('Sim'),
-                  onPressed: () {
-                    Navigator.of(context).pop(); //Exit dialog
-                    Navigator.of(context).pop(); //Exit quiz
-                  },
-                ),
-              ],
-            );
-          },);
+          showYesNoWarningDialog("Deseja sair do Quiz?", () {
+            Navigator.of(context).pop(); //Exit dialog
+            Navigator.of(context).pop();
+          }, context);
           return false;
         },
         child: Scaffold(
-        appBar: AppBar(
+     /*   appBar: AppBar(
           title: Text(AppLocalizations.of(context)?.quizPageTitle ?? "Quiz"),
-        ),
-        body: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Quiz(trialNumber: widget.trialNumber, quizNumber: widget.quizNumber)
+        ),*/
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: Quiz(trialNumber: widget.trialNumber, quizNumber: widget.quizNumber)
+          ),
         ), //Padding
       )
     );
