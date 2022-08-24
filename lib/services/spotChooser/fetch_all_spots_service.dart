@@ -3,6 +3,8 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:iscte_spots/models/database/tables/database_spot_table.dart';
+import 'package:iscte_spots/models/spot.dart';
 import 'package:iscte_spots/services/auth/auth_service.dart';
 import 'package:iscte_spots/services/auth/exceptions.dart';
 import 'package:iscte_spots/services/auth/openday_login_service.dart';
@@ -12,8 +14,7 @@ import 'package:logger/logger.dart';
 class SpotsRequestService {
   static final Logger _logger = Logger();
 
-  static Future<List<String>> getAllSpots(
-      {required BuildContext context}) async {
+  static Future<void> fetchAllSpots({required BuildContext context}) async {
     _logger.d("started getAllSpots request at ${DateTime.now()}\t");
 
     const FlutterSecureStorage secureStorage = FlutterSecureStorage();
@@ -43,11 +44,13 @@ class SpotsRequestService {
             jsonDecode(await response.transform(utf8.decoder).join());
 
         _logger.d(responseDecoded);
-        List<String> spotsImages = [];
+        List<Spot> spotsList = [];
         for (var item in responseDecoded) {
-          spotsImages.add(item["location_photo_link"]);
+          spotsList.add(
+              Spot(id: item["id"], photoLink: item["location_photo_link"]));
         }
-        return spotsImages;
+        await DatabaseSpotTable.addBatch(spotsList);
+        return;
       } else {
         throw Exception("General error on request");
       }

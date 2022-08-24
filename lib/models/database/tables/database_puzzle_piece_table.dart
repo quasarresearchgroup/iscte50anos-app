@@ -16,7 +16,19 @@ class DatabasePuzzlePieceTable {
   static const columnLeft = "left";
   static const columnTop = "top";
 
-  static Future onCreate(Database db, int version) async {
+  /* static String initScript = '''
+      CREATE TABLE puzzlePieceTable(
+      row INTEGER NOT NULL,
+      column INTEGER NOT NULL,
+      max_row INTEGER NOT NULL,
+      max_column INTEGER NOT NULL,
+      left REAL NOT NULL,
+      top REAL NOT NULL,
+      PRIMARY KEY( row,  column )
+      )
+    ''';*/
+
+  static Future onCreate(Database db) async {
     db.execute('''
       CREATE TABLE $table(
       $columnRow INTEGER NOT NULL,

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:iscte_spots/pages/auth/auth_page.dart';
@@ -23,8 +25,15 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<Widget> initFunc() async {
-    bool _isLoggedIn = await OpenDayLoginService.isLoggedIn();
-    bool _isOnboarded = await OnboadingService.isOnboarded();
+    bool _isLoggedIn;
+    bool _isOnboarded;
+    try {
+      _isLoggedIn = await OpenDayLoginService.isLoggedIn();
+      _isOnboarded = await OnboadingService.isOnboarded();
+    } on SocketException {
+      _isLoggedIn = false;
+      _isOnboarded = false;
+    }
 
     return _isLoggedIn
         ? HomeOpenDay()

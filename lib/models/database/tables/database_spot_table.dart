@@ -1,58 +1,43 @@
+import 'package:iscte_spots/models/spot.dart';
 import 'package:logger/logger.dart';
 import 'package:sqflite/sqflite.dart';
 
-import '../../timeline/event.dart';
 import '../database_helper.dart';
 
-class DatabaseEventTable {
+class DatabaseSpotTable {
   static final Logger _logger = Logger();
 
-  static const table = 'eventTable';
+  static const table = 'spotTable';
 
   static const columnId = '_id';
-  static const columnTitle = 'title';
-  static const columnDate = 'date';
-  static const columnScope = 'scope';
+  static const columnPhotoLink = 'photo_link';
   static const columnVisited = 'visited';
-
-/*  static String initScript = '''
-      CREATE TABLE eventTable(
-      _id INTEGER PRIMARY KEY,
-      title TEXT,
-      date INTEGER,
-      scope TEXT CHECK ( scope IN ('iscte', 'portugal', 'world') ) DEFAULT 'world'
-      )
-    ''';*/
 
   static Future onCreate(Database db) async {
     var sql = '''
       CREATE TABLE $table(
       $columnId INTEGER PRIMARY KEY,
-      $columnTitle TEXT,
-      $columnDate INTEGER,
-      $columnVisited BOOLEAN NOT NULL CHECK ( $columnVisited IN ( 0 , 1 ) ) DEFAULT 0 ,
-      $columnScope TEXT CHECK ( $columnScope IN  (${EventScope.values.map((e) => "'${e.name}'").join(", ")} ) )
+      $columnPhotoLink TEXT UNIQUE,
+      $columnVisited BOOLEAN NOT NULL CHECK ( $columnVisited IN ( 0 , 1 ) ) DEFAULT 0
       )
     ''';
 
     db.execute(sql);
-    //$columnScope TEXT CHECK ( $columnScope IN  ('iscte', 'nacional', 'internacional') )
-    //$columnScope TEXT CHECK ( $columnScope IN ( '${EventScope.values.join(", ")}' ) )
     _logger.d("Created $table with sql: \n $sql");
   }
 
-  static Future<List<Event>> getAll() async {
+  static Future<List<Spot>> getAll() async {
     DatabaseHelper instance = DatabaseHelper.instance;
     Database db = await instance.database;
     List<Map<String, Object?>> contents =
-        await db.query(table, orderBy: columnTitle);
-    List<Event> contentList = contents.isNotEmpty
-        ? contents.map((e) => Event.fromMap(e)).toList()
+        await db.query(table, orderBy: columnPhotoLink);
+    List<Spot> contentList = contents.isNotEmpty
+        ? contents.map((e) => Spot.fromMap(e)).toList()
         : [];
     return contentList;
   }
 
-  static Future<List<Event>> where(
+  static Future<List<Spot>> where(
       {String? where, List<Object?>? whereArgs, String? orderBy}) async {
     DatabaseHelper instance = DatabaseHelper.instance;
     Database db = await instance.database;
@@ -63,44 +48,44 @@ class DatabaseEventTable {
       orderBy: orderBy,
     );
 
-    List<Event> contentList = contents.isNotEmpty
-        ? contents.map((e) => Event.fromMap(e)).toList()
+    List<Spot> contentList = contents.isNotEmpty
+        ? contents.map((e) => Spot.fromMap(e)).toList()
         : [];
     return contentList;
   }
 
-  static void add(Event content) async {
+  static void add(Spot spot) async {
     DatabaseHelper instance = DatabaseHelper.instance;
     Database db = await instance.database;
     db.insert(
       table,
-      content.toMap(),
+      spot.toMap(),
       conflictAlgorithm: ConflictAlgorithm.abort,
     );
-    _logger.d("Inserted: $content into $table");
+    _logger.d("Inserted: $spot into $table");
   }
 
-  static Future<void> addBatch(List<Event> contents) async {
+  static Future<void> addBatch(List<Spot> spots) async {
     DatabaseHelper instance = DatabaseHelper.instance;
     Database db = await instance.database;
     Batch batch = db.batch();
-    for (var entry in contents) {
+    for (var entry in spots) {
       batch.insert(
         table,
         entry.toMap(),
         conflictAlgorithm: ConflictAlgorithm.abort,
       );
-      //_logger.d("Inserted: $entry into $table as batch into $table");
     }
+    _logger.d("Inserted: $spots into $table as batch");
     batch.commit();
   }
 
-  static Future<int> update(Event event) async {
+  static Future<int> update(Spot spot) async {
     DatabaseHelper instance = DatabaseHelper.instance;
     Database db = await instance.database;
-    _logger.d("Updating entry:$event from $table");
-    return await db.update(table, event.toMap(),
-        where: "$columnId = ?", whereArgs: [event.id]);
+    _logger.d("Updating entry: $spot from $table");
+    return await db.update(table, spot.toMap(),
+        where: "$columnId = ?", whereArgs: [spot.id]);
   }
 
   static Future<int> remove(int id) async {
@@ -122,17 +107,17 @@ class DatabaseEventTable {
     return await db.execute('DROP TABLE IF EXISTS $table');
   }
 
-  static Future<List<Event>> getAllWithIds(List<int> idList) async {
+  static Future<List<Spot>> getAllWithIds(List<int> idList) async {
     DatabaseHelper instance = DatabaseHelper.instance;
     Database db = await instance.database;
     List<Map<String, Object?>> rawRows = await db.query(
       table,
-      orderBy: columnDate,
+      orderBy: columnId,
       where: '$columnId IN (${List.filled(idList.length, '?').join(',')})',
       whereArgs: idList,
     );
-    List<Event> rowsList =
-        rawRows.isNotEmpty ? rawRows.map((e) => Event.fromMap(e)).toList() : [];
+    List<Spot> rowsList =
+        rawRows.isNotEmpty ? rawRows.map((e) => Spot.fromMap(e)).toList() : [];
     return rowsList;
   }
 }

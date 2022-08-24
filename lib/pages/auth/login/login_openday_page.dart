@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -35,11 +37,15 @@ class _LoginOpendayState extends State<LoginOpendayPage>
   bool _generalError = false;
   bool _isLoading = false;
 
-  String? get _errorText => _generalError
-      ? "Unknown Error"
-      : _loginError
-          ? "Invalid Credentials"
-          : null;
+  bool _connectionError = false;
+
+  String? get _errorText => _connectionError
+      ? "Connection Error"
+      : _generalError
+          ? "Unknown Error"
+          : _loginError
+              ? "Invalid Credentials"
+              : null;
 
   String? loginValidator(String? value) {
     if (value == null || value.isEmpty) {
@@ -124,11 +130,16 @@ class _LoginOpendayState extends State<LoginOpendayPage>
           });
         }
       }
+    } on SocketException {
+      setState(() {
+        _connectionError = true;
+      });
     } catch (e) {
       setState(() {
         _generalError = true;
       });
     }
+
     setState(() {
       _isLoading = false;
     });
