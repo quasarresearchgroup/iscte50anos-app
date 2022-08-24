@@ -98,3 +98,4 @@ pubspec.lock
 /android/local.properties
 
 *.properties
+!/android/gradle.properties

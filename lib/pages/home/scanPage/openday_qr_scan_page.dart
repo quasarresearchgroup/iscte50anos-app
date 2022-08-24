@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -11,6 +9,7 @@ import 'package:iscte_spots/models/spot.dart';
 import 'package:iscte_spots/pages/home/scanPage/qr_scan_camera_controls.dart';
 import 'package:iscte_spots/pages/home/scanPage/qr_scan_results.dart';
 import 'package:iscte_spots/services/auth/exceptions.dart';
+import 'package:iscte_spots/services/platform_service.dart';
 import 'package:iscte_spots/services/qr_scan_service.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:logger/logger.dart';
@@ -145,7 +144,7 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
   Future<bool> launchConfirmationDialog(context, String topicTitle) async {
     bool continueScan = false;
 
-    if (Platform.isIOS) {
+    if (PlatformService.instance.isIos) {
       await showCupertinoDialog(
           context: context,
           builder: (context) {
@@ -153,7 +152,7 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
               title: Text(AppLocalizations.of(context)!.qrScanConfirmation),
               content: Text(topicTitle),
               actions: [
-                TextButton(
+                CupertinoButton(
                   child: Text(
                       AppLocalizations.of(context)!.qrScanConfirmationCancel),
                   onPressed: () {
@@ -162,7 +161,7 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
                     Navigator.pop(context);
                   },
                 ),
-                TextButton(
+                CupertinoButton(
                   child: Text(
                       AppLocalizations.of(context)!.qrScanConfirmationAccept),
                   onPressed: () {

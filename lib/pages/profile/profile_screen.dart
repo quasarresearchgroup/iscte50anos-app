@@ -7,8 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:iscte_spots/helper/constants.dart';
 import 'package:iscte_spots/pages/profile/placeholder.dart';
-import 'package:iscte_spots/widgets/util/constants.dart';
+import 'package:iscte_spots/services/quiz/quiz_service.dart';
+import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_back_button.dart';
+import 'package:iscte_spots/widgets/my_app_bar.dart';
 import 'package:logger/logger.dart';
 import 'package:http/http.dart' as http;
 
@@ -30,8 +33,9 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text("Profile"),//AppLocalizations.of(context)!.quizPageTitle)
+        appBar: MyAppBar(
+          title: "Profile",//AppLocalizations.of(context)!.quizPageTitle)
+          leading:DynamicBackIconButton(),
         ),
         body: NotificationListener<OverscrollIndicatorNotification>(
           onNotification: (overscroll) {

@@ -36,7 +36,7 @@ class TimelineDial extends StatelessWidget {
             backgroundColor: Colors.green,
             label: 'Refresh',
             onTap: () {
-              refreshTimelineData();
+              refreshTimelineData(context);
             }),
       ],
     );

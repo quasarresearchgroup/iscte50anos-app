@@ -3,6 +3,7 @@ import 'package:iscte_spots/helper/datetime_extension.dart';
 import 'package:iscte_spots/models/database/tables/database_event_table.dart';
 import 'package:iscte_spots/models/timeline/event.dart';
 import 'package:iscte_spots/pages/timeline/timeline_details_page.dart';
+import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
 class EventTimelineTile extends StatefulWidget {

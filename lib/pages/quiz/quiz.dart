@@ -1,10 +1,12 @@
 import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:iscte_spots/services/platform_service.dart';
 import 'package:iscte_spots/services/quiz/quiz_service.dart';
 import 'package:iscte_spots/widgets/dialogs/CustomDialogs.dart';
+import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_alert_dialog.dart';
 import 'package:logger/logger.dart';
 import 'package:pinch_zoom/pinch_zoom.dart';
 
@@ -14,7 +16,6 @@ import './question.dart';
 
 const double ANSWER_TIME = 10000; //ms
 
-
 class Quiz extends StatefulWidget {
   final Logger logger = Logger();
 
@@ -22,7 +23,9 @@ class Quiz extends StatefulWidget {
   final int quizNumber;
 
   Quiz({
-    Key? key, required this.trialNumber, required this.quizNumber,
+    Key? key,
+    required this.trialNumber,
+    required this.quizNumber,
   }) : super(key: key);
 
   @override
@@ -30,7 +33,6 @@ class Quiz extends StatefulWidget {
 }
 
 class _QuizState extends State<Quiz> {
-
   Timer? timer;
 
   int selectedAnswerId = 0;
@@ -149,12 +151,18 @@ class _QuizState extends State<Quiz> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text("Pontuação da tentativa: ${response["trial_score"]}"),
-                ElevatedButton(
-                  child: const Text("Voltar"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
+            (PlatformService.instance.isIos)
+                ? CupertinoButton(
+                child: const Text("Voltar"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                })
+                : ElevatedButton(
+              child: const Text("Voltar"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            )
               ],
             ),
           );
@@ -191,7 +199,13 @@ class _QuizState extends State<Quiz> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 // ----- Submit button -----
-                ElevatedButton(
+                (PlatformService.instance.isIos)
+                ? CupertinoButton(
+                child: Text(submitted ? "Submetido" : "Submeter"),
+                onPressed: () {
+                  submitAnswer(trialQuestion["number"]);
+                })
+                :ElevatedButton(
                   child: submitted? const Text("Submetido") :
                   submitting? const SizedBox(child: CircularProgressIndicator.adaptive(strokeWidth: 2), width:10, height:10)
                       : const Text("Submeter"),
@@ -206,7 +220,23 @@ class _QuizState extends State<Quiz> {
                 ),
                 const SizedBox(width: 10),
                 // ----- Next button -----
-                ElevatedButton(
+                (PlatformService.instance.isIos)
+                    ? CupertinoButton(
+                    child: Text("Seguinte"),
+                    onPressed: !submitted && !isTimed ? null : countdown > 0 && !submitted ? () {
+                      setState(() {
+                        showYesNoWarningDialog("Deseja avançar sem responder?", () {
+                          setState(() {
+                            Navigator.of(context).pop();
+                            futureQuestion = getNextQuestion();
+                          });
+                        }, context);
+                      });
+                    } :  () =>
+                        setState(() {
+                          futureQuestion = getNextQuestion();
+                        }))
+                    : ElevatedButton(
                   child: const Text("Seguinte"),
                   onPressed: !submitted && !isTimed ? null : countdown > 0 && !submitted ? () {
                     setState(() {

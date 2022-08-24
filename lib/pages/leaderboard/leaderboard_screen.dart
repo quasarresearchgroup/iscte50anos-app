@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:iscte_spots/services/leaderboard/leaderboard_service.dart';
-import 'package:iscte_spots/widgets/util/constants.dart';
+import 'package:iscte_spots/helper/constants.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 import 'package:logger/logger.dart';
 

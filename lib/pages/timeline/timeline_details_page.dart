@@ -14,6 +14,8 @@ import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:logger/logger.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_back_button.dart';
+import 'package:iscte_spots/widgets/my_app_bar.dart';
 
 class TimeLineDetailsPage extends StatefulWidget {
   static const String pageRoute = "${TimelinePage.pageRoute}/detail";
@@ -48,8 +50,9 @@ class _TimeLineDetailsPageState extends State<TimeLineDetailsPage> {
     });
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.timelineDetailsScreen),
+      appBar: MyAppBar(
+        title: AppLocalizations.of(context)!.timelineDetailsScreen,
+        leading: DynamicBackIconButton(),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),

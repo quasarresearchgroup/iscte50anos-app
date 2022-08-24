@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:confetti/confetti.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,8 +11,10 @@ import 'package:iscte_spots/pages/home/scanPage/openday_qr_scan_page.dart';
 import 'package:iscte_spots/pages/home/widgets/sucess_scan_widget.dart';
 import 'package:iscte_spots/pages/leaderboard/leaderboard_screen.dart';
 import 'package:iscte_spots/services/openday/openday_qr_scan_service.dart';
+import 'package:iscte_spots/services/platform_service.dart';
 import 'package:iscte_spots/services/shared_prefs_service.dart';
 import 'package:iscte_spots/widgets/iscte_confetti_widget.dart';
+import 'package:iscte_spots/widgets/my_app_bar.dart';
 import 'package:iscte_spots/widgets/my_bottom_bar.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:iscte_spots/widgets/util/overlays.dart';
@@ -30,6 +30,7 @@ class HomeOpenDay extends StatefulWidget {
 
   final int scanSpotIndex = 1;
   final int puzzleIndex = 0;
+
   @override
   State<HomeOpenDay> createState() => _HomeOpenDayState();
 }
@@ -40,11 +41,12 @@ class _HomeOpenDayState extends State<HomeOpenDay>
   Image? currentPuzzleImage;
   int? currentPuzzleNumber;
   bool _showSucessPage = false;
+
   //late Future<Map> futureProfile;
   late Future<SpotRequest> currentPemit;
   final ValueNotifier<bool> _completedAllPuzzlesBool =
       SharedPrefsService().allPuzzleCompleteNotifier;
-  final ValueNotifier<String> _currentPuzzleImg =
+  final ValueNotifier<String> _currentPuzzleImageNotifier =
       SharedPrefsService().currentPuzzleIMGNotifier;
   late final ConfettiController _confettiController;
   late final AnimationController _lottieController;
@@ -54,8 +56,9 @@ class _HomeOpenDayState extends State<HomeOpenDay>
   @override
   void initState() {
     super.initState();
+
     _tabController =
-        TabController(initialIndex: widget.puzzleIndex, length: 2, vsync: this);
+        TabController(initialIndex: widget.puzzleIndex, length: 3, vsync: this);
 
     _confettiController =
         ConfettiController(duration: const Duration(seconds: 2));
@@ -165,144 +168,133 @@ class _HomeOpenDayState extends State<HomeOpenDay>
   Widget build(BuildContext context) {
     return OrientationBuilder(
         builder: (BuildContext context, Orientation orientation) {
-      return ValueListenableBuilder<bool>(
-        valueListenable: _completedAllPuzzlesBool,
-        builder: (BuildContext context, bool challengeCompleteBool, _) {
-          if (Platform.isIOS) {
-            return CupertinoPageScaffold(
-              child: Text("home"),
-              navigationBar: CupertinoNavigationBar(
-                middle: Text("Puzzle"),
-                trailing: challengeCompleteBool
-                    ? Container()
-                    : Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Center(
-                          child: ValueListenableBuilder<String>(
-                            valueListenable: _currentPuzzleImg,
-                            builder: (context, value, _) {
-                              return IconButton(
-                                icon: const FaIcon(
-                                    FontAwesomeIcons.circleQuestion),
-                                onPressed: () => showHelpOverlay(
-                                  context,
-                                  Image.network(value),
-                                  orientation,
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                      ),
-              ),
+        return ValueListenableBuilder<bool>(
+          valueListenable: _completedAllPuzzlesBool,
+          builder: (BuildContext context, bool challengeCompleteBool, _) {
+            /*if (PlatformService.instance.isIos) {
+              widget._logger.d("Built IOS");
+              return buildCupertinoScaffold(challengeCompleteBool);
+            } else {*/
+            // widget._logger.d("Built Android");
+            return buildMaterialScaffold(challengeCompleteBool,orientation);
+            //}
+          },
+        );
+      }
+    );
+  }
+
+  Widget buildMaterialScaffold(bool challengeCompleteBool, Orientation orientation) {
+    return Scaffold(
+      extendBodyBehindAppBar: true,
+      extendBody: true,
+      drawer: NavigationDrawerOpenDay(),
+      appBar: orientation == Orientation.landscape
+          ? null
+          : MyAppBar(
+        title: "Puzzle",
+        leading: Builder(builder: (context) {
+          if (!PlatformService.instance.isIos) {
+            return IconButton(
+              icon: const Icon(Icons.menu),
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
+              },
             );
           } else {
-            return Scaffold(
-              key: _key,
-              extendBodyBehindAppBar: orientation == Orientation.portrait,
-              extendBody: orientation == Orientation.portrait,
-              drawer: NavigationDrawerOpenDay(),
-              appBar: orientation == Orientation.landscape
-                  ? null
-                  : AppBar(
-                      title: Text("Puzzle"),
-                      actions: challengeCompleteBool
-                          ? null
-                          : [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Center(
-                                  child: ValueListenableBuilder<String>(
-                                    valueListenable: _currentPuzzleImg,
-                                    builder: (context, value, _) {
-                                      return IconButton(
-                                        icon: const Icon(Icons.help),
-                                        onPressed: () => showHelpOverlay(
-                                          context,
-                                          Image.network(value),
-                                          orientation,
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ],
-                    ),
-              floatingActionButtonLocation: orientation == Orientation.landscape
-                  ? null
-                  : FloatingActionButtonLocation.centerDocked,
-              floatingActionButton: orientation == Orientation.landscape
-                  ? null
-                  : FloatingActionButton(
-                      child: const FaIcon(
-                        FontAwesomeIcons.rankingStar,
-                        color: Colors.grey,
-                        size: 30,
-                      ),
-                      foregroundColor: Theme.of(context).unselectedWidgetColor,
-                      onPressed: () {
-                        Navigator.of(context)
-                            .pushNamed(LeaderBoardPage.pageRoute);
-                      }),
-              bottomNavigationBar: (challengeCompleteBool ||
-                      orientation == Orientation.landscape)
-                  ? null
-                  : MyBottomBar(
-                      tabController: _tabController,
-                      initialIndex: 0,
-                    ),
-              body: Builder(builder: (context) {
-                return orientation == Orientation.landscape
-                    ? Row(
-                        children: [
-                          ValueListenableBuilder<String>(
-                              valueListenable: _currentPuzzleImg,
-                              builder: (context, value, _) {
-                                return NavigationRail(
-                                  onDestinationSelected: (index) {
-                                    if (index == 0) {
-                                      Scaffold.of(context).openDrawer();
-                                    } else {
-                                      showHelpOverlay(
-                                        context,
-                                        Image.network(value),
-                                        orientation,
-                                      );
-                                    }
-                                  },
-                                  selectedIndex: 0,
-                                  destinations: const <
-                                      NavigationRailDestination>[
-                                    NavigationRailDestination(
-                                      icon: Icon(Icons.menu),
-                                      selectedIcon: Icon(Icons.menu),
-                                      label: Text('Drawer'),
-                                    ),
-                                    NavigationRailDestination(
-                                      icon: const Icon(Icons.help),
-                                      label: Text('First'),
-                                    ),
-                                  ],
-                                );
-                              }),
-                          VerticalDivider(),
-                          Expanded(child: buildHomeBody(challengeCompleteBool)),
-                          VerticalDivider(),
-                          MyBottomBar(
-                            initialIndex: 0,
-                            tabController: _tabController,
-                            orientation: orientation,
-                          ),
-                        ],
-                      )
-                    : buildHomeBody(challengeCompleteBool);
-              }),
+            return CupertinoButton(
+              child: Icon(
+                Icons.menu,
+                color: CupertinoTheme.of(context).primaryContrastingColor,
+              ),
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
+              },
             );
           }
-        },
-      );
-    });
+        }),
+        trailing: challengeCompleteBool
+            ? Container()
+            : ValueListenableBuilder<String>(
+                valueListenable: _currentPuzzleImageNotifier,
+                builder: (context, value, _) {
+                  if (!PlatformService.instance.isIos) {
+                    return IconButton(
+                      icon: const FaIcon(
+                        FontAwesomeIcons.circleQuestion,
+                      ),
+                      onPressed: () => showHelpOverlay(
+                          context, Image.network(value), orientation),
+                    );
+                  } else {
+                    return CupertinoButton(
+                      onPressed: () => showHelpOverlay(
+                          context, Image.network(value), orientation),
+                      child: Icon(
+                        CupertinoIcons.question_circle,
+                        color:
+                            CupertinoTheme.of(context).primaryContrastingColor,
+                      ),
+                      padding: EdgeInsets.zero,
+                    );
+                  }
+                },
+              ),
+      ),
+      bottomNavigationBar: (challengeCompleteBool ||
+          orientation == Orientation.landscape)
+          ? null
+          : MyBottomBar(
+        tabController: _tabController,
+        initialIndex: 0,
+      ),
+      body: Builder(builder: (context) {
+        return orientation == Orientation.landscape
+            ? Row(
+          children: [
+            ValueListenableBuilder<String>(
+                valueListenable: _currentPuzzleImageNotifier,
+                builder: (context, value, _) {
+                  return NavigationRail(
+                    onDestinationSelected: (index) {
+                      if (index == 0) {
+                        Scaffold.of(context).openDrawer();
+                      } else {
+                        showHelpOverlay(
+                          context,
+                          Image.network(value),
+                          orientation,
+                        );
+                      }
+                    },
+                    selectedIndex: 0,
+                    destinations: const <
+                        NavigationRailDestination>[
+                      NavigationRailDestination(
+                        icon: Icon(Icons.menu),
+                        selectedIcon: Icon(Icons.menu),
+                        label: Text('Drawer'),
+                      ),
+                      NavigationRailDestination(
+                        icon: const Icon(Icons.help),
+                        label: Text('First'),
+                      ),
+                    ],
+                  );
+                }),
+            VerticalDivider(),
+            Expanded(child: buildHomeBody(challengeCompleteBool)),
+            VerticalDivider(),
+            MyBottomBar(
+              initialIndex: 0,
+              tabController: _tabController,
+              orientation: orientation,
+            ),
+          ],
+        )
+            : buildHomeBody(challengeCompleteBool);
+      }),
+    );
   }
 
   Widget buildHomeBody(bool challengeCompleteBool) {
@@ -319,39 +311,44 @@ class _HomeOpenDayState extends State<HomeOpenDay>
                   physics: const NeverScrollableScrollPhysics(),
                   controller: _tabController,
                   children: [
-                    SafeArea(
-                      child: Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: Stack(
-                            children: [
-                              ValueListenableBuilder<String>(
-                                  valueListenable: _currentPuzzleImg,
-                                  builder: (context, value, _) {
-                                    if (value.isNotEmpty) {
-                                      return LayoutBuilder(
-                                          builder: (context, constraints) {
-                                        return PuzzlePage(
-                                          image: Image.network(value),
-                                          completeCallback:
-                                              completePuzzleCallback,
-                                          constraints: constraints,
-                                        );
-                                      });
-                                    } else {
-                                      return const LoadingWidget();
-                                    }
-                                  }),
-                              IscteConfetti(
-                                  confettiController: _confettiController)
-                            ],
-                          )),
-                    ),
+                    buildCenter(),
+                    LeaderBoardPage(),
                     QRScanPageOpenDay(
                       changeImage: changeCurrentImage,
                       completedAllPuzzle: _completedAllPuzzles,
                     ),
                   ],
                 ),
+    );
+  }
+
+  Widget buildCenter() {
+    return SafeArea(
+      child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Stack(
+            children: [
+              ValueListenableBuilder<String>(
+                  valueListenable: _currentPuzzleImageNotifier,
+                  builder: (context, value, _) {
+                    if (value.isNotEmpty) {
+                      return LayoutBuilder(
+                          builder: (context, constraints) {
+                            return PuzzlePage(
+                              image: Image.network(value),
+                              completeCallback:
+                              completePuzzleCallback,
+                              constraints: constraints,
+                            );
+                          });
+                    } else {
+                      return const LoadingWidget();
+                    }
+                  }),
+              IscteConfetti(
+                  confettiController: _confettiController)
+            ],
+          )),
     );
   }
 
