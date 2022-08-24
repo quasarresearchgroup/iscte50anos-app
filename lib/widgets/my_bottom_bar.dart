@@ -1,24 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:iscte_spots/pages/leaderboard/leaderboard_screen.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 
 class MyBottomBar extends StatefulWidget {
   final TabController tabController;
   final int initialIndex;
+  final Orientation orientation;
 
-  const MyBottomBar(
-      {Key? key, required this.initialIndex, required this.tabController})
-      : super(key: key);
+  const MyBottomBar({
+    Key? key,
+    required this.initialIndex,
+    required this.tabController,
+    this.orientation = Orientation.portrait,
+  }) : super(key: key);
 
   @override
   _MyBottomBarState createState() => _MyBottomBarState();
+
+  final FaIcon puzzleIcon = const FaIcon(FontAwesomeIcons.puzzlePiece);
+  final Icon scanIcon = const Icon(Icons.search);
 }
 
 class _MyBottomBarState extends State<MyBottomBar> {
+  late int currentIndex;
   @override
   void initState() {
     super.initState();
+    currentIndex = widget.initialIndex;
     widget.tabController.addListener(() {
       if (mounted) {
         setState(() {});
@@ -36,6 +46,12 @@ class _MyBottomBarState extends State<MyBottomBar> {
 
   @override
   Widget build(BuildContext context) {
+    return widget.orientation == Orientation.portrait
+        ? buildPortrait(context)
+        : buildLandscape(context);
+  }
+
+  Widget buildPortrait(BuildContext context) {
     return ClipRRect(
       borderRadius: BorderRadius.only(
         topLeft: IscteTheme.appbarRadius,
@@ -61,16 +77,42 @@ class _MyBottomBarState extends State<MyBottomBar> {
             unselectedFontSize: 10,
             items: [
               BottomNavigationBarItem(
-                icon: const FaIcon(FontAwesomeIcons.puzzlePiece),
+                icon: widget.puzzleIcon,
                 label: AppLocalizations.of(context)!.mainMenu,
                 //backgroundColor: Theme.of(context).primaryColor,
               ),
               BottomNavigationBarItem(
-                  icon: const Icon(Icons.search),
+                  icon: widget.scanIcon,
                   //backgroundColor: Theme.of(context).primaryColor,
                   label: AppLocalizations.of(context)!.scanCodeButton),
             ],
           )),
+    );
+  }
+
+  Widget buildLandscape(BuildContext context) {
+    return NavigationRail(
+      onDestinationSelected: (index) {
+        if (index == 2) {
+          Navigator.of(context).pushNamed(LeaderBoardPage.pageRoute);
+        }
+        widget.tabController.animateTo(index);
+      },
+      selectedIndex: widget.tabController.index,
+      destinations: <NavigationRailDestination>[
+        NavigationRailDestination(
+          icon: Center(child: widget.puzzleIcon),
+          label: Text(AppLocalizations.of(context)!.mainMenu),
+        ),
+        NavigationRailDestination(
+          icon: widget.scanIcon,
+          label: Text(AppLocalizations.of(context)!.scanCodeButton),
+        ),
+        NavigationRailDestination(
+          icon: Icon(Icons.leaderboard_outlined),
+          label: Text("leaderboard"),
+        ),
+      ],
     );
   }
 }

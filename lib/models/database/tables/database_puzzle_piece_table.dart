@@ -58,7 +58,7 @@ class DatabasePuzzlePieceTable {
     return contentList;
   }
 
-  static void add(PuzzlePiece puzzlePiece) async {
+  static Future<void> add(PuzzlePiece puzzlePiece) async {
     DatabaseHelper instance = DatabaseHelper.instance;
     Database db = await instance.database;
     await db.insert(
@@ -69,7 +69,7 @@ class DatabasePuzzlePieceTable {
     _logger.d("Inserted: $puzzlePiece into $table");
   }
 
-  static void addBatch(List<PuzzlePiece> contents) async {
+  static Future<void> addBatch(List<PuzzlePiece> contents) async {
     DatabaseHelper instance = DatabaseHelper.instance;
     Database db = await instance.database;
     Batch batch = db.batch();

@@ -52,17 +52,9 @@ class DatabaseHelper {
     _logger.d('Finished OnCreate to the db');
   }
 
-  Future<void> _dropAll(db) async {
+  Future<void> _dropAll(Database db) async {
     _logger.d('Started DropAll to the db');
-
-    await DatabasePageTable.drop(db);
-    await DatabaseEventTopicTable.drop(db);
-    await DatabaseEventContentTable.drop(db);
-    await DatabaseContentTable.drop(db);
-    await DatabaseEventTable.drop(db);
-    await DatabaseTopicTable.drop(db);
-    await DatabasePuzzlePieceTable.drop(db);
-    await DatabaseSpotTable.drop(db);
+    databaseFactory.deleteDatabase(db.path);
 
     _logger.d('Finished DropAll to the db');
   }
@@ -80,7 +72,7 @@ class DatabaseHelper {
     _logger.d('Finished removeAll to the db');
   }
 
-  Future<void> _onUpgradeDb(db, int oldversion, int newversion) async {
+  Future<void> _onUpgradeDb(Database db, int oldversion, int newversion) async {
     if (oldversion != newversion) {
       _logger.d('Started Upgrade to the db');
       await _dropAll(db);

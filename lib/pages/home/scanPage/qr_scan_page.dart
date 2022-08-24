@@ -36,11 +36,11 @@ class QRScanPageState extends State<QRScanPage> {
   @override
   Future<void> reassemble() async {
     super.reassemble();
-    /*
-    if ( Platform.isAndroid) {
+
+    if (Platform.isAndroid) {
       await controller!.pauseCamera();
     }
-    */
+
     controller!.resumeCamera();
   }
 
@@ -84,13 +84,23 @@ class QRScanPageState extends State<QRScanPage> {
     }
   }
 
-  Widget myQRView(BuildContext context) => QRView(
+  Widget myQRView(BuildContext context) {
+    var scanArea = (MediaQuery.of(context).size.width < 400 ||
+            MediaQuery.of(context).size.height < 400)
+        ? 150.0
+        : 300.0;
+    widget._logger.d("scanArea: $scanArea");
+    //scanArea = min(MediaQuery.of(context).size.width, MediaQuery.of(context).size.height) * 0.8;
+    return QRView(
       key: qrKey,
       onQRViewCreated: onQRViewCreated,
       overlay: QrScannerOverlayShape(
-          borderColor: Theme.of(context).colorScheme.secondary,
-          borderWidth: 10,
-          borderLength: 20,
-          borderRadius: 10,
-          cutOutSize: MediaQuery.of(context).size.width * 0.8));
+        borderColor: Theme.of(context).colorScheme.primary,
+        borderWidth: 10,
+        borderLength: 20,
+        borderRadius: 10,
+        cutOutSize: scanArea,
+      ),
+    );
+  }
 }

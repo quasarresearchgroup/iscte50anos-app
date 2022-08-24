@@ -204,10 +204,15 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Center(
-                child: IconButton(
-                    icon: const FaIcon(FontAwesomeIcons.circleQuestion),
-                    onPressed: () => showHelpOverlay(
-                        context, currentPuzzleImage!, widget._logger))),
+              child: IconButton(
+                icon: const FaIcon(FontAwesomeIcons.circleQuestion),
+                onPressed: () => showHelpOverlay(
+                  context,
+                  currentPuzzleImage!,
+                  Orientation.portrait,
+                ),
+              ),
+            ),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -242,8 +247,9 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                     ? PuzzlePage(
                         image: currentPuzzleImage!,
                         constraints: constraints,
-                        completeCallback: () =>
-                            widget._logger.d("Completed Puzzle!!"),
+                        completeCallback: () => widget._logger.d(
+                          "Completed Puzzle!!",
+                        ),
                       )
                     : const LoadingWidget();
               }),
