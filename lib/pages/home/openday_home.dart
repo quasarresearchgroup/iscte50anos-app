@@ -51,6 +51,8 @@ class _HomeOpenDayState extends State<HomeOpenDay>
   late final ConfettiController _confettiController;
   late final AnimationController _lottieController;
 
+  GlobalKey<State<StatefulWidget>> _key = GlobalKey();
+
   @override
   void initState() {
     super.initState();
@@ -101,8 +103,8 @@ class _HomeOpenDayState extends State<HomeOpenDay>
   void rerfeshPermit() {
     Future<SpotRequest> newPermit =
         OpenDayQRScanService.spotRequest(context: context);
-    Future<String?> newImageURL = newPermit
-        .then((value) => OpenDayQRScanService.requestRouter(context, value));
+    //Future<String?> newImageURL = newPermit
+    //  .then((value) => OpenDayQRScanService.requestRouter(context, value));
     //_refreshProfile();
     setState(() {
       currentPemit = newPermit;
@@ -164,64 +166,32 @@ class _HomeOpenDayState extends State<HomeOpenDay>
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<bool>(
-      valueListenable: _completedAllPuzzlesBool,
-      builder: (BuildContext context, bool challengeCompleteBool, _) {
-        /*if (PlatformService.instance.isIos) {
-          widget._logger.d("Built IOS");
-          return buildCupertinoScaffold(challengeCompleteBool);
-        } else {*/
-        // widget._logger.d("Built Android");
-        return buildMaterialScaffold(challengeCompleteBool);
-        //}
-      },
+    return OrientationBuilder(
+        builder: (BuildContext context, Orientation orientation) {
+        return ValueListenableBuilder<bool>(
+          valueListenable: _completedAllPuzzlesBool,
+          builder: (BuildContext context, bool challengeCompleteBool, _) {
+            /*if (PlatformService.instance.isIos) {
+              widget._logger.d("Built IOS");
+              return buildCupertinoScaffold(challengeCompleteBool);
+            } else {*/
+            // widget._logger.d("Built Android");
+            return buildMaterialScaffold(challengeCompleteBool,orientation);
+            //}
+          },
+        );
+      }
     );
   }
 
-/*  Widget buildCupertinoScaffold(bool challengeCompleteBool) {
-    return Scaffold(
-      appBar: CupertinoNavigationBar(
-          middle: Text("Puzzle"),
-          trailing: challengeCompleteBool
-              ? Container()
-              : ValueListenableBuilder<String>(
-                  valueListenable: _currentPuzzleImageNotifier,
-                  builder: (context, value, _) {
-                    return CupertinoButton(
-                      child: const FaIcon(FontAwesomeIcons.circleQuestion),
-                      onPressed: () => showHelpOverlay(
-                          context, Image.network(value), widget._logger),
-                    );
-                  },
-                )),
-      drawer: NavigationDrawerOpenDay(),
-      body: CupertinoTabScaffold(
-        tabBar: CupertinoTabBar(items: MyBottomBar.buildnavbaritems(context)),
-        tabBuilder: (context, index) {
-          if (index == 0) {
-            return buildCenter();
-          } else if (index == 1) {
-            return Container();
-          } else {
-            return LeaderBoardPage();
-*/ /*
-            return QRScanPageOpenDay(
-              changeImage: changeCurrentImage,
-              completedAllPuzzle: _completedAllPuzzles,
-            );
-*/ /*
-          }
-        },
-      ),
-    );
-  }*/
-
-  Widget buildMaterialScaffold(bool challengeCompleteBool) {
+  Widget buildMaterialScaffold(bool challengeCompleteBool, Orientation orientation) {
     return Scaffold(
       extendBodyBehindAppBar: true,
       extendBody: true,
       drawer: NavigationDrawerOpenDay(),
-      appBar: MyAppBar(
+      appBar: orientation == Orientation.landscape
+          ? null
+          : MyAppBar(
         title: "Puzzle",
         leading: Builder(builder: (context) {
           if (!PlatformService.instance.isIos) {
@@ -254,12 +224,12 @@ class _HomeOpenDayState extends State<HomeOpenDay>
                         FontAwesomeIcons.circleQuestion,
                       ),
                       onPressed: () => showHelpOverlay(
-                          context, Image.network(value), widget._logger),
+                          context, Image.network(value), orientation),
                     );
                   } else {
                     return CupertinoButton(
                       onPressed: () => showHelpOverlay(
-                          context, Image.network(value), widget._logger),
+                          context, Image.network(value), orientation),
                       child: Icon(
                         CupertinoIcons.question_circle,
                         color:
@@ -271,28 +241,63 @@ class _HomeOpenDayState extends State<HomeOpenDay>
                 },
               ),
       ),
-/*      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: FloatingActionButton(
-          child: const FaIcon(
-            FontAwesomeIcons.rankingStar,
-            color: Colors.grey,
-            size: 30,
-          ),
-          foregroundColor: Theme.of(context).unselectedWidgetColor,
-          onPressed: () {
-            Navigator.of(context).pushNamed(LeaderBoardPage.pageRoute);
-          }),*/
-      bottomNavigationBar: challengeCompleteBool
-          ? Container()
+      bottomNavigationBar: (challengeCompleteBool ||
+          orientation == Orientation.landscape)
+          ? null
           : MyBottomBar(
-              tabController: _tabController,
+        tabController: _tabController,
+        initialIndex: 0,
+      ),
+      body: Builder(builder: (context) {
+        return orientation == Orientation.landscape
+            ? Row(
+          children: [
+            ValueListenableBuilder<String>(
+                valueListenable: _currentPuzzleImageNotifier,
+                builder: (context, value, _) {
+                  return NavigationRail(
+                    onDestinationSelected: (index) {
+                      if (index == 0) {
+                        Scaffold.of(context).openDrawer();
+                      } else {
+                        showHelpOverlay(
+                          context,
+                          Image.network(value),
+                          orientation,
+                        );
+                      }
+                    },
+                    selectedIndex: 0,
+                    destinations: const <
+                        NavigationRailDestination>[
+                      NavigationRailDestination(
+                        icon: Icon(Icons.menu),
+                        selectedIcon: Icon(Icons.menu),
+                        label: Text('Drawer'),
+                      ),
+                      NavigationRailDestination(
+                        icon: const Icon(Icons.help),
+                        label: Text('First'),
+                      ),
+                    ],
+                  );
+                }),
+            VerticalDivider(),
+            Expanded(child: buildHomeBody(challengeCompleteBool)),
+            VerticalDivider(),
+            MyBottomBar(
               initialIndex: 0,
+              tabController: _tabController,
+              orientation: orientation,
             ),
-      body: buildMaterialHomeBody(challengeCompleteBool),
+          ],
+        )
+            : buildHomeBody(challengeCompleteBool);
+      }),
     );
   }
 
-  AnimatedSwitcher buildMaterialHomeBody(bool challengeCompleteBool) {
+  Widget buildHomeBody(bool challengeCompleteBool) {
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 500),
       child: challengeCompleteBool
@@ -317,64 +322,33 @@ class _HomeOpenDayState extends State<HomeOpenDay>
     );
   }
 
-  Center buildCenter() {
-    return Center(
+  Widget buildCenter() {
+    return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.all(40.0),
-        child: LayoutBuilder(
-          builder: (BuildContext context, BoxConstraints constraints) {
-            return Stack(
-              children: [
-                ValueListenableBuilder<String>(
-                    valueListenable: _currentPuzzleImageNotifier,
-                    builder: (context, value, _) {
-                      if (value.isNotEmpty) {
-                        return PuzzlePage(
-                          image: Image.network(value),
-                          constraints: constraints,
-                          completeCallback: completePuzzleCallback,
-                        );
-                      } else {
-                        return LoadingWidget();
-                      }
-                    })
-/*                                FutureBuilder<String>(
-                                  future: currentPemit,
-                                  builder: (context, snapshot) {
-                                    if (snapshot.hasData) {
-                                      if (snapshot.data != null &&
-                                          OpenDayQRScanService.isCompleteAll(
-                                              snapshot.data!
-                                                  .locationPhotoLink!)) {
-                                        _completedAllPuzzles();
-                                      }
-                                      if (OpenDayQRScanService.isError(
-                                          snapshot
-                                              .data!.locationPhotoLink!)) {
-                                        return buildErrorWidget();
-                                      }
-                                      currentPuzzleImage = Image.network(
-                                          snapshot.data!.locationPhotoLink!);
-
-                                      return PuzzlePage(
-                                        image: currentPuzzleImage!,
-                                        constraints: constraints,
-                                        completeCallback:
-                                            completePuzzleCallback,
-                                      );
-                                    } else if (snapshot.hasError) {
-                                      return buildErrorWidget();
-                                    } else {
-                                      return const LoadingWidget();
-                                    }
-                                  })*/
-                ,
-                IscteConfetti(confettiController: _confettiController)
-              ],
-            );
-          },
-        ),
-      ),
+          padding: const EdgeInsets.all(10.0),
+          child: Stack(
+            children: [
+              ValueListenableBuilder<String>(
+                  valueListenable: _currentPuzzleImageNotifier,
+                  builder: (context, value, _) {
+                    if (value.isNotEmpty) {
+                      return LayoutBuilder(
+                          builder: (context, constraints) {
+                            return PuzzlePage(
+                              image: Image.network(value),
+                              completeCallback:
+                              completePuzzleCallback,
+                              constraints: constraints,
+                            );
+                          });
+                    } else {
+                      return const LoadingWidget();
+                    }
+                  }),
+              IscteConfetti(
+                  confettiController: _confettiController)
+            ],
+          )),
     );
   }
 
@@ -395,12 +369,12 @@ class _HomeOpenDayState extends State<HomeOpenDay>
             ),
             Padding(
               padding: EdgeInsets.only(top: 10),
-              child: Text('Ocorreu um erro a descarregar os dados'),
+              child: Text('Ocorreu um erro a descarregar os dados'), //TODO
             ),
             Padding(
               padding: EdgeInsets.all(5.0),
               child: Text(
-                'Tocar aqui para recarregar',
+                'Tocar aqui para recarregar', //TODO
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
             )

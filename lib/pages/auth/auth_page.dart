@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:iscte_spots/pages/auth/login/login_openday_page.dart';
@@ -71,7 +73,12 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
   }
 
   void initFunc() async {
-    bool _loggedIn = await OpenDayLoginService.isLoggedIn();
+    bool _loggedIn;
+    try {
+      _loggedIn = await OpenDayLoginService.isLoggedIn();
+    } on SocketException {
+      _loggedIn = false;
+    }
     setState(() {
       _isLoggedIn = _loggedIn;
       _isLoading = false;

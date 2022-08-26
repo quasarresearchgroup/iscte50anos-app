@@ -29,7 +29,7 @@ class TimelineDial extends StatelessWidget {
             backgroundColor: Colors.red,
             label: 'Delete',
             onTap: () {
-              deleteTimelineData(context);
+              deleteTimelineData();
             }),
         SpeedDialChild(
             child: const Icon(Icons.refresh),

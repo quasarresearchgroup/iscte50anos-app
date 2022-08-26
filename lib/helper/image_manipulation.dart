@@ -34,10 +34,10 @@ class ImageManipulation {
     required sendToBack,
     required constraints,
     required completeCallback,
+    required Size imageSize,
   }) async {
     //logger.d('started split');
     List<PuzzlePieceWidget> outputList = [];
-    Size imageSize = await getImageSize(image);
     for (int x = 0; x < rows; x++) {
       for (int y = 0; y < cols; y++) {
         var puzzlePiece = PuzzlePieceWidget(

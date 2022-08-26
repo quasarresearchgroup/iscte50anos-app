@@ -1,10 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:iscte_spots/pages/home/nav_drawer/page_routes.dart';
-import 'package:iscte_spots/pages/home/splash.dart';
+import 'package:iscte_spots/pages/home/splashScreen/splash.dart';
 import 'package:iscte_spots/services/platform_service.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 
@@ -14,8 +13,7 @@ const int qrPageIndex = 1;
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-  await SystemChrome.setPreferredOrientations(
-      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+  //await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
 
   runApp(const MyApp());
 }
@@ -47,7 +45,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     if (PlatformService.instance.isIos) {
       final Brightness platformBrightness =
-          WidgetsBinding.instance!.window.platformBrightness;
+          WidgetsBinding.instance.window.platformBrightness;
       return CupertinoApp(
         builder: (BuildContext context, Widget? child) => Theme(
           data: (platformBrightness == Brightness.dark)

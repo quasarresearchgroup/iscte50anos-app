@@ -16,7 +16,19 @@ class DatabasePuzzlePieceTable {
   static const columnLeft = "left";
   static const columnTop = "top";
 
-  static Future onCreate(Database db, int version) async {
+  /* static String initScript = '''
+      CREATE TABLE puzzlePieceTable(
+      row INTEGER NOT NULL,
+      column INTEGER NOT NULL,
+      max_row INTEGER NOT NULL,
+      max_column INTEGER NOT NULL,
+      left REAL NOT NULL,
+      top REAL NOT NULL,
+      PRIMARY KEY( row,  column )
+      )
+    ''';*/
+
+  static Future onCreate(Database db) async {
     db.execute('''
       CREATE TABLE $table(
       $columnRow INTEGER NOT NULL,
@@ -46,7 +58,7 @@ class DatabasePuzzlePieceTable {
     return contentList;
   }
 
-  static void add(PuzzlePiece puzzlePiece) async {
+  static Future<void> add(PuzzlePiece puzzlePiece) async {
     DatabaseHelper instance = DatabaseHelper.instance;
     Database db = await instance.database;
     await db.insert(
@@ -57,7 +69,7 @@ class DatabasePuzzlePieceTable {
     _logger.d("Inserted: $puzzlePiece into $table");
   }
 
-  static void addBatch(List<PuzzlePiece> contents) async {
+  static Future<void> addBatch(List<PuzzlePiece> contents) async {
     DatabaseHelper instance = DatabaseHelper.instance;
     Database db = await instance.database;
     Batch batch = db.batch();

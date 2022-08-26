@@ -9,13 +9,13 @@ import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:logger/logger.dart';
 
 class PuzzlePage extends StatefulWidget {
-  PuzzlePage(
-      {Key? key,
-      required this.image,
-      required this.constraints,
-      required this.completeCallback})
-      : super(key: key);
-  final Logger _logger = Logger();
+  PuzzlePage({
+    Key? key,
+    required this.image,
+    required this.constraints,
+    required this.completeCallback,
+  }) : super(key: key);
+  final Logger _logger = Logger(printer: PrettyPrinter(methodCount: 4));
   static const pageRoute = "/puzzle";
 
   final int rows = 5;
@@ -31,6 +31,7 @@ class PuzzlePage extends StatefulWidget {
 class _PuzzlePageState extends State<PuzzlePage>
     with AutomaticKeepAliveClientMixin {
   final List<Widget> pieces = [];
+
   //make this a future so that previous operations get queued and complete only when this has values
   @override
   void initState() {
@@ -44,7 +45,6 @@ class _PuzzlePageState extends State<PuzzlePage>
   @override
   void didUpdateWidget(PuzzlePage oldWidget) {
     if (oldWidget.image != widget.image) {
-      widget._logger.d("changing image");
       generatePieces(widget.image);
     }
     super.didUpdateWidget(oldWidget);
@@ -52,38 +52,71 @@ class _PuzzlePageState extends State<PuzzlePage>
 
   @override
   Widget build(BuildContext context) {
-    Widget widget =
-        pieces.isNotEmpty ? Stack(children: pieces) : const LoadingWidget();
     super.build(context);
-    return SafeArea(child: widget);
+    return pieces.isNotEmpty ? Stack(children: pieces) : const LoadingWidget();
   }
 
   void refreshPieces() {
     generatePieces(widget.image);
   }
+/*
+  void rotatePuzzle() {
+    isTurned = !isTurned;
+    generatePieces(widget.image);
+  }*/
 
   void generatePieces(Image img) async {
-    Size imageSize = await ImageManipulation.getImageSize(img);
-    final double imageWidth;
-    final double imageHeight;
-    final double aspectRatio = imageSize.width / imageSize.height;
-    //if (imageSize.width < imageSize.height) {
-    imageWidth = min(widget.constraints.maxWidth, widget.constraints.maxWidth);
-    imageHeight = min(widget.constraints.maxWidth / aspectRatio,
-        widget.constraints.maxHeight);
-    // } else {
-    //   imageWidth = widget.constraints.maxHeight * aspectRatio;
-    //   imageHeight = widget.constraints.maxHeight;
-    // }
-    widget._logger.d("imageWidth:$imageWidth; imageHeight:$imageHeight");
+    Size originalSize = await ImageManipulation.getImageSize(img);
+    double imageWidth;
+    double imageHeight;
+    imageWidth = widget.constraints.maxWidth;
+    imageHeight = imageWidth / originalSize.aspectRatio;
+
+    if (imageWidth > widget.constraints.maxWidth) {
+      imageWidth = widget.constraints.maxWidth;
+      imageHeight = widget.constraints.maxWidth / originalSize.aspectRatio;
+    } else if (imageHeight > widget.constraints.maxHeight) {
+      imageHeight = widget.constraints.maxHeight;
+      imageWidth = widget.constraints.maxHeight * originalSize.aspectRatio;
+    }
+
+    /*imageHeight = min(
+        imageWidth * originalSize.aspectRatio,
+        quarterTurns.isEven
+            ? widget.constraints.maxHeight
+            : widget.constraints.maxWidth);
+    if (imageHeight >= widget.constraints.maxHeight) {
+      imageHeight = widget.constraints.maxHeight;
+      imageWidth = imageHeight * originalSize.aspectRatio;
+    } else if (imageWidth >= widget.constraints.maxWidth) {
+      imageWidth = widget.constraints.maxWidth;
+      imageHeight = imageWidth * originalSize.aspectRatio;
+    }*/
+
+    //imageHeight = min(widget.constraints.maxWidth * originalSize.aspectRatio, widget.constraints.maxHeight);
+
+    //imageHeight = widget.constraints.maxHeight *
+    //    widget.constraints.maxWidth /
+    //    originalSize.width;
+
+    final Size imageSize = Size(imageWidth, imageHeight);
+
+    widget._logger.d(
+        "imageSize.width: ${imageSize.width} ; imageSize.height: ${imageSize.height}");
     List<PuzzlePiece> storedPuzzlePieces =
         await DatabasePuzzlePieceTable.getAll();
     List<PuzzlePieceWidget> storedPuzzlePieceWidgets = [];
     List<Point> storedPositions = [];
     for (var element in storedPuzzlePieces) {
       storedPuzzlePieceWidgets.add(
-        element.getWidget(img, imageSize, bringToTop, sendToBack,
-            widget.constraints, widget.completeCallback),
+        element.getWidget(
+          image: img,
+          imageSize: imageSize,
+          bringToTop: bringToTop,
+          sendToBack: sendToBack,
+          constraints: widget.constraints,
+          completeCallback: widget.completeCallback,
+        ),
       );
       storedPositions.add(Point(element.row, element.column));
     }
@@ -95,6 +128,7 @@ class _PuzzlePageState extends State<PuzzlePage>
       sendToBack: sendToBack,
       rows: widget.rows,
       cols: widget.cols,
+      imageSize: imageSize,
       constraints: widget.constraints,
       completeCallback: widget.completeCallback,
     ))
@@ -113,23 +147,37 @@ class _PuzzlePageState extends State<PuzzlePage>
         ),
       ),
       child: SizedBox(
-        width: imageWidth,
-        height: imageHeight,
+        width: imageSize.width,
+        height: imageSize.height,
       ),
     ));
     //pieces.addAll(snappedPuzzlePieces);
     //pieces.addAll(movablePuzzlePieces);
     pieces.addAll(storedPuzzlePieceWidgets);
     pieces.addAll(notStoredPieces);
-    pieces.add(Positioned(
-        right: 0,
-        bottom: 0,
-        child: FloatingActionButton(
-            heroTag: "refreshFAB",
-            elevation: 1,
-            child:
-                Icon(Icons.refresh, color: Theme.of(context).selectedRowColor),
-            onPressed: refreshPieces)));
+/*    pieces.add(Positioned(
+      right: 0,
+      bottom: 0,
+      child: SpeedDial(
+        child: const Icon(Icons.add),
+        children: [
+          SpeedDialChild(
+              elevation: 0,
+              child: const Icon(
+                Icons.refresh,
+              ),
+              foregroundColor: Theme.of(context).unselectedWidgetColor,
+              onTap: refreshPieces),
+          */ /*
+          SpeedDialChild(
+              child: const Icon(
+                Icons.rotate_right,
+              ),
+              foregroundColor: Theme.of(context).unselectedWidgetColor,
+              onTap: rotatePuzzle),*/ /*
+        ],
+      ),
+    ));*/
     setState(() {});
   }
 
