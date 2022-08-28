@@ -27,7 +27,8 @@ class HomeOpenDay extends StatefulWidget {
   HomeOpenDay({Key? key}) : super(key: key);
   final Logger _logger = Logger();
 
-  final int scanSpotIndex = 1;
+  final int scanSpotIndex = 2;
+  final int leaderBoardIndex = 1;
   final int puzzleIndex = 0;
 
   @override
