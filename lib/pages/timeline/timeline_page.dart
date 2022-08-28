@@ -79,10 +79,10 @@ class _TimelinePageState extends State<TimelinePage> {
         ),
         leading: DynamicBackIconButton(),
       ),
-      /* floatingActionButton: TimelineDial(
+       floatingActionButton: TimelineDial(
             isDialOpen: isDialOpen,
             deleteTimelineData: deleteTimelineData,
-            refreshTImelineData: refreshTimelineData),*/
+            refreshTimelineData: deleteGetAllEventsFromCsv),
       body: FutureBuilder<List<Event>>(
         future: mapdata,
         builder: (context, snapshot) {
@@ -112,12 +112,12 @@ class _TimelinePageState extends State<TimelinePage> {
     return PlatformService.instance.isIos
         ? scaffold
         : Theme(
-      data: Theme.of(context).copyWith(
-        appBarTheme: Theme.of(context).appBarTheme.copyWith(
-          shape: const ContinuousRectangleBorder(),
-        ),
-      ),
-      child: scaffold,
+          data: Theme.of(context).copyWith(
+            appBarTheme: Theme.of(context).appBarTheme.copyWith(
+              shape: const ContinuousRectangleBorder()
+            ),
+          ),
+           child: scaffold,
     );
   }
 

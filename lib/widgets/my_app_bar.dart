@@ -5,13 +5,21 @@ import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 import 'package:logger/logger.dart';
 
 class MyAppBar extends StatefulWidget with PreferredSizeWidget {
-  MyAppBar({Key? key, this.trailing, this.title, this.leading})
-      : super(key: key);
+  MyAppBar({
+    Key? key,
+    this.trailing,
+    this.title,
+    this.leading,
+    this.middle,
+    this.automaticallyImplyLeading = false,
+  }) : super(key: key);
   final Logger _logger = Logger();
 
   Widget? trailing;
   String? title;
   Widget? leading;
+  Widget? middle;
+  bool automaticallyImplyLeading;
 
   @override
   State<MyAppBar> createState() => _MyAppBarState();
@@ -24,6 +32,8 @@ class _MyAppBarState extends State<MyAppBar> {
   @override
   void initState() {
     super.initState();
+    assert(widget.middle == null && widget.title != null ||
+        widget.middle != null && widget.title == null);
   }
 
   @override
@@ -34,9 +44,10 @@ class _MyAppBarState extends State<MyAppBar> {
             overflow: TextOverflow.ellipsis,
             style: TextStyle(color: Colors.white),
           )
-        : null;
+        : widget.middle;
     return !PlatformService.instance.isIos
         ? AppBar(
+            automaticallyImplyLeading: widget.automaticallyImplyLeading,
             leading: widget.leading,
             title: middle
             /*FutureBuilder<SpotRequest>(
@@ -63,7 +74,9 @@ class _MyAppBarState extends State<MyAppBar> {
           )
         : CupertinoNavigationBar(
             backgroundColor: IscteTheme.iscteColor,
+            automaticallyImplyMiddle: widget.automaticallyImplyLeading,
             padding: EdgeInsetsDirectional.zero,
+            automaticallyImplyLeading: false,
             leading: widget.leading,
             middle: middle,
             trailing: widget.trailing,

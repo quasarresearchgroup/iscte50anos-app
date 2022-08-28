@@ -8,6 +8,11 @@ import 'package:iscte_spots/models/timeline/event.dart';
 import 'package:iscte_spots/models/timeline/topic.dart';
 import 'package:iscte_spots/pages/timeline/timeline_body.dart';
 import 'package:iscte_spots/pages/timeline/timeline_page.dart';
+import 'package:iscte_spots/services/platform_service.dart';
+import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_back_button.dart';
+import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_text_button.dart';
+import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_text_field.dart';
+import 'package:iscte_spots/widgets/my_app_bar.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:logger/logger.dart';
@@ -45,19 +50,28 @@ class _TimelineFilterPageState extends State<TimelineFilterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        actions: [
-          IconButton(
-              tooltip:
-                  AppLocalizations.of(context)!.timelineSearchHintInsideTopic,
-              onPressed: _enableAdvancedSearch,
-              icon: Icon(
-                advancedSearch ? Icons.filter_alt : Icons.filter_alt_outlined,
-                semanticLabel:
+      appBar: MyAppBar(
+        trailing: (PlatformService.instance.isIos)
+            ? CupertinoButton(
+                onPressed: _enableAdvancedSearch,
+                child: Icon(
+                  advancedSearch
+                      ? CupertinoIcons.settings
+                      : CupertinoIcons.settings_solid,
+                  semanticLabel: AppLocalizations.of(context)!
+                      .timelineSearchHintInsideTopic,
+                  color: Colors.white,
+                ))
+            : IconButton(
+                tooltip:
                     AppLocalizations.of(context)!.timelineSearchHintInsideTopic,
-              ))
-        ],
-        title: buildSearchBar(context, selectedTopics.isEmpty),
+                onPressed: _enableAdvancedSearch,
+                icon: Icon(
+                  advancedSearch ? Icons.filter_alt : Icons.filter_alt_outlined,
+                  semanticLabel: AppLocalizations.of(context)!
+                      .timelineSearchHintInsideTopic,
+                )),
+        middle: buildSearchBar(context, selectedTopics.isEmpty),
       ),
       body: buildBody(context, selectedTopics.isEmpty),
     );
@@ -67,10 +81,11 @@ class _TimelineFilterPageState extends State<TimelineFilterPage> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 20),
       child: AnimatedSwitcher(
-        duration: Duration(milliseconds: 500),
+        duration: const Duration(milliseconds: 500),
         child: !advancedSearch
             ? Center(
-                child: ElevatedButton(
+                child: DynamicTextButton(
+                  style: IscteTheme.iscteColor,
                   child:
                       Text(AppLocalizations.of(context)!.timelineSearchButton),
                   onPressed: () {
@@ -78,39 +93,69 @@ class _TimelineFilterPageState extends State<TimelineFilterPage> {
                   },
                 ),
               )
-            : Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  AnimatedSwitcher(
-                    duration: Duration(milliseconds: 500),
-                    child: isEmptySelectedTopics
-                        ? Container()
-                        : Column(children: [
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(AppLocalizations.of(context)!
-                                      .timelineSelectedTopics)),
-                            ),
-                            buildSelectedTopics(),
-                            const Divider(height: 20, thickness: 2),
-                          ]),
-                  ),
-                  buildAvailableTopicsHeader(context),
-                  buildTopicsCheckBoxList(),
-                  const Divider(),
-                  ElevatedButton(
-                    child: Text(
-                        AppLocalizations.of(context)!.timelineSearchButton),
-                    onPressed: () {
-                      _submitSelection(context);
-                    },
-                  ),
-                ],
-              ),
+            : OrientationBuilder(
+                builder: (BuildContext context, Orientation orientation) {
+                Widget divider = (orientation == Orientation.landscape)
+                    ? const VerticalDivider(
+                        width: 20,
+                        thickness: 2,
+                      )
+                    : const Divider(height: 20, thickness: 2);
+
+                var submitTextButton = DynamicTextButton(
+                  style: IscteTheme.iscteColor,
+                  child:
+                      Text(AppLocalizations.of(context)!.timelineSearchButton),
+                  onPressed: () {
+                    _submitSelection(context);
+                  },
+                );
+                int propoertion = 50;
+                return (orientation == Orientation.landscape)
+                    ? Flex(
+                        direction: Axis.horizontal,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Flexible(
+                              flex: 100 - propoertion,
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    buildSelectedTopics(isEmptySelectedTopics),
+                                    divider,
+                                    submitTextButton,
+                                  ],
+                                ),
+                              )),
+                          const VerticalDivider(
+                            width: 20,
+                            thickness: 2,
+                          ),
+                          Flexible(
+                              flex: propoertion,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  buildAvailableTopicsHeader(context),
+                                  buildTopicsCheckBoxList(),
+                                ],
+                              ))
+                        ],
+                      )
+                    : Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          buildSelectedTopics(isEmptySelectedTopics),
+                          buildAvailableTopicsHeader(context),
+                          buildTopicsCheckBoxList(),
+                          divider,
+                          submitTextButton,
+                        ],
+                      );
+              }),
       ),
     );
   }
@@ -127,22 +172,23 @@ class _TimelineFilterPageState extends State<TimelineFilterPage> {
           Expanded(
             child: Container(),
           ),
-          TextButton(
-            child: Text(AppLocalizations.of(context)!.timelineSelectAllButton),
+          DynamicTextButton(
             onPressed: _selectAllTopics,
+            child: Text(AppLocalizations.of(context)!.timelineSelectAllButton,
+                style: TextStyle(color: IscteTheme.iscteColor)),
           ),
-          TextButton(
-            child:
-                Text(AppLocalizations.of(context)!.timelineSelectClearButton),
+          DynamicTextButton(
             onPressed: _clearTopicsList,
+            child: Text(AppLocalizations.of(context)!.timelineSelectClearButton,
+                style: TextStyle(color: IscteTheme.iscteColor)),
           ),
         ],
       ),
     );
   }
 
-  Wrap buildSelectedTopics() {
-    return Wrap(
+  Widget buildSelectedTopics(bool isEmptySelectedTopics) {
+    Widget wrap = Wrap(
       alignment: WrapAlignment.start,
       direction: Axis.horizontal,
       children: selectedTopics
@@ -169,35 +215,68 @@ class _TimelineFilterPageState extends State<TimelineFilterPage> {
               ))
           .toList(),
     );
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 500),
+      child: isEmptySelectedTopics
+          ? Container()
+          : Column(children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                        AppLocalizations.of(context)!.timelineSelectedTopics)),
+              ),
+              wrap,
+              const Divider(
+                height: 20,
+                thickness: 2,
+              ),
+            ]),
+    );
   }
 
   Widget buildSearchBar(BuildContext context, bool isEmptySelectedTopics) {
     return Center(
-      child: TextField(
+      child: DynamicTextField(
         style: const TextStyle(color: Colors.white),
         controller: searchBarController,
-        decoration: InputDecoration(
-          hintStyle: const TextStyle(color: Colors.white70),
-          prefixIcon: IconButton(
-            icon: const Icon(
-              Icons.search,
-              color: Colors.white,
-            ),
-            onPressed: () {
-              _submitSelection(context);
-            },
-          ),
-          suffixIcon: IconButton(
-              icon: const Icon(
-                Icons.clear,
-                color: Colors.white,
+        placeholderStyle: const TextStyle(color: Colors.white70),
+        prefix: (PlatformService.instance.isIos)
+            ? CupertinoButton(
+                child: const Icon(
+                  CupertinoIcons.search,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  _submitSelection(context);
+                })
+            : IconButton(
+                icon: const Icon(
+                  Icons.search,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  _submitSelection(context);
+                },
               ),
-              onPressed: searchBarController.clear),
-          hintText: !advancedSearch
-              ? AppLocalizations.of(context)!.timelineSearchHint
-              : AppLocalizations.of(context)!.timelineSearchHintInsideTopic,
-          border: InputBorder.none,
-        ),
+        suffix: (PlatformService.instance.isIos)
+            ? CupertinoButton(
+                child: const Icon(
+                  CupertinoIcons.clear,
+                  color: Colors.white,
+                ),
+                onPressed: searchBarController.clear)
+            : IconButton(
+                icon: const Icon(
+                  Icons.clear,
+                  color: Colors.white,
+                ),
+                onPressed: searchBarController.clear),
+        placeholder: !advancedSearch
+            ? AppLocalizations.of(context)!.timelineSearchHint
+            : AppLocalizations.of(context)!.timelineSearchHintInsideTopic,
+        //border: InputBorder.none,
       ),
     );
   }
@@ -304,8 +383,9 @@ class _TimelineFilterPageState extends State<TimelineFilterPage> {
               ),
         ),
         child: Scaffold(
-          appBar: AppBar(
-            title: Text(AppLocalizations.of(context)!.timelineSearchResults),
+          appBar: MyAppBar(
+            leading: const DynamicBackIconButton(),
+            title: AppLocalizations.of(context)!.timelineSearchResults,
           ),
           body: TimeLineBody(
             mapdata: setOfEvents.toList(),
