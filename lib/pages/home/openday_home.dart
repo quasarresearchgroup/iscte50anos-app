@@ -2,7 +2,6 @@ import 'package:confetti/confetti.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:iscte_spots/models/database/tables/database_puzzle_piece_table.dart';
 import 'package:iscte_spots/models/requests/spot_request.dart';
 import 'package:iscte_spots/pages/home/nav_drawer/navigation_drawer_openday.dart';
@@ -168,133 +167,125 @@ class _HomeOpenDayState extends State<HomeOpenDay>
   Widget build(BuildContext context) {
     return OrientationBuilder(
         builder: (BuildContext context, Orientation orientation) {
-        return ValueListenableBuilder<bool>(
-          valueListenable: _completedAllPuzzlesBool,
-          builder: (BuildContext context, bool challengeCompleteBool, _) {
-            /*if (PlatformService.instance.isIos) {
-              widget._logger.d("Built IOS");
-              return buildCupertinoScaffold(challengeCompleteBool);
-            } else {*/
-            // widget._logger.d("Built Android");
-            return buildMaterialScaffold(challengeCompleteBool,orientation);
-            //}
-          },
-        );
-      }
-    );
+      return ValueListenableBuilder<bool>(
+        valueListenable: _completedAllPuzzlesBool,
+        builder: (BuildContext context, bool challengeCompleteBool, _) {
+          return buildMaterialScaffold(challengeCompleteBool, orientation);
+        },
+      );
+    });
   }
 
-  Widget buildMaterialScaffold(bool challengeCompleteBool, Orientation orientation) {
+  Widget buildMaterialScaffold(
+      bool challengeCompleteBool, Orientation orientation) {
     return Scaffold(
       extendBodyBehindAppBar: true,
       extendBody: true,
       drawer: NavigationDrawerOpenDay(),
-      appBar: orientation == Orientation.landscape
-          ? null
-          : MyAppBar(
-        title: "Puzzle",
-        leading: Builder(builder: (context) {
-          if (!PlatformService.instance.isIos) {
-            return IconButton(
-              icon: const Icon(Icons.menu),
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
-            );
-          } else {
-            return CupertinoButton(
-              child: Icon(
-                Icons.menu,
-                color: CupertinoTheme.of(context).primaryContrastingColor,
-              ),
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
-            );
-          }
-        }),
-        trailing: challengeCompleteBool
-            ? Container()
-            : ValueListenableBuilder<String>(
-                valueListenable: _currentPuzzleImageNotifier,
-                builder: (context, value, _) {
-                  if (!PlatformService.instance.isIos) {
-                    return IconButton(
-                      icon: const FaIcon(
-                        FontAwesomeIcons.circleQuestion,
-                      ),
-                      onPressed: () => showHelpOverlay(
-                          context, Image.network(value), orientation),
-                    );
-                  } else {
-                    return CupertinoButton(
-                      onPressed: () => showHelpOverlay(
-                          context, Image.network(value), orientation),
-                      child: Icon(
-                        CupertinoIcons.question_circle,
-                        color:
-                            CupertinoTheme.of(context).primaryContrastingColor,
-                      ),
-                      padding: EdgeInsets.zero,
-                    );
-                  }
-                },
-              ),
-      ),
-      bottomNavigationBar: (challengeCompleteBool ||
-          orientation == Orientation.landscape)
-          ? null
-          : MyBottomBar(
-        tabController: _tabController,
-        initialIndex: 0,
-      ),
+      appBar: buildAppBar(orientation, challengeCompleteBool),
+      bottomNavigationBar:
+          (challengeCompleteBool || orientation == Orientation.landscape)
+              ? null
+              : MyBottomBar(
+                  tabController: _tabController,
+                  initialIndex: 0,
+                ),
       body: Builder(builder: (context) {
         return orientation == Orientation.landscape
             ? Row(
-          children: [
-            ValueListenableBuilder<String>(
-                valueListenable: _currentPuzzleImageNotifier,
-                builder: (context, value, _) {
-                  return NavigationRail(
-                    onDestinationSelected: (index) {
-                      if (index == 0) {
-                        Scaffold.of(context).openDrawer();
-                      } else {
-                        showHelpOverlay(
-                          context,
-                          Image.network(value),
-                          orientation,
+                children: [
+                  ValueListenableBuilder<String>(
+                      valueListenable: _currentPuzzleImageNotifier,
+                      builder: (context, value, _) {
+                        return NavigationRail(
+                          onDestinationSelected: (index) {
+                            if (index == 0) {
+                              Scaffold.of(context).openDrawer();
+                            } else {
+                              showHelpOverlay(
+                                context,
+                                Image.network(value),
+                                orientation,
+                              );
+                            }
+                          },
+                          selectedIndex: 0,
+                          destinations: const <NavigationRailDestination>[
+                            NavigationRailDestination(
+                              icon: Icon(Icons.menu),
+                              selectedIcon: Icon(Icons.menu),
+                              label: Text('Drawer'),
+                            ),
+                            NavigationRailDestination(
+                              icon: const Icon(Icons.help),
+                              label: Text('First'),
+                            ),
+                          ],
                         );
-                      }
-                    },
-                    selectedIndex: 0,
-                    destinations: const <
-                        NavigationRailDestination>[
-                      NavigationRailDestination(
-                        icon: Icon(Icons.menu),
-                        selectedIcon: Icon(Icons.menu),
-                        label: Text('Drawer'),
-                      ),
-                      NavigationRailDestination(
-                        icon: const Icon(Icons.help),
-                        label: Text('First'),
-                      ),
-                    ],
-                  );
-                }),
-            VerticalDivider(),
-            Expanded(child: buildHomeBody(challengeCompleteBool)),
-            VerticalDivider(),
-            MyBottomBar(
-              initialIndex: 0,
-              tabController: _tabController,
-              orientation: orientation,
-            ),
-          ],
-        )
+                      }),
+                  VerticalDivider(),
+                  Expanded(child: buildHomeBody(challengeCompleteBool)),
+                  VerticalDivider(),
+                  MyBottomBar(
+                    initialIndex: 0,
+                    tabController: _tabController,
+                    orientation: orientation,
+                  ),
+                ],
+              )
             : buildHomeBody(challengeCompleteBool);
       }),
     );
+  }
+
+  MyAppBar? buildAppBar(Orientation orientation, bool challengeCompleteBool) {
+    return orientation == Orientation.landscape
+        ? null
+        : MyAppBar(
+            title: "Puzzle",
+            leading: Builder(builder: (context) {
+              return (!PlatformService.instance.isIos)
+                  ? IconButton(
+                      icon: const Icon(Icons.menu),
+                      onPressed: () {
+                        Scaffold.of(context).openDrawer();
+                      },
+                    )
+                  : CupertinoButton(
+                      child: Icon(
+                        Icons.menu,
+                        color:
+                            CupertinoTheme.of(context).primaryContrastingColor,
+                      ),
+                      onPressed: () {
+                        Scaffold.of(context).openDrawer();
+                      },
+                    );
+            }),
+            trailing: challengeCompleteBool
+                ? null
+                : ValueListenableBuilder<String>(
+                    valueListenable: _currentPuzzleImageNotifier,
+                    builder: (context, value, _) {
+                      if (!PlatformService.instance.isIos) {
+                        return IconButton(
+                          icon: const Icon(Icons.help),
+                          onPressed: () => showHelpOverlay(
+                              context, Image.network(value), orientation),
+                        );
+                      } else {
+                        return CupertinoButton(
+                          onPressed: () => showHelpOverlay(
+                              context, Image.network(value), orientation),
+                          padding: EdgeInsets.zero,
+                          child: Icon(CupertinoIcons.question_circle,
+                              color: CupertinoTheme.of(context)
+                                  .primaryContrastingColor),
+                        );
+                      }
+                    },
+                  ),
+          );
   }
 
   Widget buildHomeBody(bool challengeCompleteBool) {
@@ -311,7 +302,7 @@ class _HomeOpenDayState extends State<HomeOpenDay>
                   physics: const NeverScrollableScrollPhysics(),
                   controller: _tabController,
                   children: [
-                    buildCenter(),
+                    buildPuzzleBody(),
                     LeaderBoardPage(),
                     QRScanPageOpenDay(
                       changeImage: changeCurrentImage,
@@ -322,7 +313,7 @@ class _HomeOpenDayState extends State<HomeOpenDay>
     );
   }
 
-  Widget buildCenter() {
+  Widget buildPuzzleBody() {
     return SafeArea(
       child: Padding(
           padding: const EdgeInsets.all(10.0),
@@ -332,21 +323,18 @@ class _HomeOpenDayState extends State<HomeOpenDay>
                   valueListenable: _currentPuzzleImageNotifier,
                   builder: (context, value, _) {
                     if (value.isNotEmpty) {
-                      return LayoutBuilder(
-                          builder: (context, constraints) {
-                            return PuzzlePage(
-                              image: Image.network(value),
-                              completeCallback:
-                              completePuzzleCallback,
-                              constraints: constraints,
-                            );
-                          });
+                      return LayoutBuilder(builder: (context, constraints) {
+                        return PuzzlePage(
+                          image: Image.network(value),
+                          completeCallback: completePuzzleCallback,
+                          constraints: constraints,
+                        );
+                      });
                     } else {
                       return const LoadingWidget();
                     }
                   }),
-              IscteConfetti(
-                  confettiController: _confettiController)
+              IscteConfetti(confettiController: _confettiController)
             ],
           )),
     );
