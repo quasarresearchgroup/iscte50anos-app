@@ -4,16 +4,17 @@ import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:iscte_spots/models/database/tables/database_puzzle_piece_table.dart';
-import 'package:iscte_spots/services/platform_service.dart';
 import 'package:iscte_spots/models/database/tables/database_spot_table.dart';
 import 'package:iscte_spots/models/spot.dart';
+import 'package:iscte_spots/services/platform_service.dart';
 import 'package:iscte_spots/services/shared_prefs_service.dart';
 import 'package:iscte_spots/services/spotChooser/fetch_all_spots_service.dart';
+import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_snackbar.dart';
+import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_text_button.dart';
+import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:logger/logger.dart';
 
@@ -88,7 +89,8 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
               buildSpotsGrid(snapshot.data!),
             ]);
             return CustomScrollView(
-                physics: const BouncingScrollPhysics(), slivers: slivers2);
+                physics: const AlwaysScrollableScrollPhysics(),
+                slivers: slivers2);
           } else {
             return Container(
               color: Colors.yellow,
@@ -99,22 +101,25 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
     );
   }
 
-  CupertinoSliverRefreshControl buildCupertinoSliverRefreshControl( BuildContext context) {
+  CupertinoSliverRefreshControl buildCupertinoSliverRefreshControl(
+      BuildContext context) {
     return CupertinoSliverRefreshControl(
       onRefresh: () async {
-        refreshCallback(context);
-        showRefreshSnackBar(context);
+        await refreshCallback(context);
       },
     );
   }
 
-  CupertinoSliverNavigationBar buildCupertinoSliverAppBar(BuildContext context) {
+  CupertinoSliverNavigationBar buildCupertinoSliverAppBar(
+      BuildContext context) {
     return CupertinoSliverNavigationBar(
-      largeTitle: Text(AppLocalizations.of(context)!.spotChooserScreen),
+      backgroundColor: IscteTheme.iscteColor,
+      largeTitle: Text(AppLocalizations.of(context)!.spotChooserScreen,
+          style: const TextStyle(color: Colors.white)),
     );
   }
 
-  SliverAppBar buildSliverAppBar( BuildContext context) {
+  SliverAppBar buildSliverAppBar(BuildContext context) {
     return SliverAppBar(
       title: Text(AppLocalizations.of(context)!.spotChooserScreen),
       floating: true,
@@ -122,26 +127,25 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
       stretch: true,
       onStretchTrigger: () async {
         refreshCallback(context);
-        showRefreshSnackBar(context);
       },
     );
   }
-
 
   Future<void> refreshCallback(BuildContext context) async {
     widget._logger.d("fetching data");
     await SpotsRequestService.fetchAllSpots(context: context);
     future = DatabaseSpotTable.getAll();
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-      content: Text("Refreshed"),
-      duration: Duration(seconds: 2),
-    ));
+    if (mounted) {
+      await DynamicSnackBar.showSnackBar(
+          context, const Text("Refreshed"), const Duration(seconds: 2));
+    }
     setState(() {});
   }
 
+/*
   void showRefreshSnackBar(BuildContext context) {
     SchedulerBinding.instance.addPostFrameCallback(
-          (timeStamp) {
+      (timeStamp) {
         if (PlatformService.instance.isIos) {
           showModalBottomSheet(
             context: context,
@@ -162,7 +166,7 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
               backgroundColor: Theme.of(context).backgroundColor,
               content: Text("Refreshing",
                   style: Theme.of(context).textTheme.bodyMedium),
-              duration: Duration(seconds: 2),
+              duration: const Duration(seconds: 2),
             ),
           );
         }
@@ -171,8 +175,7 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
 //    if (mounted) {
     // }
   }
-
-
+*/
 
   Widget buildTopRow(List<Spot> list) {
     double sliderMax = 20;
@@ -189,69 +192,59 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
               Expanded(
                 child: (!PlatformService.instance.isIos)
                     ? Slider(
-                  max: sliderMax,
-                  min: sliderMin,
-                  divisions: sliderMax.toInt() - sliderMin.toInt(),
-                  activeColor: CupertinoTheme.of(context).primaryColor,
-                  label: "$blur",
-                  value: blur,
-                  onChanged: (newBlur) {
-                    setState(() {
-                      blur = newBlur;
-                    });
-                  }
-                )
+                        max: sliderMax,
+                        min: sliderMin,
+                        divisions: sliderMax.toInt() - sliderMin.toInt(),
+                        activeColor: Theme.of(context).primaryColor,
+                        label: "$blur",
+                        value: blur,
+                        onChanged: (newBlur) {
+                          setState(() {
+                            blur = newBlur;
+                          });
+                        })
                     : CupertinoSlider(
-                  max: sliderMax,
-                  min: sliderMin,
-                  divisions: sliderMax.toInt() - sliderMin.toInt(),
-                  thumbColor: CupertinoTheme.of(context).primaryColor,
-                  activeColor: CupertinoTheme.of(context).primaryColor,
-                  value: blur,
-                  onChanged: (newBlur) {
-                    setState(() {
-                      blur = newBlur;
-                    });
-                  },
-                ),
+                        max: sliderMax,
+                        min: sliderMin,
+                        divisions: sliderMax.toInt() - sliderMin.toInt(),
+                        thumbColor: CupertinoTheme.of(context).primaryColor,
+                        activeColor: CupertinoTheme.of(context).primaryColor,
+                        value: blur,
+                        onChanged: (newBlur) {
+                          setState(() {
+                            blur = newBlur;
+                          });
+                        },
+                      ),
               ),
             ],
           ),
-          (!PlatformService.instance.isIos)
-              ? TextButton(
-              style: Theme.of(context).textButtonTheme.style?.copyWith(
-                  overlayColor: MaterialStateColor.resolveWith((Set<MaterialState> states) {
-                return Colors.black;
-              })),
+          DynamicTextButton(
+              style: Theme.of(context).primaryColor,
+              child: Text(
+                AppLocalizations.of(context)!.random,
+              ),
               onPressed: () {
                 if (list.isNotEmpty) {
                   chooseSpot(list[Random().nextInt(list.length)], context);
                 } else {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      backgroundColor: Theme.of(context).errorColor,
-                      content: const Text("No Spots stored!")));
+                  DynamicSnackBar.showSnackBar(
+                      context,
+                      const Text("No Spots stored!"),
+                      const Duration(seconds: 2));
+                  //ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  //    backgroundColor: Theme.of(context).errorColor,
+                  //    content: const Text("No Spots stored!")));
                 }
-              },
-              child: Text( AppLocalizations.of(context)!.random,)): CupertinoButton(
-            child: Text(AppLocalizations.of(context)!.random),
-            onPressed: () {
-              if (list.isNotEmpty) {
-                chooseSpot(list[Random().nextInt(list.length)], context);
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    backgroundColor: Theme.of(context).errorColor,
-                    content: const Text("No Spots stored!")));
-              }
-            },
-          ),
+              }),
         ],
       ),
     );
   }
 
   Widget buildSpotsGrid(List<Spot> list) {
-/*    if (list.isEmpty) {
-      return SliverList(
+    if (list.isEmpty) {
+      return const SliverList(
         delegate: SliverChildListDelegate.fixed([
           ListTile(
             title: Text("No spots in list!"),
@@ -261,81 +254,82 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
           ),
         ]),
       );
-    } else {*/
-    return SliverGrid(
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        mainAxisSpacing: spacing,
-        crossAxisSpacing: spacing,
-        crossAxisCount: 2,
-      ),
-      delegate: SliverChildBuilderDelegate(
-        (context, index) {
-          return list.isEmpty
-              ? const Center(child: Text("List is empty"))
-              : CachedNetworkImage(
-              imageUrl: list[index].photoLink,
-              progressIndicatorBuilder: (BuildContext context, String string,
-                  DownloadProgress downloadProgress) {
-                return const LoadingWidget();
-              },
-              imageBuilder: (BuildContext context, ImageProvider imageProvider) {
-                return ClipRRect(
-            borderRadius: BorderRadius.circular(20.0),
-            child:  Stack(
-                        fit: StackFit.expand,
-                        children: [
-                          ImageFiltered(
-                            imageFilter: ImageFilter.blur(
-                              sigmaX: list[index].visited ? 0 : blur,
-                              sigmaY: list[index].visited ? 0 : blur,
-                            ),
-                            child: InkWell(
-                              enableFeedback: true,
-                              splashColor: Colors.black,
-                              onTap: () {
-                                chooseSpot(list[index], context);
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(image: DecorationImage(
-                                  image: imageProvider,
-                                  fit: BoxFit.cover,
-                                )),
+    } else {
+      return SliverGrid(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          mainAxisSpacing: spacing,
+          crossAxisSpacing: spacing,
+          crossAxisCount: 2,
+        ),
+        delegate: SliverChildBuilderDelegate(
+          (context, index) {
+            return list.isEmpty
+                ? const Center(child: Text("List is empty"))
+                : CachedNetworkImage(
+                    imageUrl: list[index].photoLink,
+                    progressIndicatorBuilder: (BuildContext context,
+                        String string, DownloadProgress downloadProgress) {
+                      return const LoadingWidget();
+                    },
+                    imageBuilder:
+                        (BuildContext context, ImageProvider imageProvider) {
+                      return ClipRRect(
+                        borderRadius: BorderRadius.circular(20.0),
+                        child: Stack(
+                          fit: StackFit.expand,
+                          children: [
+                            ImageFiltered(
+                              imageFilter: ImageFilter.blur(
+                                sigmaX: list[index].visited ? 0 : blur,
+                                sigmaY: list[index].visited ? 0 : blur,
+                              ),
+                              child: InkWell(
+                                enableFeedback: true,
+                                splashColor: Colors.black,
+                                onTap: () {
+                                  chooseSpot(list[index], context);
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                    image: imageProvider,
+                                    fit: BoxFit.cover,
+                                  )),
+                                ),
                               ),
                             ),
-                          ),
-                          list[index].visited
-                              ? Positioned(
-                                  right: 10,
-                                  top: 10,
-                                  child: Card(
-                                    color: Theme.of(context)
-                                        .backgroundColor
-                                        .withAlpha(200),
-                                    child: Icon(
-                                      Icons.check,
-                                      size: 50,
-                                      color: Theme.of(context).primaryColor,
+                            list[index].visited
+                                ? Positioned(
+                                    right: 10,
+                                    top: 10,
+                                    child: Card(
+                                      color: Theme.of(context)
+                                          .backgroundColor
+                                          .withAlpha(200),
+                                      child: Icon(
+                                        Icons.check,
+                                        size: 50,
+                                        color: Theme.of(context).primaryColor,
+                                      ),
                                     ),
-                                  ),
-                                )
-                              : Container(),
-                        ],
-                      ),
-          );
-                }
-              );
-        },
-        childCount: list.isEmpty ? 1 : list.length,
-      ),
-    );
-    //}
+                                  )
+                                : Container(),
+                          ],
+                        ),
+                      );
+                    });
+          },
+          childCount: list.isEmpty ? 1 : list.length,
+        ),
+      );
+    }
   }
 
   Future<void> chooseSpot(Spot spot, BuildContext context) async {
-    SharedPrefsService.storeCurrentPuzzleIMG(spot.photoLink);
-    spot.visited = true;
-    await DatabaseSpotTable.update(spot);
-    await DatabasePuzzlePieceTable.removeALL();
-    Navigator.of(context).pop();
+    SharedPrefsService.storeCurrentSpot(spot);
+    //await DatabasePuzzlePieceTable.removeALL();
+    if (mounted) {
+      Navigator.of(context).pop();
+    }
   }
 }

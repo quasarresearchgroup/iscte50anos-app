@@ -110,7 +110,7 @@ class TimelineContentService {
     } catch (e) {
       _logger.e(e);
     } finally {
-      _logger.d("eventsList.length: " + eventsList.length.toString());
+      _logger.d("eventsList.length: ${eventsList.length}");
       await DatabaseEventTable.addBatch(eventsList);
       await DatabaseEventTopicTable.addBatch(eventTopicDBConnectionList);
     }

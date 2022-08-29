@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
+import 'package:iscte_spots/models/spot.dart';
 import 'package:iscte_spots/pages/home/puzzle/clipped_piece_widget.dart';
 import 'package:iscte_spots/pages/home/puzzle/puzzle_piece_widget.dart';
 import 'package:iscte_spots/pages/home/splashScreen/moving_widget.dart';
@@ -27,7 +28,7 @@ class ImageManipulation {
   }
 
   static Future<List<PuzzlePieceWidget>> splitImagePuzzlePiece({
-    required Image image,
+    required Spot spot,
     required rows,
     required cols,
     required bringToTop,
@@ -42,7 +43,7 @@ class ImageManipulation {
       for (int y = 0; y < cols; y++) {
         var puzzlePiece = PuzzlePieceWidget(
           key: GlobalKey(),
-          image: image,
+          spot: spot,
           imageSize: imageSize,
           row: x,
           col: y,
