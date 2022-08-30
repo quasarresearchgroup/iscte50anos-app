@@ -51,6 +51,7 @@ class _TimelineFilterPageState extends State<TimelineFilterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyAppBar(
+        leading: const DynamicBackIconButton(),
         trailing: (PlatformService.instance.isIos)
             ? CupertinoButton(
                 onPressed: _enableAdvancedSearch,
@@ -86,31 +87,30 @@ class _TimelineFilterPageState extends State<TimelineFilterPage> {
             ? Center(
                 child: DynamicTextButton(
                   style: IscteTheme.iscteColor,
+                  onPressed: _submitSelection,
                   child:
                       Text(AppLocalizations.of(context)!.timelineSearchButton),
-                  onPressed: () {
-                    _submitSelection(context);
-                  },
                 ),
               )
             : OrientationBuilder(
                 builder: (BuildContext context, Orientation orientation) {
+                const double dividerWidth = 20;
+                const double dividerThickness = 2;
                 Widget divider = (orientation == Orientation.landscape)
                     ? const VerticalDivider(
-                        width: 20,
-                        thickness: 2,
+                        width: dividerWidth,
+                        thickness: dividerThickness,
                       )
-                    : const Divider(height: 20, thickness: 2);
+                    : const Divider(
+                        height: dividerWidth, thickness: dividerThickness);
 
                 var submitTextButton = DynamicTextButton(
                   style: IscteTheme.iscteColor,
+                  onPressed: _submitSelection,
                   child:
                       Text(AppLocalizations.of(context)!.timelineSearchButton),
-                  onPressed: () {
-                    _submitSelection(context);
-                  },
                 );
-                int propoertion = 50;
+                int rightProportion = 50;
                 return (orientation == Orientation.landscape)
                     ? Flex(
                         direction: Axis.horizontal,
@@ -118,37 +118,42 @@ class _TimelineFilterPageState extends State<TimelineFilterPage> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Flexible(
-                              flex: 100 - propoertion,
-                              child: SingleChildScrollView(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    buildSelectedTopics(isEmptySelectedTopics),
-                                    divider,
-                                    submitTextButton,
-                                  ],
+                            flex: 100 - rightProportion,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                SingleChildScrollView(
+                                  child: selectedTopicsWidget(
+                                      isEmptySelectedTopics,
+                                      dividerWidth,
+                                      dividerThickness),
                                 ),
-                              )),
+                                submitTextButton,
+                              ],
+                            ),
+                          ),
                           const VerticalDivider(
-                            width: 20,
-                            thickness: 2,
+                            width: dividerWidth,
+                            thickness: dividerThickness,
                           ),
                           Flexible(
-                              flex: propoertion,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  buildAvailableTopicsHeader(context),
-                                  buildTopicsCheckBoxList(),
-                                ],
-                              ))
+                            flex: rightProportion,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                buildAvailableTopicsHeader(context),
+                                buildTopicsCheckBoxList(),
+                              ],
+                            ),
+                          )
                         ],
                       )
                     : Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          buildSelectedTopics(isEmptySelectedTopics),
+                          selectedTopicsWidget(isEmptySelectedTopics,
+                              dividerWidth, dividerThickness),
                           buildAvailableTopicsHeader(context),
                           buildTopicsCheckBoxList(),
                           divider,
@@ -187,7 +192,8 @@ class _TimelineFilterPageState extends State<TimelineFilterPage> {
     );
   }
 
-  Widget buildSelectedTopics(bool isEmptySelectedTopics) {
+  Widget selectedTopicsWidget(final bool isEmptySelectedTopics,
+      final double dividerWidth, final double dividerThickness) {
     Widget wrap = Wrap(
       alignment: WrapAlignment.start,
       direction: Axis.horizontal,
@@ -228,10 +234,7 @@ class _TimelineFilterPageState extends State<TimelineFilterPage> {
                         AppLocalizations.of(context)!.timelineSelectedTopics)),
               ),
               wrap,
-              const Divider(
-                height: 20,
-                thickness: 2,
-              ),
+              Divider(height: dividerWidth, thickness: dividerThickness),
             ]),
     );
   }
@@ -244,29 +247,25 @@ class _TimelineFilterPageState extends State<TimelineFilterPage> {
         placeholderStyle: const TextStyle(color: Colors.white70),
         prefix: (PlatformService.instance.isIos)
             ? CupertinoButton(
+                onPressed: _submitSelection,
                 child: const Icon(
                   CupertinoIcons.search,
                   color: Colors.white,
-                ),
-                onPressed: () {
-                  _submitSelection(context);
-                })
+                ))
             : IconButton(
                 icon: const Icon(
                   Icons.search,
                   color: Colors.white,
                 ),
-                onPressed: () {
-                  _submitSelection(context);
-                },
+                onPressed: _submitSelection,
               ),
         suffix: (PlatformService.instance.isIos)
             ? CupertinoButton(
+                onPressed: searchBarController.clear,
                 child: const Icon(
                   CupertinoIcons.clear,
                   color: Colors.white,
-                ),
-                onPressed: searchBarController.clear)
+                ))
             : IconButton(
                 icon: const Icon(
                   Icons.clear,
@@ -352,7 +351,7 @@ class _TimelineFilterPageState extends State<TimelineFilterPage> {
     widget._logger.d("advancedSearch: $advancedSearch");
   }
 
-  void _submitSelection(BuildContext context) async {
+  void _submitSelection() async {
     Set<Event> setOfEvents = {};
     Iterable<Future<void>> map = selectedTopics.map((e) => e.getEventsList.then(
           (List<Event> value) => setOfEvents.addAll(value),
@@ -374,24 +373,25 @@ class _TimelineFilterPageState extends State<TimelineFilterPage> {
       }).toSet();
       widget._logger.d("filtered events: $setOfEvents");
     }
-
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => Theme(
-        data: Theme.of(context).copyWith(
-          appBarTheme: Theme.of(context).appBarTheme.copyWith(
-                shape: const ContinuousRectangleBorder(),
-              ),
-        ),
-        child: Scaffold(
-          appBar: MyAppBar(
-            leading: const DynamicBackIconButton(),
-            title: AppLocalizations.of(context)!.timelineSearchResults,
+    if (mounted) {
+      Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => Theme(
+          data: Theme.of(context).copyWith(
+            appBarTheme: Theme.of(context).appBarTheme.copyWith(
+                  shape: const ContinuousRectangleBorder(),
+                ),
           ),
-          body: TimeLineBody(
-            mapdata: setOfEvents.toList(),
+          child: Scaffold(
+            appBar: MyAppBar(
+              leading: const DynamicBackIconButton(),
+              title: AppLocalizations.of(context)!.timelineSearchResults,
+            ),
+            body: TimeLineBody(
+              mapdata: setOfEvents.toList(),
+            ),
           ),
         ),
-      ),
-    ));
+      ));
+    }
   }
 }

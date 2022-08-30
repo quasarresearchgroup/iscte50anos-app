@@ -9,7 +9,10 @@ class DynamicBackIconButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return (!PlatformService.instance.isIos)
         ? IconButton(
-            icon: const Icon(Icons.arrow_back),
+            icon: const Icon(
+              Icons.arrow_back,
+              color: Colors.white,
+            ),
             onPressed: () {
               Navigator.of(context).pop();
             },

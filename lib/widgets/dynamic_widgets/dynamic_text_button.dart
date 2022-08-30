@@ -17,17 +17,21 @@ class DynamicTextButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return (PlatformService.instance.isIos)
         ? CupertinoButton(
-            child: child,
             onPressed: onPressed,
             color: style,
+            child: child,
           )
         : TextButton(
-            child: child,
             onPressed: onPressed,
             style: ButtonStyle(
-                backgroundColor: style != null
-                    ? MaterialStateProperty.all<Color>(style!)
-                    : null),
+              backgroundColor: style != null
+                  ? MaterialStateProperty.all<Color>(style!)
+                  : null,
+              foregroundColor: style != null
+                  ? MaterialStateProperty.all<Color>(Colors.white)
+                  : null,
+            ),
+            child: child,
           );
   }
 }

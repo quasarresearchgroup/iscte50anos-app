@@ -10,34 +10,35 @@ class IscteTheme {
 
   static var borderRadious = const BorderRadius.all(Radius.circular(10));
 
-  static AppBarTheme _appBarTheme = AppBarTheme(
-      //backgroundColor: Color.fromRGBO(14, 41, 194, 1),
-      elevation: 0,
-      // This removes the shadow from all App Bars.
-      centerTitle: true,
-      toolbarHeight: 55,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          bottom: IscteTheme.appbarRadius,
-        ),
+  static final AppBarTheme _appBarTheme = AppBarTheme(
+    //backgroundColor: Color.fromRGBO(14, 41, 194, 1),
+    elevation: 0,
+    // This removes the shadow from all App Bars.
+    centerTitle: true,
+    toolbarHeight: 55,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(
+        bottom: IscteTheme.appbarRadius,
       ),
-      backgroundColor: iscteColor,iconTheme: IconThemeData(color: Colors.white),
-    actionsIconTheme: IconThemeData(color: Colors.white),
-    toolbarTextStyle: TextStyle(color: Colors.white),
-    titleTextStyle: TextStyle(color: Colors.white),
-      systemOverlayStyle: SystemUiOverlayStyle(
-        statusBarColor: iscteColor,
-        systemNavigationBarColor: iscteColor,
-        statusBarIconBrightness: Brightness.light, // For Android (dark icons)
-        statusBarBrightness: Brightness.light, // For iOS (dark icons)
-      ),
-    );
+    ),
+    backgroundColor: iscteColor,
+    iconTheme: const IconThemeData(color: Colors.white),
+    actionsIconTheme: const IconThemeData(color: Colors.white),
+    toolbarTextStyle: const TextStyle(color: Colors.white),
+    titleTextStyle: const TextStyle(color: Colors.white),
+    systemOverlayStyle: SystemUiOverlayStyle(
+      statusBarColor: iscteColor,
+      systemNavigationBarColor: iscteColor,
+      statusBarIconBrightness: Brightness.light, // For Android (dark icons)
+      statusBarBrightness: Brightness.light, // For iOS (dark icons)
+    ),
+  );
 
   static NavigationRailThemeData navigationRailThemeData =
-  NavigationRailThemeData(
+      NavigationRailThemeData(
     backgroundColor: iscteColor,
-    selectedIconTheme: IconThemeData(color: Colors.white),
-    unselectedIconTheme: IconThemeData(color: Colors.white70),
+    selectedIconTheme: const IconThemeData(color: Colors.white),
+    unselectedIconTheme: const IconThemeData(color: Colors.white70),
     useIndicator: false,
   );
 
@@ -51,65 +52,64 @@ class IscteTheme {
       primaryColor: iscteColor,
       errorColor: Colors.deepOrangeAccent,
       bottomAppBarColor: iscteColor,
-      iconTheme: IconThemeData(color: Colors.black),
-      appBarTheme: _appBarTheme,navigationRailTheme: navigationRailThemeData,
+      iconTheme: const IconThemeData(color: Colors.black),
+      appBarTheme: _appBarTheme,
+      navigationRailTheme: navigationRailThemeData,
       textButtonTheme: TextButtonThemeData(
         style: ButtonStyle(
           foregroundColor:
-          MaterialStateColor.resolveWith((states) => iscteColor),
+              MaterialStateColor.resolveWith((states) => iscteColor),
         ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ButtonStyle(
           foregroundColor:
-          MaterialStateColor.resolveWith((states) => Colors.white),
+              MaterialStateColor.resolveWith((states) => Colors.white),
           backgroundColor:
-          MaterialStateColor.resolveWith((states) => iscteColor),
+              MaterialStateColor.resolveWith((states) => iscteColor),
         ),
       ),
     );
   }
 
   static ThemeData darkThemeData = ThemeData.dark().copyWith(
-      floatingActionButtonTheme:
-          FloatingActionButtonThemeData(backgroundColor: iscteColor),
-      scaffoldBackgroundColor: Colors.black,
-      backgroundColor: Colors.black,
-      primaryColor: iscteColor,
-      errorColor: Colors.deepOrangeAccent,
-      bottomAppBarColor: iscteColor,
-      iconTheme: IconThemeData(color: Colors.white),
-      appBarTheme: _appBarTheme,
-      navigationRailTheme: navigationRailThemeData,
-      textButtonTheme: TextButtonThemeData(
+    floatingActionButtonTheme:
+        FloatingActionButtonThemeData(backgroundColor: iscteColor),
+    scaffoldBackgroundColor: Colors.black,
+    backgroundColor: Colors.black,
+    primaryColor: iscteColor,
+    errorColor: Colors.deepOrangeAccent,
+    bottomAppBarColor: iscteColor,
+    iconTheme: const IconThemeData(color: Colors.white),
+    appBarTheme: _appBarTheme,
+    navigationRailTheme: navigationRailThemeData,
+    textButtonTheme: TextButtonThemeData(
       style: ButtonStyle(
-      foregroundColor:
-      MaterialStateColor.resolveWith((states) => iscteColor),
+        foregroundColor: MaterialStateColor.resolveWith((states) => iscteColor),
       ),
-      ),
-      elevatedButtonTheme: ElevatedButtonThemeData(
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
       style: ButtonStyle(
-      foregroundColor:
-      MaterialStateColor.resolveWith((states) => Colors.white),
-      backgroundColor:
-      MaterialStateColor.resolveWith((states) => iscteColor),
+        foregroundColor:
+            MaterialStateColor.resolveWith((states) => Colors.white),
+        backgroundColor: MaterialStateColor.resolveWith((states) => iscteColor),
       ),
-      ),
-    );
+    ),
+  );
 
   static CupertinoThemeData get cupertinoLightThemeData {
     return CupertinoThemeData(
-      barBackgroundColor: CupertinoColors.white,
+      barBackgroundColor: IscteTheme.iscteColor,
       scaffoldBackgroundColor: CupertinoColors.white,
-      brightness: Brightness.light,
       primaryContrastingColor: CupertinoColors.black,
+      brightness: Brightness.light,
       primaryColor: IscteTheme.iscteColor,
     );
   }
 
   static CupertinoThemeData get cupertinoDarkThemeData {
     return CupertinoThemeData(
-      barBackgroundColor: CupertinoColors.black,
+      barBackgroundColor: IscteTheme.iscteColor,
       scaffoldBackgroundColor: CupertinoColors.black,
       primaryContrastingColor: CupertinoColors.white,
       brightness: Brightness.dark,

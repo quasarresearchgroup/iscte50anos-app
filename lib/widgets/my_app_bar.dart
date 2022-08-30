@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:iscte_spots/services/platform_service.dart';
+import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_back_button.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 import 'package:logger/logger.dart';
 
@@ -42,34 +43,15 @@ class _MyAppBarState extends State<MyAppBar> {
         ? Text(
             widget.title!,
             overflow: TextOverflow.ellipsis,
-            style: TextStyle(color: Colors.white),
+            style: const TextStyle(color: Colors.white),
           )
         : widget.middle;
     return !PlatformService.instance.isIos
         ? AppBar(
+            leadingWidth: 100,
             automaticallyImplyLeading: widget.automaticallyImplyLeading,
-            leading: widget.leading,
-            title: middle
-            /*FutureBuilder<SpotRequest>(
-                future: currentPemit,
-                builder: (BuildContext context,
-                    AsyncSnapshot<SpotRequest> snapshot) {
-                  if (snapshot.hasData) {
-                    String spots;
-                    SpotRequest spotRequest = snapshot.data as SpotRequest;
-                    if (spotRequest.spotNumber != null) {
-                      widget._logger.d(spotRequest);
-                      currentPuzzleNumber = spotRequest.spotNumber;
-                      spots = "nº " + currentPuzzleNumber!.toString();
-                    } else {
-                      spots = "";
-                    }
-                    return Text("Puzzle $spots");
-                  } else {
-                    return const LoadingWidget();
-                  }
-                })*/
-            ,
+            leading: widget.leading ?? const DynamicBackIconButton(),
+            title: middle,
             actions: widget.trailing != null ? [widget.trailing!] : null,
           )
         : CupertinoNavigationBar(
@@ -77,7 +59,7 @@ class _MyAppBarState extends State<MyAppBar> {
             automaticallyImplyMiddle: widget.automaticallyImplyLeading,
             padding: EdgeInsetsDirectional.zero,
             automaticallyImplyLeading: false,
-            leading: widget.leading,
+            leading: widget.leading ?? const DynamicBackIconButton(),
             middle: middle,
             trailing: widget.trailing,
           );
