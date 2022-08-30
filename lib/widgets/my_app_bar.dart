@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:iscte_spots/services/platform_service.dart';
+import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_back_button.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 import 'package:logger/logger.dart';
 
@@ -37,7 +38,7 @@ class _MyAppBarState extends State<MyAppBar> {
         : null;
     return !PlatformService.instance.isIos
         ? AppBar(
-            leading: widget.leading,
+            leading: widget.leading ?? DynamicBackIconButton(),
             title: middle
             /*FutureBuilder<SpotRequest>(
                 future: currentPemit,
@@ -64,7 +65,7 @@ class _MyAppBarState extends State<MyAppBar> {
         : CupertinoNavigationBar(
             backgroundColor: IscteTheme.iscteColor,
             padding: EdgeInsetsDirectional.zero,
-            leading: widget.leading,
+            leading: widget.leading ?? DynamicBackIconButton(),
             middle: middle,
             trailing: widget.trailing,
           );

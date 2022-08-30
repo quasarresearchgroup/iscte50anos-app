@@ -19,8 +19,8 @@ class PuzzlePage extends StatefulWidget {
   final Logger _logger = Logger(printer: PrettyPrinter(methodCount: 4));
   static const pageRoute = "/puzzle";
 
-  final int rows = 5;
-  final int cols = 5;
+  static const int rows = 5;
+  static const int cols = 5;
   final Spot spot;
   final BoxConstraints constraints;
   final Function completeCallback;
@@ -127,8 +127,8 @@ class _PuzzlePageState extends State<PuzzlePage>
       spot: spot,
       bringToTop: bringToTop,
       sendToBack: sendToBack,
-      rows: widget.rows,
-      cols: widget.cols,
+      rows: PuzzlePage.rows,
+      cols: PuzzlePage.cols,
       imageSize: imageSize,
       constraints: widget.constraints,
       completeCallback: widget.completeCallback,
