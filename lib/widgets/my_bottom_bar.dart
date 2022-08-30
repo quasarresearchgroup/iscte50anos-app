@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:iscte_spots/pages/leaderboard/leaderboard_screen.dart';
 import 'package:iscte_spots/services/platform_service.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 
@@ -23,6 +22,7 @@ class MyBottomBar extends StatefulWidget {
 
   static const FaIcon puzzleIcon = FaIcon(FontAwesomeIcons.puzzlePiece);
   static const Icon scanIcon = Icon(Icons.search);
+  static const Icon leaderboardIcon = Icon(Icons.leaderboard);
 
   static List<BottomNavigationBarItem> buildnavbaritems(BuildContext context) {
     return [
@@ -32,9 +32,7 @@ class MyBottomBar extends StatefulWidget {
         //backgroundColor: Theme.of(context).primaryColor,
       ),
       const BottomNavigationBarItem(
-          icon: FaIcon(
-            FontAwesomeIcons.rankingStar,
-          ),
+          icon: leaderboardIcon,
           //backgroundColor: Theme.of(context).primaryColor,
           label: "Rankings"),
       BottomNavigationBarItem(
@@ -42,12 +40,12 @@ class MyBottomBar extends StatefulWidget {
           //backgroundColor: Theme.of(context).primaryColor,
           label: AppLocalizations.of(context)!.scanCodeButton),
     ];
-
   }
 }
 
 class _MyBottomBarState extends State<MyBottomBar> {
   late int currentIndex;
+
   @override
   void initState() {
     super.initState();
@@ -81,6 +79,29 @@ class _MyBottomBarState extends State<MyBottomBar> {
     } else {
       return buildmaterial(context);
     }
+  }
+
+  Widget buildLandscape(BuildContext context) {
+    return NavigationRail(
+      onDestinationSelected: (index) {
+        widget.tabController.animateTo(index);
+      },
+      selectedIndex: widget.tabController.index,
+      destinations: <NavigationRailDestination>[
+        NavigationRailDestination(
+          icon: const Center(child: MyBottomBar.puzzleIcon),
+          label: Text(AppLocalizations.of(context)!.mainMenu),
+        ),
+        const NavigationRailDestination(
+          icon: MyBottomBar.leaderboardIcon,
+          label: Text("Rankings"),
+        ),
+        NavigationRailDestination(
+          icon: MyBottomBar.scanIcon,
+          label: Text(AppLocalizations.of(context)!.scanCodeButton),
+        ),
+      ],
+    );
   }
 
   Widget buildcupertino(BuildContext context) {
@@ -122,32 +143,6 @@ class _MyBottomBarState extends State<MyBottomBar> {
             unselectedFontSize: 10,
             items: MyBottomBar.buildnavbaritems(context),
           )),
-    );
-  }
-
-  Widget buildLandscape(BuildContext context) {
-    return NavigationRail(
-      onDestinationSelected: (index) {
-        if (index == 2) {
-          Navigator.of(context).pushNamed(LeaderBoardPage.pageRoute);
-        }
-        widget.tabController.animateTo(index);
-      },
-      selectedIndex: widget.tabController.index,
-      destinations: <NavigationRailDestination>[
-        NavigationRailDestination(
-          icon: const Center(child: MyBottomBar.puzzleIcon),
-          label: Text(AppLocalizations.of(context)!.mainMenu),
-        ),
-        NavigationRailDestination(
-          icon: MyBottomBar.scanIcon,
-          label: Text(AppLocalizations.of(context)!.scanCodeButton),
-        ),
-        const NavigationRailDestination(
-          icon: Icon(Icons.leaderboard_outlined),
-          label: Text("leaderboard"),
-        ),
-      ],
     );
   }
 }

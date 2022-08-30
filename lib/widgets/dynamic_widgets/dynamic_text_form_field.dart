@@ -10,6 +10,7 @@ class DynamicTextFormField extends StatelessWidget {
   TextEditingController? controller;
   String? Function(String?)? validator;
   TextInputAction? textInputAction;
+  TextStyle? style;
 
   DynamicTextFormField({
     Key? key,
@@ -20,6 +21,7 @@ class DynamicTextFormField extends StatelessWidget {
     this.controller,
     this.validator,
     this.textInputAction,
+    this.style,
   }) : super(key: key);
 
   @override
@@ -34,8 +36,10 @@ class DynamicTextFormField extends StatelessWidget {
             decoration: BoxDecoration(),
             validator: validator,
             textInputAction: textInputAction,
+            style: style,
           )
         : TextFormField(
+            style: style,
             autovalidateMode: autovalidateMode,
             obscureText: obscureText,
             controller: controller,
