@@ -3,7 +3,6 @@ import 'package:iscte_spots/models/timeline/content.dart';
 import 'package:iscte_spots/models/timeline/event.dart';
 import 'package:iscte_spots/pages/auth/auth_page.dart';
 import 'package:iscte_spots/pages/flickr/flickr_page.dart';
-import 'package:iscte_spots/pages/home/home.dart';
 import 'package:iscte_spots/pages/home/openday_home.dart';
 import 'package:iscte_spots/pages/home/scanPage/qr_scan_results.dart';
 import 'package:iscte_spots/pages/home/scanPage/scanned_list_page.dart';
@@ -21,8 +20,8 @@ import 'package:iscte_spots/pages/timeline/timeline_page.dart';
 class PageRouter {
   static Widget resolve(String route, Object? argument) {
     switch (route) {
-      case Home.pageRoute:
-        return Home();
+      //case Home.pageRoute:
+      //return Home();
       case HomeOpenDay.pageRoute:
         return HomeOpenDay();
       case AuthPage.pageRoute:
@@ -56,7 +55,7 @@ class PageRouter {
       case SpotChooserPage.pageRoute:
         return SpotChooserPage();
       default:
-        return Home();
+        return HomeOpenDay();
     }
   }
 }

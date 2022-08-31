@@ -2,11 +2,11 @@ import 'database/tables/database_spot_table.dart';
 
 class Spot {
   Spot({
-    this.id,
+    required this.id,
     required this.photoLink,
     this.visited = false,
   });
-  final int? id;
+  final int id;
   final String photoLink;
   bool visited;
 

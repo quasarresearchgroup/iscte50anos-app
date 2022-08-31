@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/models/database/tables/database_spot_table.dart';
 import 'package:iscte_spots/models/requests/spot_info_request.dart';
-import 'package:iscte_spots/models/requests/spot_request.dart';
 import 'package:iscte_spots/models/requests/topic_request.dart';
 import 'package:iscte_spots/models/spot.dart';
 import 'package:iscte_spots/pages/home/scanPage/qr_scan_camera_controls.dart';
@@ -18,10 +17,11 @@ import 'package:synchronized/synchronized.dart';
 
 class QRScanPageOpenDay extends StatefulWidget {
   QRScanPageOpenDay(
-      {Key? key, required this.changeImage, required this.completedAllPuzzle})
+      {Key? key /*, required this.changeImage*/,
+      required this.completedAllPuzzle})
       : super(key: key);
   final Logger _logger = Logger();
-  final void Function(Future<SpotRequest> request) changeImage;
+  //final void Function(Future<SpotRequest> request) changeImage;
   final void Function() completedAllPuzzle;
   @override
   State<StatefulWidget> createState() => QRScanPageOpenDayState();

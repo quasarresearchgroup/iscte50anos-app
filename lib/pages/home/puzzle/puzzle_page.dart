@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:iscte_spots/helper/image_manipulation.dart';
 import 'package:iscte_spots/models/database/tables/database_puzzle_piece_table.dart';
 import 'package:iscte_spots/models/puzzle_piece.dart';
+import 'package:iscte_spots/models/spot.dart';
 import 'package:iscte_spots/pages/home/puzzle/puzzle_piece_widget.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:logger/logger.dart';
@@ -11,16 +12,16 @@ import 'package:logger/logger.dart';
 class PuzzlePage extends StatefulWidget {
   PuzzlePage({
     Key? key,
-    required this.image,
+    required this.spot,
     required this.constraints,
     required this.completeCallback,
   }) : super(key: key);
   final Logger _logger = Logger(printer: PrettyPrinter(methodCount: 4));
   static const pageRoute = "/puzzle";
 
-  final int rows = 5;
-  final int cols = 5;
-  final Image image;
+  static const int rows = 5;
+  static const int cols = 5;
+  final Spot spot;
   final BoxConstraints constraints;
   final Function completeCallback;
 
@@ -36,7 +37,7 @@ class _PuzzlePageState extends State<PuzzlePage>
   @override
   void initState() {
     super.initState();
-    generatePieces(widget.image);
+    generatePieces(widget.spot);
   }
 
   @override
@@ -44,8 +45,9 @@ class _PuzzlePageState extends State<PuzzlePage>
 
   @override
   void didUpdateWidget(PuzzlePage oldWidget) {
-    if (oldWidget.image != widget.image) {
-      generatePieces(widget.image);
+    if (oldWidget.spot != widget.spot) {
+      pieces.clear();
+      generatePieces(widget.spot);
     }
     super.didUpdateWidget(oldWidget);
   }
@@ -57,7 +59,7 @@ class _PuzzlePageState extends State<PuzzlePage>
   }
 
   void refreshPieces() {
-    generatePieces(widget.image);
+    generatePieces(widget.spot);
   }
 /*
   void rotatePuzzle() {
@@ -65,7 +67,8 @@ class _PuzzlePageState extends State<PuzzlePage>
     generatePieces(widget.image);
   }*/
 
-  void generatePieces(Image img) async {
+  void generatePieces(Spot spot) async {
+    Image img = Image.network(spot.photoLink);
     Size originalSize = await ImageManipulation.getImageSize(img);
     double imageWidth;
     double imageHeight;
@@ -101,16 +104,14 @@ class _PuzzlePageState extends State<PuzzlePage>
 
     final Size imageSize = Size(imageWidth, imageHeight);
 
-    widget._logger.d(
-        "imageSize.width: ${imageSize.width} ; imageSize.height: ${imageSize.height}");
+    //widget._logger.d("imageSize.width: ${imageSize.width} ; imageSize.height: ${imageSize.height}");
     List<PuzzlePiece> storedPuzzlePieces =
-        await DatabasePuzzlePieceTable.getAll();
+        await DatabasePuzzlePieceTable.getAllFromSpot(spot.id);
     List<PuzzlePieceWidget> storedPuzzlePieceWidgets = [];
     List<Point> storedPositions = [];
     for (var element in storedPuzzlePieces) {
       storedPuzzlePieceWidgets.add(
-        element.getWidget(
-          image: img,
+        await element.getWidget(
           imageSize: imageSize,
           bringToTop: bringToTop,
           sendToBack: sendToBack,
@@ -123,11 +124,11 @@ class _PuzzlePageState extends State<PuzzlePage>
 
     List<PuzzlePieceWidget> notStoredPieces =
         (await ImageManipulation.splitImagePuzzlePiece(
-      image: img,
+      spot: spot,
       bringToTop: bringToTop,
       sendToBack: sendToBack,
-      rows: widget.rows,
-      cols: widget.cols,
+      rows: PuzzlePage.rows,
+      cols: PuzzlePage.cols,
       imageSize: imageSize,
       constraints: widget.constraints,
       completeCallback: widget.completeCallback,

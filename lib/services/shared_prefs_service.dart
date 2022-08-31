@@ -1,25 +1,25 @@
 import 'package:flutter/foundation.dart';
+import 'package:iscte_spots/models/database/tables/database_spot_table.dart';
+import 'package:iscte_spots/models/spot.dart';
 import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPrefsService {
   static const String _allPuzzlesCompletedSharedPrefsKey =
       "all_puzzle_complete";
-  static const String _currentPuzzleImgString = "currentPuzzleIMG";
+  static const String _currentSpotIdPrefsString = "currentSpot";
   static final SharedPrefsService _instance = SharedPrefsService._internal();
   static final Logger _logger = Logger();
 
   ValueNotifier<bool> allPuzzleCompleteNotifier = ValueNotifier<bool>(false);
-  ValueNotifier<String> currentPuzzleIMGNotifier = ValueNotifier<String>("");
+  ValueNotifier<Spot?> currentSpotNotifier = ValueNotifier<Spot?>(null);
 
   SharedPrefsService._internal() {
     _getcurrentState();
   }
   void _getcurrentState() async {
-    var currentCompletePuzzleState = await getCompletedAllPuzzles();
-    allPuzzleCompleteNotifier.value = currentCompletePuzzleState;
-    var currentPuzzleIMGState = await getCurrentPuzzleIMG();
-    currentPuzzleIMGNotifier.value = currentPuzzleIMGState;
+    allPuzzleCompleteNotifier.value = await getCompletedAllPuzzles();
+    currentSpotNotifier.value = await getCurrentSpot();
   }
 
   factory SharedPrefsService() {
@@ -52,26 +52,39 @@ class SharedPrefsService {
   }
 //endregion
 
-//region Current puzzle image
-  static Future<void> storeCurrentPuzzleIMG(String imageLink) async {
-    _logger.d("storeCompletedAllPuzzles : $imageLink");
+//region Current Spot
+  static Future<void> storeCurrentSpot(Spot spot) async {
+    assert(spot.id != null);
+    _logger.d("storeCurrentSpotID : $spot");
     final prefs = await SharedPreferences.getInstance();
-    prefs.setString(_currentPuzzleImgString, imageLink);
-    SharedPrefsService().currentPuzzleIMGNotifier.value = imageLink;
+    prefs.setInt(_currentSpotIdPrefsString, spot.id);
+    SharedPrefsService().currentSpotNotifier.value = spot;
   }
 
-  static Future<void> resetCurrentPuzzleIMG() async {
+  static Future<void> resetCurrentSpot() async {
     _logger.d("resetCompletedAllPuzzles : false");
     final prefs = await SharedPreferences.getInstance();
-    prefs.setString(_currentPuzzleImgString, "");
-    SharedPrefsService().currentPuzzleIMGNotifier.value = "";
+    prefs.setString(_currentSpotIdPrefsString, "");
+    SharedPrefsService().currentSpotNotifier.value = null;
   }
 
-  static Future<String> getCurrentPuzzleIMG() async {
+  static Future<Spot?> getCurrentSpot() async {
     final prefs = await SharedPreferences.getInstance();
-    String currentImage = prefs.getString(_currentPuzzleImgString) ?? "";
-    _logger.d("getCurrentPuzzleIMG :$currentImage");
-    return currentImage;
+    int? currentSpotID = prefs.getInt(_currentSpotIdPrefsString);
+    _logger.d("currentSpotID: $currentSpotID");
+    if (currentSpotID == null) {
+      return null;
+    } else {
+      _logger.d("getCurrentSpot :$currentSpotID");
+
+      List<Spot> spotsList =
+          await DatabaseSpotTable.getAllWithIds([currentSpotID]);
+      if (spotsList.isEmpty) {
+        return null;
+      } else {
+        return spotsList.first;
+      }
+    }
   }
 //endregion
 }

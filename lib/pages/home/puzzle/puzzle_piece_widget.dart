@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:iscte_spots/models/database/tables/database_puzzle_piece_table.dart';
 import 'package:iscte_spots/models/puzzle_piece.dart';
+import 'package:iscte_spots/models/spot.dart';
 import 'package:logger/logger.dart';
 
 import 'clipped_piece_widget.dart';
@@ -10,7 +11,7 @@ import 'clipped_piece_widget.dart';
 class PuzzlePieceWidget extends StatefulWidget {
   final Logger _logger = Logger();
 
-  final Image image;
+  final Spot spot;
   final Size imageSize;
   final Function bringToTop;
   final Function sendToBack;
@@ -28,7 +29,7 @@ class PuzzlePieceWidget extends StatefulWidget {
 
   PuzzlePieceWidget({
     Key? key,
-    required this.image,
+    required this.spot,
     required this.imageSize,
     required this.bringToTop,
     required this.sendToBack,
@@ -46,7 +47,7 @@ class PuzzlePieceWidget extends StatefulWidget {
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'PuzzlePieceWidget{row: $row, col: $col, maxRow: $maxRow, maxCol: $maxCol, top: $top, left: $left, movable: $movable,image: $image, imageSize: $imageSize, bringToTop: $bringToTop, sendToBack: $sendToBack, snapInPlace: $snapInPlace}';
+    return 'PuzzlePieceWidget{row: $row, col: $col, maxRow: $maxRow, maxCol: $maxCol, top: $top, left: $left, movable: $movable,spot: $spot, imageSize: $imageSize, bringToTop: $bringToTop, sendToBack: $sendToBack, snapInPlace: $snapInPlace}';
   }
 
   @override
@@ -78,20 +79,17 @@ class PuzzlePieceWidgetState extends State<PuzzlePieceWidget> {
       isMovable = widget.movable!;
     }
 
+    pieceHeight = widget.imageSize.height / widget.maxRow;
+    pieceWidth = widget.imageSize.width / widget.maxCol;
+    zeroHeight = -widget.row * pieceHeight;
+    zeroWidth = -widget.col * pieceWidth;
+    //widget._logger.d(" row: ${widget.row}; col: ${widget.col} ;pieceHeight: $pieceHeight; pieceWidth: $pieceWidth; zeroHeight: $zeroHeight; zeroWidth: $zeroWidth; ");
+    maxHeight = zeroHeight - pieceHeight + widget.constraints.maxHeight;
+    minHeight = zeroHeight - 2 * pieceHeight + widget.constraints.maxHeight;
+    maxWidth = zeroWidth + widget.constraints.maxWidth - pieceWidth;
+    minWidth = zeroWidth;
+
     if (top == null || left == null) {
-      pieceHeight = widget.imageSize.height / widget.maxRow;
-      pieceWidth = widget.imageSize.width / widget.maxCol;
-      zeroHeight = -widget.row * pieceHeight;
-      zeroWidth = -widget.col * pieceWidth;
-      widget._logger.d(
-          " row: ${widget.row}; col: ${widget.col} ;pieceHeight: $pieceHeight; pieceWidth: $pieceWidth; zeroHeight: $zeroHeight; zeroWidth: $zeroWidth; ");
-
-      maxHeight = zeroHeight - pieceHeight + widget.constraints.maxHeight;
-      minHeight = zeroHeight - 2 * pieceHeight + widget.constraints.maxHeight;
-
-      maxWidth = zeroWidth + widget.constraints.maxWidth - pieceWidth;
-      minWidth = zeroWidth;
-
       double x =
           ((Random().nextDouble() * (maxHeight - minHeight)) + minHeight);
       double y = ((Random().nextDouble() * (maxWidth - minWidth)) + minWidth);
@@ -138,7 +136,7 @@ class PuzzlePieceWidgetState extends State<PuzzlePieceWidget> {
           );
         },
         child: ClippedPieceWidget(
-          image: widget.image,
+          image: Image.network(widget.spot.photoLink),
           row: widget.row,
           col: widget.col,
           maxRow: widget.maxRow,
@@ -201,10 +199,11 @@ class PuzzlePieceWidgetState extends State<PuzzlePieceWidget> {
       maxColumn: widget.maxCol,
       top: top!,
       left: left!,
+      spotID: widget.spot.id,
     ));
 
     List<PuzzlePiece> listPuzzlePieces =
-        await DatabasePuzzlePieceTable.getAll();
+        await DatabasePuzzlePieceTable.getAllFromSpot(widget.spot.id);
     if (listPuzzlePieces.length == (widget.maxRow * widget.maxCol)) {
       widget.completeCallback();
     }

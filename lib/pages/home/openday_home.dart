@@ -2,14 +2,13 @@ import 'package:confetti/confetti.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:iscte_spots/models/database/tables/database_puzzle_piece_table.dart';
-import 'package:iscte_spots/models/requests/spot_request.dart';
+import 'package:iscte_spots/models/database/tables/database_spot_table.dart';
+import 'package:iscte_spots/models/spot.dart';
 import 'package:iscte_spots/pages/home/nav_drawer/navigation_drawer_openday.dart';
 import 'package:iscte_spots/pages/home/puzzle/puzzle_page.dart';
 import 'package:iscte_spots/pages/home/scanPage/openday_qr_scan_page.dart';
 import 'package:iscte_spots/pages/home/widgets/sucess_scan_widget.dart';
 import 'package:iscte_spots/pages/leaderboard/leaderboard_screen.dart';
-import 'package:iscte_spots/services/openday/openday_qr_scan_service.dart';
 import 'package:iscte_spots/services/platform_service.dart';
 import 'package:iscte_spots/services/shared_prefs_service.dart';
 import 'package:iscte_spots/widgets/iscte_confetti_widget.dart';
@@ -43,11 +42,11 @@ class _HomeOpenDayState extends State<HomeOpenDay>
   bool _showSucessPage = false;
 
   //late Future<Map> futureProfile;
-  late Future<SpotRequest> currentPemit;
+  //late Future<SpotRequest> currentPemit;
   final ValueNotifier<bool> _completedAllPuzzlesBool =
       SharedPrefsService().allPuzzleCompleteNotifier;
-  final ValueNotifier<String> _currentPuzzleImageNotifier =
-      SharedPrefsService().currentPuzzleIMGNotifier;
+  final ValueNotifier<Spot?> _currentSpotNotifier =
+      SharedPrefsService().currentSpotNotifier;
   late final ConfettiController _confettiController;
   late final AnimationController _lottieController;
 
@@ -81,7 +80,7 @@ class _HomeOpenDayState extends State<HomeOpenDay>
       },
     );
     //futureProfile = ProfileService().fetchProfile();
-    currentPemit = OpenDayQRScanService.spotRequest(context: context);
+    //currentPemit = OpenDayQRScanService.spotRequest(context: context);
 //    initFunc();
   }
 
@@ -95,11 +94,17 @@ class _HomeOpenDayState extends State<HomeOpenDay>
   completePuzzleCallback() {
     widget._logger.d("Completed Puzzle!!");
     _confettiController.play();
+    Spot? spot = _currentSpotNotifier.value;
+    if (spot != null) {
+      spot.visited = true;
+      DatabaseSpotTable.update(spot);
+    }
     setState(() {});
     Future.delayed(const Duration(seconds: 2))
         .then((value) => _tabController.animateTo(widget.scanSpotIndex));
   }
 
+/*
   void rerfeshPermit() {
     Future<SpotRequest> newPermit =
         OpenDayQRScanService.spotRequest(context: context);
@@ -110,6 +115,7 @@ class _HomeOpenDayState extends State<HomeOpenDay>
       currentPemit = newPermit;
     });
   }
+*/
 
 /*
   void _refreshProfile() {
@@ -121,7 +127,8 @@ class _HomeOpenDayState extends State<HomeOpenDay>
     });
   }
 
-  void changeCurrentImage(Future<SpotRequest> request) async {
+/*
+  void changeCurrentSpot(Future<SpotRequest> request) async {
     widget._logger.d("changing image: $request");
     SpotRequest requestResult = await request;
     var newImageURL =
@@ -138,6 +145,7 @@ class _HomeOpenDayState extends State<HomeOpenDay>
         showSuccessPage();
       }
     }
+*/
 /*
     if (request.locationPhotoLink != null) {
       if (!OpenDayQRScanService.isError(request.locationPhotoLink!)) {
@@ -155,8 +163,10 @@ class _HomeOpenDayState extends State<HomeOpenDay>
         _completedAllPuzzles();
       }
     }
-*/
+*/ /*
+
   }
+*/
 
   void _completedAllPuzzles() async {
     bool _completedAllPuzzleState =
@@ -195,19 +205,22 @@ class _HomeOpenDayState extends State<HomeOpenDay>
         return orientation == Orientation.landscape
             ? Row(
                 children: [
-                  ValueListenableBuilder<String>(
-                      valueListenable: _currentPuzzleImageNotifier,
+                  ValueListenableBuilder<Spot?>(
+                      valueListenable: _currentSpotNotifier,
                       builder: (context, value, _) {
                         return NavigationRail(
                           onDestinationSelected: (index) {
                             if (index == 0) {
                               Scaffold.of(context).openDrawer();
                             } else {
-                              showHelpOverlay(
-                                context,
-                                Image.network(value),
-                                orientation,
-                              );
+                              if (value?.photoLink != null) {
+                                String imgLink = value!.photoLink;
+                                showHelpOverlay(
+                                  context,
+                                  Image.network(imgLink),
+                                  orientation,
+                                );
+                              }
                             }
                           },
                           selectedIndex: 0,
@@ -218,15 +231,15 @@ class _HomeOpenDayState extends State<HomeOpenDay>
                               label: Text('Drawer'),
                             ),
                             NavigationRailDestination(
-                              icon: const Icon(Icons.help),
-                              label: Text('First'),
+                              icon: Icon(Icons.help),
+                              label: Text('Help'),
                             ),
                           ],
                         );
                       }),
-                  VerticalDivider(),
+                  const VerticalDivider(),
                   Expanded(child: buildHomeBody(challengeCompleteBool)),
-                  VerticalDivider(),
+                  const VerticalDivider(),
                   MyBottomBar(
                     initialIndex: 0,
                     tabController: _tabController,
@@ -245,44 +258,52 @@ class _HomeOpenDayState extends State<HomeOpenDay>
         : MyAppBar(
             title: "Puzzle",
             leading: Builder(builder: (context) {
-              return (!PlatformService.instance.isIos)
-                  ? IconButton(
-                      icon: const Icon(Icons.menu),
-                      onPressed: () {
-                        Scaffold.of(context).openDrawer();
-                      },
-                    )
-                  : CupertinoButton(
-                      child: Icon(
-                        Icons.menu,
-                        color:
-                            CupertinoTheme.of(context).primaryContrastingColor,
-                      ),
-                      onPressed: () {
-                        Scaffold.of(context).openDrawer();
-                      },
-                    );
+              if (!PlatformService.instance.isIos) {
+                return IconButton(
+                  icon: const Icon(Icons.menu),
+                  onPressed: () {
+                    Scaffold.of(context).openDrawer();
+                  },
+                );
+              } else {
+                return CupertinoButton(
+                  child: Icon(
+                    Icons.menu,
+                    color: CupertinoTheme.of(context).primaryContrastingColor,
+                  ),
+                  onPressed: () {
+                    Scaffold.of(context).openDrawer();
+                  },
+                );
+              }
             }),
             trailing: challengeCompleteBool
-                ? null
-                : ValueListenableBuilder<String>(
-                    valueListenable: _currentPuzzleImageNotifier,
+                ? Container()
+                : ValueListenableBuilder<Spot?>(
+                    valueListenable: _currentSpotNotifier,
                     builder: (context, value, _) {
-                      if (!PlatformService.instance.isIos) {
-                        return IconButton(
-                          icon: const Icon(Icons.help),
-                          onPressed: () => showHelpOverlay(
-                              context, Image.network(value), orientation),
-                        );
-                      } else {
-                        return CupertinoButton(
-                          onPressed: () => showHelpOverlay(
-                              context, Image.network(value), orientation),
-                          padding: EdgeInsets.zero,
-                          child: Icon(CupertinoIcons.question_circle,
+                      if (value?.photoLink != null) {
+                        String imgLink = value!.photoLink;
+                        if (!PlatformService.instance.isIos) {
+                          return IconButton(
+                            icon: const Icon(Icons.help),
+                            onPressed: () => showHelpOverlay(
+                                context, Image.network(imgLink), orientation),
+                          );
+                        } else {
+                          return CupertinoButton(
+                            onPressed: () => showHelpOverlay(
+                                context, Image.network(imgLink), orientation),
+                            padding: EdgeInsets.zero,
+                            child: Icon(
+                              CupertinoIcons.question_circle,
                               color: CupertinoTheme.of(context)
-                                  .primaryContrastingColor),
-                        );
+                                  .primaryContrastingColor,
+                            ),
+                          );
+                        }
+                      } else {
+                        return const LoadingWidget();
                       }
                     },
                   ),
@@ -304,9 +325,9 @@ class _HomeOpenDayState extends State<HomeOpenDay>
                   controller: _tabController,
                   children: [
                     buildPuzzleBody(),
-                    LeaderBoardPage(),
+                    const LeaderBoardPage(),
                     QRScanPageOpenDay(
-                      changeImage: changeCurrentImage,
+                      //changeImage: changeCurrentSpot,
                       completedAllPuzzle: _completedAllPuzzles,
                     ),
                   ],
@@ -320,13 +341,13 @@ class _HomeOpenDayState extends State<HomeOpenDay>
           padding: const EdgeInsets.all(10.0),
           child: Stack(
             children: [
-              ValueListenableBuilder<String>(
-                  valueListenable: _currentPuzzleImageNotifier,
+              ValueListenableBuilder<Spot?>(
+                  valueListenable: _currentSpotNotifier,
                   builder: (context, value, _) {
-                    if (value.isNotEmpty) {
+                    if (value != null) {
                       return LayoutBuilder(builder: (context, constraints) {
                         return PuzzlePage(
-                          image: Image.network(value),
+                          spot: value,
                           completeCallback: completePuzzleCallback,
                           constraints: constraints,
                         );
@@ -344,7 +365,7 @@ class _HomeOpenDayState extends State<HomeOpenDay>
   GestureDetector buildErrorWidget() {
     return GestureDetector(
       onTap: () {
-        rerfeshPermit();
+        //rerfeshPermit();
       },
       child: Center(
         child: Column(
