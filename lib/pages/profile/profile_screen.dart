@@ -31,7 +31,7 @@ class ProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text("Profile"),//AppLocalizations.of(context)!.quizPageTitle)
+          title: const Text("Perfil"),//AppLocalizations.of(context)!.quizPageTitle)
         ),
         body: NotificationListener<OverscrollIndicatorNotification>(
           onNotification: (overscroll) {

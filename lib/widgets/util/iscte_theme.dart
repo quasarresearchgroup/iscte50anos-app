@@ -30,6 +30,14 @@ class IscteTheme {
     );
   }
 
+  static ElevatedButtonThemeData get elevatedButtonTheme {
+    return ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        primary: iscteColor
+      )
+    );
+  }
+
   static ThemeData get lightThemeData {
     return ThemeData.light().copyWith(
       floatingActionButtonTheme: FloatingActionButtonThemeData(
@@ -41,6 +49,7 @@ class IscteTheme {
       errorColor: Colors.deepOrangeAccent,
       bottomAppBarColor: iscteColor,
       appBarTheme: appBarTheme,
+      elevatedButtonTheme: elevatedButtonTheme,
     );
   }
 
