@@ -1,16 +1,13 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:iscte_spots/helper/image_manipulation.dart';
 import 'package:iscte_spots/pages/home/splashScreen/moving_widget.dart';
-import 'package:iscte_spots/services/flickr/flickr_iscte_photos.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:logger/logger.dart';
 
+/*
 class Shaker extends StatefulWidget {
   Shaker({Key? key}) : super(key: key);
   static const pageRoute = "/shake";
@@ -80,7 +77,7 @@ class _ShakerState extends State<Shaker> {
         ));
   }
 }
-
+*/
 class GravityPlane extends StatefulWidget {
   GravityPlane({Key? key, required this.image}) : super(key: key);
   final Logger _logger = Logger();

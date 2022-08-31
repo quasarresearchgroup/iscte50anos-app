@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:iscte_spots/models/database/tables/database_spot_table.dart';
 import 'package:iscte_spots/models/spot.dart';
-import 'package:iscte_spots/pages/home/nav_drawer/navigation_drawer_openday.dart';
+import 'package:iscte_spots/pages/home/nav_drawer/drawer.dart';
 import 'package:iscte_spots/pages/home/puzzle/puzzle_page.dart';
 import 'package:iscte_spots/pages/home/scanPage/openday_qr_scan_page.dart';
 import 'package:iscte_spots/pages/home/widgets/sucess_scan_widget.dart';
@@ -20,10 +20,10 @@ import 'package:logger/logger.dart';
 
 import 'widgets/completed_challenge_widget.dart';
 
-class HomeOpenDay extends StatefulWidget {
+class HomePage extends StatefulWidget {
   static const pageRoute = "/homeOpenDay";
 
-  HomeOpenDay({Key? key}) : super(key: key);
+  HomePage({Key? key}) : super(key: key);
   final Logger _logger = Logger();
 
   final int scanSpotIndex = 2;
@@ -31,11 +31,10 @@ class HomeOpenDay extends StatefulWidget {
   final int puzzleIndex = 0;
 
   @override
-  State<HomeOpenDay> createState() => _HomeOpenDayState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _HomeOpenDayState extends State<HomeOpenDay>
-    with TickerProviderStateMixin {
+class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   late TabController _tabController;
   Image? currentPuzzleImage;
   int? currentPuzzleNumber;

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:iscte_spots/pages/home/openday_home.dart';
+import 'package:iscte_spots/pages/home/home_page.dart';
 import 'package:logger/logger.dart';
 
 class Result extends StatelessWidget {
@@ -64,7 +64,7 @@ class Result extends StatelessWidget {
                 ),
               );*/
 
-              Navigator.pushReplacementNamed(context, HomeOpenDay.pageRoute);
+              Navigator.pushReplacementNamed(context, HomePage.pageRoute);
             },
           ), //FlatButton
         ], //<Widget>[]
