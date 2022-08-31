@@ -11,7 +11,7 @@ class IscteTheme {
   static const BorderRadius borderRadious =
       BorderRadius.all(Radius.circular(10));
 
-  static const AppBarTheme _appBarTheme = AppBarTheme(
+  static final AppBarTheme _appBarTheme = AppBarTheme(
     //backgroundColor: Color.fromRGBO(14, 41, 194, 1),
     elevation: 0,
     // This removes the shadow from all App Bars.
@@ -22,10 +22,11 @@ class IscteTheme {
         bottom: IscteTheme.appbarRadius,
       ),
     ),
-    backgroundColor: iscteColor, iconTheme: IconThemeData(color: Colors.white),
-    actionsIconTheme: IconThemeData(color: Colors.white),
-    toolbarTextStyle: TextStyle(color: Colors.white),
-    titleTextStyle: TextStyle(color: Colors.white),
+    backgroundColor: iscteColor,
+    iconTheme: const IconThemeData(color: Colors.white),
+    actionsIconTheme: const IconThemeData(color: Colors.white),
+    toolbarTextStyle: const TextStyle(color: Colors.white),
+    titleTextStyle: const TextStyle(color: Colors.white),
     systemOverlayStyle: SystemUiOverlayStyle(
       statusBarColor: iscteColor,
       systemNavigationBarColor: iscteColor,
@@ -37,8 +38,8 @@ class IscteTheme {
   static NavigationRailThemeData navigationRailThemeData =
       const NavigationRailThemeData(
     backgroundColor: iscteColor,
-    selectedIconTheme: IconThemeData(color: Colors.white),
-    unselectedIconTheme: IconThemeData(color: Colors.white70),
+    selectedIconTheme: const IconThemeData(color: Colors.white),
+    unselectedIconTheme: const IconThemeData(color: Colors.white70),
     useIndicator: false,
   );
 
@@ -98,7 +99,7 @@ class IscteTheme {
   );
 
   static CupertinoThemeData cupertinoLightThemeData = const CupertinoThemeData(
-    barBackgroundColor: CupertinoColors.white,
+    barBackgroundColor: IscteTheme.iscteColor,
     scaffoldBackgroundColor: CupertinoColors.white,
     brightness: Brightness.light,
     primaryContrastingColor: CupertinoColors.black,
@@ -106,7 +107,7 @@ class IscteTheme {
   );
 
   static CupertinoThemeData cupertinoDarkThemeData = const CupertinoThemeData(
-    barBackgroundColor: CupertinoColors.black,
+    barBackgroundColor: IscteTheme.iscteColor,
     scaffoldBackgroundColor: CupertinoColors.black,
     primaryContrastingColor: CupertinoColors.white,
     brightness: Brightness.dark,

@@ -66,11 +66,11 @@ class TimelineContentService {
         String line = splitLines[eventId];
         List<String> lineSplit = line.split("\t");
 
-        List<String> dateSplit = lineSplit[0].split("/");
+        List<String> dateSplit = lineSplit[0].split("-");
         int dateIntFromEpoch;
         try {
-          dateIntFromEpoch = DateTime(int.parse(dateSplit[2]),
-                  int.parse(dateSplit[1]), int.parse(dateSplit[0]))
+          dateIntFromEpoch = DateTime(int.parse(dateSplit[0]),
+                  int.parse(dateSplit[1]), int.parse(dateSplit[2]))
               .millisecondsSinceEpoch;
         } on RangeError {
           dateIntFromEpoch = 0;
@@ -128,9 +128,9 @@ class TimelineContentService {
         String line = splitLines[contentId];
         List<String> lineSplit = line.split("\t");
 
-        String description = lineSplit[1];
-        String type = lineSplit[2];
-        String link = lineSplit[3];
+        String description = lineSplit[3];
+        String type = lineSplit[4];
+        String link = lineSplit[5];
 
         if (type.isNotEmpty && link.isNotEmpty) {
           contents.add(
@@ -141,13 +141,14 @@ class TimelineContentService {
               link: link,
             ),
           );
+          String eventTitle = lineSplit[1];
           List<Event> list = await DatabaseEventTable.where(
             where: "${DatabaseEventTable.columnTitle} = ?",
-            whereArgs: [lineSplit[0]],
+            whereArgs: [eventTitle],
             orderBy: DatabaseEventTable.columnId,
           );
           if (list.isEmpty) {
-            throw "No event found for Title: ${lineSplit[0]}";
+            throw "No event found for Title: $eventTitle";
           } else {
             var eventId = list.first.id;
             eventContentDBConnectionList.add(EventContentDBConnection(
@@ -158,7 +159,7 @@ class TimelineContentService {
     } catch (e) {
       _logger.e(e);
     } finally {
-      _logger.d("contents.length: " + contents.length.toString());
+      _logger.d("contents.length: ${contents.length}");
       await DatabaseContentTable.addBatch(contents);
       await DatabaseEventContentTable.addBatch(eventContentDBConnectionList);
     }

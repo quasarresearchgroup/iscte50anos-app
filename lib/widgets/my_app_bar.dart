@@ -6,13 +6,21 @@ import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 import 'package:logger/logger.dart';
 
 class MyAppBar extends StatefulWidget with PreferredSizeWidget {
-  MyAppBar({Key? key, this.trailing, this.title, this.leading})
-      : super(key: key);
+  MyAppBar({
+    Key? key,
+    this.trailing,
+    this.title,
+    this.leading,
+    this.middle,
+    this.automaticallyImplyLeading = false,
+  }) : super(key: key);
   final Logger _logger = Logger();
 
   Widget? trailing;
   String? title;
   Widget? leading;
+  Widget? middle;
+  bool automaticallyImplyLeading;
 
   @override
   State<MyAppBar> createState() => _MyAppBarState();
@@ -25,6 +33,8 @@ class _MyAppBarState extends State<MyAppBar> {
   @override
   void initState() {
     super.initState();
+    assert(widget.middle == null && widget.title != null ||
+        widget.middle != null && widget.title == null);
   }
 
   @override
@@ -33,39 +43,23 @@ class _MyAppBarState extends State<MyAppBar> {
         ? Text(
             widget.title!,
             overflow: TextOverflow.ellipsis,
-            style: TextStyle(color: Colors.white),
+            style: const TextStyle(color: Colors.white),
           )
-        : null;
+        : widget.middle;
     return !PlatformService.instance.isIos
         ? AppBar(
-            leading: widget.leading ?? DynamicBackIconButton(),
-            title: middle
-            /*FutureBuilder<SpotRequest>(
-                future: currentPemit,
-                builder: (BuildContext context,
-                    AsyncSnapshot<SpotRequest> snapshot) {
-                  if (snapshot.hasData) {
-                    String spots;
-                    SpotRequest spotRequest = snapshot.data as SpotRequest;
-                    if (spotRequest.spotNumber != null) {
-                      widget._logger.d(spotRequest);
-                      currentPuzzleNumber = spotRequest.spotNumber;
-                      spots = "nº " + currentPuzzleNumber!.toString();
-                    } else {
-                      spots = "";
-                    }
-                    return Text("Puzzle $spots");
-                  } else {
-                    return const LoadingWidget();
-                  }
-                })*/
-            ,
+            leadingWidth: 100,
+            automaticallyImplyLeading: widget.automaticallyImplyLeading,
+            leading: widget.leading ?? const DynamicBackIconButton(),
+            title: middle,
             actions: widget.trailing != null ? [widget.trailing!] : null,
           )
         : CupertinoNavigationBar(
             backgroundColor: IscteTheme.iscteColor,
+            automaticallyImplyMiddle: widget.automaticallyImplyLeading,
             padding: EdgeInsetsDirectional.zero,
-            leading: widget.leading ?? DynamicBackIconButton(),
+            automaticallyImplyLeading: false,
+            leading: widget.leading ?? const DynamicBackIconButton(),
             middle: middle,
             trailing: widget.trailing,
           );

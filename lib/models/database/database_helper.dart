@@ -17,7 +17,7 @@ class DatabaseHelper {
   static final Logger _logger = Logger();
   static Database? _database;
   static const _databaseName = "MyDatabase.db";
-  static const _databaseVersion = 11;
+  static const _databaseVersion = 12;
 
   //  singleton class
   DatabaseHelper._privateConstructor();
@@ -28,7 +28,7 @@ class DatabaseHelper {
 
   Future<void> _onConfigure(Database db) async {
     String dbPath = join(db.path, _databaseName);
-    _logger.d('db location : ' + dbPath);
+    _logger.d('db location : $dbPath');
 
     _logger.d('Started onConfigure to the db');
     String fkPragma = "PRAGMA foreign_keys = ON";

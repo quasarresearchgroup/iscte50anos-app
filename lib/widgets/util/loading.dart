@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/services/platform_service.dart';
 
 class LoadingWidget extends StatelessWidget {
@@ -20,23 +19,16 @@ class LoadingWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     if (!PlatformService.instance.isIos) {
       return Center(
-        child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              CircularProgressIndicator(
-                backgroundColor: backgroundColor,
-                strokeWidth: strokeWidth,
-                valueColor: valueColor,
-              ),
-              Text(
-                AppLocalizations.of(context)?.loading ?? "",
-                style: messagesStyle,
-              )
-            ]),
+        child: CircularProgressIndicator(
+          backgroundColor: backgroundColor,
+          strokeWidth: strokeWidth,
+          valueColor: valueColor,
+        ),
       );
     } else {
-      return CupertinoActivityIndicator();
+      return CupertinoActivityIndicator(
+        color: backgroundColor,
+      );
     }
   }
 }

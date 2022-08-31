@@ -71,6 +71,7 @@ class SharedPrefsService {
   static Future<Spot?> getCurrentSpot() async {
     final prefs = await SharedPreferences.getInstance();
     int? currentSpotID = prefs.getInt(_currentSpotIdPrefsString);
+    _logger.d("currentSpotID: $currentSpotID");
     if (currentSpotID == null) {
       return null;
     } else {
