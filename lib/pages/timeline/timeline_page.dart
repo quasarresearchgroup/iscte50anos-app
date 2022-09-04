@@ -82,28 +82,32 @@ class _TimelinePageState extends State<TimelinePage> {
           isDialOpen: isDialOpen,
           deleteTimelineData: deleteTimelineData,
           refreshTimelineData: deleteGetAllEventsFromCsv),
-      body: FutureBuilder<List<Event>>(
-        future: mapdata,
-        builder: (context, snapshot) {
-          if (_loading) {
-            return const LoadingWidget();
-          } else if (snapshot.hasData) {
-            if (snapshot.data!.isNotEmpty) {
-              return TimeLineBody(mapdata: snapshot.data!);
-            } else {
+      body: RefreshIndicator(
+        onRefresh: deleteGetAllEventsFromCsv,
+        child: FutureBuilder<List<Event>>(
+          future: mapdata,
+          builder: (context, snapshot) {
+            if (_loading) {
+              return const LoadingWidget();
+            } else if (snapshot.hasData) {
+              if (snapshot.data!.isNotEmpty) {
+                return TimeLineBody(mapdata: snapshot.data!);
+              } else {
+                return Center(
+                  child:
+                      Text(AppLocalizations.of(context)!.timelineNothingFound),
+                );
+              }
+            } else if (snapshot.connectionState != ConnectionState.done) {
+              return const LoadingWidget();
+            } else if (snapshot.hasError) {
               return Center(
-                child: Text(AppLocalizations.of(context)!.timelineNothingFound),
-              );
+                  child: Text(AppLocalizations.of(context)!.generalError));
+            } else {
+              return const LoadingWidget();
             }
-          } else if (snapshot.connectionState != ConnectionState.done) {
-            return const LoadingWidget();
-          } else if (snapshot.hasError) {
-            return Center(
-                child: Text(AppLocalizations.of(context)!.generalError));
-          } else {
-            return const LoadingWidget();
-          }
-        },
+          },
+        ),
       ),
     );
 
@@ -121,7 +125,7 @@ class _TimelinePageState extends State<TimelinePage> {
 
   Future<void> deleteGetAllEventsFromCsv() async {
     setState(() {
-      _loading = true;
+      // _loading = true;
     });
     await deleteTimelineData();
     List<Event> events = await TimelineEventService.fetchAllEvents();
@@ -139,7 +143,7 @@ class _TimelinePageState extends State<TimelinePage> {
     // await TimelineCSVService.insertContentEntriesFromCSV();
     setState(() {
       mapdata = DatabaseEventTable.getAll();
-      _loading = false;
+      // _loading = false;
     });
     await logAllLength();
     widget._logger.d("Inserted from CSV");
