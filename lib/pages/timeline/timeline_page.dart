@@ -12,9 +12,9 @@ import 'package:iscte_spots/models/timeline/topic.dart';
 import 'package:iscte_spots/pages/timeline/timeline_body.dart';
 import 'package:iscte_spots/pages/timeline/timeline_dial.dart';
 import 'package:iscte_spots/pages/timeline/timeline_filter_page.dart';
-import 'package:iscte_spots/pages/timeline/timeline_search_delegate.dart';
 import 'package:iscte_spots/services/platform_service.dart';
-import 'package:iscte_spots/services/timeline_service.dart';
+import 'package:iscte_spots/services/timeline/timeline_content_service.dart';
+import 'package:iscte_spots/services/timeline/timeline_event_service.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_back_button.dart';
 import 'package:iscte_spots/widgets/my_app_bar.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
@@ -61,28 +61,27 @@ class _TimelinePageState extends State<TimelinePage> {
         title: AppLocalizations.of(context)!.timelineScreen,
         trailing: (!PlatformService.instance.isIos)
             ? IconButton(
-          onPressed: () {
-
-            Navigator.of(context).pushNamed(TimelineFilterPage.pageRoute);
-          },
-          icon: const Icon(Icons.search),
-        )
+                onPressed: () {
+                  Navigator.of(context).pushNamed(TimelineFilterPage.pageRoute);
+                },
+                icon: const Icon(Icons.search),
+              )
             : CupertinoButton(
-          child: const Icon(
-            CupertinoIcons.search,
-            color: CupertinoColors.white,
-          ),
-          //color: CupertinoTheme.of(context).primaryContrastingColor,
-          onPressed: () {
-            Navigator.of(context).pushNamed(TimelineFilterPage.pageRoute);
-          },
-        ),
+                child: const Icon(
+                  CupertinoIcons.search,
+                  color: CupertinoColors.white,
+                ),
+                //color: CupertinoTheme.of(context).primaryContrastingColor,
+                onPressed: () {
+                  Navigator.of(context).pushNamed(TimelineFilterPage.pageRoute);
+                },
+              ),
         leading: DynamicBackIconButton(),
       ),
-       floatingActionButton: TimelineDial(
-            isDialOpen: isDialOpen,
-            deleteTimelineData: deleteTimelineData,
-            refreshTimelineData: deleteGetAllEventsFromCsv),
+      floatingActionButton: TimelineDial(
+          isDialOpen: isDialOpen,
+          deleteTimelineData: deleteTimelineData,
+          refreshTimelineData: deleteGetAllEventsFromCsv),
       body: FutureBuilder<List<Event>>(
         future: mapdata,
         builder: (context, snapshot) {
@@ -93,8 +92,7 @@ class _TimelinePageState extends State<TimelinePage> {
               return TimeLineBody(mapdata: snapshot.data!);
             } else {
               return Center(
-                child:
-                Text(AppLocalizations.of(context)!.timelineNothingFound),
+                child: Text(AppLocalizations.of(context)!.timelineNothingFound),
               );
             }
           } else if (snapshot.connectionState != ConnectionState.done) {
@@ -112,13 +110,13 @@ class _TimelinePageState extends State<TimelinePage> {
     return PlatformService.instance.isIos
         ? scaffold
         : Theme(
-          data: Theme.of(context).copyWith(
-            appBarTheme: Theme.of(context).appBarTheme.copyWith(
-              shape: const ContinuousRectangleBorder()
+            data: Theme.of(context).copyWith(
+              appBarTheme: Theme.of(context)
+                  .appBarTheme
+                  .copyWith(shape: const ContinuousRectangleBorder()),
             ),
-          ),
-           child: scaffold,
-    );
+            child: scaffold,
+          );
   }
 
   Future<void> deleteGetAllEventsFromCsv() async {
@@ -126,7 +124,12 @@ class _TimelinePageState extends State<TimelinePage> {
       _loading = true;
     });
     await deleteTimelineData();
-    await TimelineContentService.insertContentEntriesFromCSV();
+    List<Event> events = await TimelineEventService.fetchAllEvents();
+    await DatabaseEventTable.addBatch(events);
+    List<Content> contents = await TimelineContentService.fetchAllContents();
+    await DatabaseContentTable.addBatch(contents);
+    // widget._logger.d(events);
+    // await TimelineContentService.insertContentEntriesFromCSV();
     setState(() {
       mapdata = DatabaseEventTable.getAll();
       _loading = false;

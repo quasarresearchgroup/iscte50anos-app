@@ -24,9 +24,10 @@ class OpenDayLoginService {
 
       final HttpClientRequest request = await client
           .postUrl(Uri.parse('${BackEndConstants.API_ADDRESS}/api/auth/login'));
-
+      List<int> encodedData = utf8.encode(json.encode(loginFormResult.toMap()));
       request.headers.set('content-type', 'application/json');
-      request.add(utf8.encode(json.encode(loginFormResult.toMap())));
+      request.headers.add(HttpHeaders.contentLengthHeader, encodedData.length);
+      request.add(encodedData);
 
       HttpClientResponse response = await request.close();
       var decodedResponse =
