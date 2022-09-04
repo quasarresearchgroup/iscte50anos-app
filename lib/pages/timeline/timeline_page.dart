@@ -126,10 +126,17 @@ class _TimelinePageState extends State<TimelinePage> {
     await deleteTimelineData();
     List<Event> events = await TimelineEventService.fetchAllEvents();
     await DatabaseEventTable.addBatch(events);
-    List<Content> contents = await TimelineContentService.fetchAllContents();
-    await DatabaseContentTable.addBatch(contents);
+    List<Content> contents;
+    int contentId = 0;
+    do {
+      contents = await TimelineContentService.fetchContentsWithinIds(
+          lower_id: contentId, upper_id: contentId + 100);
+      widget._logger.d(contents.length);
+      await DatabaseContentTable.addBatch(contents);
+      contentId += 100;
+    } while (contents.isNotEmpty);
     // widget._logger.d(events);
-    // await TimelineContentService.insertContentEntriesFromCSV();
+    // await TimelineCSVService.insertContentEntriesFromCSV();
     setState(() {
       mapdata = DatabaseEventTable.getAll();
       _loading = false;

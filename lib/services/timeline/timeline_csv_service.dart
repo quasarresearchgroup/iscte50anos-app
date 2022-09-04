@@ -9,7 +9,7 @@ import 'package:iscte_spots/models/timeline/event.dart';
 import 'package:iscte_spots/models/timeline/topic.dart';
 import 'package:logger/logger.dart';
 
-class TimelineContentService {
+class TimelineCSVService {
   static const String EventsCsvFile =
       'Resources/CSVFiles/cronologia_cinquentenario_events.tsv';
   static const String ContentsCsvFile =
