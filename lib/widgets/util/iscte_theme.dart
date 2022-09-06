@@ -75,6 +75,7 @@ class IscteTheme {
       errorColor: Colors.deepOrangeAccent,
       bottomAppBarColor: iscteColor,
       appBarTheme: appBarTheme,
+      elevatedButtonTheme: elevatedButtonTheme,
     );
   }
 
