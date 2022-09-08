@@ -4,8 +4,8 @@ import 'package:iscte_spots/models/auth/registration_form_result.dart';
 import 'package:iscte_spots/pages/auth/register/registration_error.dart';
 import 'package:iscte_spots/pages/auth/register/school_register_widget.dart';
 import 'package:iscte_spots/services/auth/registration_service.dart';
+import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
-import 'package:logger/logger.dart';
 import 'package:lottie/lottie.dart';
 
 import 'acount_register_widget.dart';
@@ -20,7 +20,6 @@ class RegisterOpenDayPage extends StatefulWidget {
 
   @override
   State<RegisterOpenDayPage> createState() => _RegisterOpenDayPageState();
-  final Logger _logger = Logger();
   void Function() changeToLogIn;
   final void Function() loggingComplete;
   final Duration animatedSwitcherDuration;
@@ -103,7 +102,7 @@ class _RegisterOpenDayPageState extends State<RegisterOpenDayPage>
         RegistrationError registrationError =
             await RegistrationService.registerNewUser(registrationFormResult);
         if (registrationError == RegistrationError.noError) {
-          widget._logger.i("completed registration");
+          LoggerService.instance.info("completed registration");
           widget.loggingComplete();
         } else {
           setState(() {
@@ -229,7 +228,7 @@ class _RegisterOpenDayPageState extends State<RegisterOpenDayPage>
                                 label: Text("Log In!"),
                                 icon: Icon(Icons.adaptive.arrow_back),
                                 onPressed: () {
-                                  widget._logger.d("change");
+                                  LoggerService.instance.debug("change");
                                   widget.changeToLogIn();
                                 }),
                           ],

@@ -5,10 +5,10 @@ import 'package:iscte_spots/models/timeline/event.dart';
 import 'package:iscte_spots/pages/timeline/timeline_body.dart';
 import 'package:iscte_spots/pages/timeline/timeline_filter_page.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
-import 'package:logger/logger.dart';
+
 
 class TimelineSearchDelegate extends SearchDelegate {
-  final Logger _logger = Logger();
+  final  = Logger();
   List<String> searchResults = [
     'Licenciatura',
     'Doutoramento',
@@ -64,7 +64,7 @@ class TimelineSearchDelegate extends SearchDelegate {
               return false;
             }
           }).toList();
-          _logger.d(list);
+          LoggerService.instance.debug(list);
           returningWidget = TimeLineBody(mapdata: list);
         } else {
           returningWidget = const LoadingWidget();

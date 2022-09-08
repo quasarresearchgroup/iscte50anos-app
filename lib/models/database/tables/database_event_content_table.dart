@@ -1,4 +1,4 @@
-import 'package:logger/logger.dart';
+import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../database_helper.dart';
@@ -6,7 +6,6 @@ import 'database_content_table.dart';
 import 'database_event_table.dart';
 
 class DatabaseEventContentTable {
-  static final Logger _logger = Logger();
 
   static const table = 'event_contentTable';
 
@@ -33,7 +32,7 @@ class DatabaseEventContentTable {
       FOREIGN KEY (`$columnContentId`) REFERENCES `${DatabaseContentTable.table}` (`${DatabaseContentTable.columnId}`)
       )
     ''');
-    _logger.d("Created $table");
+    LoggerService.instance.debug("Created $table");
   }
 
   static Future<List<int>> getContendIdsFromEventId(int eventId) async {
@@ -84,19 +83,19 @@ class DatabaseEventContentTable {
       eventContentDBConnection.toMap(),
       conflictAlgorithm: ConflictAlgorithm.abort,
     );
-    _logger.d("Inserted: $eventContentDBConnection into $table");
+    LoggerService.instance.debug("Inserted: $eventContentDBConnection into $table");
     return insertedID;
   }
 
   static Future<int> removeALL() async {
     DatabaseHelper instance = DatabaseHelper.instance;
     Database db = await instance.database;
-    _logger.d("Removing all entries from $table");
+    LoggerService.instance.debug("Removing all entries from $table");
     return await db.delete(table);
   }
 
   static Future<void> drop(Database db) async {
-    _logger.d("Dropping $table");
+    LoggerService.instance.debug("Dropping $table");
     return await db.execute('DROP TABLE IF EXISTS $table');
   }
 
@@ -111,7 +110,7 @@ class DatabaseEventContentTable {
         entry.toMap(),
         conflictAlgorithm: ConflictAlgorithm.ignore,
       );
-      //_logger.d("Inserted: $entry into $table as batch into $table");
+      //LoggerService.instance.debug("Inserted: $entry into $table as batch into $table");
     }
     batch.commit();
   }

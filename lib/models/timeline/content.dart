@@ -1,6 +1,5 @@
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:iscte_spots/models/database/tables/database_content_table.dart';
-import 'package:logger/logger.dart';
 
 enum ContentType {
   image,
@@ -33,7 +32,6 @@ class Content {
   final ContentType? type;
   final int? eventId;
 
-  static Logger _logger = Logger();
 
   @override
   String toString() {

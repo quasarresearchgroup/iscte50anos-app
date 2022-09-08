@@ -9,13 +9,14 @@ import 'package:iscte_spots/models/spot.dart';
 import 'package:iscte_spots/services/auth/auth_service.dart';
 import 'package:iscte_spots/services/auth/exceptions.dart';
 import 'package:iscte_spots/services/auth/openday_login_service.dart';
-import 'package:logger/logger.dart';
+import 'package:iscte_spots/services/logging/LoggerService.dart';
+
 
 class SpotsRequestService {
-  static final Logger _logger = Logger();
+  
 
   static Future<void> fetchAllSpots({required BuildContext context}) async {
-    _logger.d("started getAllSpots request at ${DateTime.now()}\t");
+    LoggerService.instance.debug("started getAllSpots request at ${DateTime.now()}\t");
 
     const FlutterSecureStorage secureStorage = FlutterSecureStorage();
 
@@ -43,7 +44,7 @@ class SpotsRequestService {
         var responseDecoded =
             jsonDecode(await response.transform(utf8.decoder).join());
 
-        _logger.d(responseDecoded);
+        LoggerService.instance.debug(responseDecoded);
         List<Spot> spotsList = [];
         for (var item in responseDecoded) {
           spotsList.add(
@@ -55,7 +56,7 @@ class SpotsRequestService {
         throw Exception("General error on request");
       }
     } catch (e) {
-      _logger.e(e);
+      LoggerService.instance.error(e);
       rethrow;
     }
   }

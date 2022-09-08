@@ -3,8 +3,9 @@ import 'dart:io';
 
 import 'package:iscte_spots/helper/constants.dart';
 import 'package:iscte_spots/pages/leaderboard/leaderboard_screen.dart';
-import 'package:logger/logger.dart';
+
 import 'package:http/http.dart' as http;
+import 'package:iscte_spots/services/logging/LoggerService.dart';
 
 import '../../pages/leaderboard/leaderboard_screen.dart';
 import '../flickr/flickr_service.dart';
@@ -14,7 +15,7 @@ const API_ADDRESS_TEST = "http://192.168.1.66";
 const FLICKR_API_KEY = "c16f27dcc1c8674dd6daa3a26bd24520";
 
 class QuizService {
-  static final Logger _logger = Logger();
+  
 
   static Future<List<dynamic>> getQuizList() async {
     try {
@@ -34,11 +35,11 @@ class QuizService {
 
       if (response.statusCode == 200) {
         var quizzes = jsonDecode(await response.transform(utf8.decoder).join());
-        _logger.d(quizzes);
+        LoggerService.instance.debug(quizzes);
         return quizzes;
       }
     } catch (e) {
-      _logger.d(e);
+      LoggerService.instance.debug(e);
       rethrow;
     }
     throw Exception('Failed to load quiz list');
@@ -61,13 +62,13 @@ class QuizService {
       request.headers.add("Authorization", "Token $apiToken");
       request.headers.set('content-type', 'application/json');
       final response = await request.close();
-      _logger.d(response);
+      LoggerService.instance.debug(response);
 
       if (response.statusCode == 201) {
         return jsonDecode(await response.transform(utf8.decoder).join());
       }
     } catch (e) {
-      _logger.d(e);
+      LoggerService.instance.debug(e);
       rethrow;
     }
     throw Exception('Failed to start trial');
@@ -92,7 +93,7 @@ class QuizService {
         return jsonDecode(await response.transform(utf8.decoder).join());
       }
     } catch (e) {
-      _logger.d(e);
+      LoggerService.instance.debug(e);
     }
     throw Exception('Failed to obtain next question');
   }
@@ -127,7 +128,7 @@ class QuizService {
       //return jsonDecode(await response.transform(utf8.decoder).join());
       return true;
     } catch (e) {
-      _logger.d(e);
+      LoggerService.instance.debug(e);
       rethrow;
     }
   }
@@ -144,7 +145,7 @@ class QuizService {
           'https://www.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=$FLICKR_API_KEY&photo_id=$photoId&format=json&nojsoncallback=1'));
       if (photoData.statusCode == 200) {
         final jsonPhotoData = jsonDecode(photoData.body)["photo"];
-        _logger.d(jsonPhotoData);
+        LoggerService.instance.debug(jsonPhotoData);
 
         var farm = jsonPhotoData["farm"];
         var server = jsonPhotoData["server"];
@@ -158,7 +159,7 @@ class QuizService {
         throw Exception();
       }
     } catch (e) {
-      _logger.d(e);
+      LoggerService.instance.debug(e);
       rethrow;
     }
   }

@@ -7,7 +7,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:logger/logger.dart';
 import 'package:http/http.dart' as http;
 
 const API_ADDRESS = "https://194.210.120.48";
@@ -27,7 +26,6 @@ class LeaderBoardPage extends StatefulWidget {
 }
 
 class _LeaderBoardPageState extends State<LeaderBoardPage> {
-  Logger logger = Logger();
 
   late Map<String, dynamic> affiliationMap;
 

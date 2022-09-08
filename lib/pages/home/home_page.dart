@@ -9,14 +9,15 @@ import 'package:iscte_spots/pages/home/puzzle/puzzle_page.dart';
 import 'package:iscte_spots/pages/home/scanPage/openday_qr_scan_page.dart';
 import 'package:iscte_spots/pages/home/widgets/sucess_scan_widget.dart';
 import 'package:iscte_spots/pages/leaderboard/leaderboard_screen.dart';
+import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/services/platform_service.dart';
 import 'package:iscte_spots/services/shared_prefs_service.dart';
+import 'package:iscte_spots/services/spotChooser/random_spot_service.dart';
 import 'package:iscte_spots/widgets/iscte_confetti_widget.dart';
 import 'package:iscte_spots/widgets/my_app_bar.dart';
 import 'package:iscte_spots/widgets/my_bottom_bar.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:iscte_spots/widgets/util/overlays.dart';
-import 'package:logger/logger.dart';
 
 import 'widgets/completed_challenge_widget.dart';
 
@@ -24,7 +25,6 @@ class HomePage extends StatefulWidget {
   static const pageRoute = "/homeOpenDay";
 
   HomePage({Key? key}) : super(key: key);
-  final Logger _logger = Logger();
 
   final int scanSpotIndex = 2;
   final int leaderBoardIndex = 1;
@@ -66,7 +66,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
     _lottieController.addStatusListener(
       (status) {
-        widget._logger.d("listening to success Puzzle animation $status");
+        LoggerService.instance.debug("listening to success Puzzle animation $status");
         if (status == AnimationStatus.completed) {
           Future.delayed(const Duration(milliseconds: 500)).then((value) {
             setState(() {
@@ -78,6 +78,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         }
       },
     );
+//    Spot? spot = _currentSpotNotifier.value;
+//    if(spot == null){
+//      RandomSpotService.chooseRandomSpot();
+//    }
     //futureProfile = ProfileService().fetchProfile();
     //currentPemit = OpenDayQRScanService.spotRequest(context: context);
 //    initFunc();
@@ -91,7 +95,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   completePuzzleCallback() {
-    widget._logger.d("Completed Puzzle!!");
+    LoggerService.instance.debug("Completed Puzzle!!");
     _confettiController.play();
     Spot? spot = _currentSpotNotifier.value;
     if (spot != null) {
@@ -128,7 +132,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
 /*
   void changeCurrentSpot(Future<SpotRequest> request) async {
-    widget._logger.d("changing image: $request");
+    LoggerService.instance.debug("changing image: $request");
     SpotRequest requestResult = await request;
     var newImageURL =
         await OpenDayQRScanService.requestRouter(context, requestResult);
@@ -207,6 +211,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   ValueListenableBuilder<Spot?>(
                       valueListenable: _currentSpotNotifier,
                       builder: (context, value, _) {
+
                         return NavigationRail(
                           onDestinationSelected: (index) {
                             if (index == 0) {

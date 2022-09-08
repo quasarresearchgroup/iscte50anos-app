@@ -8,7 +8,7 @@ import 'package:iscte_spots/services/platform_service.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_alert_dialog.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_back_button.dart';
 import 'package:iscte_spots/widgets/my_app_bar.dart';
-import 'package:logger/logger.dart';
+
 
 import '../../services/quiz/quiz_service.dart';
 import '../../widgets/dialogs/CustomDialogs.dart';

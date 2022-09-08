@@ -1,16 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/services/shared_prefs_service.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_alert_dialog.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_back_button.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_text_button.dart';
 import 'package:iscte_spots/widgets/my_app_bar.dart';
-import 'package:logger/logger.dart';
+
 import 'package:yaml/yaml.dart';
 
 class SettingsPage extends StatefulWidget {
   static const pageRoute = "/settings";
-  final Logger _logger = Logger();
   SettingsPage({Key? key}) : super(key: key);
 
   @override
@@ -70,7 +70,6 @@ class _SettingsPageState extends State<SettingsPage> {
 
 class IscteAboutListTile extends StatelessWidget {
   IscteAboutListTile({Key? key}) : super(key: key);
-  final Logger _logger = Logger();
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +78,7 @@ class IscteAboutListTile extends StatelessWidget {
       builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
         if (snapshot.hasData) {
           Map yaml = loadYaml(snapshot.data!);
-          _logger.d([yaml['name'], yaml['version']]);
+          LoggerService.instance.debug([yaml['name'], yaml['version']]);
           return DynamicAboutListTile(yaml: yaml);
         } else {
           return Container();

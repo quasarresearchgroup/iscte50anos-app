@@ -7,7 +7,6 @@ import 'package:iscte_spots/models/database/tables/database_topic_table.dart';
 import 'package:iscte_spots/models/timeline/content.dart';
 import 'package:iscte_spots/models/timeline/topic.dart';
 import 'package:iscte_spots/pages/timeline/rouded_timeline_icon.dart';
-import 'package:logger/logger.dart';
 
 enum EventScope {
   iscte,
@@ -38,7 +37,6 @@ class Event {
   final EventScope? scope;
   bool visited;
 
-  static Logger logger = Logger();
 
   @override
   String toString() {

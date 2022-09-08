@@ -5,7 +5,7 @@ import 'package:iscte_spots/services/platform_service.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_alert_dialog.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_back_button.dart';
 import 'package:iscte_spots/widgets/my_app_bar.dart';
-import 'package:logger/logger.dart';
+
 
 import '../../widgets/dialogs/CustomDialogs.dart';
 import './quiz.dart';
@@ -17,7 +17,6 @@ void main() {
 
 class QuizPage extends StatefulWidget {
   static const pageRoute = "/quiz";
-  final Logger logger = Logger();
 
   final int quizNumber;
   final int trialNumber;

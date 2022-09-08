@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:iscte_spots/services/logging/LoggerService.dart';
 
 class NextOnboardButton extends StatelessWidget {
   NextOnboardButton({
@@ -35,6 +36,7 @@ class NextOnboardButton extends StatelessWidget {
               alignment: FractionalOffset.bottomRight,
               child: TextButton(
                 onPressed: () {
+                  LoggerService.instance.info("Pressed next onboard button.");
                   _pageController.nextPage(
                     duration: const Duration(milliseconds: 500),
                     curve: Curves.ease,

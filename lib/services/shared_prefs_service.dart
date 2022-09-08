@@ -1,7 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:iscte_spots/models/database/tables/database_spot_table.dart';
 import 'package:iscte_spots/models/spot.dart';
-import 'package:logger/logger.dart';
+import 'package:iscte_spots/services/logging/LoggerService.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPrefsService {
@@ -9,7 +10,6 @@ class SharedPrefsService {
       "all_puzzle_complete";
   static const String _currentSpotIdPrefsString = "currentSpot";
   static final SharedPrefsService _instance = SharedPrefsService._internal();
-  static final Logger _logger = Logger();
 
   ValueNotifier<bool> allPuzzleCompleteNotifier = ValueNotifier<bool>(false);
   ValueNotifier<Spot?> currentSpotNotifier = ValueNotifier<Spot?>(null);
@@ -28,7 +28,7 @@ class SharedPrefsService {
 
 //region completed puzzles
   static Future<bool> storeCompletedAllPuzzles() async {
-    _logger.d("storeCompletedAllPuzzles : true");
+    LoggerService.instance.debug("storeCompletedAllPuzzles : true");
     final prefs = await SharedPreferences.getInstance();
     prefs.setBool(_allPuzzlesCompletedSharedPrefsKey, true);
     (SharedPrefsService().allPuzzleCompleteNotifier).value = true;
@@ -36,7 +36,7 @@ class SharedPrefsService {
   }
 
   static Future<bool> resetCompletedAllPuzzles() async {
-    _logger.d("resetCompletedAllPuzzles : false");
+    LoggerService.instance.debug("resetCompletedAllPuzzles : false");
     final prefs = await SharedPreferences.getInstance();
     prefs.setBool(_allPuzzlesCompletedSharedPrefsKey, false);
     SharedPrefsService().allPuzzleCompleteNotifier.value = false;
@@ -47,7 +47,7 @@ class SharedPrefsService {
     final prefs = await SharedPreferences.getInstance();
     bool currentStatus =
         prefs.getBool(_allPuzzlesCompletedSharedPrefsKey) ?? false;
-    _logger.d("getCompletedAllPuzzles :$currentStatus");
+    LoggerService.instance.debug("getCompletedAllPuzzles :$currentStatus");
     return currentStatus;
   }
 //endregion
@@ -55,14 +55,14 @@ class SharedPrefsService {
 //region Current Spot
   static Future<void> storeCurrentSpot(Spot spot) async {
     assert(spot.id != null);
-    _logger.d("storeCurrentSpotID : $spot");
+    LoggerService.instance.debug("storeCurrentSpotID : $spot");
     final prefs = await SharedPreferences.getInstance();
     prefs.setInt(_currentSpotIdPrefsString, spot.id);
     SharedPrefsService().currentSpotNotifier.value = spot;
   }
 
   static Future<void> resetCurrentSpot() async {
-    _logger.d("resetCompletedAllPuzzles : false");
+    LoggerService.instance.debug("resetCompletedAllPuzzles : false");
     final prefs = await SharedPreferences.getInstance();
     prefs.setString(_currentSpotIdPrefsString, "");
     SharedPrefsService().currentSpotNotifier.value = null;
@@ -71,11 +71,11 @@ class SharedPrefsService {
   static Future<Spot?> getCurrentSpot() async {
     final prefs = await SharedPreferences.getInstance();
     int? currentSpotID = prefs.getInt(_currentSpotIdPrefsString);
-    _logger.d("currentSpotID: $currentSpotID");
+    LoggerService.instance.debug("currentSpotID: $currentSpotID");
     if (currentSpotID == null) {
       return null;
     } else {
-      _logger.d("getCurrentSpot :$currentSpotID");
+      LoggerService.instance.debug("getCurrentSpot :$currentSpotID");
 
       List<Spot> spotsList =
           await DatabaseSpotTable.getAllWithIds([currentSpotID]);

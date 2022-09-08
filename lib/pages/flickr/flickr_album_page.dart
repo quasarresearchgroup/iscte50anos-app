@@ -8,15 +8,14 @@ import 'package:iscte_spots/models/flickr/flickr_photo.dart';
 import 'package:iscte_spots/models/flickr/flickr_photoset.dart';
 import 'package:iscte_spots/services/flickr/flickr_photoset_service.dart';
 import 'package:iscte_spots/services/flickr/flickr_service.dart';
+import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/services/platform_service.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_back_button.dart';
 import 'package:iscte_spots/widgets/my_app_bar.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
-import 'package:logger/logger.dart';
 
 class FlickAlbumPage extends StatefulWidget {
   FlickAlbumPage({Key? key, required this.album}) : super(key: key);
-  final Logger _logger = Logger();
   final FlickrPhotoset album;
   final FLickrPhotosetService fLickrPhotosetService = FLickrPhotosetService();
   final ScrollController listViewController = ScrollController();
@@ -42,15 +41,15 @@ class _FlickAlbumPageState extends State<FlickAlbumPage> {
         if (!fetchedPhotos.contains(event)) {
           fetchedPhotos.add(event);
         } else {
-          widget._logger.d("duplicated photo entry: $event");
+          LoggerService.instance.debug("duplicated photo entry: $event");
         }
       });
     }, onError: (error) {
-      widget._logger.d(error);
+      LoggerService.instance.debug(error);
       noMoreData = error == FlickrService.noDataError;
     });
     widget.listViewController.addListener(() {
-      //widget._logger.d(
+      //LoggerService.instance.debug(
       //    "current: ${listViewController.offset}; max:${listViewController.position.maxScrollExtent};");
       if (widget.listViewController.position.maxScrollExtent * 0.9 <=
           widget.listViewController.offset) {
@@ -73,7 +72,7 @@ class _FlickAlbumPageState extends State<FlickAlbumPage> {
       setState(() {
         fetching = true;
       });
-      widget._logger.d("fetching more data");
+      LoggerService.instance.debug("fetching more data");
       lastFetch = millisecondsSinceEpoch2;
       await widget.fLickrPhotosetService
           .fetch(albumID: widget.album.id, farm: widget.album.farm);
@@ -81,7 +80,7 @@ class _FlickAlbumPageState extends State<FlickAlbumPage> {
         fetching = false;
       });
     } else {
-      widget._logger.d("wait a bit before fetching againg");
+      LoggerService.instance.debug("wait a bit before fetching againg");
     }
   }
 

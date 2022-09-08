@@ -8,12 +8,10 @@ import 'package:iscte_spots/pages/home/splashScreen/shake.dart';
 import 'package:iscte_spots/pages/onboarding/onboarding_page.dart';
 import 'package:iscte_spots/services/auth/openday_login_service.dart';
 import 'package:iscte_spots/services/onboard_service.dart';
-import 'package:logger/logger.dart';
 import 'package:page_transition/page_transition.dart';
 
 class SplashScreen extends StatefulWidget {
   SplashScreen({Key? key}) : super(key: key);
-  final Logger _logger = Logger();
   @override
   State<SplashScreen> createState() => _SplashScreenState();
 }

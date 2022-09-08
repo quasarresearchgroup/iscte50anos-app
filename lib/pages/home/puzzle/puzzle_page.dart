@@ -7,7 +7,6 @@ import 'package:iscte_spots/models/puzzle_piece.dart';
 import 'package:iscte_spots/models/spot.dart';
 import 'package:iscte_spots/pages/home/puzzle/puzzle_piece_widget.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
-import 'package:logger/logger.dart';
 
 class PuzzlePage extends StatefulWidget {
   PuzzlePage({
@@ -16,7 +15,6 @@ class PuzzlePage extends StatefulWidget {
     required this.constraints,
     required this.completeCallback,
   }) : super(key: key);
-  final Logger _logger = Logger(printer: PrettyPrinter(methodCount: 4));
   static const pageRoute = "/puzzle";
 
   static const int rows = 5;
@@ -104,7 +102,7 @@ class _PuzzlePageState extends State<PuzzlePage>
 
     final Size imageSize = Size(imageWidth, imageHeight);
 
-    //widget._logger.d("imageSize.width: ${imageSize.width} ; imageSize.height: ${imageSize.height}");
+    //LoggerService.instance.debug("imageSize.width: ${imageSize.width} ; imageSize.height: ${imageSize.height}");
     List<PuzzlePiece> storedPuzzlePieces =
         await DatabasePuzzlePieceTable.getAllFromSpot(spot.id);
     List<PuzzlePieceWidget> storedPuzzlePieceWidgets = [];
@@ -183,7 +181,7 @@ class _PuzzlePageState extends State<PuzzlePage>
   }
 
   void bringToTop(Widget targetWidget) {
-    //widget._logger.d("Used bringToTop function on $targetWidget.");
+    //LoggerService.instance.debug("Used bringToTop function on $targetWidget.");
     setState(() {
       pieces.remove(targetWidget);
       pieces.insert(pieces.length - 1, targetWidget);
@@ -192,7 +190,7 @@ class _PuzzlePageState extends State<PuzzlePage>
 
 // when a piece reaches its final position, it will be sent to the back of the stack to not get in the way of other, still movable, pieces
   void sendToBack(Widget targetWidget) {
-    //widget._logger.d("Used sendToBack function on $targetWidget");
+    //LoggerService.instance.debug("Used sendToBack function on $targetWidget");
     setState(() {
       pieces.remove(targetWidget);
       pieces.insert(2, targetWidget);

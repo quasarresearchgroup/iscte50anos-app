@@ -3,11 +3,11 @@ import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/services/platform_service.dart';
 import 'package:iscte_spots/services/quiz/quiz_service.dart';
 import 'package:iscte_spots/widgets/dialogs/CustomDialogs.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_alert_dialog.dart';
-import 'package:logger/logger.dart';
 import 'package:pinch_zoom/pinch_zoom.dart';
 
 import '../../widgets/network/error.dart';
@@ -17,7 +17,6 @@ import './question.dart';
 const double ANSWER_TIME = 10000; //ms
 
 class Quiz extends StatefulWidget {
-  final Logger logger = Logger();
 
   final int trialNumber;
   final int quizNumber;
@@ -65,11 +64,11 @@ class _QuizState extends State<Quiz> {
         }
       }
 
-      widget.logger.d(question.toString());
-      //widget.logger.d(countdown);
+      LoggerService.instance.debug(question.toString());
+      //LoggerService.instance.debug(countdown);
       return question;
     }catch(e){
-      widget.logger.d(e);
+      LoggerService.instance.debug(e);
       rethrow;
     }
   }
@@ -78,7 +77,7 @@ class _QuizState extends State<Quiz> {
     submitting = true;
     try {
       Map answer = {"choices": selectedAnswerIds};
-      widget.logger.d(answer.toString());
+      LoggerService.instance.debug(answer.toString());
       submitted = await QuizService.answerQuestion(widget.quizNumber,
           widget.trialNumber, question, answer);
       if (submitted) {
@@ -121,14 +120,14 @@ class _QuizState extends State<Quiz> {
         } else {
           selectedAnswerIds.add(answer);
         }
-        widget.logger.i("Selected answers:" + selectedAnswerIds.toString());
+        LoggerService.instance.info("Selected answers:" + selectedAnswerIds.toString());
       } else {
         if (selectedAnswerIds.isEmpty) {
           selectedAnswerIds.add(answer);
         } else {
           selectedAnswerIds[0] = answer;
         }
-        widget.logger.i("Selected answer: ${selectedAnswerIds[0]}");
+        LoggerService.instance.info("Selected answer: ${selectedAnswerIds[0]}");
       }
     });
   }

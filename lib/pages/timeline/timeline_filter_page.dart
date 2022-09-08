@@ -8,6 +8,7 @@ import 'package:iscte_spots/models/timeline/event.dart';
 import 'package:iscte_spots/models/timeline/topic.dart';
 import 'package:iscte_spots/pages/timeline/timeline_body.dart';
 import 'package:iscte_spots/pages/timeline/timeline_page.dart';
+import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/services/platform_service.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_back_button.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_text_button.dart';
@@ -15,12 +16,11 @@ import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_text_field.dart';
 import 'package:iscte_spots/widgets/my_app_bar.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
-import 'package:logger/logger.dart';
+
 
 class TimelineFilterPage extends StatefulWidget {
   TimelineFilterPage({Key? key}) : super(key: key);
   static const String pageRoute = "${TimelinePage.pageRoute}/filter";
-  final Logger _logger = Logger();
 
   @override
   State<TimelineFilterPage> createState() => _TimelineFilterPageState();
@@ -313,7 +313,7 @@ class _TimelineFilterPageState extends State<TimelineFilterPage> {
                             selectedTopics.remove(data[index]);
                           });
                         }
-                        widget._logger.d(selectedTopics);
+                        LoggerService.instance.debug(selectedTopics);
                       }
                     },
                   );
@@ -348,7 +348,7 @@ class _TimelineFilterPageState extends State<TimelineFilterPage> {
         selectedTopics.clear();
       }
     });
-    widget._logger.d("advancedSearch: $advancedSearch");
+    LoggerService.instance.debug("advancedSearch: $advancedSearch");
   }
 
   void _submitSelection() async {
@@ -363,7 +363,7 @@ class _TimelineFilterPageState extends State<TimelineFilterPage> {
       setOfEvents.addAll(await DatabaseEventTable.getAll());
     }
 
-    widget._logger.d("events from topics: $setOfEvents");
+    LoggerService.instance.debug("events from topics: $setOfEvents");
     String textSearchBar = searchBarController.text.toLowerCase();
     if (textSearchBar.isNotEmpty) {
       setOfEvents = setOfEvents.where((Event element) {
@@ -371,7 +371,7 @@ class _TimelineFilterPageState extends State<TimelineFilterPage> {
         return eventTitle.contains(textSearchBar) ||
             textSearchBar.contains(eventTitle);
       }).toSet();
-      widget._logger.d("filtered events: $setOfEvents");
+      LoggerService.instance.debug("filtered events: $setOfEvents");
     }
     if (mounted) {
       Navigator.of(context).push(MaterialPageRoute(

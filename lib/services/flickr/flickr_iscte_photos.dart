@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:iscte_spots/services/flickr/flickr_service.dart';
+import 'package:iscte_spots/services/logging/LoggerService.dart';
 
 class FlickrIsctePhotoService extends FlickrService {
   static const String tags = "iscte";
@@ -24,7 +25,7 @@ class FlickrIsctePhotoService extends FlickrService {
           .timeout(const Duration(minutes: 2));
 
       if (response.statusCode == 200) {
-        logger.d("Started fetching image urls");
+        LoggerService.instance.debug("Started fetching image urls");
         startFetch();
 
         final jsonResponse = jsonDecode(response.body);
@@ -43,7 +44,7 @@ class FlickrIsctePhotoService extends FlickrService {
             var photoSecret = jsonPhotoData["secret"];
             var imagesrc =
                 "https://farm$farm.staticflickr.com/$server/$photoid\_$photoSecret.jpg";
-            logger.d(imagesrc);
+            LoggerService.instance.debug(imagesrc);
             _controller.sink.add(imagesrc);
           }
         }
@@ -54,7 +55,7 @@ class FlickrIsctePhotoService extends FlickrService {
         _controller.sink.addError(response.statusCode);
       }
     } else {
-      logger.d("Fetching already in progress, no effect was taken");
+      LoggerService.instance.debug("Fetching already in progress, no effect was taken");
     }
   }
 }

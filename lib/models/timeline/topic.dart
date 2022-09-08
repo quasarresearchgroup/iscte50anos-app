@@ -2,7 +2,6 @@ import 'package:iscte_spots/models/database/tables/database_event_table.dart';
 import 'package:iscte_spots/models/database/tables/database_event_topic_table.dart';
 import 'package:iscte_spots/models/database/tables/database_topic_table.dart';
 import 'package:iscte_spots/models/timeline/event.dart';
-import 'package:logger/logger.dart';
 
 class Topic {
   Topic({
@@ -12,7 +11,6 @@ class Topic {
   final int? id;
   final String? title;
 
-  static Logger logger = Logger();
 
   @override
   String toString() {

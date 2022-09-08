@@ -3,11 +3,9 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:iscte_spots/helper/box_size.dart';
-import 'package:logger/logger.dart';
 import 'package:motion_sensors/motion_sensors.dart';
 
 class MovingPiece extends StatefulWidget {
-  final Logger _logger = Logger();
 
   MovingPiece({
     Key? key,
@@ -101,7 +99,7 @@ class _MovingPieceState extends State<MovingPiece> {
       });
       moveWAccell(x: roll, y: pitch);
     }));
-    //widget._logger.d("added sensor subscription");
+    //LoggerService.instance.debug("added sensor subscription");
   }
 
   @override
@@ -109,7 +107,7 @@ class _MovingPieceState extends State<MovingPiece> {
     super.dispose();
     for (StreamSubscription<dynamic> subscription in _streamSubscriptions) {
       subscription.cancel();
-      //widget._logger.d("canceled sensor subscription");
+      //LoggerService.instance.debug("canceled sensor subscription");
     }
   }
 
