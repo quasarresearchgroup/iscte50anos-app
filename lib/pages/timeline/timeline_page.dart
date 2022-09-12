@@ -47,7 +47,7 @@ class _TimelinePageState extends State<TimelinePage> {
     });
     mapdata.then((value) {
       if (value.isEmpty) {
-        deleteGetAllEventsFromCsv();
+        deleteGetAllEvents();
       }
     });
   }
@@ -81,9 +81,9 @@ class _TimelinePageState extends State<TimelinePage> {
       floatingActionButton: TimelineDial(
           isDialOpen: isDialOpen,
           deleteTimelineData: deleteTimelineData,
-          refreshTimelineData: deleteGetAllEventsFromCsv),
+          refreshTimelineData: deleteGetAllEvents),
       body: RefreshIndicator(
-        onRefresh: deleteGetAllEventsFromCsv,
+        onRefresh: deleteGetAllEvents,
         child: FutureBuilder<List<Event>>(
           future: mapdata,
           builder: (context, snapshot) {
@@ -123,7 +123,7 @@ class _TimelinePageState extends State<TimelinePage> {
           );
   }
 
-  Future<void> deleteGetAllEventsFromCsv() async {
+  Future<void> deleteGetAllEvents() async {
     setState(() {
       // _loading = true;
     });

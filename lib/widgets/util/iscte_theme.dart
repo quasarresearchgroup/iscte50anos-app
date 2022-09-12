@@ -73,7 +73,6 @@ class IscteTheme {
               MaterialStateColor.resolveWith((states) => iscteColor),
         ),
       ),
-      appBarTheme: appBarTheme,
       elevatedButtonTheme: elevatedButtonTheme,
     );
   }
@@ -120,22 +119,6 @@ class IscteTheme {
     primaryColor: IscteTheme.iscteColor,
   );
   
-  static ThemeData get darkThemeData {
-    return ThemeData.dark().copyWith(
-      floatingActionButtonTheme:
-          FloatingActionButtonThemeData(backgroundColor: iscteColor),
-      scaffoldBackgroundColor: Colors.black,
-      backgroundColor: Colors.black,
-      primaryColor: iscteColor,
-      primaryColorLight: iscteColorLight,
-      primaryColorDark: iscteColorDark,
-      errorColor: Colors.deepOrangeAccent,
-      bottomAppBarColor: iscteColor,
-      appBarTheme: appBarTheme,
-      elevatedButtonTheme: elevatedButtonTheme,
-    );
-  }
-
   static InputDecoration buildInputDecoration(
       {required String hint, String? errorText, Widget? suffixIcon}) {
     return InputDecoration(
