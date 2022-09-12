@@ -7,6 +7,7 @@ import 'package:iscte_spots/models/database/tables/database_topic_table.dart';
 import 'package:iscte_spots/models/timeline/content.dart';
 import 'package:iscte_spots/models/timeline/topic.dart';
 import 'package:iscte_spots/pages/timeline/rouded_timeline_icon.dart';
+import 'package:iscte_spots/services/timeline/timeline_content_service.dart';
 import 'package:logger/logger.dart';
 
 enum EventScope {
@@ -47,20 +48,28 @@ class Event {
 
   String getDateString() {
     DateTime dateDateTime = DateTime.fromMillisecondsSinceEpoch(date);
-    return dateDateTime.year.toString() +
-        "-" +
-        dateDateTime.month.toString() +
-        "-" +
-        dateDateTime.day.toString();
+    return "${dateDateTime.year}-${dateDateTime.month}-${dateDateTime.day}";
   }
 
-  factory Event.fromMap(Map<String, dynamic> json) => Event(
-        id: json[DatabaseEventTable.columnId],
-        title: json[DatabaseEventTable.columnTitle],
-        date: json[DatabaseEventTable.columnDate],
-        scope: eventScopefromString(json[DatabaseEventTable.columnScope]),
-        visited: json[DatabaseEventTable.columnVisited] == 1 ? true : false,
-      );
+  factory Event.fromMap(Map<String, dynamic> json) {
+    // Logger().d(json[DatabaseEventTable.columnDate]);
+    // Logger().d(DateTime.parse(json[DatabaseEventTable.columnDate])
+    //     .millisecondsSinceEpoch);
+    return Event(
+      id: json[DatabaseEventTable.columnId],
+      title: json[DatabaseEventTable.columnTitle],
+      date: json[DatabaseEventTable.columnDate] is int
+          ? json[DatabaseEventTable.columnDate]
+          : DateTime.parse(json[DatabaseEventTable.columnDate])
+              .millisecondsSinceEpoch,
+      scope: eventScopefromString(json[DatabaseEventTable.columnScope]),
+      visited: json[DatabaseEventTable.columnVisited] == null
+          ? false
+          : json[DatabaseEventTable.columnVisited] == 1
+              ? true
+              : false,
+    );
+  }
 
   Map<String, dynamic> toMap() {
     return {
@@ -109,6 +118,10 @@ class Event {
         await DatabaseEventContentTable.getContendIdsFromEventId(id);
     List<Content> contentsList =
         await DatabaseContentTable.getAllWithIds(allIdsWithEventId);
+    if (contentsList.isEmpty) {
+      contentsList = await TimelineContentService.fetchContents(eventId: id);
+    }
+
     return contentsList;
   }
 }

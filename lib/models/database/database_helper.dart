@@ -17,7 +17,7 @@ class DatabaseHelper {
   static final Logger _logger = Logger();
   static Database? _database;
   static const _databaseName = "MyDatabase.db";
-  static const _databaseVersion = 12;
+  static const _databaseVersion = 13;
 
   //  singleton class
   DatabaseHelper._privateConstructor();

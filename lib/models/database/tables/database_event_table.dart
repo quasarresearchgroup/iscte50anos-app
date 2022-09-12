@@ -9,7 +9,7 @@ class DatabaseEventTable {
 
   static const table = 'eventTable';
 
-  static const columnId = '_id';
+  static const columnId = 'id';
   static const columnTitle = 'title';
   static const columnDate = 'date';
   static const columnScope = 'scope';
