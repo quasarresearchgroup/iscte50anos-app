@@ -249,12 +249,13 @@ class QuizDetail extends StatelessWidget {
                     const SizedBox(height: 5,),
                     Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          Text("Pontos: ${trial["score"]}"),
-                          Text("Estado: ${trial["is_completed"]}"),
+                          Text("Pontos: ${ trial["is_completed"] ? trial["score"] : "-" }"),
+                          Text("Progresso: ${trial["progress"]}/${trial["quiz_size"]}"),
                         ]),
                     const SizedBox(height: 5,),
                     if (!trial["is_completed"]) ElevatedButton(
-                        onPressed: (){
+                        onPressed: () => showYesNoWarningDialog("Deseja continuar esta tentativa de quiz?", (){
+                          Navigator.of(context).pop();
                           Navigator.of(context)
                               .push(MaterialPageRoute(
                               builder: (context) =>
@@ -265,7 +266,7 @@ class QuizDetail extends StatelessWidget {
                               .then((value) {
                             returnToQuizList();
                           });
-                        }, child: const Text("Retomar tentativa")),
+                        }, context), child: const Text("Continuar")),
                     const Divider(thickness: 2,),
                   ],
                 );}),

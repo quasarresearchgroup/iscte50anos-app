@@ -43,6 +43,17 @@ class IscteTheme {
     useIndicator: false,
   );
 
+  static ElevatedButtonThemeData get elevatedButtonTheme {
+    return ElevatedButtonThemeData(
+        style: ButtonStyle(
+          foregroundColor:
+              MaterialStateColor.resolveWith((states) => Colors.white),
+          backgroundColor:
+              MaterialStateColor.resolveWith((states) => iscteColor),
+        ),
+      );
+  }
+
   static ThemeData get lightThemeData {
     return ThemeData.light().copyWith(
       floatingActionButtonTheme: const FloatingActionButtonThemeData(
@@ -62,14 +73,8 @@ class IscteTheme {
               MaterialStateColor.resolveWith((states) => iscteColor),
         ),
       ),
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ButtonStyle(
-          foregroundColor:
-              MaterialStateColor.resolveWith((states) => Colors.white),
-          backgroundColor:
-              MaterialStateColor.resolveWith((states) => iscteColor),
-        ),
-      ),
+      appBarTheme: appBarTheme,
+      elevatedButtonTheme: elevatedButtonTheme,
     );
   }
 
@@ -106,6 +111,7 @@ class IscteTheme {
     primaryColor: IscteTheme.iscteColor,
   );
 
+
   static CupertinoThemeData cupertinoDarkThemeData = const CupertinoThemeData(
     barBackgroundColor: IscteTheme.iscteColor,
     scaffoldBackgroundColor: CupertinoColors.black,
@@ -113,6 +119,22 @@ class IscteTheme {
     brightness: Brightness.dark,
     primaryColor: IscteTheme.iscteColor,
   );
+  
+  static ThemeData get darkThemeData {
+    return ThemeData.dark().copyWith(
+      floatingActionButtonTheme:
+          FloatingActionButtonThemeData(backgroundColor: iscteColor),
+      scaffoldBackgroundColor: Colors.black,
+      backgroundColor: Colors.black,
+      primaryColor: iscteColor,
+      primaryColorLight: iscteColorLight,
+      primaryColorDark: iscteColorDark,
+      errorColor: Colors.deepOrangeAccent,
+      bottomAppBarColor: iscteColor,
+      appBarTheme: appBarTheme,
+      elevatedButtonTheme: elevatedButtonTheme,
+    );
+  }
 
   static InputDecoration buildInputDecoration(
       {required String hint, String? errorText, Widget? suffixIcon}) {

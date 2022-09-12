@@ -34,7 +34,7 @@ class ProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: MyAppBar(
-          title: "Profile",//AppLocalizations.of(context)!.quizPageTitle)
+          title: "Perfil",//AppLocalizations.of(context)!.quizPageTitle)
           leading:DynamicBackIconButton(),
         ),
         body: NotificationListener<OverscrollIndicatorNotification>(

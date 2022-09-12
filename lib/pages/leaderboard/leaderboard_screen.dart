@@ -303,7 +303,7 @@ class _AffiliationLeaderboardState extends State<AffiliationLeaderboard>
         if (canSearch)
           Expanded(
               child: LeaderboardList(
-                  key: UniqueKey(), fetchFunction: fetchLeaderboard))
+                  key: UniqueKey(), fetchFunction: fetchLeaderboard, showRank: true,))
         else if (!firstSearch && readJson)
           const Expanded(
               child: Center(
@@ -329,7 +329,7 @@ class GlobalLeaderboard extends StatelessWidget {
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
           ),
         ),
-        Expanded(child: LeaderboardList(fetchFunction: LeaderboardService.fetchGlobalLeaderboard)),
+        Expanded(child: LeaderboardList(fetchFunction: LeaderboardService.fetchGlobalLeaderboard, showRank: true)),
       ],
     );
   }
@@ -346,11 +346,11 @@ class RelativeLeaderboard extends StatelessWidget {
           // Container to hold the description
           height: 50,
           child: Center(
-            child: Text("Concorrentes mais próximos de si",
+            child: Text("Concorrentes próximos de si",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
           ),
         ),
-        Expanded(child: LeaderboardList(fetchFunction: LeaderboardService.fetchRelativeLeaderboard)),
+        Expanded(child: LeaderboardList(fetchFunction: LeaderboardService.fetchRelativeLeaderboard, showRank: false,)),
       ],
     );
   }
@@ -358,8 +358,9 @@ class RelativeLeaderboard extends StatelessWidget {
 
 class LeaderboardList extends StatefulWidget {
   final Future<List<dynamic>> Function() fetchFunction;
+  final bool showRank;
 
-  const LeaderboardList({Key? key, required this.fetchFunction})
+  const LeaderboardList({Key? key, required this.fetchFunction, required this.showRank})
       : super(key: key);
 
   @override
@@ -403,30 +404,30 @@ class _LeaderboardListState extends State<LeaderboardList> {
                         padding: const EdgeInsets.only(left: 10.0, right: 10.0),
                         child: Card(
                           child: ListTile(
-                            title: Text(items[index]["username"].toString(),
+                            title: Text(items[index]["name"].toString(),
                                 style: const TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 16)),
                             subtitle: Text(
                                 "Pontos: ${items[index]["points"]} \nAfiliação: ${items[index]["affiliation_name"]}"),
                             minVerticalPadding: 10.0,
-                            trailing: Row(
+                            trailing: widget.showRank ? Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: <Widget>[
-                                  if (index == 0)
-                                    Image.asset(
-                                        "Resources/Img/LeaderBoardIcons/gold_medal.png")
-                                  else if (index == 1)
-                                    Image.asset(
-                                        "Resources/Img/LeaderBoardIcons/silver_medal.png")
-                                  else if (index == 2)
-                                    Image.asset(
-                                        "Resources/Img/LeaderBoardIcons/bronze_medal.png"),
+                                    if (index == 0)
+                                      Image.asset(
+                                          "Resources/Img/LeaderBoardIcons/gold_medal.png")
+                                    else if (index == 1)
+                                      Image.asset(
+                                          "Resources/Img/LeaderBoardIcons/silver_medal.png")
+                                    else if (index == 2)
+                                      Image.asset(
+                                          "Resources/Img/LeaderBoardIcons/bronze_medal.png"),
                                   const SizedBox(width: 10),
                                   Text("#${index + 1}",
                                       style: const TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 20)),
-                                ]),
+                                ]) : null,
                           ),
                         ),
                       );
