@@ -1,8 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter_appauth/flutter_appauth.dart';
 import 'package:http/http.dart' as http;
-import 'package:http/http.dart';
 
 import '../pages/login/login.dart';
 
@@ -14,8 +14,8 @@ class IscteLoginService {
   static const IDP_DOMAIN = 'login.iscte-iul.pt';
   static const IDP_CLIENT_ID = '0oa2y4zd1pm9krr2o417';
   static const IDP_REDIRECT_URI = 'pt.iscteiul.vultos:/callback';
-  static const IDP_ISSUER = 'https://$IDP_DOMAIN';
-  static const API_ADDRESS = "192.168.1.124";
+  static const IDP_ISSUER = 'https://$IDP_DOMAIN/oauth2/ausyeqjx8GS8Nj1Y9416';
+  static const API_ADDRESS = "https://194.210.120.193";
 
   static Map<String, dynamic> parseIdToken(String idToken) {
     final parts = idToken.split(r'.');
@@ -27,7 +27,7 @@ class IscteLoginService {
 
   static Future<Map> getUserDetails(String accessToken) async {
     //print(accessToken);
-    const url = 'https://$IDP_DOMAIN/oauth2/v1/userinfo';
+    const url = 'https://login.iscte-iul.pt/oauth2/ausyeqjx8GS8Nj1Y9416/v1/userinfo';
     final response = await http.get(
       Uri.parse(url),
       headers: {'Authorization': 'Bearer $accessToken'},
@@ -41,37 +41,63 @@ class IscteLoginService {
 
   static Future<Map<String, dynamic>> login() async {
     // GET ACCESS TOKEN AND ID TOKEN FROM OKTA
+
     final AuthorizationTokenResponse? result =
         await appAuth.authorizeAndExchangeCode(
       AuthorizationTokenRequest(
         IDP_CLIENT_ID,
         IDP_REDIRECT_URI,
-        issuer: 'https://$IDP_DOMAIN',
-        scopes: ['openid', 'profile', 'offline_access'],
+        issuer: IDP_ISSUER,
+        scopes: ['upn', 'openid', 'profile', 'offline_access'],
         //promptValues: ['login']
       ),
     );
 
     final Map<String, dynamic> idToken =
         IscteLoginService.parseIdToken(result?.idToken ?? "");
-    //final profile = await getUserDetails(result?.accessToken ?? "");
-    //print(idToken);
-    //print(profile);
+    final profile = await getUserDetails(result?.accessToken ?? "");
+    print("IDTOKEN: $idToken");
+    print("----------------------------------------------------");
+
+    print("PROFILE INFO: $profile");
 
     await secureStorage.write(
         key: 'refresh_token', value: result?.refreshToken);
 
     // Exchange OKTA access token to API Token
-    Response tokenExchange = await http.post(
-        Uri.parse('http://$API_ADDRESS/api/auth/'),
-        body: {"access_token": result?.accessToken});
+    /*Response tokenExchange = await http.post(
+        Uri.parse('$API_ADDRESS/api/auth/'),
+        body: {"access_token": result?.accessToken});*/
 
-    final Map apiToken = json.decode(utf8.decode(tokenExchange.body.codeUnits));
-    secureStorage.write(key: 'api_token', value: apiToken["access_token"]);
-    //print("API Token: ${apiToken["access_token"]}");
+    HttpClient client = HttpClient();
+    client.badCertificateCallback =
+    ((X509Certificate cert, String host, int port) => true);
 
-    // TODO Route to Profile or Home Page
+    final request = await client
+        .postUrl(Uri.parse('$API_ADDRESS/api/auth/'));
+
+    request.headers.set('content-type', 'application/json');
+    var tokenRequestBody = utf8.encode(json.encode({"access_token": result?.accessToken}));
+    request.headers.set('Content-Length', tokenRequestBody.length);
+    request.add(tokenRequestBody);
+    final response = await request.close();
+
+    print("Obtained api token. Status: ${response.statusCode}");
+
+    if (true/*response.statusCode == 200*/) {
+      var apiToken = await response.transform(utf8.decoder).join();
+      print("API Token: ${apiToken}");
+      //secureStorage.write(key: 'api_token', value: apiToken["access_token"]);
+
+
+      // TODO Route to Profile or Home Page
+
+
+    }
 
     return idToken;
+
+    // final Map apiToken = json.decode(utf8.decode(tokenExchange.body.codeUnits));
+
   }
 }
