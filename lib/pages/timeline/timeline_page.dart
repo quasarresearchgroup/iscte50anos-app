@@ -132,13 +132,17 @@ class _TimelinePageState extends State<TimelinePage> {
     await DatabaseEventTable.addBatch(events);
     List<Content> contents;
     int contentId = 0;
-    do {
-      contents = await TimelineContentService.fetchContentsWithinIds(
-          lower_id: contentId, upper_id: contentId + 100);
-      widget._logger.d(contents.length);
-      await DatabaseContentTable.addBatch(contents);
-      contentId += 100;
-    } while (contents.isNotEmpty);
+    try {
+      do {
+        contents = await TimelineContentService.fetchContentsWithinIds(
+            lower_id: contentId, upper_id: contentId + 100);
+        widget._logger.d(contents.length);
+        await DatabaseContentTable.addBatch(contents);
+        contentId += 100;
+      } while (contents.isNotEmpty);
+    } catch (e) {
+      widget._logger.e(e);
+    }
     // widget._logger.d(events);
     // await TimelineCSVService.insertContentEntriesFromCSV();
     setState(() {

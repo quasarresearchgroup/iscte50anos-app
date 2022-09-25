@@ -12,8 +12,8 @@ import 'package:logger/logger.dart';
 
 enum EventScope {
   iscte,
-  nacional,
-  internacional,
+  portugal,
+  world,
 }
 
 EventScope? eventScopefromString(String? input) {
@@ -92,9 +92,9 @@ class Event {
         Image.asset('icons/flags/png/pt.png', package: 'country_icons');*/
 
     switch (scope) {
-      case EventScope.nacional:
+      case EventScope.portugal:
         return RoundedTimelineIcon(child: bandeiraPortugalImage);
-      case EventScope.internacional:
+      case EventScope.world:
         return RoundedTimelineIcon(child: worldMapImage);
       case EventScope.iscte:
         return RoundedTimelineIcon(child: iscte50AnosImage);

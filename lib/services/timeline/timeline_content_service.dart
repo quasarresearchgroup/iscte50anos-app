@@ -71,7 +71,7 @@ class TimelineContentService {
       HttpClientResponse response = await request.close();
       var decodedResponse =
           await jsonDecode(await response.transform(utf8.decoder).join());
-      _logger.d(decodedResponse);
+      _logger.i(decodedResponse);
       // return response.statusCode;
       List<Content> eventsList = [];
       for (var entry in decodedResponse) {
