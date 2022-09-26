@@ -9,7 +9,7 @@ import 'package:iscte_spots/services/auth/auth_service.dart';
 import 'package:iscte_spots/services/auth/openday_login_service.dart';
 import 'package:iscte_spots/services/shared_prefs_service.dart';
 import 'package:logger/logger.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 
 import 'openday_notification_service.dart';
 
@@ -111,7 +111,7 @@ class OpenDayQRScanService {
     // int now = DateTime.now().millisecondsSinceEpoch;
     //if (now - _lastScan >= _scanCooldown) {
 
-    _logger.d("started request at ${DateTime.now()}\t${barcode?.code}");
+    _logger.d("started request at ${DateTime.now()}\t${barcode?.rawValue}");
     const FlutterSecureStorage secureStorage = FlutterSecureStorage();
 
     String? apiToken =
@@ -130,7 +130,7 @@ class OpenDayQRScanService {
             Uri.parse('${BackEndConstants.API_ADDRESS}/api/spots/permit'));
       } else {
         request = await client.getUrl(Uri.parse(
-            '${BackEndConstants.API_ADDRESS}/api/spots/${barcode.code}'));
+            '${BackEndConstants.API_ADDRESS}/api/spots/${barcode.rawValue}'));
       }
 
       request.headers.add("Authorization", "Token $apiToken");

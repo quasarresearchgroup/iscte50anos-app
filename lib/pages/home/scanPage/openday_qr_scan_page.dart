@@ -12,7 +12,7 @@ import 'package:iscte_spots/services/platform_service.dart';
 import 'package:iscte_spots/services/qr_scan_service.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:logger/logger.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:synchronized/synchronized.dart';
 
 class QRScanPageOpenDay extends StatefulWidget {
@@ -29,7 +29,10 @@ class QRScanPageOpenDay extends StatefulWidget {
 
 class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
   final qrKey = GlobalKey(debugLabel: 'QR');
-  QRViewController? controller;
+  MobileScannerController? qrController = MobileScannerController(
+    facing: CameraFacing.back,
+    torchEnabled: false,
+  );
   Decoration controlsDecoration = BoxDecoration(
       borderRadius: BorderRadius.circular(8), color: Colors.white24);
 
@@ -40,26 +43,17 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
 
   @override
   void dispose() {
-    controller?.dispose();
+    qrController?.dispose();
     super.dispose();
   }
 
   @override
   Future<void> reassemble() async {
     super.reassemble();
-    /*
-    if ( Platform.isAndroid) {
-      await controller!.pauseCamera();
-    }
-    */
-    controller!.resumeCamera();
   }
 
-  void onQRViewCreated(QRViewController controller) {
-    setState(() => this.controller = controller);
-
-    controller.scannedDataStream
-        .listen((scanData) => checkLaunchBarcode(context, scanData));
+  void onQRViewCreated(Barcode newCode, MobileScannerArguments? args) {
+    checkLaunchBarcode(context, newCode);
   }
 
   @override
@@ -72,18 +66,18 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
         Positioned(
           bottom: mediaQuerySize.height * 0.2,
           child: QRControlButtons(
-              controlsDecoration: controlsDecoration, controller: controller),
+              controlsDecoration: controlsDecoration,
+              qrController: qrController),
         ),
-        _requesting
-            ? SizedBox(
-                width: mediaQuerySize.width,
-                height: mediaQuerySize.height,
-                //color: Theme.of(context).primaryColor.withOpacity(0.9),
-                child: const LoadingWidget(
-                  strokeWidth: 10,
-                ),
-              )
-            : Container(),
+        if (_requesting)
+          SizedBox(
+            width: mediaQuerySize.width,
+            height: mediaQuerySize.height,
+            //color: Theme.of(context).primaryColor.withOpacity(0.9),
+            child: const LoadingWidget(
+              strokeWidth: 10,
+            ),
+          ),
       ],
     );
   }
@@ -97,35 +91,37 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
         try {
           if (now - _lastScan >= _scanCooldown && !_requesting) {
             setState(() => _requesting = true);
-            await controller?.pauseCamera();
             widget._logger.d("scanned new code");
 
             SpotInfoRequest spotInfoRequest =
                 await QRScanService.spotInfoRequest(
                     context: context, barcode: barcode);
             widget._logger.d(spotInfoRequest);
-            bool continueScan = await launchConfirmationDialog(
-                context, spotInfoRequest.title ?? "");
+            if (mounted) {
+              bool continueScan = await launchConfirmationDialog(
+                  context, spotInfoRequest.title ?? "");
 
-            if (continueScan && spotInfoRequest.id != null) {
-              _lastScan = now;
+              if (continueScan && spotInfoRequest.id != null) {
+                _lastScan = now;
 
-              Spot spot =
-                  (await DatabaseSpotTable.getAllWithIds([spotInfoRequest.id!]))
-                      .first;
-              if (!spot.visited) {
-                spot.visited = true;
-                await DatabaseSpotTable.update(spot);
+                Spot spot = (await DatabaseSpotTable.getAllWithIds(
+                        [spotInfoRequest.id!]))
+                    .first;
+                if (!spot.visited) {
+                  spot.visited = true;
+                  await DatabaseSpotTable.update(spot);
+                }
+                Future<TopicRequest> topicRequest = QRScanService.topicRequest(
+                    context: context, topicID: spotInfoRequest.id!);
+                TopicRequest topicRequestCompleted = await topicRequest;
+                widget._logger.d("spotInfoRequest: $topicRequestCompleted");
+                if (mounted) {
+                  Navigator.of(context).pushNamed(
+                    QRScanResults.pageRoute,
+                    arguments: topicRequestCompleted.contentList,
+                  );
+                }
               }
-              Future<TopicRequest> topicRequest = QRScanService.topicRequest(
-                  context: context, topicID: spotInfoRequest.id!);
-              TopicRequest topicRequestCompleted = await topicRequest;
-              widget._logger.d("spotInfoRequest: $topicRequestCompleted");
-
-              Navigator.of(context).pushNamed(
-                QRScanResults.pageRoute,
-                arguments: topicRequestCompleted.contentList,
-              );
             }
           }
         } on LoginException {
@@ -135,7 +131,6 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
         } catch (e) {
           widget._logger.e(e);
         }
-        await controller?.resumeCamera();
         setState(() => _requesting = false);
       },
     );
@@ -207,15 +202,10 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
     return continueScan;
   }
 
-  Widget myQRView(BuildContext context) => QRView(
+  Widget myQRView(BuildContext context) => MobileScanner(
         key: qrKey,
-        onQRViewCreated: onQRViewCreated,
-        overlay: QrScannerOverlayShape(
-          borderColor: Theme.of(context).primaryColor,
-          borderWidth: 10,
-          borderLength: 20,
-          borderRadius: 10,
-          cutOutSize: MediaQuery.of(context).size.width * 0.8,
-        ),
+        allowDuplicates: false,
+        controller: qrController,
+        onDetect: onQRViewCreated,
       );
 }

@@ -14,7 +14,7 @@ import 'package:iscte_spots/models/visited_url.dart';
 import 'package:iscte_spots/pages/home/scanPage/qr_scan_page.dart';
 import 'package:iscte_spots/services/auth/exceptions.dart';
 import 'package:logger/logger.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:synchronized/synchronized.dart';
 
 import 'auth/auth_service.dart';
@@ -38,10 +38,8 @@ class QRScanService {
 
         await DatabasePageTable.add(VisitedURL(
             content: name, dateTime: millisecondsSinceEpoch2, url: url));
-        _logger.d("-----------------title-----------------------\n" +
-            name +
-            "\n" +
-            millisecondsSinceEpoch2.toString());
+        _logger.d(
+            "-----------------title-----------------------\n$name\n$millisecondsSinceEpoch2");
         return name;
       } else {
         return 'ERROR: ${response.statusCode}.';
@@ -56,7 +54,7 @@ class QRScanService {
 
   static Future<SpotInfoRequest> spotInfoRequest(
       {required BuildContext context, required Barcode barcode}) async {
-    _logger.d("started request at ${DateTime.now()}\t${barcode.code}");
+    _logger.d("started request at ${DateTime.now()}\t${barcode.rawValue}");
     const FlutterSecureStorage secureStorage = FlutterSecureStorage();
     String? apiToken =
         await secureStorage.read(key: AuthService.backendApiKeyStorageLocation);
@@ -70,7 +68,7 @@ class QRScanService {
       final HttpClientRequest request;
 
       request = await client.getUrl(Uri.parse(
-          '${BackEndConstants.API_ADDRESS}/api/spots/${barcode.code}?app=true'));
+          '${BackEndConstants.API_ADDRESS}/api/spots/${barcode.rawValue}?app=true'));
 
       request.headers.add("Authorization", "Token $apiToken");
 
@@ -87,10 +85,14 @@ class QRScanService {
         _logger.d(responseDecoded);
 
         if (responseDecoded["id"] != null && responseDecoded["title"] != null) {
-          return SpotInfoRequest(
-            id: responseDecoded["id"],
-            title: responseDecoded["title"],
-          );
+          if ((responseDecoded["title"] as String).isNotEmpty) {
+            return SpotInfoRequest(
+              id: responseDecoded["id"],
+              title: responseDecoded["title"],
+            );
+          } else {
+            _logger.d("No title in spotInfoRequest");
+          }
         }
         throw Exception("Bad response");
       }
@@ -98,7 +100,7 @@ class QRScanService {
       _logger.e("Socket Exception");
       rethrow;
     } catch (e) {
-      _logger.e(e);
+      _logger.e("$e\n${barcode.rawValue}");
       rethrow;
     }
   }
