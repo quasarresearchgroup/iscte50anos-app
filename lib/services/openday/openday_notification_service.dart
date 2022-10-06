@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:logger/logger.dart';
+import 'package:iscte_spots/services/logging/LoggerService.dart';
+
 
 class OpenDayNotificationService {
-  static final Logger _logger = Logger();
+  
 
   static Future<void> showLoginErrorOverlay(BuildContext context) async {
     _openDayErrorSnackbar(
@@ -62,7 +63,7 @@ class OpenDayNotificationService {
 
   static void _openDayErrorSnackbar(
       {required BuildContext context, required String data, Widget? icon}) {
-    _logger.i("Inserted overlay: $data");
+    LoggerService.instance.error("Inserted overlay: $data");
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         duration: const Duration(seconds: 3),
@@ -93,11 +94,11 @@ class OpenDayNotificationService {
         ),
       ),
     );
-    _logger.i("Removed overlay: $data");
+    LoggerService.instance.error("Removed overlay: $data");
   }
 
   static void _openDaySucessSnackbar(BuildContext context, String data) {
-    _logger.i("Inserted overlay: $data");
+    LoggerService.instance.error("Inserted overlay: $data");
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         duration: const Duration(seconds: 3),
@@ -127,6 +128,6 @@ class OpenDayNotificationService {
         ),
       ),
     );
-    _logger.i("Removed overlay: $data");
+    LoggerService.instance.error("Removed overlay: $data");
   }
 }

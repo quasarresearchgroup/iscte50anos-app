@@ -9,7 +9,6 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:iscte_spots/services/leaderboard/leaderboard_service.dart';
 import 'package:iscte_spots/helper/constants.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
-import 'package:logger/logger.dart';
 
 //const API_ADDRESS = "http://192.168.1.124";
 
@@ -36,7 +35,6 @@ class LeaderBoardPage extends StatefulWidget {
 
 class _LeaderBoardPageState extends State<LeaderBoardPage>
     with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
-  final Logger logger = Logger();
   late TabController _tabController;
   int _selectedIndex = 0;
 

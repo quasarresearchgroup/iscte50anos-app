@@ -1,4 +1,4 @@
-import 'package:logger/logger.dart';
+import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../../timeline/content.dart';
@@ -6,7 +6,6 @@ import '../database_helper.dart';
 import 'database_event_table.dart';
 
 class DatabaseContentTable {
-  static final Logger _logger = Logger();
 
   static const table = 'contentTable';
 
@@ -29,7 +28,7 @@ class DatabaseContentTable {
       FOREIGN KEY (`$columnEventId`) REFERENCES `$eventTable` (`$eventTableID`)
       )
     ''');
-    _logger.d("Created $table");
+    LoggerService.instance.debug("Created $table");
   }
 
   static Future<List<Content>> getAllWithIds(List<int> idList) async {
@@ -67,7 +66,7 @@ class DatabaseContentTable {
       content.toMap(),
       conflictAlgorithm: ConflictAlgorithm.abort,
     );
-    _logger.d("Inserted: $content into $table");
+    LoggerService.instance.debug("Inserted: $content into $table");
     return insertedID;
   }
 
@@ -82,26 +81,26 @@ class DatabaseContentTable {
         conflictAlgorithm: ConflictAlgorithm.abort,
       );
     }
-    _logger.d("Inserted as batch into $table");
+    LoggerService.instance.debug("Inserted as batch into $table");
     await batch.commit();
   }
 
   static Future<int> remove(int id) async {
     DatabaseHelper instance = DatabaseHelper.instance;
     Database db = await instance.database;
-    _logger.d("Removing entry with id:$id from $table");
+    LoggerService.instance.debug("Removing entry with id:$id from $table");
     return await db.delete(table, where: '$columnId = ?', whereArgs: [id]);
   }
 
   static Future<int> removeALL() async {
     DatabaseHelper instance = DatabaseHelper.instance;
     Database db = await instance.database;
-    _logger.d("Removing all entries from $table");
+    LoggerService.instance.debug("Removing all entries from $table");
     return await db.delete(table);
   }
 
   static Future<void> drop(Database db) async {
-    _logger.d("Dropping $table");
+    LoggerService.instance.debug("Dropping $table");
     return await db.execute('DROP TABLE IF EXISTS $table');
   }
 }

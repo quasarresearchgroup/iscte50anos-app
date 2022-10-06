@@ -8,6 +8,7 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:iscte_spots/models/database/tables/database_puzzle_piece_table.dart';
 import 'package:iscte_spots/models/database/tables/database_spot_table.dart';
 import 'package:iscte_spots/models/spot.dart';
+import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/services/platform_service.dart';
 import 'package:iscte_spots/services/shared_prefs_service.dart';
 import 'package:iscte_spots/services/spotChooser/fetch_all_spots_service.dart';
@@ -17,7 +18,7 @@ import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_text_button.dart';
 import 'package:iscte_spots/widgets/my_app_bar.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
-import 'package:logger/logger.dart';
+
 
 import 'spot_chooser_tile.dart';
 
@@ -28,7 +29,6 @@ void main() async {
 class SpotChooserPage extends StatefulWidget {
   SpotChooserPage({Key? key}) : super(key: key);
   static const String pageRoute = "SpotChooser";
-  final Logger _logger = Logger();
 
   @override
   State<SpotChooserPage> createState() => _SpotChooserPageState();
@@ -157,7 +157,7 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
   }
 
   Future<void> refreshCallback(BuildContext context) async {
-    widget._logger.d("fetching data");
+    LoggerService.instance.debug("fetching data");
     await SpotsRequestService.fetchAllSpots(context: context);
     future = DatabaseSpotTable.getAll();
     if (mounted) {

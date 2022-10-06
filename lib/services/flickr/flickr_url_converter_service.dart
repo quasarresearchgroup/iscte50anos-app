@@ -3,10 +3,10 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:iscte_spots/models/flickr/flickr_photo.dart';
 import 'package:iscte_spots/services/flickr/flickr_service.dart';
-import 'package:logger/logger.dart';
+import 'package:iscte_spots/services/logging/LoggerService.dart';
+
 
 class FlickrUrlConverterService {
-  static final Logger _logger = Logger();
 
   static Future<FlickrPhoto> getPhotofromFlickrURL(String url) async {
     assert(url.isNotEmpty);
@@ -16,7 +16,7 @@ class FlickrUrlConverterService {
           'https://www.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=${FlickrService.key}&photo_id=$photoId&format=json&nojsoncallback=1'));
       if (photoData.statusCode == 200) {
         final jsonPhotoData = jsonDecode(photoData.body)["photo"];
-        _logger.d(jsonPhotoData);
+        LoggerService.instance.debug(jsonPhotoData);
 
         var farm = jsonPhotoData["farm"];
         var server = jsonPhotoData["server"];
@@ -35,7 +35,7 @@ class FlickrUrlConverterService {
         throw Exception(photoData.statusCode);
       }
     } catch (e) {
-      _logger.d(e);
+      LoggerService.instance.debug(e);
       rethrow;
     }
   }

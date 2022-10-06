@@ -1,12 +1,11 @@
 import 'package:iscte_spots/models/database/tables/database_topic_table.dart';
-import 'package:logger/logger.dart';
+import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../database_helper.dart';
 import 'database_event_table.dart';
 
 class DatabaseEventTopicTable {
-  static final Logger _logger = Logger();
 
   static const table = 'topic_eventTable';
 
@@ -33,7 +32,7 @@ class DatabaseEventTopicTable {
       FOREIGN KEY (`$columnTopicId`) REFERENCES `${DatabaseTopicTable.table}` (`${DatabaseTopicTable.columnId}`) ON DELETE CASCADE ON UPDATE CASCADE
       )
     ''');
-    _logger.d("Created $table");
+    LoggerService.instance.debug("Created $table");
   }
 
   static Future<List<int>> getTopicIdsFromEventId(int eventId) async {
@@ -71,7 +70,7 @@ class DatabaseEventTopicTable {
       eventTopicDBConnection.toMap(),
       conflictAlgorithm: ConflictAlgorithm.abort,
     );
-    _logger.d("Inserted: $eventTopicDBConnection into $table");
+    LoggerService.instance.debug("Inserted: $eventTopicDBConnection into $table");
     return insertedID;
   }
 
@@ -86,7 +85,7 @@ class DatabaseEventTopicTable {
         entry.toMap(),
         conflictAlgorithm: ConflictAlgorithm.ignore,
       );
-      //_logger.d("Inserted: $entry into $table as batch into $table");
+      //LoggerService.instance.debug("Inserted: $entry into $table as batch into $table");
     }
     batch.commit();
   }
@@ -106,12 +105,12 @@ class DatabaseEventTopicTable {
   static Future<int> removeALL() async {
     DatabaseHelper instance = DatabaseHelper.instance;
     Database db = await instance.database;
-    _logger.d("Removing all entries from $table");
+    LoggerService.instance.debug("Removing all entries from $table");
     return await db.delete(table);
   }
 
   static Future<void> drop(Database db) async {
-    _logger.d("Dropping $table");
+    LoggerService.instance.debug("Dropping $table");
     return await db.execute('DROP TABLE IF EXISTS $table');
   }
 }

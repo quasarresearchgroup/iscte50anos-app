@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/helper/helper_methods.dart';
 import 'package:iscte_spots/models/timeline/content.dart';
-import 'package:logger/logger.dart';
+import 'package:iscte_spots/services/logging/LoggerService.dart';
 
 class QRScanResults extends StatelessWidget {
   static const String pageRoute = "QRScanResults";
@@ -13,10 +13,9 @@ class QRScanResults extends StatelessWidget {
   }) : super(key: key);
 
   final List<Content> data;
-  final Logger _logger = Logger();
   @override
   Widget build(BuildContext context) {
-    _logger.d(data);
+    LoggerService.instance.debug(data);
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.qrScanResultScreen),

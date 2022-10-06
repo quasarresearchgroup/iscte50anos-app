@@ -1,12 +1,11 @@
 import 'package:iscte_spots/models/database/tables/database_spot_table.dart';
 import 'package:iscte_spots/models/puzzle_piece.dart';
-import 'package:logger/logger.dart';
+import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../database_helper.dart';
 
 class DatabasePuzzlePieceTable {
-  static final Logger _logger = Logger();
 
   static const table = 'puzzlePieceTable';
 
@@ -44,7 +43,7 @@ class DatabasePuzzlePieceTable {
       FOREIGN KEY (`$columnSpotId`) REFERENCES `${DatabaseSpotTable.table}` (`${DatabaseSpotTable.columnId}`)
       )
     ''');
-    _logger.d("Created $table");
+    LoggerService.instance.debug("Created $table");
   }
 
   static Future<List<PuzzlePiece>> getAll({int? row, int? col}) async {
@@ -92,7 +91,7 @@ class DatabasePuzzlePieceTable {
       puzzlePiece.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
-    _logger.d("Inserted: $puzzlePiece into $table");
+    LoggerService.instance.debug("Inserted: $puzzlePiece into $table");
   }
 
   static Future<void> addBatch(List<PuzzlePiece> contents) async {
@@ -107,7 +106,7 @@ class DatabasePuzzlePieceTable {
       );
     }
     await batch.commit();
-    _logger.d("Inserted as batch into $table");
+    LoggerService.instance.debug("Inserted as batch into $table");
   }
 
   static Future<int> update(PuzzlePiece piece) async {
@@ -117,14 +116,14 @@ class DatabasePuzzlePieceTable {
         where: '$columnRow = ? AND $columnColumn = ?',
         whereArgs: [piece.row, piece.column],
         conflictAlgorithm: ConflictAlgorithm.replace);
-    _logger.d("Updating entry: $piece from $table");
+    LoggerService.instance.debug("Updating entry: $piece from $table");
     return i;
   }
 
   static Future<int> remove(int row, int column) async {
     DatabaseHelper instance = DatabaseHelper.instance;
     Database db = await instance.database;
-    _logger.d("Removing entry with row:$row and column:$column from $table");
+    LoggerService.instance.debug("Removing entry with row:$row and column:$column from $table");
     return await db.delete(table,
         where: '$columnRow = ? AND $columnColumn = ?',
         whereArgs: [row, column]);
@@ -134,13 +133,13 @@ class DatabasePuzzlePieceTable {
     DatabaseHelper instance = DatabaseHelper.instance;
     Database db = await instance.database;
     int result = await db.delete(table);
-    _logger.d("Removing all entries from $table");
+    LoggerService.instance.debug("Removing all entries from $table");
     return result;
   }
 
   static Future<void> drop(Database db) async {
     var result = await db.execute('DROP TABLE IF EXISTS $table');
-    _logger.d("Dropping $table");
+    LoggerService.instance.debug("Dropping $table");
     return result;
   }
 }

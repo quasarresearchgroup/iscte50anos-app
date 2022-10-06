@@ -1,11 +1,10 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:logger/logger.dart';
+import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:lottie/lottie.dart';
 
 class CompletedChallengeWidget extends StatefulWidget {
   CompletedChallengeWidget({Key? key}) : super(key: key);
-  final Logger _logger = Logger();
 
   @override
   State<CompletedChallengeWidget> createState() =>
@@ -32,7 +31,7 @@ class _CompletedChallengeWidgetState extends State<CompletedChallengeWidget>
 
   @override
   Widget build(BuildContext context) {
-    widget._logger.d("built CompletedChallengeWidget");
+    LoggerService.instance.debug("built CompletedChallengeWidget");
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,

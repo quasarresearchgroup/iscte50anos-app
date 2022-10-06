@@ -13,7 +13,7 @@ import 'package:iscte_spots/models/timeline/content.dart';
 import 'package:iscte_spots/models/visited_url.dart';
 import 'package:iscte_spots/pages/home/scanPage/qr_scan_page.dart';
 import 'package:iscte_spots/services/auth/exceptions.dart';
-import 'package:logger/logger.dart';
+import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:synchronized/synchronized.dart';
 
@@ -21,10 +21,8 @@ import 'auth/auth_service.dart';
 import 'auth/openday_login_service.dart';
 
 class QRScanService {
-  static final Logger _logger = Logger();
-
   static Future<String> extractData(final String url) async {
-    _logger.d("url:$url");
+    LoggerService.instance.debug("url:$url");
     try {
       final response = await http.Client().get(Uri.parse(url));
       //Status Code 200 means response has been received successfully
@@ -38,7 +36,7 @@ class QRScanService {
 
         await DatabasePageTable.add(VisitedURL(
             content: name, dateTime: millisecondsSinceEpoch2, url: url));
-        _logger.d(
+        LoggerService.instance.debug(
             "-----------------title-----------------------\n$name\n$millisecondsSinceEpoch2");
         return name;
       } else {
@@ -47,14 +45,15 @@ class QRScanService {
     } on SocketException {
       rethrow;
     } catch (e) {
-      _logger.e(e);
+      LoggerService.instance.error(e);
       return 'ERROR: ${e.toString()}.';
     }
   }
 
   static Future<SpotInfoRequest> spotInfoRequest(
       {required BuildContext context, required Barcode barcode}) async {
-    _logger.d("started request at ${DateTime.now()}\t${barcode.rawValue}");
+    LoggerService.instance
+        .debug("started request at ${DateTime.now()}\t${barcode.rawValue}");
     const FlutterSecureStorage secureStorage = FlutterSecureStorage();
     String? apiToken =
         await secureStorage.read(key: AuthService.backendApiKeyStorageLocation);
@@ -82,7 +81,7 @@ class QRScanService {
         var responseDecoded =
             jsonDecode(await response.transform(utf8.decoder).join());
 
-        _logger.d(responseDecoded);
+        LoggerService.instance.debug(responseDecoded);
 
         if (responseDecoded["id"] != null && responseDecoded["title"] != null) {
           if ((responseDecoded["title"] as String).isNotEmpty) {
@@ -91,16 +90,16 @@ class QRScanService {
               title: responseDecoded["title"],
             );
           } else {
-            _logger.d("No title in spotInfoRequest");
+            LoggerService.instance.debug("No title in spotInfoRequest");
           }
         }
         throw Exception("Bad response");
       }
     } on SocketException {
-      _logger.e("Socket Exception");
+      LoggerService.instance.error("Socket Exception");
       rethrow;
     } catch (e) {
-      _logger.e("$e\n${barcode.rawValue}");
+      LoggerService.instance.error("$e\n${barcode.rawValue}");
       rethrow;
     }
   }
@@ -133,7 +132,7 @@ class QRScanService {
       var responseDecoded =
           jsonDecode(await response.transform(utf8.decoder).join());
 
-      _logger.d(responseDecoded);
+      LoggerService.instance.debug(responseDecoded);
       try {
         if (responseDecoded["title"] != null &&
             responseDecoded["content"] != null) {
@@ -155,10 +154,10 @@ class QRScanService {
         }
         throw Exception("Bad response");
       } on SocketException {
-        _logger.e("Socket Exception");
+        LoggerService.instance.error("Socket Exception");
         rethrow;
       } catch (e) {
-        _logger.e(e);
+        LoggerService.instance.error(e);
         rethrow;
       }
     }

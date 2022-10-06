@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/models/database/tables/database_content_table.dart';
@@ -12,17 +13,16 @@ import 'package:iscte_spots/models/timeline/topic.dart';
 import 'package:iscte_spots/pages/timeline/timeline_body.dart';
 import 'package:iscte_spots/pages/timeline/timeline_dial.dart';
 import 'package:iscte_spots/pages/timeline/timeline_filter_page.dart';
+import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/services/platform_service.dart';
 import 'package:iscte_spots/services/timeline/timeline_content_service.dart';
 import 'package:iscte_spots/services/timeline/timeline_event_service.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_back_button.dart';
 import 'package:iscte_spots/widgets/my_app_bar.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
-import 'package:logger/logger.dart';
 
 class TimelinePage extends StatefulWidget {
   TimelinePage({Key? key}) : super(key: key);
-  final Logger _logger = Logger();
 
   static const pageRoute = "/timeline";
 
@@ -136,12 +136,12 @@ class _TimelinePageState extends State<TimelinePage> {
       do {
         contents = await TimelineContentService.fetchContentsWithinIds(
             lower_id: contentId, upper_id: contentId + 100);
-        widget._logger.d(contents.length);
+        LoggerService.instance.debug(contents.length);
         await DatabaseContentTable.addBatch(contents);
         contentId += 100;
       } while (contents.isNotEmpty);
     } catch (e) {
-      widget._logger.e(e);
+      LoggerService.instance.error(e);
     }
     // widget._logger.d(events);
     // await TimelineCSVService.insertContentEntriesFromCSV();
@@ -150,7 +150,7 @@ class _TimelinePageState extends State<TimelinePage> {
       // _loading = false;
     });
     await logAllLength();
-    widget._logger.d("Inserted from CSV");
+    LoggerService.instance.debug("Inserted from CSV");
   }
 
   Future<void> deleteTimelineData() async {
@@ -159,7 +159,8 @@ class _TimelinePageState extends State<TimelinePage> {
     await DatabaseContentTable.removeALL();
     await DatabaseEventTable.removeALL();
     await DatabaseTopicTable.removeALL();
-    widget._logger.d("Removed all content, events and topics from db");
+    LoggerService.instance
+        .debug("Removed all content, events and topics from db");
     setState(() {
       mapdata = DatabaseEventTable.getAll();
     });
@@ -174,7 +175,8 @@ class _TimelinePageState extends State<TimelinePage> {
     List<EventContentDBConnection> databaseEventContentTable =
         await DatabaseEventContentTable.getAll();
 
-    widget._logger.d("""databaseContentTable: ${databaseContentTable.length}
+    LoggerService.instance
+        .debug("""databaseContentTable: ${databaseContentTable.length}
     databaseEventTable: ${databaseEventTable.length}
     databaseTopicTable: ${databaseTopicTable.length}
     databaseEventTopicTable: ${databaseEventTopicTable.length}

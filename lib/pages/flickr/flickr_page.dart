@@ -10,16 +10,15 @@ import 'package:iscte_spots/models/flickr/flickr_photoset.dart';
 import 'package:iscte_spots/pages/flickr/flickr_album_page.dart';
 import 'package:iscte_spots/services/flickr/flickr_iscte_album_service.dart';
 import 'package:iscte_spots/services/flickr/flickr_service.dart';
+import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/services/platform_service.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_back_button.dart';
 import 'package:iscte_spots/widgets/my_app_bar.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:iscte_spots/widgets/util/overlays.dart';
-import 'package:logger/logger.dart';
 
 class FlickrPage extends StatefulWidget {
   static const pageRoute = "/flickr";
-  final Logger _logger = Logger();
   final FlickrIscteAlbumService flickrService = FlickrIscteAlbumService();
   final PageController _pageController = PageController(viewportFraction: 0.8);
   final int fetchThreshHold = 1000;
@@ -50,7 +49,7 @@ class _FlickrPageState extends State<FlickrPage> {
       if (!fetching &&
           widget._pageController.page != null &&
           fetchedPhotosets.length - 10 <= widget._pageController.page!) {
-        widget._logger.d("Should Fetch more photosets");
+        LoggerService.instance.debug("Should Fetch more photosets");
         fetchMorePhotosets();
       }
     });
@@ -60,12 +59,12 @@ class _FlickrPageState extends State<FlickrPage> {
         if (!fetchedPhotosets.contains(event)) {
           fetchedPhotosets.add(event);
         } else {
-          widget._logger.d("duplicated album entry: $event");
+          LoggerService.instance.debug("duplicated album entry: $event");
         }
       });
     }, onError: (error) {
-      widget._logger.e(error);
-      showNetworkErrorOverlay(context, widget._logger);
+      LoggerService.instance.error(error);
+      showNetworkErrorOverlay(context );
       noMoreData = error == FlickrService.noDataError;
     });
   }
@@ -83,13 +82,13 @@ class _FlickrPageState extends State<FlickrPage> {
         setState(() {
           fetching = true;
         });
-        widget._logger.d("fetching more data");
+        LoggerService.instance.debug("fetching more data");
         lastFetch = millisecondsSinceEpoch2;
         await widget.flickrService.fetch();
         networkError = false;
       } on SocketException catch (e) {
-        widget._logger.e(e);
-        showNetworkErrorOverlay(context, widget._logger);
+        LoggerService.instance.error(e);
+        showNetworkErrorOverlay(context );
         networkError = true;
       } finally {
         setState(() {
@@ -97,7 +96,7 @@ class _FlickrPageState extends State<FlickrPage> {
         });
       }
     } else {
-      widget._logger.d("wait a bit before fetching againg");
+      LoggerService.instance.debug("wait a bit before fetching againg");
     }
   }
 

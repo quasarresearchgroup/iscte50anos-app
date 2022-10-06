@@ -8,6 +8,7 @@ import 'package:iscte_spots/models/spot.dart';
 import 'package:iscte_spots/pages/home/scanPage/qr_scan_camera_controls.dart';
 import 'package:iscte_spots/pages/home/scanPage/qr_scan_results.dart';
 import 'package:iscte_spots/services/auth/exceptions.dart';
+import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/services/platform_service.dart';
 import 'package:iscte_spots/services/qr_scan_service.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
@@ -20,7 +21,6 @@ class QRScanPageOpenDay extends StatefulWidget {
       {Key? key /*, required this.changeImage*/,
       required this.completedAllPuzzle})
       : super(key: key);
-  final Logger _logger = Logger();
   //final void Function(Future<SpotRequest> request) changeImage;
   final void Function() completedAllPuzzle;
   @override
@@ -91,12 +91,12 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
         try {
           if (now - _lastScan >= _scanCooldown && !_requesting) {
             setState(() => _requesting = true);
-            widget._logger.d("scanned new code");
+            LoggerService.instance.debug("scanned new code");
 
             SpotInfoRequest spotInfoRequest =
                 await QRScanService.spotInfoRequest(
                     context: context, barcode: barcode);
-            widget._logger.d(spotInfoRequest);
+            LoggerService.instance.debug(spotInfoRequest);
             if (mounted) {
               bool continueScan = await launchConfirmationDialog(
                   context, spotInfoRequest.title ?? "");
@@ -114,7 +114,8 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
                 Future<TopicRequest> topicRequest = QRScanService.topicRequest(
                     context: context, topicID: spotInfoRequest.id!);
                 TopicRequest topicRequestCompleted = await topicRequest;
-                widget._logger.d("spotInfoRequest: $topicRequestCompleted");
+                LoggerService.instance
+                    .debug("spotInfoRequest: $topicRequestCompleted");
                 if (mounted) {
                   Navigator.of(context).pushNamed(
                     QRScanResults.pageRoute,
@@ -125,11 +126,11 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
             }
           }
         } on LoginException {
-          widget._logger.e("LoginException");
+          LoggerService.instance.error("LoginException");
         } on InvalidQRException {
-          widget._logger.e("InvalidQRException");
+          LoggerService.instance.error("InvalidQRException");
         } catch (e) {
-          widget._logger.e(e);
+          LoggerService.instance.error(e);
         }
         setState(() => _requesting = false);
       },
@@ -151,7 +152,7 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
                   child: Text(
                       AppLocalizations.of(context)!.qrScanConfirmationCancel),
                   onPressed: () {
-                    widget._logger.d("Pressed \"CANCEL\"");
+                    LoggerService.instance.debug("Pressed \"CANCEL\"");
                     continueScan = false;
                     Navigator.pop(context);
                   },
@@ -160,7 +161,7 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
                   child: Text(
                       AppLocalizations.of(context)!.qrScanConfirmationAccept),
                   onPressed: () {
-                    widget._logger.d("Pressed \"ACCEPT\"");
+                    LoggerService.instance.debug("Pressed \"ACCEPT\"");
                     continueScan = true;
                     Navigator.pop(context);
                   },
@@ -181,7 +182,7 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
                   child: Text(
                       AppLocalizations.of(context)!.qrScanConfirmationCancel),
                   onPressed: () {
-                    widget._logger.d("Pressed \"CANCEL\"");
+                    LoggerService.instance.debug("Pressed \"CANCEL\"");
                     continueScan = false;
                     Navigator.pop(context);
                   },
@@ -190,7 +191,7 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
                   child: Text(
                       AppLocalizations.of(context)!.qrScanConfirmationAccept),
                   onPressed: () {
-                    widget._logger.d("Pressed \"ACCEPT\"");
+                    LoggerService.instance.debug("Pressed \"ACCEPT\"");
                     continueScan = true;
                     Navigator.pop(context);
                   },

@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:iscte_spots/models/flickr/flickr_photo.dart';
 import 'package:iscte_spots/services/flickr/flickr_service.dart';
+import 'package:iscte_spots/services/logging/LoggerService.dart';
 
 class FLickrPhotosetService extends FlickrService {
   final StreamController<FlickrPhoto> _controller =
@@ -16,7 +17,7 @@ class FLickrPhotosetService extends FlickrService {
   Future<void> fetch({required String albumID, required int farm}) async {
     assert(!fetching);
     if (fetching) {
-      logger.e(
+      LoggerService.instance.error(
           "Already fetching. Wait for current fetch to finish before making another request!");
     } else {
       try {
@@ -25,7 +26,7 @@ class FLickrPhotosetService extends FlickrService {
                 'https://www.flickr.com/services/rest/?method=flickr.photosets.getPhotos&api_key=${FlickrService.key}&photoset_id=$albumID&user_id=${FlickrService.userID}&page=$currentPage&per_page=$perPage&format=json&nojsoncallback=1'))
             .timeout(const Duration(minutes: 2));
         if (response.statusCode == 200) {
-          logger.d("Started fetching image urls");
+          LoggerService.instance.debug("Started fetching image urls");
           startFetch();
           final jsonResponse = jsonDecode(response.body);
           var photosetPhotosList = jsonResponse["photoset"]["photo"];
@@ -42,7 +43,7 @@ class FLickrPhotosetService extends FlickrService {
             );
             //photosetsInstanceList.add(flickrPhoto);
             counter++;
-            logger.d(flickrPhoto);
+            LoggerService.instance.debug(flickrPhoto);
             _controller.sink.add(flickrPhoto);
           }
           currentPage++;
@@ -51,7 +52,7 @@ class FLickrPhotosetService extends FlickrService {
           }
           stopFetch();
         } else {
-          logger.d("Error ${response.statusCode}");
+          LoggerService.instance.debug("Error ${response.statusCode}");
           _controller.sink.addError(response.statusCode);
           stopFetch();
           //return [];

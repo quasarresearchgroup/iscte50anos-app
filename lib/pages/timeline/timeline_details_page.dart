@@ -8,10 +8,11 @@ import 'package:iscte_spots/models/timeline/event.dart';
 import 'package:iscte_spots/models/timeline/topic.dart';
 import 'package:iscte_spots/pages/timeline/timeline_page.dart';
 import 'package:iscte_spots/services/flickr/flickr_url_converter_service.dart';
+import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/widgets/network/error.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
-import 'package:logger/logger.dart';
+
 import 'package:url_launcher/url_launcher.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_back_button.dart';
@@ -33,7 +34,6 @@ class TimeLineDetailsPage extends StatefulWidget {
 class _TimeLineDetailsPageState extends State<TimeLineDetailsPage> {
   final double textweight = 2;
 
-  final Logger _logger = Logger();
 
   List<YoutubePlayerController> _youtubeControllers = [];
 
@@ -61,7 +61,7 @@ class _TimeLineDetailsPageState extends State<TimeLineDetailsPage> {
               future: allContentFromEvent,
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  _logger.d("event: ${widget.event} , data:${snapshot.data!} ");
+                  LoggerService.instance.debug("event: ${widget.event} , data:${snapshot.data!} ");
                   return ListView.builder(
                     addAutomaticKeepAlives: true,
                     itemCount: (snapshot.data?.length)! + 2,
@@ -159,7 +159,7 @@ class _TimeLineDetailsPageState extends State<TimeLineDetailsPage> {
         title: Text(content.description ?? ""),
         subtitle: Text(content.link),
         onTap: () {
-          _logger.d(content);
+          LoggerService.instance.debug(content);
           if (content.link.isNotEmpty) {
             HelperMethods.launchURL(content.link);
           }

@@ -4,14 +4,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:iscte_spots/helper/helper_methods.dart';
 import 'package:iscte_spots/pages/home/scanPage/qr_scan_camera_controls.dart';
+import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/services/qr_scan_service.dart';
 import 'package:iscte_spots/widgets/util/overlays.dart';
-import 'package:logger/logger.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 class QRScanPage extends StatefulWidget {
   QRScanPage({Key? key}) : super(key: key);
-  final Logger _logger = Logger();
   static String titleHtmlTag = 'CGqCRe';
 
   @override
@@ -67,14 +66,14 @@ class QRScanPageState extends State<QRScanPage> {
       barcodeold = barcode;
 
       try {
-        widget._logger.d(barcode!.rawValue!);
+        LoggerService.instance.debug(barcode!.rawValue!);
         String scanResult = await QRScanService.extractData(barcode!.url!.url!);
         setState(() {
           qrScanResult = scanResult;
         });
         await HelperMethods.launchURL(barcode!.url!.url!);
       } on SocketException {
-        showNetworkErrorOverlay(context, widget._logger);
+        showNetworkErrorOverlay(context);
       }
     }
   }
@@ -84,7 +83,7 @@ class QRScanPageState extends State<QRScanPage> {
             MediaQuery.of(context).size.height < 400)
         ? 150.0
         : 300.0;
-    widget._logger.d("scanArea: $scanArea");
+    LoggerService.instance.debug("scanArea: $scanArea");
     //scanArea = min(MediaQuery.of(context).size.width, MediaQuery.of(context).size.height) * 0.8;
     return MobileScanner(
       key: qrKey,

@@ -37,7 +37,7 @@ class ImageManipulation {
     required completeCallback,
     required Size imageSize,
   }) async {
-    //logger.d('started split');
+    //LoggerService.instance.debug('started split');
     List<PuzzlePieceWidget> outputList = [];
     for (int x = 0; x < rows; x++) {
       for (int y = 0; y < cols; y++) {
@@ -57,7 +57,7 @@ class ImageManipulation {
         outputList.add(puzzlePiece);
       }
     }
-    //logger.d('finished split');
+    //LoggerService.instance.debug('finished split');
     return outputList;
   }
 
@@ -69,7 +69,7 @@ class ImageManipulation {
     required sendToBack,
     required BoxConstraints constraints,
   }) async {
-    //logger.d('started Image split');
+    //LoggerService.instance.debug('started Image split');
     List<MovingPiece> outputList = [];
     Size imageSize = await getImageSize(image);
 
@@ -101,7 +101,7 @@ class ImageManipulation {
         ));
       }
     }
-    //logger.d('finished Image split');
+    //LoggerService.instance.debug('finished Image split');
     return outputList;
   }
 }

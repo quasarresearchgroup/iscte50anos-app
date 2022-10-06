@@ -1,21 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:logger/logger.dart';
+import 'package:iscte_spots/services/logging/LoggerService.dart';
 
 class SkipButton extends StatelessWidget {
   const SkipButton({
     Key? key,
-    required Logger logger,
     required PageController pageController,
     required int numPages,
     required this.animDuration,
     required this.textStyle,
-  })  : _logger = logger,
+  })  :
         _pageController = pageController,
         _numPages = numPages,
         super(key: key);
 
-  final Logger _logger;
   final PageController _pageController;
   final int _numPages;
   final Duration animDuration;
@@ -25,7 +23,7 @@ class SkipButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextButton(
       onPressed: () {
-        _logger.i("pressed Skip");
+        LoggerService.instance.info("pressed Skip");
         _pageController.animateToPage(
           _numPages - 1,
           duration: animDuration,

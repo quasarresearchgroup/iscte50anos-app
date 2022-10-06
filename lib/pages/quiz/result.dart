@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/pages/home/home_page.dart';
-import 'package:logger/logger.dart';
+import 'package:iscte_spots/services/logging/LoggerService.dart';
+
 
 class Result extends StatelessWidget {
-  final Logger _logger = Logger();
   final int resultScore;
   final Function() resetHandler;
 
@@ -15,22 +15,22 @@ class Result extends StatelessWidget {
     String resultText;
     if (resultScore >= 50) {
       resultText = 'Perfeito!';
-      _logger.d(resultScore);
+      LoggerService.instance.debug(resultScore);
     }
     if (resultScore >= 41) {
       resultText = 'Muito bom!';
-      _logger.d(resultScore);
+      LoggerService.instance.debug(resultScore);
     } else if (resultScore >= 31) {
       resultText = 'Bom desempenho!';
-      _logger.d(resultScore);
+      LoggerService.instance.debug(resultScore);
     } else if (resultScore >= 21) {
       resultText = 'Razoável';
     } else if (resultScore >= 10) {
       resultText = 'Fraco';
-      _logger.d(resultScore);
+      LoggerService.instance.debug(resultScore);
     } else {
       resultText = 'Zero';
-      _logger.d(resultScore);
+      LoggerService.instance.debug(resultScore);
     }
     return resultText;
   }

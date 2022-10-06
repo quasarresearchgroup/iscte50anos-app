@@ -12,7 +12,6 @@ import 'package:iscte_spots/pages/profile/placeholder.dart';
 import 'package:iscte_spots/services/quiz/quiz_service.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_back_button.dart';
 import 'package:iscte_spots/widgets/my_app_bar.dart';
-import 'package:logger/logger.dart';
 import 'package:http/http.dart' as http;
 
 const FlutterSecureStorage secureStorage = FlutterSecureStorage();
@@ -26,7 +25,6 @@ void main() {
 
 class ProfilePage extends StatelessWidget {
   static const pageRoute = "/profile";
-  Logger logger = Logger();
 
   ProfilePage({Key? key}) : super(key: key);
 

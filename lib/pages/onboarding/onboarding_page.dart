@@ -5,7 +5,6 @@ import 'package:iscte_spots/pages/onboarding/bottom_onboard.dart';
 import 'package:iscte_spots/pages/onboarding/onboard_tile.dart';
 import 'package:iscte_spots/pages/onboarding/skip_onboard_button.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
-import 'package:logger/logger.dart';
 import 'package:lottie/lottie.dart';
 
 class OnboardingPage extends StatefulWidget {
@@ -20,7 +19,6 @@ class OnboardingPage extends StatefulWidget {
 
 class _OnboardingPageState extends State<OnboardingPage>
     with SingleTickerProviderStateMixin {
-  final Logger _logger = Logger();
   final PageController _pageController = PageController(initialPage: 0);
   int _currentPage = 0;
   final double bottomSheetHeight = 100.0;
@@ -78,7 +76,6 @@ class _OnboardingPageState extends State<OnboardingPage>
             automaticallyImplyLeading: false,
             actions: [
               SkipButton(
-                  logger: _logger,
                   pageController: _pageController,
                   numPages: children.length,
                   animDuration: animDuration,

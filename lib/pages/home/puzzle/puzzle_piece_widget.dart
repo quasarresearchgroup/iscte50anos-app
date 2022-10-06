@@ -4,12 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:iscte_spots/models/database/tables/database_puzzle_piece_table.dart';
 import 'package:iscte_spots/models/puzzle_piece.dart';
 import 'package:iscte_spots/models/spot.dart';
-import 'package:logger/logger.dart';
 
 import 'clipped_piece_widget.dart';
 
 class PuzzlePieceWidget extends StatefulWidget {
-  final Logger _logger = Logger();
 
   final Spot spot;
   final Size imageSize;
@@ -83,7 +81,7 @@ class PuzzlePieceWidgetState extends State<PuzzlePieceWidget> {
     pieceWidth = widget.imageSize.width / widget.maxCol;
     zeroHeight = -widget.row * pieceHeight;
     zeroWidth = -widget.col * pieceWidth;
-    //widget._logger.d(" row: ${widget.row}; col: ${widget.col} ;pieceHeight: $pieceHeight; pieceWidth: $pieceWidth; zeroHeight: $zeroHeight; zeroWidth: $zeroWidth; ");
+    //LoggerService.instance.debug(" row: ${widget.row}; col: ${widget.col} ;pieceHeight: $pieceHeight; pieceWidth: $pieceWidth; zeroHeight: $zeroHeight; zeroWidth: $zeroWidth; ");
     maxHeight = zeroHeight - pieceHeight + widget.constraints.maxHeight;
     minHeight = zeroHeight - 2 * pieceHeight + widget.constraints.maxHeight;
     maxWidth = zeroWidth + widget.constraints.maxWidth - pieceWidth;
@@ -178,8 +176,8 @@ class PuzzlePieceWidgetState extends State<PuzzlePieceWidget> {
       if (-10 < top! && top! < 10 && -10 < left! && left! < 10) {
         snapInPlace();
       }
-      //widget._logger.d("top:$top; left: $left, pieceHeight: $pieceHeight; pieceWIdth: $pieceWidth; maxTop: $maxTop ;maxLeft: $maxLeft ;");
-      //widget._logger.d(constraints);
+      //LoggerService.instance.debug("top:$top; left: $left, pieceHeight: $pieceHeight; pieceWIdth: $pieceWidth; maxTop: $maxTop ;maxLeft: $maxLeft ;");
+      //LoggerService.instance.debug(constraints);
       setState(() {});
     }
   }

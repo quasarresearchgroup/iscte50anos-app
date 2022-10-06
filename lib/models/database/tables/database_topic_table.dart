@@ -1,12 +1,10 @@
-import 'package:logger/logger.dart';
+import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../../timeline/topic.dart';
 import '../database_helper.dart';
 
 class DatabaseTopicTable {
-  static final Logger _logger =
-      Logger(printer: PrettyPrinter(methodCount: 5, errorMethodCount: 8));
 
   static const table = 'topicTable';
 
@@ -28,7 +26,7 @@ class DatabaseTopicTable {
       $columnTitle TEXT UNIQUE
       )
     ''');
-    _logger.d("Created $table");
+    LoggerService.instance.debug("Created $table");
   }
 
   static Future<int> getMaxId() async {
@@ -37,7 +35,7 @@ class DatabaseTopicTable {
     String query = "SELECT MAX($columnId) AS max_id FROM $table";
     List<Map<String, Object?>> rawQuery = await db.rawQuery(query, null);
     rawQuery.first["max_id"];
-    _logger.d(rawQuery.first["max_id"]);
+    LoggerService.instance.debug(rawQuery.first["max_id"]);
     return rawQuery.first["max_id"] as int;
   }
 
@@ -74,7 +72,7 @@ class DatabaseTopicTable {
       conflictAlgorithm: ConflictAlgorithm.ignore,
     );
 
-    _logger.d("Inserted: $entry into $table");
+    LoggerService.instance.debug("Inserted: $entry into $table");
     return insertedID;
   }
 
@@ -90,7 +88,7 @@ class DatabaseTopicTable {
       );
     }
     batch.commit();
-    _logger.d("Inserted: $entries into $table as batch into $table");
+    LoggerService.instance.debug("Inserted: $entries into $table as batch into $table");
   }
 
   static Future<List<Topic>> where(
@@ -109,19 +107,19 @@ class DatabaseTopicTable {
   static Future<int> remove(int id) async {
     DatabaseHelper instance = DatabaseHelper.instance;
     Database db = await instance.database;
-    _logger.d("Removing entry with id:$id from $table");
+    LoggerService.instance.debug("Removing entry with id:$id from $table");
     return await db.delete(table, where: '$columnId = ?', whereArgs: [id]);
   }
 
   static Future<int> removeALL() async {
     DatabaseHelper instance = DatabaseHelper.instance;
     Database db = await instance.database;
-    _logger.d("Removing all entries from $table");
+    LoggerService.instance.debug("Removing all entries from $table");
     return await db.delete(table);
   }
 
   static Future<void> drop(Database db) async {
-    _logger.d("Dropping $table");
+    LoggerService.instance.debug("Dropping $table");
     return await db.execute('DROP TABLE IF EXISTS $table');
   }
 }
