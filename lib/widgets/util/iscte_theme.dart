@@ -43,6 +43,17 @@ class IscteTheme {
     useIndicator: false,
   );
 
+  static ElevatedButtonThemeData get elevatedButtonTheme {
+    return ElevatedButtonThemeData(
+        style: ButtonStyle(
+          foregroundColor:
+              MaterialStateColor.resolveWith((states) => Colors.white),
+          backgroundColor:
+              MaterialStateColor.resolveWith((states) => iscteColor),
+        ),
+      );
+  }
+
   static ThemeData get lightThemeData {
     return ThemeData.light().copyWith(
       floatingActionButtonTheme: const FloatingActionButtonThemeData(
@@ -62,14 +73,7 @@ class IscteTheme {
               MaterialStateColor.resolveWith((states) => iscteColor),
         ),
       ),
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ButtonStyle(
-          foregroundColor:
-              MaterialStateColor.resolveWith((states) => Colors.white),
-          backgroundColor:
-              MaterialStateColor.resolveWith((states) => iscteColor),
-        ),
-      ),
+      elevatedButtonTheme: elevatedButtonTheme,
     );
   }
 
@@ -106,6 +110,7 @@ class IscteTheme {
     primaryColor: IscteTheme.iscteColor,
   );
 
+
   static CupertinoThemeData cupertinoDarkThemeData = const CupertinoThemeData(
     barBackgroundColor: IscteTheme.iscteColor,
     scaffoldBackgroundColor: CupertinoColors.black,
@@ -113,7 +118,7 @@ class IscteTheme {
     brightness: Brightness.dark,
     primaryColor: IscteTheme.iscteColor,
   );
-
+  
   static InputDecoration buildInputDecoration(
       {required String hint, String? errorText, Widget? suffixIcon}) {
     return InputDecoration(

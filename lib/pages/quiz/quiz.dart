@@ -212,10 +212,6 @@ class _QuizState extends State<Quiz> {
                       submitted || submitting? null : () {
                     submitAnswer(trialQuestion["number"]);
                   },
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.black45,
-                    onPrimary: Colors.white,
-                  ),
                 ),
                 const SizedBox(width: 10),
                 // ----- Next button -----
@@ -250,10 +246,6 @@ class _QuizState extends State<Quiz> {
                       setState(() {
                         futureQuestion = getNextQuestion();
                       }),
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.black45,
-                    onPrimary: Colors.white,
-                  ),
                 )
               ],
             )
