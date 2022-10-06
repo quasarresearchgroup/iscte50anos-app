@@ -2,6 +2,7 @@ import 'package:confetti/confetti.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/models/database/tables/database_spot_table.dart';
 import 'package:iscte_spots/models/spot.dart';
 import 'package:iscte_spots/pages/home/nav_drawer/drawer.dart';
@@ -9,13 +10,14 @@ import 'package:iscte_spots/pages/home/puzzle/puzzle_page.dart';
 import 'package:iscte_spots/pages/home/scanPage/openday_qr_scan_page.dart';
 import 'package:iscte_spots/pages/home/widgets/sucess_scan_widget.dart';
 import 'package:iscte_spots/pages/leaderboard/leaderboard_screen.dart';
+import 'package:iscte_spots/pages/spotChooser/spot_chooser_page.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/services/platform_service.dart';
 import 'package:iscte_spots/services/shared_prefs_service.dart';
+import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_icon_button.dart';
 import 'package:iscte_spots/widgets/iscte_confetti_widget.dart';
 import 'package:iscte_spots/widgets/my_app_bar.dart';
 import 'package:iscte_spots/widgets/my_bottom_bar.dart';
-import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:iscte_spots/widgets/util/overlays.dart';
 
 import 'widgets/completed_challenge_widget.dart';
@@ -195,7 +197,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     return Scaffold(
       extendBodyBehindAppBar: true,
       extendBody: true,
-      drawer: NavigationDrawerOpenDay(),
+      drawer: const NavigationDrawerOpenDay(),
       appBar: buildAppBar(orientation, challengeCompleteBool),
       bottomNavigationBar:
           (challengeCompleteBool || orientation == Orientation.landscape)
@@ -306,7 +308,16 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           );
                         }
                       } else {
-                        return const LoadingWidget();
+                        return DynamicIconButton(
+                          onPressed: () {
+                            Navigator.of(context)
+                                .pushNamed(SpotChooserPage.pageRoute);
+                          },
+                          child: const Icon(
+                            Icons.directions_run,
+                            color: Colors.white,
+                          ),
+                        );
                       }
                     },
                   ),
@@ -346,7 +357,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             children: [
               ValueListenableBuilder<Spot?>(
                   valueListenable: _currentSpotNotifier,
-                  builder: (context, value, _) {
+                  builder: (BuildContext context, Spot? value, _) {
                     if (value != null) {
                       return LayoutBuilder(builder: (context, constraints) {
                         return PuzzlePage(
@@ -356,7 +367,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         );
                       });
                     } else {
-                      return const LoadingWidget();
+                      return ListTile(
+                        leading: const Icon(Icons.directions_run),
+                        title: Text(
+                            AppLocalizations.of(context)!.spotChooserScreen),
+                        onTap: () {
+                          Navigator.of(context)
+                              .pushNamed(SpotChooserPage.pageRoute);
+                        },
+                      );
                     }
                   }),
               IscteConfetti(confettiController: _confettiController)
