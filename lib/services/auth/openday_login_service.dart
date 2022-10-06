@@ -1,9 +1,8 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:http/http.dart' as http;
 import 'package:iscte_spots/helper/constants.dart';
 import 'package:iscte_spots/models/auth/login_form_result.dart';
 import 'package:iscte_spots/models/database/tables/database_puzzle_piece_table.dart';
@@ -12,42 +11,51 @@ import 'package:iscte_spots/services/auth/auth_service.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/services/onboard_service.dart';
 import 'package:iscte_spots/services/shared_prefs_service.dart';
-import 'package:http/http.dart' as http;
 
 class OpenDayLoginService {
   static Future<int> login(LoginFormResult loginFormResult) async {
     LoggerService.instance.debug("Logging in User: $loginFormResult");
-    try {
-      HttpClient client = HttpClient();
-      client.badCertificateCallback =
-          ((X509Certificate cert, String host, int port) => true);
+    // try {
+    //http.Client client = http.Client();
+//      client.badCertificateCallback =
+    //    ((X509Certificate cert, String host, int port) => true);
 
-      final HttpClientRequest request = await client
-          .postUrl(Uri.parse('${BackEndConstants.API_ADDRESS}/api/auth/login'));
+    var headers = <String, String>{
+      'Access-Control-Allow-Origin': '*',
+      'content-type': 'application/json',
+    };
+    var body = jsonEncode(loginFormResult.toMap());
 
-      request.headers.set('content-type', 'application/json');
-      request.add(utf8.encode(json.encode(loginFormResult.toMap())));
+    final http.Response response = await http.post(
+      Uri.parse('${BackEndConstants.API_ADDRESS}/api/auth/login'),
+      headers: headers,
+      body: body,
+      encoding: Encoding.getByName("utf-8"),
+    );
+    LoggerService.instance.debug(response);
+    //request.headers.addAll({'content-type': 'application/json'});
+    //request.body.add(utf8.encode(json.encode(loginFormResult.toMap())));
 
-      HttpClientResponse response = await request.close();
-      var decodedResponse =
-          await jsonDecode(await response.transform(utf8.decoder).join());
-      String? responseApiToken = decodedResponse["api_token"];
+    //HttpClientResponse response = await request.close();
+    var decodedResponse = await jsonDecode(response.body);
+    //await jsonDecode(await response.transform(utf8.decoder).join());
+    String? responseApiToken = decodedResponse["api_token"];
 
-      if (response.statusCode == 200 && responseApiToken != null) {
-        AuthService.storeLogInCredenials(
-          username: loginFormResult.username,
-          password: loginFormResult.password,
-          apiKey: responseApiToken,
-        );
-      } else {
-        LoggerService.instance.error(
-            "statusCode: ${response.statusCode} with login response: $decodedResponse");
-      }
-      return response.statusCode;
-    } catch (e) {
-      LoggerService.instance.error(e);
-      rethrow;
+    if (response.statusCode == 200 && responseApiToken != null) {
+      AuthService.storeLogInCredenials(
+        username: loginFormResult.username,
+        password: loginFormResult.password,
+        apiKey: responseApiToken,
+      );
+    } else {
+      LoggerService.instance.error(
+          "statusCode: ${response.statusCode} with login response: $decodedResponse");
     }
+    return response.statusCode;
+    // } catch (e) {
+    //   LoggerService.instance.error(e);
+    //   rethrow;
+    // }
   }
 
   static Future<bool> isLoggedIn() async {
@@ -101,7 +109,8 @@ class OpenDayLoginService {
     Navigator.of(context).pushNamed(AuthPage.pageRoute);
     /*  } else {
       LoggerService.instance.error(
-          "statusCode: ${response.statusCode} on login response: $decodedResponse");
+          "statusCode: ${response.statusCode} on login response:
+$decodedResponse");
     }
 */
     //Resetting status of completing all puzzles

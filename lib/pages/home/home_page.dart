@@ -12,7 +12,6 @@ import 'package:iscte_spots/pages/leaderboard/leaderboard_screen.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/services/platform_service.dart';
 import 'package:iscte_spots/services/shared_prefs_service.dart';
-import 'package:iscte_spots/services/spotChooser/random_spot_service.dart';
 import 'package:iscte_spots/widgets/iscte_confetti_widget.dart';
 import 'package:iscte_spots/widgets/my_app_bar.dart';
 import 'package:iscte_spots/widgets/my_bottom_bar.dart';
@@ -66,7 +65,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
     _lottieController.addStatusListener(
       (status) {
-        LoggerService.instance.debug("listening to success Puzzle animation $status");
+        LoggerService.instance
+            .debug("listening to success Puzzle animation $status");
         if (status == AnimationStatus.completed) {
           Future.delayed(const Duration(milliseconds: 500)).then((value) {
             setState(() {
@@ -211,7 +211,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   ValueListenableBuilder<Spot?>(
                       valueListenable: _currentSpotNotifier,
                       builder: (context, value, _) {
-
                         return NavigationRail(
                           onDestinationSelected: (index) {
                             if (index == 0) {
