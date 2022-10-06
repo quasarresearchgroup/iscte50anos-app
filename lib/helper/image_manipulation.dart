@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
+import 'package:iscte_spots/models/spot.dart';
 import 'package:iscte_spots/pages/home/puzzle/clipped_piece_widget.dart';
 import 'package:iscte_spots/pages/home/puzzle/puzzle_piece_widget.dart';
 import 'package:iscte_spots/pages/home/splashScreen/moving_widget.dart';
@@ -27,22 +28,22 @@ class ImageManipulation {
   }
 
   static Future<List<PuzzlePieceWidget>> splitImagePuzzlePiece({
-    required Image image,
+    required Spot spot,
     required rows,
     required cols,
     required bringToTop,
     required sendToBack,
     required constraints,
     required completeCallback,
+    required Size imageSize,
   }) async {
-    //logger.d('started split');
+    //LoggerService.instance.debug('started split');
     List<PuzzlePieceWidget> outputList = [];
-    Size imageSize = await getImageSize(image);
     for (int x = 0; x < rows; x++) {
       for (int y = 0; y < cols; y++) {
         var puzzlePiece = PuzzlePieceWidget(
           key: GlobalKey(),
-          image: image,
+          spot: spot,
           imageSize: imageSize,
           row: x,
           col: y,
@@ -56,7 +57,7 @@ class ImageManipulation {
         outputList.add(puzzlePiece);
       }
     }
-    //logger.d('finished split');
+    //LoggerService.instance.debug('finished split');
     return outputList;
   }
 
@@ -68,7 +69,7 @@ class ImageManipulation {
     required sendToBack,
     required BoxConstraints constraints,
   }) async {
-    //logger.d('started Image split');
+    //LoggerService.instance.debug('started Image split');
     List<MovingPiece> outputList = [];
     Size imageSize = await getImageSize(image);
 
@@ -100,7 +101,7 @@ class ImageManipulation {
         ));
       }
     }
-    //logger.d('finished Image split');
+    //LoggerService.instance.debug('finished Image split');
     return outputList;
   }
 }

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/pages/auth/auth_page.dart';
+import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/services/onboard_service.dart';
-import 'package:logger/logger.dart';
 
 class GetStartedOnboard extends StatelessWidget {
   GetStartedOnboard({
@@ -12,13 +12,12 @@ class GetStartedOnboard extends StatelessWidget {
   }) : super(key: key);
 
   bool onLaunch;
-  final Logger _logger = Logger();
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        _logger.i('Tapped on Get started');
+        LoggerService.instance.info('Tapped on Get started');
         OnboadingService.storeOnboard();
         //PageRoutes.animateToPage(context, page: const AuthPage());
         if (onLaunch) {

@@ -1,36 +1,38 @@
 import 'package:flutter/widgets.dart';
-import 'package:iscte_spots/models/content.dart';
+import 'package:iscte_spots/models/timeline/content.dart';
+import 'package:iscte_spots/models/timeline/event.dart';
 import 'package:iscte_spots/pages/auth/auth_page.dart';
 import 'package:iscte_spots/pages/flickr/flickr_page.dart';
-import 'package:iscte_spots/pages/home/home.dart';
-import 'package:iscte_spots/pages/home/openday_home.dart';
+import 'package:iscte_spots/pages/home/home_page.dart';
 import 'package:iscte_spots/pages/home/scanPage/qr_scan_results.dart';
-import 'package:iscte_spots/pages/home/splashScreen/shake.dart';
+import 'package:iscte_spots/pages/home/scanPage/scanned_list_page.dart';
 import 'package:iscte_spots/pages/leaderboard/leaderboard_screen.dart';
 import 'package:iscte_spots/pages/onboarding/onboarding_page.dart';
 import 'package:iscte_spots/pages/profile/profile_screen.dart';
 import 'package:iscte_spots/pages/quiz/quiz_list_menu.dart';
-import 'package:iscte_spots/pages/scanned_list_page.dart';
 import 'package:iscte_spots/pages/settings/settings_page.dart';
 import 'package:iscte_spots/pages/spotChooser/spot_chooser_page.dart';
 import 'package:iscte_spots/pages/timeline/timeline_details_page.dart';
+import 'package:iscte_spots/pages/timeline/timeline_filter_page.dart';
 import 'package:iscte_spots/pages/timeline/timeline_page.dart';
 
 class PageRouter {
   static Widget resolve(String route, Object? argument) {
     switch (route) {
-      case Home.pageRoute:
-        return Home();
-      case HomeOpenDay.pageRoute:
-        return HomeOpenDay();
+      //case Home.pageRoute:
+      //return Home();
+      case HomePage.pageRoute:
+        return HomePage();
       case AuthPage.pageRoute:
         return AuthPage();
       case TimelinePage.pageRoute:
         return TimelinePage();
       case TimeLineDetailsPage.pageRoute:
-        return TimeLineDetailsPage(data: argument as Content);
-      case Shaker.pageRoute:
-        return Shaker();
+        return TimeLineDetailsPage(event: argument as Event);
+      case TimelineFilterPage.pageRoute:
+        return TimelineFilterPage();
+      //case Shaker.pageRoute:
+      //  return Shaker();
       case FlickrPage.pageRoute:
         return FlickrPage();
       case LeaderBoardPage.pageRoute:
@@ -52,7 +54,7 @@ class PageRouter {
       case SpotChooserPage.pageRoute:
         return SpotChooserPage();
       default:
-        return Home();
+        return HomePage();
     }
   }
 }

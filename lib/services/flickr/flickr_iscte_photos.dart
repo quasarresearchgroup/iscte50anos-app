@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:iscte_spots/services/flickr/flickr_service.dart';
+import 'package:iscte_spots/services/logging/LoggerService.dart';
 
 class FlickrIsctePhotoService extends FlickrService {
   static const String tags = "iscte";
@@ -20,11 +21,11 @@ class FlickrIsctePhotoService extends FlickrService {
     if (!fetching) {
       http.Response response = await http
           .get(Uri.parse(
-              'https://www.flickr.com/services/rest/?method=flickr.photosets.getPhotos&api_key=$key&photoset_id=$photosetID&user_id=$userID&page=$currentPage&per_page=$perPage&format=json&nojsoncallback=1'))
+              'https://www.flickr.com/services/rest/?method=flickr.photosets.getPhotos&api_key=${FlickrService.key}&photoset_id=$photosetID&user_id=$userID&page=$currentPage&per_page=$perPage&format=json&nojsoncallback=1'))
           .timeout(const Duration(minutes: 2));
 
       if (response.statusCode == 200) {
-        logger.d("Started fetching image urls");
+        LoggerService.instance.debug("Started fetching image urls");
         startFetch();
 
         final jsonResponse = jsonDecode(response.body);
@@ -33,7 +34,7 @@ class FlickrIsctePhotoService extends FlickrService {
         for (var photo in photos) {
           var photoId = photo["id"];
           final http.Response photoData = await http.get(Uri.parse(
-              'https://www.flickr.com/services/rest/?method=flickr.photos.getContext&api_key=$key&photo_id=$photoId&format=json&nojsoncallback=1'));
+              'https://www.flickr.com/services/rest/?method=flickr.photos.getContext&api_key=${FlickrService.key}&photo_id=$photoId&format=json&nojsoncallback=1'));
           if (photoData.statusCode == 200) {
             final jsonPhotoData = jsonDecode(photoData.body)["prevphoto"];
 
@@ -43,7 +44,7 @@ class FlickrIsctePhotoService extends FlickrService {
             var photoSecret = jsonPhotoData["secret"];
             var imagesrc =
                 "https://farm$farm.staticflickr.com/$server/$photoid\_$photoSecret.jpg";
-            logger.d(imagesrc);
+            LoggerService.instance.debug(imagesrc);
             _controller.sink.add(imagesrc);
           }
         }
@@ -54,7 +55,7 @@ class FlickrIsctePhotoService extends FlickrService {
         _controller.sink.addError(response.statusCode);
       }
     } else {
-      logger.d("Fetching already in progress, no effect was taken");
+      LoggerService.instance.debug("Fetching already in progress, no effect was taken");
     }
   }
 }

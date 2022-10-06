@@ -1,17 +1,18 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:iscte_spots/pages/auth/login/login_openday_page.dart';
 import 'package:iscte_spots/pages/auth/register/register_openday_page.dart';
-import 'package:iscte_spots/pages/home/openday_home.dart';
+import 'package:iscte_spots/pages/home/home_page.dart';
 import 'package:iscte_spots/services/auth/openday_login_service.dart';
+import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
-import 'package:logger/logger.dart';
 import 'package:lottie/lottie.dart';
 
 class AuthPage extends StatefulWidget {
   static const pageRoute = "/auth";
 
-  final Logger _logger = Logger();
 
   AuthPage({Key? key}) : super(key: key);
 
@@ -59,10 +60,10 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
 
     _lottieController.addStatusListener(
       (status) {
-        widget._logger.d("listenning to complete login animation $status");
+        LoggerService.instance.debug("listenning to complete login animation $status");
         if (status == AnimationStatus.completed) {
-          Future.delayed(const Duration(milliseconds: 500)).then((value) =>
-              Navigator.popAndPushNamed(context, HomeOpenDay.pageRoute));
+          Future.delayed(const Duration(milliseconds: 500)).then(
+              (value) => Navigator.popAndPushNamed(context, HomePage.pageRoute));
         }
       },
     );
@@ -71,7 +72,12 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
   }
 
   void initFunc() async {
-    bool _loggedIn = await OpenDayLoginService.isLoggedIn();
+    bool _loggedIn;
+    try {
+      _loggedIn = await OpenDayLoginService.isLoggedIn();
+    } on SocketException {
+      _loggedIn = false;
+    }
     setState(() {
       _isLoggedIn = _loggedIn;
       _isLoading = false;

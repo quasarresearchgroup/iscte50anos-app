@@ -1,16 +1,13 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:iscte_spots/helper/image_manipulation.dart';
 import 'package:iscte_spots/pages/home/splashScreen/moving_widget.dart';
-import 'package:iscte_spots/services/flickr/flickr_iscte_photos.dart';
+import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
-import 'package:logger/logger.dart';
 
+/*
 class Shaker extends StatefulWidget {
   Shaker({Key? key}) : super(key: key);
   static const pageRoute = "/shake";
@@ -18,7 +15,7 @@ class Shaker extends StatefulWidget {
   @override
   State<Shaker> createState() => _ShakerState();
 
-  final Logger _logger = Logger();
+  final  = Logger();
   final FlickrIsctePhotoService flickrService = FlickrIsctePhotoService();
 }
 
@@ -48,10 +45,10 @@ class _ShakerState extends State<Shaker> {
           images.add(image);
         });
       } else {
-        widget._logger.d("duplicated photo entry: $event");
+        LoggerService.instance.debug("duplicated photo entry: $event");
       }
     }, onError: (error) {
-      widget._logger.d(error);
+      LoggerService.instance.debug(error);
     });
   }
 
@@ -80,10 +77,9 @@ class _ShakerState extends State<Shaker> {
         ));
   }
 }
-
+*/
 class GravityPlane extends StatefulWidget {
   GravityPlane({Key? key, required this.image}) : super(key: key);
-  final Logger _logger = Logger();
   final Image image;
   final int rows = 7;
   final int cols = 7;
@@ -107,7 +103,7 @@ class _GravityPlaneState extends State<GravityPlane> {
   @override
   void didUpdateWidget(GravityPlane oldWidget) {
     if (oldWidget.image != widget.image) {
-      widget._logger.d("changing image");
+      LoggerService.instance.debug("changing image");
       setState(() {});
     }
     super.didUpdateWidget(oldWidget);
@@ -149,15 +145,16 @@ class _GravityPlaneState extends State<GravityPlane> {
             future: pieces,
             builder:
                 (BuildContext context, AsyncSnapshot<List<Widget>> snapshot) {
-              if (snapshot.hasData) {
-                //remove native splash screen is here to allow the GravityPlane to fully load behind the native splash screen
-                FlutterNativeSplash.remove();
-                return Stack(
-                  children: snapshot.data!,
-                );
-              } else {
-                return const Center(child: LoadingWidget());
-              }
+              if (snapshot.hasData && (snapshot.data?.isNotEmpty ?? false)) {
+                  //remove native splash screen is here to allow the GravityPlane to fully load behind the native splash screen
+                  FlutterNativeSplash.remove();
+
+                  return Stack(
+                    children: snapshot.data!,
+                  );
+                } else {
+                  return const Center(child: LoadingWidget());
+                }
             });
       },
     );

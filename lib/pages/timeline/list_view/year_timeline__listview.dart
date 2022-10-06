@@ -12,18 +12,51 @@ class YearTimelineListView extends StatefulWidget {
 
   final Function changeYearFunction;
   final List<int> yearsList;
-  final int? selectedYear;
+  final int selectedYear;
 
   @override
   State<YearTimelineListView> createState() => _YearTimelineListViewState();
 }
 
 class _YearTimelineListViewState extends State<YearTimelineListView> {
+  //late ScrollController scrollController;
+  List<Widget> yearsList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    //scrollController = ScrollController();
+/*
+    for (int index in widget.yearsList) {
+      yearsList.add(
+        Padding(
+          key: GlobalKey(),
+          padding: const EdgeInsets.only(bottom: 8.0),
+          child: YearTimelineTile(
+            changeYearFunction: widget.changeYearFunction,
+            year: index,
+            isSelected: widget.selectedYear == index,
+            isFirst: index == 0,
+            isLast: index == widget.yearsList.length - 1,
+          ),
+        ),
+      );
+    }*/
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    //scrollController.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+    //Scrollable.ensureVisible(yearsList[widget.selectedYear].);
     return Container(
       decoration: BoxDecoration(color: Theme.of(context).primaryColor),
       child: ListView.builder(
+          //controller: scrollController,
           scrollDirection: Axis.horizontal,
           itemCount: widget.yearsList.length,
           shrinkWrap: true,
@@ -31,11 +64,12 @@ class _YearTimelineListViewState extends State<YearTimelineListView> {
             return Padding(
               padding: const EdgeInsets.only(bottom: 8.0),
               child: YearTimelineTile(
-                  changeYearFunction: widget.changeYearFunction,
-                  year: widget.yearsList[index],
-                  isSelected: widget.selectedYear == widget.yearsList[index],
-                  isFirst: index == 0,
-                  isLast: index == widget.yearsList.length - 1),
+                changeYearFunction: widget.changeYearFunction,
+                year: widget.yearsList[index],
+                isSelected: widget.selectedYear == widget.yearsList[index],
+                isFirst: index == 0,
+                isLast: index == widget.yearsList.length - 1,
+              ),
             );
           }),
     );

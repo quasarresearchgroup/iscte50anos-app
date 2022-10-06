@@ -8,7 +8,6 @@
     "loading":"A carregar...",
     "advance":"Avançar",
     "quizComplete":"Quiz concluído",
-    "back":"Voltar",
     "logOutButton":"Encerrar Sessão",
 
     "generalError":"Erro",
@@ -70,7 +69,18 @@
     "qrScanNotificationFoundSpot": "Wow encontraste o Spot!!",
     "qrScanConfirmation": "Tens a certeza que queres fazer scan a este spot?",
     "qrScanConfirmationAccept": "ACEITAR",
-    "qrScanConfirmationCancel": "CANCELAR"
+    "qrScanConfirmationCancel": "CANCELAR",
+
+
+    "timelineSearchResults" : "Resultados da pesquisa",
+    "timelineNothingFound" : "Nada encontrado...",
+    "timelineAvailableTopics" : "Tópicos disponiveis...",
+    "timelineSelectedTopics" : "Tópicos selecionados",
+    "timelineSearchHint" : "Pesquise",
+    "timelineSearchHintInsideTopic" : "Pesquisa avançada",
+    "timelineSearchButton" : "Submeter",
+    "timelineSelectAllButton" : "Escolher tudo",
+    "timelineSelectClearButton" : "Limpar seleção"
 
 
 }

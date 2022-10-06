@@ -1,0 +1,485 @@
+DATA		MARCO / EVENTO	Âmbito	Tópico 1 	Tópico 2	Tópico 3
+2022-12-15	TRUE	Comemoração do Cinquentenário	Iscte	2012-2022	Memória	
+2022-12-15	TRUE	Tomada de posse do diretor da Escola de Tecnologias Digitais, Economia e Sociedade (Iscte Sintra)	Iscte	2012-2022	Comunidade	
+2022-07-08	TRUE	Homenagem parlamentar ao professor João Ferreira de Almeida (1941-2022)	Nacional	2012-2022	Comunidade	Pessoas
+2022-04-03	TRUE	Corrida e caminhada comemorativas do Cinquentenário	Iscte	2012-2022	Memória	
+2022-03-30	TRUE	Helena Carreiras ministra da Defesa	Iscte	2012-2022	Comunidade	Pessoas
+2022-03-30	TRUE	Pedro Adão e Silva ministro da Cultura	Iscte	2012-2022	Comunidade	Pessoas
+2022-03-08	TRUE	Maria de Lurdes Rodrigues, reitora, segundo mandato	Iscte	2012-2022	Comunidade	Pessoas
+2022-03-08	TRUE	Plantação de Árvore da Vida (thuji occidentalis) pelos 50 anos	Iscte	2012-2022	Memória	
+2022-03-03	TRUE	Início da construção do CVTT (Centro de Valorização e Transferência de Tecnologias)	Iscte	2012-2022	Campus	Infraestruturação
+2022-03-01	TRUE	Desmaterialização dos requerimentos académicos	Iscte	2012-2022	Desmaterialização	
+2022-02-24	TRUE	Rússia invade Ucrânia	Internacional	2012-2022		
+2021-12-07	TRUE	José António Pinto Ribeiro presidente do Conselho de Curadores	Iscte	2012-2022	Comunidade	Pessoas
+2021-11-26	TRUE	Escola de Tecnologias Digitais, Economia e Sociedade (Iscte Sintra)	Iscte	2012-2022	Comunidade	
+2021-11-14	TRUE	Claque ISCTE (925 participantes) no jogo da seleção portuguesa contra a seleção sérvia	Iscte	2012-2022	Comunidade	
+2021-10-31	TRUE	Cimeira sobre as alterações climáticas (COP26), Glasgow	Internacional	2012-2022		
+2021-09-30	TRUE	Número de discentes: 11073	Iscte	2012-2022	Comunidade	
+2021-08-31	TRUE	Retirada militar norte-americana do Afeganistão	Internacional	2012-2022		
+2021-07-19	TRUE	Júlio Pedrosa reeleito presidente do Conselho Geral	Iscte	2012-2022	Comunidade	Pessoas
+2021-07-13	TRUE	Joana Alexandre reeleita presidente do Conselho Pedagógico	Iscte	2012-2022	Comunidade	Pessoas
+2021-07-07	TRUE	Homologação do Relatório de Atividades e de Gestão (fonte RIAG2020): Orçamento 44 M€ 	Iscte	2012-2022	Comunidade	
+2021-06-30	TRUE	Descontinuação da Plataforma nacional de ciência e tecnologia DeGóis	Nacional	2012-2022		
+2021-05-06	TRUE	Município de Sintra cede terreno para a quinta escola do Iscte	Iscte	2012-2022	Campus	Infraestruturação
+2021-04-20	TRUE	Testes COVID em parceria com a Cruz Vermelha Portuguesa	Iscte	2012-2022	Comunidade	
+2021-03-18	TRUE	Maria Luísa Lima reeleita presidente do Conselho Científico	Iscte	2012-2022	Comunidade	Pessoas
+2021-02-03	TRUE	Remodelação do ex-edifício IMT	Iscte	2012-2022	Campus	Infraestruturação
+2021-01-31	TRUE	Reino Unido sai da União Europeia	Internacional	2012-2022		
+2021-01-01	TRUE	Laboratório associado Sociodigital Lab for Public Policy	Iscte	2012-2022	Investigação	
+2020-12-21	TRUE	EMA aprova vacina contra a Covid_19, Comirnaty, laboratórios BioNTech e Pfizer	Internacional	2012-2022		
+2020-12-17	TRUE	Certificação de Responsabilidade Social (NP 4469:2019)	Iscte	2012-2022	Comunidade	
+2020-12-15	TRUE	Atribuída a Ordem da Instrução Pública	Iscte	2012-2022	Identidade	
+2020-12-15	TRUE	Honoris causa atribuído a António Correira de Campos	Iscte	2012-2022	Identidade	Pessoas
+2020-12-15	TRUE	Honoris causa atribuído a José Pacheco Pereira	Iscte	2012-2022	Identidade	Pessoas
+2020-12-15	TRUE	Honoris causa atribuído a Nuno Portas	Iscte	2012-2022	Identidade	Pessoas
+2020-11-24	TRUE	Açores: primeiro governo regional de coligação	Nacional	2012-2022		
+2020-10-16	TRUE	Matricula-se estudante nº 100000	Iscte	2012-2022	Memória	
+2020-10-02	TRUE	Observatório do Emprego Jovem (Refª. UIDP/0317/2020)	Nacional	2012-2022		Comunidade
+2020-09-30	TRUE	Número de discentes: 11214	Iscte	2012-2022	Comunidade	
+2020-09-15	TRUE	Atividade letiva em ambiente híbrido 	Iscte	2012-2022	Ensino	
+2020-07-21	TRUE	Homologação do Relatório de Atividades e de Gestão (fonte RIAG2019): Orçamento 49 M€ 	Iscte	2012-2022	Comunidade	
+2020-07-20	TRUE	16th EASA Biennial Conference. Virtual Lisbon Conference	Internacional	2012-2022	Investigação	
+2020-06-15	TRUE	João Leão ministro de Estado e das Finanças	Nacional	2012-2022	Comunidade	Pessoas
+2020-03-12	TRUE	Devido ao confinamento inicia-se ensino não presencial e o teletrabalho	Iscte	2012-2022	Comunidade	Infraestruturação
+2020-03-11	TRUE	OMS declara pandemia do Covid19	Internacional	2012-2022		
+2020-03-06	TRUE	Alumni Clube Iscte, redenominação de Associação de Antigos Alunos do ISCTE	Iscte	2012-2022	Comunidade	
+2020-02-18	TRUE	Centro de Valorização e Transferência de Tecnologia (CVTT)	Iscte	2012-2022	Investigação	Campus
+2020-01-31	TRUE	UE: Brexit	Internacional	2012-2022		
+2019-12-15	TRUE	Revista EntreCampus (ISSN 2184-6545)	Iscte	2012-2022	Campus	
+2019-12-14	TRUE	Apresentação de nova identidade institucional	Iscte	2012-2022	Identidade	
+2019-12-12	TRUE	Primeiro Relatório de Sustentabilidade	Iscte	2012-2022	Comunidade	
+2019-11-22	TRUE	Aprovada participação na associação ISCTE Conhecimento e Inovação Centro de Inovação e Transferência de Tecnologias	Iscte	2012-2022	Campus	
+2019-11-12	TRUE	Início de temporada do coro ISCTE-IUL. Maestro João Barros	Iscte	2012-2022	Comunidade	Pessoas
+2019-10-25	TRUE	Licenciatura em Ciência de Dados	Iscte	2012-2022	Ensino	
+2019-10-15	TRUE	Madeira: PSD perde maioria absoluta	Iscte	2012-2022		
+2019-09-30	TRUE	Número de discentes: 9977	Iscte	2012-2022	Comunidade	
+2019-09-23	TRUE	Apelo de Greta Thurnberg na Cimeira de Ação Climática, ONU, Nova Iorque	Internacional	2012-2022		
+2019-07-23	TRUE	Homologação do Relatório de Atividades e de Gestão (fonte RIAG2018): Orçamento 45 M€ 	Iscte	2012-2022	Comunidade	
+2019-07-17	TRUE	Helena Carvalho reeleita diretora da Escola de sociologia e políticas públicas ( ESPP)	Iscte	2012-2022	Comunidade	Pessoas
+2019-07-17	TRUE	Maria de Fátima Ferreiro diretora da Escola de Ciências Socias e Humanas (ECSH)	Iscte	2012-2022	Comunidade	Pessoas
+2019-06-11	TRUE	Luís Antero Reto reeleito reitor	Iscte	2012-2022	Comunidade	Pessoas
+2019-05-31	TRUE	 Site Ciberdúvidas da Língua Português alojado no site do Iscte	Iscte	2012-2022		
+2019-04-15	TRUE	Incêndio na Catedral Notre-Dame, Paris	Internacional			
+2019-04-10	TRUE	Maria João Cortinhal diretora da Escola de Gestão (IBS)	Iscte	2012-2022	Comunidade	Pessoas
+2019-04-03	TRUE	ISCTE no ranking Times Higher Education (THE) University Impact Rankings	Iscte	2012-2022	Comunidade	
+2019-03-25	TRUE	Joana Alexandre presidente do Conselho Pedagógico	Iscte	2012-2022	Comunidade	Pessoas
+2019-03-13	TRUE	Tomada de posse do Conselho Pedagógico do ISCTE- IUL	Iscte	2012-2022	Comunidade	
+2018-11-23	TRUE	Carlos Sá da Costa diretor da Escola de tecnologias e arquitetura (ISTA)	Iscte	2012-2022	Comunidade	Pessoas
+2019-02-25	TRUE	Luísa Lima presidente do Conselho Científico	Iscte	2012-2022	Comunidade	Pessoas
+2019-02-18	TRUE	Tomada de posse do Conselho Científico do ISCTE-IUL	Iscte	2012-2022	Comunidade	
+2019-01-03	TRUE	José Crespo de Carvalho presidente do INDEG-ISCTE	Iscte	2012-2022	Comunidade	Pessoas
+2018-12-13	TRUE	Iscte primeira universidade portuguesa a obter a Certificação Ambiental (ISO 14001:2015)	Iscte	2012-2022	Comunidade	
+2018-12-01	TRUE	Observatório português das atividades culturais	Nacional	2012-2022	Prestação de Serviços	Comunidade
+2018-11-15	TRUE	José Manuel Rebelo Provedor do estudante	Iscte	2012-2022	Comunidade	Pessoas
+2018-11-02	TRUE	Comemoração dos 30 anos do INDEG	Iscte	2012-2022	Memória	Comunidade
+2018-11-02	TRUE	Formar para a sociedade do conhecimento. INDEG-ISCTE 30 anos, Carlos Oliveira Santos	Iscte	2012-2022	Memória	
+2018-09-30	TRUE	Número de discentes: 10939	Iscte	2012-2022	Comunidade	
+2018-09-26	TRUE	CiênciaVitae Sistema nacional de gestão curricular de ciência. https://cienciavitae.pt	Nacional	2012-2022		
+2018-09-14	TRUE	IULCOME: receção aos novos estudantes	Iscte	2012-2022	Comunidade	
+2018-09-05	TRUE	Obtenção da Acreditação Institucional pela A3ES (6 anos)	Iscte	2012-2022	Ensino	
+2018-05-18	TRUE	Abertura concursos para a contratação de várias dezenas de investigadores; edital nº 504/2018 de 18 de Maio	Iscte	2012-2022	Investigação	
+2018-04-23	TRUE	INDEG-IUL, protocolo com a IAPMEI para a implementação de três programas para PME's	Iscte	2012-2022	Prestação de Serviços	
+2018-03-08	TRUE	Maria de Lurdes Rodrigues eleita primeira reitora	Iscte	2012-2022	Comunidade	Pessoas
+2018-02-07	TRUE	Homologação do Relatório de Atividades  (fonte RA2017): Orçamento 42 M€ 	Iscte	2012-2022	Comunidade	
+2017-12-15	TRUE	"Afirmação de uma identidade. 45 anos de ISCTE Instituto Universitário de Lisboa"	Iscte	2012-2022	Memória	
+2017-12-15	TRUE	45º aniversário do ISCTE-IUL	Iscte	2012-2022	Memória	
+2017-11-24	TRUE	"Retrato da investigação científica no ISCTE-IUL. Documento síntese do estudo realizado pela CEIC" (A. Benavente, P. Guibentif, M. E. Gonçalves, V. Rato, M. Santos, A. Velez) publicado pela Comissão especializada de investigação cientifica do Conselho Geral mandato 2013-17	Iscte	2012-2022	Investigação	
+2017-10-15	TRUE	Fogos florestais na zona centro causam 48 mortos	Nacional	2012-2022		
+2017-09-30	TRUE	Número de discentes: 10620	Iscte	2012-2022	Comunidade	
+2017-09-08	TRUE	Júlio Pedrosa presidente do Conselho Geral	Iscte	2012-2022	Comunidade	Pessoas
+2017-06-26	TRUE	Fogos florestais em Pedrógão Grande causam 66 mortos	Nacional	2012-2022		
+2017-05-13	TRUE	Salvador Sobral vence o Festival Eurovisão da Canção	Nacional	2012-2022	Pessoas	
+2017-03-19	TRUE	Homologação do Relatório de Atividades  (fonte RA2016): Orçamento 42 M€ 	Iscte	2012-2022	Comunidade	
+2017-03-17	TRUE	Fernando Batista presidente do Conselho Pedagógico	Iscte	2012-2022	Comunidade	Pessoas
+2017-03-17	TRUE	Integração da componente da Sustentabilidade no SIGQ	Iscte	2012-2022	Comunidade	
+2017-02-24	TRUE	Francisco Cercas reeleito presidente do Conselho Cientifico	Iscte	2012-2022	Comunidade	Pessoas
+2017-02-01	TRUE	Assinatura eletrónica de pautas	Iscte	2012-2022	Desmaterialização	Ensino
+2017-01-31	TRUE	Relatório final "A praxe como fenómeno social" da DGES. https://www.dges.gov.pt/sites/default/files/naipa/a_praxe_como_fenomeno_social.pdf	Nacional	2012-2022	Comunidade	
+2017-01-09	TRUE	Código de Conduta Académica (plágio)	Iscte	2012-2022	Comunidade	
+2017-01-07	TRUE	Mário Soares, 1924-2017	Nacional	2012-2022		
+2017-01-01	TRUE	António Guterres eleito secretário-geral da ONU	Internacional	2012-2022		
+2016-12-15	TRUE	"Uma Década de Intervenções no Campus. ISCTE-Iul Arquitetura e universidade 2005-2015" de J. Baltazar	Iscte	2012-2022	Memória	Campus
+2016-11-12	TRUE	Colômbia: acordo de paz entre o governo e as FARC	Internacional	2012-2022		
+2016-09-30	TRUE	Número de discentes: 10488	Iscte	2012-2022	Comunidade	
+2016-09-29	TRUE	Ricardo Fonseca reeleito diretor da Escola de tecnologias e arquitetura (ISTA)	Iscte	2012-2022	Comunidade	Pessoas
+2016-09-22	TRUE	ISCTE classificado pela primeira vez no ranking Times Higher Education (THE)	Iscte	2012-2022	Identidade	
+2016-07-20	TRUE	Filipe Reis reeleito diretor da ECSH	Iscte	2012-2022	Comunidade	Pessoas
+2016-07-20	TRUE	Helena Carreiras eleita diretora da Escola de sociologia e políticas públicas (ESPP)	Iscte	2012-2022	Comunidade	Pessoas
+2016-07-10	TRUE	Portugal sagra-se campeão europeu de futebol	Internacional	2012-2022		
+2016-05-30	TRUE	Homologação do Relatório de Atividades  (fonte RA2015): Orçamento 38,5 M€ 	Iscte	2012-2022	Comunidade	
+2016-04-27	TRUE	Homenagem ao general A. Ramalho Eanes no 7º aniversário do regime fundacional	Iscte	2012-2022	Pessoas	
+2016-04-12	TRUE	Eleição de primeira Comissão de Trabalhadores	Iscte	2012-2022	Comunidade	
+2016-02-26	TRUE	Resolução da AR nº 38/2016. Reforço de medidas sobre a praxe académica	Nacional	2012-2022	Comunidade	Campus
+2016-01-21	TRUE	Revista de Gestão dos Países de Língua Portuguesa vol. 15, nº1, sucede a Revista Portuguesa e Brasileira de Gestão	Iscte	2012-2022	Investigação	
+2015-12-23	TRUE	Código de Conduta Académica; https://www.iscte-iul.pt/assets/files/2017/02/20/1487602801326_codigodecondutaacademica.pdf	Nacional	2012-2022	Comunidade	
+2015-12-15	TRUE	Clube ISCTE institui o mural solidário	Iscte	2012-2022		
+2015-12-12	TRUE	Acordo de Paris	Internacional	2012-2022		
+2015-11-30	TRUE	Cimeira sobre as alterações climáticas (COP21), Paris	Internacional	2012-2022		
+2015-10-23	TRUE	Eduardo Ferro Rodrigues 14º Presidente da Assembleia da República 	Nacional	2012-2022	Comunidade	Pessoas
+2015-10-06	TRUE	Depósito em acesso aberto. Despacho reitoral 65/2015	Iscte	2012-2022	Infraestruturação	Investigação
+2015-09-30	TRUE	Número de discentes: 10647	Iscte	2012-2022	Comunidade	
+2015-09-25	TRUE	Agenda 2030: Objetivos de desenvolvimento sutentável	Internacional	2012-2022		
+2015-09-22	TRUE	Carlos Santos Ferreira eleito presidente do Conselho de Curadores	Iscte	2012-2022	Comunidade	Pessoas
+2015-09-11	TRUE	Criação do Coro ISCTE. Maestro Pedro Miguel	Iscte	2012-2022	Comunidade	Pessoas
+2015-06-09	TRUE	ISCTE co-fundador da Associação das Universidades Portuguesas	Iscte	2012-2022	Redes	
+2015-05-31	TRUE	Desmaterialização do Inquérito de monitorização pedagógica (3º ciclo)	Iscte	2012-2022	Desmaterialização	Ensino
+2015-04-09	TRUE	José Paulo Esperança eleito presidente da escola de Gestão (IBS)	Iscte	2012-2022	Comunidade	Pessoas
+2015-03-30	TRUE	Primeiro doutoramento em Gestão Empresarial Aplicada no âmbito do acordo com a Southern Medical University, Guangzhou	Iscte	2012-2022	Redes	Investigação
+2015-03-26	TRUE	Maria Madalena Ramos eleita presidente do Conselho Pedagógico	Iscte	2012-2022	Comunidade	Pessoas
+2015-02-11	TRUE	Certificação do Sistema Integrado de Garantia da Qualidade (SIGQ) pela A3ES (6 anos)	Iscte	2012-2022	Ensino	
+2015-02-02	TRUE	Francisco Cercas eleito presidente do Conselho Cientifico	Iscte	2012-2022	Comunidade	Pessoas
+2015-01-07	TRUE	Massacre de Charlie Hebdo, Paris	Internacional	2012-2022		
+2014-12-15	TRUE	Intranet MyISCTE. https://intranet.iscte-iul.pt/user/login?destination=home	Iscte	2012-2022	Infraestruturação	
+2014-12-15	TRUE	Portal I-Meritus para a avaliação do desempenho dos docentes e dos investigadores; https://i-meritus.iscte-iul.pt	Iscte	2012-2022	Comunidade	
+2014-11-21	TRUE	José Socrátes detido no Aeroporto de Lisba sob suspeita de vários crimes	Nacional	2012-2022		Pessoas
+2014-09-30	TRUE	Número de discentes: 10176	Iscte	2012-2022	Comunidade	
+2014-09-11	TRUE	IULCOME: receção aos novos estudantes	Iscte	2012-2022	Comunidade	Campus
+2014-09-01	TRUE	Inscrições on-line do 3º ciclo	Iscte	2012-2022	Desmaterialização	Ensino
+2014-05-13	TRUE	ISTAR-ISCTE	Iscte	2012-2022	Investigação	
+2014-04-30	TRUE	Resolução da AR nº 43/2014. Medidas de combate a todas as formas de violência escolar	Nacional	2012-2022		
+2014-03-18	TRUE	Incorporação da Crimeia na Federação Russa	Internacional	2012-2022		
+2014-03-03	TRUE	Luís Antero Reto eleito reitor	Iscte	2002-2011	Comunidade	Pessoas
+2013-12-04	TRUE	Desmaterialização do registo da assiduidade e sumários (docente e discente)	Iscte	2012-2022	Desmaterialização	Ensino
+2013-11-11	TRUE	Plataforma de gestão curricular de investigação Ciência-IUL	Iscte	2012-2022	Infraestruturação	
+2013-11-04	TRUE	Primeiro doutoramento em Gestão Empresarial Aplicada no âmbito do acordo com a University of Electronic Sciences and Technology of China, Chengdu, China	Iscte	2012-2022	Redes	Investigação
+2013-10-08	TRUE	José Rebelo eleito presidente do Conselho Cientifico	Iscte	2012-2022	Comunidade	Pessoas
+2013-09-30	TRUE	Número de discentes: 10171	Iscte	2012-2022	Comunidade	
+2013-09-18	TRUE	Ricardo Fonseca eleito diretor da Escola de tecnologias e arquitetura (ISTA)	Iscte	2012-2022	Comunidade	Pessoas
+2013-09-13	TRUE	Carlos Lopes reeleito presidente do Conselho Geral	Iscte	2012-2022	Comunidade	Pessoas
+2013-07-17	TRUE	Clara Carvalho primeira diretora do recém criado Centro de Estudos Internacionais (CEI_ISCTE)	Iscte	2012-2022	Comunidade	Pessoas
+2013-07-12	TRUE	Helena Carvalho eleita diretora da Escola de sociologia e políticas públicas ( ESPP)	Iscte	2012-2022	Comunidade	Pessoas
+2013-07-08	TRUE	Filipe Reis eleito diretor da ECSH	Iscte	2012-2022	Comunidade	Pessoas
+2013-07-01	TRUE	Adesão da Croácia à União Europeia	Internacional	2012-2022		
+2013-06-18	TRUE	Centro de Estudos Internacionais (CEI-IUL)	Iscte	2012-2022	Investigação	
+2013-02-07	TRUE	José Luís Possolo de Saldanha eleito presidente do Conselho Pedagógico	Iscte	2012-2022	Comunidade	Pessoas
+2012-12-15	TRUE	"Até onde nos leva o saber. Uma história de 40 anos do ISCTE Instituto Universitário de Lisboa"	Iscte	2012-2022	Memória	
+2012-12-15	TRUE	Medalha dos 40 anos	Iscte	2012-2022	Memória	
+2012-12-15	TRUE	Comemoração dos 40 anos	Iscte	2012-2022	Memória	
+2012-12-14	TRUE	Victor Franco eleito presidente do Conselho Científico	Iscte	2012-2022	Comunidade	Pessoas
+2012-11-20	TRUE	Mohamed Azzim Gulamhussen eleito presidente da escola de Gestão (IBS)	Iscte	2012-2022	Comunidade	Pessoas
+2012-10-12	TRUE	Departamento de Matemática	Iscte	2012-2022	Comunidade	
+2012-10-12	TRUE	Departamento de Métodos Quantitativos para Gestão e Economia. Redenominação do departamento de Métodos Quantitativos; Deliberação 1530/2012-DR 212/2012 de 31de Outubro	Iscte	2012-2022	Comunidade	
+2012-10-12	TRUE	Honoris Causa atribuído a Manuel Marín ✝︎	Iscte	2012-2022	Identidade	Pessoas
+2012-09-30	TRUE	Número de discentes: 10074	Iscte	2012-2022	Comunidade	
+2012-09-15	TRUE	Manifestação popular "Que se lixe a Troika!"; http://queselixeatroika15setembro.blogspot.com	Nacional	2012-2022		
+2012-09-12	TRUE	Honoris Causa atribuído a Fernando Henrique Cardoso	Iscte	2012-2022	Identidade	Pessoas
+2012-06-02	TRUE	Claque do ISCTE (500 participantes) no jogo da seleção portuguesa contra a seleção turca	Iscte	2012-2022	Comunidade	
+2012-05-31	TRUE	Desmaterialização do Inquérito de monitorização pedagógica (2º ciclo)	Iscte	2012-2022	Desmaterialização	Ensino
+2012-05-29	TRUE	Extinta Fundação ISCTE (continua como IPPS)	Iscte	2012-2022	Prestação de Serviços	
+2012-03-06	TRUE	Criação do Vitruvius FABLAB	Iscte	2012-2022	Prestação de Serviços	Campus
+2012-01-16	TRUE	Homologação da compra do edifício IMT	Iscte	2002-2011	Campus	Infraestruturação
+2011-11-02	TRUE	Manual da Qualidade (com revisões bienais)	Iscte	2002-2011	Comunidade	
+2011-09-09	TRUE	Symposium Digital Fabricatio​n – a State of Art no ISCTE-IUL	Iscte	2002-2011	Investigação	
+2011-05-17	TRUE	Intervenção da Troika	Nacional	2002-2011		
+2011-05-16	TRUE	Conselho Geral extingue Fundação ISCTE	Iscte	2002-2011	Prestação de Serviços	
+2011-04-27	TRUE	Honoris Causa atribuído a André Jordan	Iscte	2002-2011	Identidade	Pessoas
+2011-04-27	TRUE	Honoris Causa atribuído a José Veiga Simão ✝︎	Iscte	2002-2011	Identidade	Pessoas
+2011-04-15	TRUE	Regulamento da Comissão de Ética	Iscte	2002-2011	Comunidade	
+2011-04-15	TRUE	"Ética na Investigação Melhores práticas, melhor Ciência (2016)"	Iscte	2002-2011	Comunidade	Investigação
+2011-03-28	TRUE	Instituto para as Políticas Públicas e Sociais (IPPS- IUL)	Iscte	2012-2022	Prestação de Serviços	
+2011-03-20	TRUE	Honoris causa a Wei Zhao atriibuído na Academia de Ciências de Lisboa (em associação: UTL, Porto, NOVA, Aveiro, Minho, Évora, Açores, Algarve, UTAD, UBI, Madeira, ISCTE)	Iscte	2002-2011	Identidade	Pessoas
+2011-03-11	TRUE	Acidente central nuclear, Fukusima, Japão	Internacional	2002-2011		
+2011-03-01	TRUE	Automatização plena das inscrições do 2º ciclo	Iscte	2002-2011	Desmaterialização	Ensino
+2011-01-18	TRUE	Susana Fonseca eleita presidente do Conselho Pedagógico	Iscte	2002-2011	Comunidade	Pessoas
+2010-12-13	TRUE	Observatório das famílias e das políticas de família	Nacional	2002-2011	Prestação de Serviços	Comunidade
+2010-12-06	TRUE	Regulamento Disciplinar de Discentes	Iscte	2002-2011	Comunidade	
+2010-10-21	TRUE	Regulamento de Avaliação de Desempenho dos Docentes do ISCTE-IUL	Iscte	2002-2011	Comunidade	
+2010-09-30	TRUE	Departamento de Ciência Política e Polítcas Públicas	Iscte	2002-2011	Comunidade	
+2010-09-30	TRUE	Departamento de Economia Política	Iscte	2002-2011	Comunidade	
+2010-09-30	TRUE	Departamento de Marketing, Operações e Gestão Geral (redenominação de Ciências de Gestão do departamento de Ciências de Gestão	Iscte	2002-2011	Comunidade	
+2010-09-30	TRUE	Departamento de Métodos de Pesquisa Social	Iscte	2002-2011	Comunidade	
+2010-09-30	TRUE	Departamento de Recursos Humanos e Comportamento Organizacional	Iscte	2002-2011	Comunidade	
+2010-09-30	TRUE	Número de discentes: 9542	Iscte	2002-2011	Comunidade	
+2010-09-01	TRUE	Desmaterialização dos sumários das aulas	Iscte	2002-2011	Desmaterialização	Ensino
+2010-07-02	TRUE	Publicação do regulamento da IBS	Iscte	2002-2011	Comunidade	
+2010-07-01	TRUE	António Gomes Mota eleito diretor da Escola de Gestão (IBS)	Iscte	2002-2011	Comunidade	Pessoas
+2010-07-01	TRUE	Francisco Cercas eleito diretor da Escola de Tecnologias e Arquitetura (ISTA)	Iscte	2002-2011	Comunidade	Pessoas
+2010-07-01	TRUE	Juan Mozzicafreddo (✝︎) eleito diretor da Escola de Sociologia e Políticas Públicas (ESPP)	Iscte	2002-2011	Comunidade	Pessoas
+2010-07-01	TRUE	Maria Luisa Pedrosa de Lima eleita diretora da Escola de Ciências Sociais e Humanas (ECSH)	Iscte	2002-2011	Comunidade	Pessoas
+2010-06-18	TRUE	Prémio L'Oreal Brandstorm para os alunos de Marketing	Iscte	2002-2011	Comunidade	
+2010-04-26	TRUE	Primeiro doutoramento em Serviço Social, Jorge Ferreira	Iscte	2002-2011	Memória	Pessoas
+2010-04-12	TRUE	Criação da Escola de Ciências Sociais e Humanas, de Escola de Sociologia e Políticas Públicas, de Tecnologias e Arquitetura e Escola de Gestão (IBS)	Iscte	2002-2011	Ensino	
+2010-02-20	TRUE	Enxuradas na ilha da Madeira cerca de 50 mortos	Nacional	2002-2011		
+2010-02-01	TRUE	Editora Mundos Sociais	Iscte	2002-2011	Prestação de Serviços	Investigação
+2009-11-13	TRUE	António Ramalho Eanes presidente do Conselho de Curadores	Iscte	2002-2011	Comunidade	Pessoas
+2009-11-02	TRUE	 Início das atividades letivas Laboratório de Competências Transversais	Iscte	2002-2011	Ensino	
+2009-10-26	TRUE	José António Vieira da Silva ministro da Economia da Inovação e Desenvolvimento 	Iscte	2002-2011	Comunidade	Pessoas
+2009-10-01	TRUE	Inauguração da Sala Universia (descontinuada)	Iscte	2002-2011	Memória	Campus
+2009-09-30	TRUE	Provedora do estudante Isabel Nicolau	Iscte	2002-2011	Comunidade	Pessoas
+2009-09-11	TRUE	Carlos Lopes eleito presidente do Conselho Geral	Iscte	2002-2011	Comunidade	Pessoas
+2009-05-08	TRUE	Nova orgânica: escolas, departamentos, unidades de investigação	Iscte	2002-2011	Comunidade	
+2009-04-27	TRUE	Passagem ao regime fundacional: ISCTE-IUL Instituto Universitário de Lisboa; Decreto lei nº 95/2009	Iscte	2002-2011	Identidade	Estatuto
+2009-02-18	TRUE	 Senado aprova mudança de imagem.	Iscte	2002-2011	Identidade	
+2009-01-16	TRUE	Licenciatura em Serviço Social	Iscte	2002-2011	Ensino	
+2008-12-31	TRUE	Remodelação do pavilhão interior (1870 m2)	Iscte	2002-2011	Campus	
+2008-12-17	TRUE	Certificação de Qualidade (ISO 9001:2008)	Iscte	2002-2011	Comunidade	Campus
+2008-10-31	TRUE	Adesão à rede Eduroam	Iscte	2002-2011	Infraestruturação	Campus
+2008-10-17	TRUE	Observatório das desigualdades	Nacional	2002-2011	Prestação de Serviços	Comunidade
+2008-09-01	TRUE	Desmaterialização das inscrição dos estudantes	Iscte	2002-2011	Desmaterialização	Ensino
+2008-08-21	TRUE	Jogos Olímpicos, Pequim, ouro, Nélson Évora, triplo salto	Internacional	2002-2011		
+2008-08-08	TRUE	Licenciatura em Finanças e Contabilidade	Iscte	2002-2011	Ensino	
+2008-07-25	TRUE	Centro em Rede de Investigação em Antropologia (CRIA)	Iscte	2002-2011	Investigação	Redes
+2008-05-31	TRUE	Desmaterialização do Inquérito de monitorização pedagógica (1º ciclo)	Iscte	2002-2011	Desmaterialização	Ensino
+2008-05-07	TRUE	Observatório da imigração	Nacional	2002-2011	Prestação de Serviços	Comunidade
+2008-03-08	TRUE	Manifestação nacional dos professores do ensino secundário	Nacional	2002-2011		
+2008-01-16	TRUE	Evacuação das instalações após alarme por libertação de gás nas imediações	Iscte	2002-2011	Memória	
+2008-01-07	TRUE	Assembleia estatutária, preparação para o regime fundacional, com a presença do ministro Mariano Gago	Iscte	2002-2011	Estatuto	
+2007-12-15	TRUE	ISCTE 35 anos. Nascido para inovar	Iscte	2002-2011	Memória	
+2007-11-05	TRUE	Agência de Avaliação e Acreditação do Ensino Superior (A3ES); Decreto lei 369/2007	Nacional	2002-2011	Ensino	
+2007-11-05	TRUE	Gabinete de Qualidade; Decreto-Lei n.º 369/2007​; Lei n.º 38/2007	Iscte	2002-2011	Comunidade	
+2007-09-10	TRUE	Regime Jurídico das Instituições do Ensino Superior RJIES; Lei 62/2007	Nacional	2002-2011	Estatuto	
+2007-09-01	TRUE	Automatização plena das inscrições do 1º ciclo	Iscte	2002-2011	Desmaterialização	Ensino
+2007-08-01	TRUE	Protocolo com a Universidade de Ciências e Tecnologia de Macau	Iscte	2002-2011	Redes	
+2007-07-10	TRUE	Acordo de cooperação técnico-financeiro ISCTE-OIT-IEFP-UGT-CGTP	Iscte	2002-2011	Prestação de Serviços	
+2007-07-01	TRUE	Acesso a residência universitária Prof. José Pinto Peixoto	Iscte	2002-2011	Comunidade	
+2007-07-01	TRUE	Desmaterialização da emissão dos diplomas	Iscte	2002-2011	Desmaterialização	Ensino
+2007-05-31	TRUE	Carlos Sá da Costa eleito presidente do Conselho Científico 	Iscte	2002-2011	Comunidade	Pessoas
+1996-01-01	TRUE	Associação dos antigos alunos do ISCTE (AAAISCTE)	Iscte	2002-2011	Comunidade	Redes
+2007-03-19	TRUE	Departamento de Arquitetura e Urbanismo	Iscte	2002-2011	Comunidade	
+2007-02-15	TRUE	Sílvia Silva eleita presidente do Conselho Pedagógico	Iscte	2002-2011	Comunidade	
+2007-01-02	TRUE	Lançamento de notas na plataforma Fénix	Iscte	2002-2011	Desmaterialização	Ensino
+2007-01-01	TRUE	UE: adesão da Bulgária e da Roménia	Internacional	2002-2011		
+2006-11-15	TRUE	Adequações e criações de cursos ao modelo de Bolonha (3 licenciaturas, 32 mestrados, 1 mestrado integrado, 7 doutoramentos)	Iscte	2002-2011	Ensino	
+2006-10-19	TRUE	Adesão a European University Association (EUA)	Internacional	2002-2011	Redes	
+2006-08-08	TRUE	Constituição da Fundação ISCTE (prestadora de serviços)	Iscte	2002-2011	Prestação de Serviços	
+2006-07-24	TRUE	Licenciatura em Ciência Política	Iscte	2002-2011	Ensino	
+2006-06-14	TRUE	 Adesão a Associação das Universidades de Língua Portuguesa (AULP)	Internacional	2002-2011	Redes	
+2006-05-30	TRUE	Integração na associação COLUMBUS	Internacional	2002-2011	Redes	
+2006-05-15	TRUE	Acesso à RTCS, Rede Ciência Tecnologia Sociedade (Internet)	Iscte	2002-2011	Infraestruturação	
+2006-03-17	TRUE	Departamento de Contabilidade	Iscte	2002-2011	Comunidade	
+2006-03-17	TRUE	Departamento de Finanças	Iscte	2002-2011	Comunidade	
+2006-02-28	TRUE	Adequações e criações de cursos ao modelo de Bolonha (15 licenciaturas, 25 mestrados, 4 doutoramentos)	Iscte	2002-2011	Ensino	
+2006-02-28	TRUE	Raúl Hestnes Ferreira. Arquitetura e universidade. ISCTE, 1972-2005	Iscte	2002-2011	Memória	Pessoas
+2006-02-13	TRUE	Doutoramento em Direito das Empresas (descontinuado), Maria Adelaide Croca	Iscte	2002-2011	Memória	Pessoas
+2005-07-27	TRUE	Criação do AUDAX	Iscte	2002-2011	Prestação de Serviços	
+2005-07-18	TRUE	Protocolo com o Instituto Superior Técnico relativo ao Sistema FénixEDU	Iscte	2002-2011	Infraestruturação	
+2005-06-13	TRUE	Morte de Álvaro Cunhal, 1913-2005	Nacional	2002-2011		Pessoas
+2005-06-10	TRUE	 Ciberdúvidas alojado num servidor do ISCTE	Iscte	2002-2011	Infraestruturação	
+2005-06-03	TRUE	Adesão ao CRUP	Iscte	2002-2011	Estatuto	
+2005-05-31	TRUE	António Gomes Mota eleito presidente do INDEG	Iscte	2002-2011	Comunidade	Pessoas
+2005-04-30	TRUE	Lançamento do Repositório institucional	Iscte	2002-2011	Desmaterialização	Campus
+2005-04-30	TRUE	Jorge Freitas Branco eleito presidente do Conselho Científico 	Iscte	2002-2011	Comunidade	Pessoas
+2005-03-12	TRUE	José António Vieira da Silva ministro do Trabalho e da Solidariedade Social	Iscte	2002-2011	Comunidade	Pessoas
+2005-03-12	TRUE	Maria de Lurdes Rodrigues ministra da Eduação	Iscte	2002-2011	Comunidade	Pessoas
+2005-02-28	TRUE	Luís Antero Reto eleito presidente do ISCTE	Iscte	2002-2011	Comunidade	Pessoas
+2005-02-14	TRUE	Plataforma Youtube	Internacional	2002-2011		
+2004-12-31	TRUE	Adesão à plataforma DeGóis	Iscte	2002-2011	Desmaterialização	
+2004-12-26	TRUE	Terramoto e sismo submarinos no Índico: 230.000 mortos	Internacional	2002-2011		
+2004-11-22	TRUE	Protocolo para a Biblioteca Central de Estudos Africanos (BCEA)	Iscte	2002-2011	Infraestruturação	
+2004-11-19	TRUE	Fim do serviço militar obrigatório (SMO)	Nacional	2002-2011		
+2004-07-06	TRUE	Primeiro doutoramento em Métodos Quantativos, Maria Teresa Calapêz	Iscte	2002-2011	Memória	Pessoas
+2004-05-01	TRUE	UE: adesão de Chipre, Eslováquia, Eslovénia, Estónia, Hungria, Letónia, Lituânia, Malta, Polónia, República checa	Internacional	2002-2011		
+2004-01-22	TRUE	Licenciamento inicial da plataforma e-learning Blackboard	Iscte	2002-2011	Ensino	Comunidade
+2003-10-28	TRUE	Honoris Causa atribuído a Serge Moscovici ✝︎	Iscte	2002-2011	Identidade	Pessoas
+2003-10-22	TRUE	Declaração de Berlim sobre acesso aberto ao conhecimento nas ciências e humanidades	Internacional	2002-2011		
+2003-10-21	TRUE	Greve nacional estudantil contra as propinas	Nacional	2002-2011		
+2003-09-22	TRUE	Apresentação do Portuguese Journal of Social Science	Iscte	2002-2011	Investigação	
+2003-04-03	TRUE	Resolução da AR nº 31/2003, medidas de enquadramento das praxes académicas	Nacional	2002-2011	Campus	
+2003-03-20	TRUE	Segunda Guerra do Golfo	Internacional	2002-2011		
+2003-01-27	TRUE	Licenciatura em Engenharia informática	Iscte	2002-2011	Ensino	
+2002-12-31	TRUE	Praça central (2.315 m2)	Iscte	2002-2011	Campus	
+2002-11-18	TRUE	Primeiro doutoramento em Estudos Africanos, Vitor Hugo Nicolau	Iscte	2002-2011	Memória	Pessoas
+2002-06-01	TRUE	Edifício II: Grande Auditório (497 lugares)	Iscte	2002-2011	Campus	
+2002-06-01	TRUE	Entrada em funcionamento edifício 2  (30.501 m2)	Iscte	2002-2011	Campus	Infraestruturação
+2002-05-17	TRUE	Formalização do Centro de informática (CIISCTE)	Iscte	2002-2011	Infraestruturação	Campus
+2002-04-06	TRUE	Luís Filipe Pereira ministro da Saúde	Iscte	2002-2011	Comunidade	Pessoas
+2002-04-01	TRUE	Revista Portuguesa e Brasileira de Gestão (RPBG), vol. 1, nº 1 sucede à Revista Portuguesa de Gestão (RPG)	Iscte	2002-2011	Investigação	
+2002-02-27	TRUE	Departamento de História	Iscte	2002-2011	Comunidade	
+2002-02-14	TRUE	XIV Governo aprova passagem do Iscte a Universidade Metropolitana (não homologado)	Iscte	2002-2011	Estatuto	
+2002-01-01	TRUE	Euro entra em circulação	Internacional	2002-2011		
+2002-01-01	TRUE	Trajectos, Revista de Comunicação, Cultura e Educação, nº. 1	Iscte	2002-2011	Investigação	
+2001-12-31	TRUE	Criação do Departamento de Finanças	Iscte	1992-2001	Comunidade	
+2001-10-07	TRUE	Guerra do Afeganistão	Internacional	1992-2001		
+2001-10-03	TRUE	Eduardo Ferro Rodrigues ministro do Equipamento Social	Nacional	1992-2001	Comunidade	Pessoas
+2001-09-17	TRUE	Criação do grupo de teatro mISCuTEm	Iscte	1992-2001	Comunidade	
+2001-09-11	TRUE	Atentado ao World Trade Center, Nova Iorque	Internacional	1992-2001		
+2001-03-10	TRUE	Eduardo Ferro Rodrigues ministro do Equipamento Social	Iscte	1992-2001	Comunidade	Pessoas
+2001-03-10	TRUE	Paulo Pedroso ministro do Trabalho e da Solidariedade 	Iscte	1992-2001	Comunidade	Pessoas
+2000-08-03	TRUE	Publicação dos estatutos ISCTE passa a escola superior não integrada	Iscte	1992-2001	Estatuto	
+2000-03-29	TRUE	Licenciatura em Marketing; Despacho n.º 6878/2000 - DR n.º 75/2000, Série 2 de 29 de Março		1992-2001	Ensino	
+2000-01-01	TRUE	Cidades, Comunidades e Territórios	Iscte	1992-2001	Investigação	
+1999-12-20	TRUE	Transferência da soberania de Macau à China	Internacional	1992-2001		
+1999-10-25	TRUE	Eduardo Ferro Rodrigues ministro do Trabalho e da Solidariedade	Iscte	1992-2001	Comunidade	Pessoas
+1999-09-08	TRUE	Cordão humano por Timor-Leste	Nacional	1992-2001	Comunidade	Pessoas
+1999-09-02	TRUE	Criação do Prémio Silva Leal	Iscte	1992-2001	Memória	Comunidade
+1999-08-30	TRUE	Independência de Timor Leste	Internacional	1992-2001		
+1999-08-19	TRUE	Departamento de Psicologia Social e das Organizações	Iscte	1992-2001	Comunidade	
+1999-06-10	TRUE	Declaração de Bolonha EEES	Internacional	1992-2001		
+1999-03-12	TRUE	Honoris Causa atribuído a Immanuel Wallerstein ✝︎	Iscte	1992-2001	Identidade	Pessoas
+1999-01-02	TRUE	Secção autónoma de Direito; Despacho nº 2399, Diário da República 2ª Série nº 1 de 2 de Janeiro	Iscte	1992-2001	Comunidade	
+1998-12-31	TRUE	O acervo da Biblioteca do Iscte é composto por cerca de 130 000 exemplares (monografias, obras de referência, teses e dissertações), 20 000 e-books e 67 000 periódicos, em suporte papel e digital	Iscte	2012-2022	Infraestruturação	Comunidade
+1998-10-08	TRUE	Atribuição do prémio Nobel da Literatura a José Saramago	Internacional	1992-2001		
+1998-10-06	TRUE	Primeiro doutoramento em Ciências e Tecnologias da Informação, Miguel Sales Dias	Iscte	1992-2001	Memória	Pessoas
+1998-09-03	TRUE	Catálogo da biblioteca em linha	Iscte	1992-2001	Infraestruturação	
+1998-07-29	TRUE	Licenciatura em Arquitetura; Despacho n.º 13 051/98 - Diário da República n.º 173/1998, Série II de 1998-07-29	Iscte	1992-2001	Ensino	
+1998-07-21	TRUE	Primeiro Doutoramento em Economia, Raúl Manuel Gonçalves Lopes	Iscte	1992-2001	Memória	Pessoas
+1998-05-22	TRUE	Abertura da EXPO98, Lisboa	Internacional	1992-2001		
+1998-03-23	TRUE	Licenciatura em Engenharia de Telecomunicações e Informática; Despacho n.º 7772/98, de 23 de Março, publicado no Diário da República, 2.ª série, n.º 107, de 9 de Maio de 1998	Iscte	1992-2001	Ensino	
+1998-03-23	TRUE	Licenciatura em Finanças; Despacho n.º 9675/98 - DR n.º 130/1998, Série 2 de 5 de Junho	Iscte	1992-2001	Ensino	
+1998-02-26	TRUE	Guerra do Kosovo	Internacional	1992-2001		
+1998-02-17	TRUE	Departamento de Métodos Quantitativos	Iscte	1992-2001	Comunidade	
+1997-12-15	TRUE	25º aniversário (medalha)	Iscte	1992-2001	Memória	Identidade
+1997-12-15	TRUE	25º aniversário (pisa papéis)	Iscte	1992-2001	Memória	Identidade
+1997-11-25	TRUE	Eduardo Ferro Rodrigues ministro do Trabalho e da Solidariedade	Nacional	1992-2001	Comunidade	Pessoas
+1997-10-02	TRUE	Acordo de Schengen	Internacional	1992-2001		
+1997-07-28	TRUE	FCT; Decreto-Lei n.º 188/97, DR nº 172/1997, Série 1-A de 28 de Julho	Nacional	1992-2001	Investigação	
+1997-07-28	TRUE	JNICT (1967-1997)	Nacional	1992-2001	Investigação	
+1997-05-30	TRUE	Revista Etnográfica	Iscte	1992-2001	Investigação	
+1996-12-13	TRUE	João Freire eleito presidente do Conselho Científico	Iscte	1992-2001	Comunidade	Pessoas
+1996-12-13	TRUE	Manuel Alberto Martins Ferreira eleito presidente do Conselho Diretivo	Iscte	1992-2001	Comunidade	Pessoas
+1996-10-13	TRUE	Site ISCTE (1ª versão arquivada)	Iscte	1992-2001	Infraestruturação	
+1996-08-03	TRUE	Fernanda Ribeiro ganha ouro nos Jogos Olímpicos de Atlanta (10.000 m.)	Internacional	1992-2001		Pessoas
+1996-06-30	TRUE	Revista Economia Global e Gestão	Iscte	1992-2001	Investigação	
+1996-06-26	TRUE	Licenciatura em Gestão de Recursos Humanos. Despacho n.º 13/96 - DR n.º 146/1996, Série2 de 26 de Junho	Iscte	1992-2001	Ensino	
+1996-04-30	TRUE	Departamento de Ciências e Tecnologias de Informação	Iscte	1992-2001	Comunidade	
+1996-03-28	TRUE	Primeiro Doutoramento em História Social Contemporânea, Carlos Mauricio	Iscte	1992-2001	Memória	Pessoas
+1996-01-29	TRUE	Licenciatura em História Moderna e Contemporânea; Despacho n.º 1/96 - Diário da República n.º 24/1996, Série II de 1996-01-29	Iscte	1992-2001	Ensino	
+1995-10-28	TRUE	Eduardo Ferro Rodrigues ministro da Solidariedade e Segurança Social	Nacional	1992-2001	Comunidade	Pessoas
+1995-10-28	TRUE	Maria João Rodrigues ministra da Qualificação e Emprego	Nacional	1992-2001	Comunidade	Pessoas
+1995-09-15	TRUE	Ala Autónoma (5.183 m2)	Iscte	1992-2001	Campus	
+1995-07-11	TRUE	Licenciatura em Psicologia Social e Organizacional; Despacho 14/95 - DR n.º158/1995, Série 2 de 11 de Julho	Iscte	1992-2001	Ensino	
+1995-07-06	TRUE	Ler História Associação de Actividades Científicas	Iscte	1992-2001	Investigação	
+1995-06-05	TRUE	Adjudicação do traje académico	Iscte	1992-2001	Identidade	
+1995-01-01	TRUE	UE: adesão da Áustria, Finlândia e Suécia	Internacional	1992-2001		
+1994-11-17	TRUE	Primeiro Doutoramento em Organização e Gestão de Empresas OGE, Victor Roldão	Iscte	1992-2001	Memória	Pessoas
+1994-09-15	TRUE	Cave corpo sul (717 m2)	Iscte	1992-2001	Campus	
+1994-09-15	TRUE	Pavilhão-esplanada (119 m2)	Iscte	1992-2001	Campus	
+1994-07-05	TRUE	Licenciatura em Economia. Despacho n.º 6/94, DR n.º 153/1994, Série 2 de 5 de Julho	Iscte	1992-2001	Ensino	
+1994-05-10	TRUE	Nelson Mandela presidente da África do Sul	Internacional	1992-2001		Pessoas
+1994-04-07	TRUE	Genocídio no Ruanda	Internacional	1992-2001		
+1994-03-07	TRUE	Primeiro Doutoramento em Psicologia Social e Organizacional, Maria Luísa Pedroso Lima	Iscte	1992-2001	Memória	Pessoas
+1994-02-14	TRUE	Unidade de Investigação em Ciências Sociais (UNICS)	Iscte	1992-2001	Investigação	Redes
+1994-02-14	TRUE	Unidade de Investigação em Desenvolvimento Empresarial (UNIDE)	Iscte	1992-2001	Investigação	Redes
+1994-01-01	TRUE	 Entrada em vigor do acordo ortográfico	Nacional	1992-2001	Comunidade	
+1993-12-31	TRUE	Atribuição de contas de e-mail à comunidade como alternativa ao fax nº +351217903059 e ao telex nº 62542ISCTE-P	Iscte	1992-2001	Infraestruturação	Campus
+1993-11-01	TRUE	Tratado de Maastricht	Internacional	1992-2001		
+1993-09-30	TRUE	Discentes: 3531	Iscte	1992-2001	Comunidade	
+1993-09-15	TRUE	General Meeting European Association Social Psicology no ISCTE	Iscte	1992-2001	Investigação	Redes
+1993-07-20	TRUE	Licenciatura em Gestão e Engenharia Industrial; Despacho n.º 23/93 - DR n.º 168/1993, Série 2 de 20 de Julho	Iscte	1992-2001	Ensino	
+1993-07-20	TRUE	Licenciatura em Sociologia e Planeamento; Despacho n.º 22/93 - DR n.º 168/1993, Série 2 de 20 e Julho	Iscte	1992-2001	Ensino	
+1993-07-10	TRUE	Fundação das Universidades Portuguesas	Nacional	1992-2001		
+1993-06-11	TRUE	Inauguração do edifício do INDEG (área 30.153 m2)	Iscte	1992-2001	Campus	
+1993-03-30	TRUE	Sociologia Problemas e Práticas nº 13: Dossiê ISCTE Os primeiros 20 anos	Iscte	1992-2001	Memória	Identidade
+1992-12-15	TRUE	20º aniversário (medalha)	Iscte	1992-2001	Memória	Identidade
+1992-10-08	TRUE	Primeiro mestre em Sociologia, Luís Capucha	Iscte	1982-1991	Memória	Pessoas
+1992-10-06	TRUE	SIC: primeiro canal televisivo privado	Nacional	1992-2001		
+1992-06-03	TRUE	ECO-92, Rio de Janeiro	Internacional	1992-2001		
+1992-04-08	TRUE	João Ferreira de Almeida presidente do Iscte	Iscte	1992-2001	Comunidade	
+1992-01-02	TRUE	Acesso à Internet	Iscte	1992-2001	Infraestruturação	Redes
+1992-01-01	TRUE	Revista Portuguesa de Gestão	Iscte	1992-2001	Investigação	
+1991-12-19	TRUE	Primeiro mestre em Ciências Empresariais, João António Martins Tavares, estudante nº 6962	Iscte	1982-1991	Memória	Pessoas
+1991-12-16	TRUE	Centro de Investigação e de Intervenção Social (CIS)	Iscte	1982-1991	Investigação	Redes
+1991-11-08	TRUE	Fim da URSS	Internacional	1982-1991		
+1991-10-28	TRUE	Criam-se os primeiros três departamentos: Antropologia, Gestão e Sociologia	Iscte	1982-1991	Comunidade	Memória
+1991-07-19	TRUE	Associação dos Diplomados no Programa Doutoral em Ciências de Gestão do Iscte (APDG-ISCTE)	Iscte	1982-1991	Redes	
+1991-05-14	TRUE	Primeiro McDonald's em Portugal	Nacional	1982-1991		
+1991-02-27	TRUE	Centro de Estudos Territoriais (CET)	Iscte	1982-1991	Investigação	Redes
+1990-12-07	TRUE	Criação da Tuna académica	Iscte	1982-1991	Comunidade	
+1990-11-26	TRUE	Centro de Estudos Africanos ISCTE (CEA ISCTE)	Iscte	1982-1991	Investigação	Redes
+1990-08-02	TRUE	Primeira Guerra do Golfo	Internacional	1982-1991		
+1990-03-23	TRUE	Afonso de Barros, presidente do ISCTE	Iscte	1982-1991	Comunidade	Pessoas
+1990-01-15	TRUE	Maré negra na ilha do Porto Santo provocada pelo pretoleiro Aragón	Nacional	1982-1991		
+1990-01-04	TRUE	Estatutos do ISCTE	Iscte	1982-1991	Estatuto	
+1989-11-09	TRUE	Queda do Muro de Berlim	Internacional	1982-1991		
+1989-11-02	TRUE	Assembleia Extraordinária de Escola aprecia alterações jurídicas 	Iscte	1982-1991	Estatuto	
+1989-07-25	TRUE	Primeiro Doutoramento em Antropologia Social, José Fialho Feliciano	Iscte	1982-1991	Memória	Pessoas
+1989-07-12	TRUE	Licenciatura em Informática e Gestão de Empresas; Portaria n.º 536/89 - DR n.º 158/1989, Série 2 de 12 de Julho	Iscte	1982-1991	Ensino	
+1989-06-04	TRUE	Repressão pelo exército dos manifestantes na praça Tianamen, em Pequim	Internacional	1982-1991		
+1989-04-14	TRUE	Aprovação de símbolo institucional. Despacho 1/CD/89, DR nº. 127, 2ª Série de 3 de Junho	Iscte	1982-1991	Identidade	Memória
+1989-04-11	TRUE	Centro de Estudos sobre Mudanças Socioeconomicas (DINAMIA)	Iscte	1982-1991	Investigação	Redes
+1988-11-18	TRUE	GIESTA-ISCTE Grupo de Investigação em Estatística e Análise de Dados	Iscte	1982-1991	Investigação	Redes
+1988-11-09	TRUE	Constituição da Associação para o Desenvolvimento das Telecomunicações e Técnicas de Informática (ADETTI)	Iscte	1982-1991	Investigação	Redes
+1988-11-02	TRUE	Constituição da associação do INDEG	Iscte	1982-1991	Prestação de Serviços	Comunidade
+1988-09-30	TRUE	Discentes: 2893	Iscte	1982-1991	Comunidade	
+1988-09-24	TRUE	Lei da autonomia universitária, Lei n.º 108/88, de 24 de setembro	Nacional	1982-1991	Comunidade	
+1988-09-23	TRUE	Rosa Mota ganha ouro olímpico na maratona de Seul	Internacional	1982-1991		Pessoas
+1988-08-25	TRUE	Incêndio no Chiado, Lisboa	Nacional	1982-1991		
+1988-08-24	TRUE	Constituição da Associação de Estudantes (atual AEISCTE-IUL)	Iscte	1982-1991	Comunidade	Redes
+1988-07-27	TRUE	Mestrado em Ciências Empresariais	Iscte	1992-2001	Ensino	
+1988-07-26	TRUE	Mestrado em Sociologia	Iscte	1982-1991	Ensino	
+1988-02-15	TRUE	Retirada militar soviética do Afeganistão	Internacional	1982-1991		
+1987-12-16	TRUE	JUSOECONOMIAE -Centro de estudos de direito de empresas da administração pública e das comunidades europeias	Iscte	1982-1991	Investigação	Redes
+1987-06-13	TRUE	Programa Erasmus (Manuel Marín, 1949-2017, entre os seus promotores europeus) 	Internacional	1982-1991	Pessoas	Redes
+1986-12-23	TRUE	Criação da Fundação para o desenvolvimento dos meios nacionais de cálculo científico (FCCN)	Nacional	1982-1991	Comunidade	Infraestruturação
+1986-10-14	TRUE	Lei de bases do sistema educativo	Nacional	1982-1991	Comunidade	
+1986-06-30	TRUE	Sociologia, Problemas e Práticas, nº1	Iscte	1982-1991	Investigação	
+1986-06-09	TRUE	Centro de Estudos de Antropologia Social (CEAS)	Iscte	1982-1991	Investigação	Redes
+1986-04-26	TRUE	Acidente nuclear na central de Chernobil, URSS	Internacional	1982-1991		
+1986-01-01	TRUE	Adesão de Portugal e Espanha à CEE	Internacional	1982-1991		
+1985-09-02	TRUE	Entrada em funcionamento da rede MB	Nacional	1982-1991		
+1985-06-20	TRUE	Criado pelo Ministério da Saúde o grupo de trabalho da SIDA	Nacional	1982-1991		
+1985-06-19	TRUE	Centro de Investigação e Estudos de Sociologia, C.R.L. (CIES)	Iscte	1982-1991	Investigação	Redes
+1985-01-01	TRUE	Revista de Gestão	Iscte	1982-1991	Investigação	
+1984-11-22	TRUE	Criação do Centro Interdisciplinar de Estudos Económicos (CIDEC)	Iscte	1982-1991	Prestação de Serviços	Redes
+1984-09-27	TRUE	José Manuel Prostes da Fonseca eleito presidente do Conselho Diretivo	Iscte	1982-1991	Comunidade	Pessoas
+1984-08-12	TRUE	Carlos Lopes ganha ouro olímpico na maratona de Los Angeles	Internacional	1982-1991		Pessoas
+1984-07-18	TRUE	Associação de Estudos de história contemporânea portuguesa	Iscte	1982-1991	Investigação	Redes
+1984-05-29	TRUE	Regime jurídico do pessoal não docente. Decreto Lei 184/84 de 29 de Maio;  https://dre.pt/dre/detalhe/decreto-lei/184-1984-384274	Iscte	1982-1991	Comunidade	
+1983-12-20	TRUE	Ler História nº1	Iscte	1982-1991	Investigação	
+1983-04-29	TRUE	Atribuição dos graus de mestre e doutor pelo Iscte através da Universidade Técnica de Lisboa (UTL)	Internacional	1982-1991	Comunidade	Ensino
+1983-01-01	TRUE	International Association for the Exchange of Students for Technical Experience (AIESTE)	Iscte	1982-1991	Redes	
+1982-10-29	TRUE	Criação da Licenciatura em Antropologia Social 	Iscte	1982-1991	Ensino	
+1982-10-29	TRUE	Licenciatura em Antropologia Social, Raúl Iturra	Iscte	1982-1991	Comunidade	Pessoas
+1982-09-30	TRUE	Discentes: 2268	Iscte	1982-1991	Comunidade	
+1982-07-01	TRUE	Mário Murteira eleito presidente do Conselho Científico	Iscte	1982-1991	Comunidade	Pessoas
+1982-01-18	TRUE	José Madureira Pinto primeiro doutorado pelo ISCTE (Sociologia)	Iscte	1982-1991	Memória	Pessoas
+1981-10-22	TRUE	Centro de Estudos Africanos criado pelo Conselho Científico	Iscte	1972-1981	Investigação	
+1981-04-29	TRUE	Memorial O ISCTE e a Universidade (apresentado à DGES)	Iscte	1972-1981	Estatuto	Identidade
+1981-04-07	TRUE	Projeto ISCTE: Gestão Sociologia Tecnologia	Iscte	1972-1981	Estatuto	Comunidade
+1981-03-12	TRUE	Negociações com a Universidade de Lisboa com vista à integração 	Iscte	1972-1981	Estatuto	
+1981-01-01	TRUE	UE: adesão da Grécia	Internacional	1972-1981		
+1980-12-04	TRUE	Morte de Francisco Sá Carneiro, 1934-1980	Nacional	1972-1981		Pessoas
+1980-03-19	TRUE	Eduardo Gomes Cardoso eleito presidente do Conselho Diretivo	Iscte	1972-1981	Comunidade	Pessoas
+1980-03-19	TRUE	Francisco Pina Prata eleito presidente do Conselho Pedagógico	Iscte	1972-1981	Comunidade	Pessoas
+1980-03-07	TRUE	Emissão regular de televisão a cores	Nacional	1972-1981		
+1980-02-16	TRUE	Naufrágio do navio Tollan no rio Tejo frente ao Terreiro do Paço, Lisboa. Seria removido a 2-12-1983	Nacional	1972-1981		
+1980-01-01	TRUE	Terramoto em Angra do Heroísmo	Nacional	1972-1981		
+1979-12-05	TRUE	Universidade Técnica de Lisboa rejeita integrar ISCTE	Iscte	1972-1981	Estatuto	
+1979-11-13	TRUE	Estatuto da Carreira Docente Universitário. Decreto-Lei n.º 448/79. DR n.º 262/1979, Série I de 13 de Novembro	Nacional	1972-1981	Comunidade	
+1979-08-01	TRUE	Adérito Sedas Nunes ministro da Cultura e da Ciência	Iscte	1972-1981	Comunidade	Pessoas
+1979-07-03	TRUE	José Joaquim Laginha eleito presidente do Conselho Pedagógico	Iscte	1972-1981	Comunidade	Pessoas
+1979-05-02	TRUE	Criação do Conselho de Reitores das Universidades Portuguesas (CRUP)	Nacional	1972-1981		
+1979-04-26	TRUE	Francisco Pina Prata eleito presidente do Conselho Diretivo	Iscte	1972-1981	Comunidade	Pessoas
+1978-12-31	TRUE	Edifício1 (11.349 m2)	Iscte	1972-1981	Campus	Infraestruturação
+1978-12-06	TRUE	Institucionalização do Numerus Clausus	Nacional	1972-1981	Comunidade	
+1978-05-05	TRUE	Adérito Sedas Nunes eleito presidente do Conselho Científico	Iscte	1972-1981	Comunidade	Pessoas
+1978-04-05	TRUE	Licenciatura em Sociologia	Iscte	1972-1981	Ensino	
+1977-12-31	TRUE	Mário Murteira eleito presidente do Conselho Pedagógico	Iscte	1972-1981	Comunidade	Pessoas
+1977-11-10	TRUE	Desanexação da Universidade Nova de Lisboa	Iscte	1972-1981	Estatuto	
+1977-09-30	TRUE	Discentes: 1569	Iscte	1972-1981	Comunidade	
+1977-05-03	TRUE	José Joaquim Laginha eleito presidente do Conselho Diretivo	Iscte	1972-1981	Comunidade	Pessoas
+1976-12-31	TRUE	Início da construção do Edifício I, atual Sedas Nunes	Iscte	1972-1981	Campus	Infraestruturação
+1976-07-09	TRUE	Instituto Nacional de Investigação Científica (1976-1992)	Nacional	1972-1981	Investigação	
+1975-11-20	TRUE	Espanha: Fim do regime franquista	Internacional	1972-1981		
+1975-11-11	TRUE	Independência de Angola	Internacional	1972-1981		
+1975-08-01	TRUE	 Acordos de Helsínquia	Internacional	1982-1991		
+1975-07-12	TRUE	Independência de São Tomé e Príncipe	Internacional	1972-1981		
+1975-06-25	TRUE	Independência de Moçambique	Internacional	1972-1981		
+1975-04-30	TRUE	Rendição de Saigão. Fim da Guerra do Vietname	Internacional	1972-1981		
+1975-03-26	TRUE	Mário Murteira ministro do Planeamento e Coordenação Económica	Iscte	1972-1981	Comunidade	Pessoas
+1974-10-15	TRUE	Ano letivo funciona em espaço alugado da Feira Popular de Lisboa	Iscte	1972-1981	Memória	
+1974-09-30	TRUE	Número de Discentes: 879	Iscte	1972-1981	Comunidade	
+1974-08-26	TRUE	Independência de Cabo Verde	Internacional	1972-1981		
+1974-07-24	TRUE	Grécia: Queda da ditadura dos Coronéis	Internacional	1972-1981		
+1974-06-26	TRUE	Protestos de estudantes do ISCTE por um controlo democrático do ensino	Iscte	1972-1981	Comunidade	
+1974-05-28	TRUE	Criação de um Conselho Diretivo	Iscte	1972-1981	Comunidade	
+1974-05-16	TRUE	Mário Murteira ministro dos Assuntos Sociais	Iscte	1972-1981	Comunidade	Pessoas
+1974-05-02	TRUE	Eleição de uma Comissão Directiva	Iscte	1972-1981	Comunidade	
+1974-05-02	TRUE	Extinção do Conselho Escolar pela Assembleia plenária do ISCTE	Iscte	1972-1981	Comunidade	
+1974-04-29	TRUE	Decreto-Lei nº 176/74 exonora os reitores, vice-reitores das universidades, directores das faculdades, escolas ou institutos universitários	Nacional	1972-1981	Comunidade	
+1974-04-27	TRUE	Primeira reunião do Conselho Escolar pós golpe militar	Iscte	1972-1981	Comunidade	
+1974-04-25	TRUE	Portugal: Revolução dos Cravos	Nacional	1972-1981		
+1973-12-31	TRUE	 Henrique Martins de Carvalho (1919-1994) é diretor do ISCTE	Iscte	1972-1981	Comunidade	Pessoas
+1973-09-30	TRUE	Discentes: 942	Iscte	1972-1981	Comunidade	
+1973-09-24	TRUE	Guiné-Bissau: declaração unilateral de independência	Internacional	1972-1981		
+1973-09-11	TRUE	Chile: Derrube do governo de Salvador Allende	Internacional	1972-1981		
+1973-08-11	TRUE	Integração do ISCTE na Universidade Nova de Lisboa	Iscte	1972-1981	Estatuto	
+1973-02-03	TRUE	Número de docentes: 12	Iscte	1972-1981	Comunidade	
+1973-01-01	TRUE	CEE: adesão da Dinamarca, Irlanda, Reino Unido	Internacional	1972-1981		
+1972-12-21	TRUE	Matricula-se o estudante nº. 1 Abel dos Santos Alves	Iscte	1972-1981	Comunidade	Pessoas
+1972-12-15	TRUE	Criação de cursos	Iscte	1972-1981	Ensino	
+1972-12-15	TRUE	Instalações funcionam no Campo Grande 185	Iscte	1972-1981	Memória	
+1972-12-15	TRUE	Licenciatura em Ciências do Trabalho	Iscte	1972-1981	Ensino	Memória
+1972-12-15	TRUE	 Licenciatura em Economia	Iscte	1972-1981	Ensino	Memória
+1972-12-15	TRUE	Licenciatura em Organização e Gestão de Empresas (OGE)	Iscte	1972-1981	Ensino	Memória
+1972-12-15	TRUE	Criação do ISCTE	Iscte	1972-1981	Estatuto	

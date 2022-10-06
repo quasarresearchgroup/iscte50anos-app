@@ -8,7 +8,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:iscte_spots/pages/profile/placeholder.dart';
-import 'package:logger/logger.dart';
 import 'package:http/http.dart' as http;
 
 const FlutterSecureStorage secureStorage = FlutterSecureStorage();
@@ -22,7 +21,6 @@ void main() {
 
 class ProfilePage extends StatelessWidget {
   static const pageRoute = "/profile";
-  Logger logger = Logger();
 
   ProfilePage({Key? key}) : super(key: key);
 

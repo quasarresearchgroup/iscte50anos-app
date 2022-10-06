@@ -3,18 +3,17 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:iscte_spots/helper/constants.dart';
 import 'package:iscte_spots/models/requests/spot_request.dart';
 import 'package:iscte_spots/services/auth/auth_service.dart';
 import 'package:iscte_spots/services/auth/openday_login_service.dart';
+import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/services/shared_prefs_service.dart';
-import 'package:iscte_spots/widgets/util/constants.dart';
-import 'package:logger/logger.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 
 import 'openday_notification_service.dart';
 
 class OpenDayQRScanService {
-  static final Logger _logger = Logger();
   static const String generalError = "error";
   static const String connectionError = "wifi_error";
   static const String loginError = "not_logged_in";
@@ -43,63 +42,63 @@ class OpenDayQRScanService {
       BuildContext context, SpotRequest request) async {
     if (request.statusCode == 404) {
       OpenDayNotificationService.showInvalidErrorOverlay(context);
-      _logger.d("invalidQRError : $request");
+      LoggerService.instance.debug("invalidQRError : $request");
     } else {
       var response = request.locationPhotoLink;
       switch (response) {
         case OpenDayQRScanService.generalError:
           {
             OpenDayNotificationService.showErrorOverlay(context);
-            _logger.d("generalError : $response");
+            LoggerService.instance.debug("generalError : $response");
           }
           break;
         case OpenDayQRScanService.connectionError:
           {
             OpenDayNotificationService.showConnectionErrorOverlay(context);
-            _logger.d("connectionError : $response");
+            LoggerService.instance.debug("connectionError : $response");
           }
           break;
         case OpenDayQRScanService.loginError:
           {
             OpenDayNotificationService.showLoginErrorOverlay(context);
-            _logger.d("loginError : $response");
+            LoggerService.instance.debug("loginError : $response");
           }
           break;
         case OpenDayQRScanService.wrongSpotError:
           {
             OpenDayNotificationService.showWrongSpotErrorOverlay(context);
-            _logger.d("wrongSpotError : $response");
+            LoggerService.instance.debug("wrongSpotError : $response");
           }
           break;
         case OpenDayQRScanService.alreadyVisitedError:
           {
             OpenDayNotificationService.showAlreadeyVisitedOverlay(context);
-            _logger.d("alreadyVisitedError : $response");
+            LoggerService.instance.debug("alreadyVisitedError : $response");
           }
           break;
         case OpenDayQRScanService.invalidQRError:
           {
             OpenDayNotificationService.showInvalidErrorOverlay(context);
-            _logger.d("invalidQRError : $response");
+            LoggerService.instance.debug("invalidQRError : $response");
           }
           break;
         case OpenDayQRScanService.disabledQRError:
           {
             OpenDayNotificationService.showDisabledErrorOverlay(context);
-            _logger.d("disabledQRError : $response");
+            LoggerService.instance.debug("disabledQRError : $response");
           }
           break;
         case OpenDayQRScanService.allVisited:
           {
             //OpenDayNotificationService.showAllVisitedOverlay(context);
-            _logger.d("allVisited : $response");
+            LoggerService.instance.debug("allVisited : $response");
             return OpenDayQRScanService.allVisited;
           }
           break;
         default:
           {
             //await OpenDayNotificationService.showNewSpotFoundOverlay(context);
-            _logger.d("changed image: $response");
+            LoggerService.instance.debug("changed image: $response");
             return response;
           }
       }
@@ -111,7 +110,8 @@ class OpenDayQRScanService {
     // int now = DateTime.now().millisecondsSinceEpoch;
     //if (now - _lastScan >= _scanCooldown) {
 
-    _logger.d("started request at ${DateTime.now()}\t${barcode?.code}");
+    LoggerService.instance
+        .debug("started request at ${DateTime.now()}\t${barcode?.rawValue}");
     const FlutterSecureStorage secureStorage = FlutterSecureStorage();
 
     String? apiToken =
@@ -130,7 +130,7 @@ class OpenDayQRScanService {
             Uri.parse('${BackEndConstants.API_ADDRESS}/api/spots/permit'));
       } else {
         request = await client.getUrl(Uri.parse(
-            '${BackEndConstants.API_ADDRESS}/api/spots/${barcode.code}'));
+            '${BackEndConstants.API_ADDRESS}/api/spots/${barcode.rawValue}'));
       }
 
       request.headers.add("Authorization", "Token $apiToken");
@@ -147,10 +147,10 @@ class OpenDayQRScanService {
         var responseDecoded =
             jsonDecode(await response.transform(utf8.decoder).join());
 
-        _logger.d(responseDecoded);
+        LoggerService.instance.debug(responseDecoded);
 
         if (responseDecoded["location_photo_link"] != null) {
-          _logger.d(
+          LoggerService.instance.debug(
               "${responseDecoded["location_photo_link"]}; ${responseDecoded["description"]}; ${responseDecoded["spot_number"]}");
           SharedPrefsService.resetCompletedAllPuzzles();
           return SpotRequest(
@@ -161,7 +161,7 @@ class OpenDayQRScanService {
         } else if (responseDecoded["message"] != null) {
           var responseDecoded2 = responseDecoded["message"] as String;
 
-          _logger.d(responseDecoded2);
+          LoggerService.instance.debug(responseDecoded2);
           return SpotRequest(
             locationPhotoLink: responseDecoded2,
             statusCode: response.statusCode,
@@ -169,10 +169,10 @@ class OpenDayQRScanService {
         }
       }
     } on SocketException {
-      _logger.e("Socket Exception");
+      LoggerService.instance.error("Socket Exception");
       return SpotRequest(locationPhotoLink: connectionError, statusCode: 500);
     } catch (e) {
-      _logger.e(e);
+      LoggerService.instance.error(e);
       return SpotRequest(locationPhotoLink: generalError, statusCode: 500);
     }
     return SpotRequest(locationPhotoLink: generalError, statusCode: 500);

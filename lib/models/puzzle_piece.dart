@@ -1,8 +1,12 @@
+import 'package:flutter/cupertino.dart';
 import 'package:iscte_spots/models/database/tables/database_puzzle_piece_table.dart';
+import 'package:iscte_spots/models/database/tables/database_spot_table.dart';
+import 'package:iscte_spots/models/spot.dart';
 import 'package:iscte_spots/pages/home/puzzle/puzzle_piece_widget.dart';
 
 class PuzzlePiece {
   PuzzlePiece({
+    required this.spotID,
     required this.row,
     required this.column,
     required this.maxRow,
@@ -10,6 +14,7 @@ class PuzzlePiece {
     required this.left,
     required this.top,
   });
+  final int spotID;
   final double left;
   final double top;
   final int row;
@@ -19,13 +24,20 @@ class PuzzlePiece {
 
   @override
   String toString() {
-    return 'PuzzlePiece{left: $left, top: $top, row: $row, column: $column, maxRow: $maxRow, maxColumn: $maxColumn}';
+    return 'PuzzlePiece{spotID: $spotID, left: $left, top: $top, row: $row, column: $column, maxRow: $maxRow, maxColumn: $maxColumn}';
   }
 
-  PuzzlePieceWidget getWidget(
-      image, imageSize, bringToTop, sendToBack, constraints, completeCallback) {
+  Future<PuzzlePieceWidget> getWidget({
+    required Size imageSize,
+    required bringToTop,
+    required sendToBack,
+    required BoxConstraints constraints,
+    required completeCallback,
+    bool isTurned = false,
+  }) async {
+    Spot spot = (await DatabaseSpotTable.getAllWithIds([spotID])).first;
     return PuzzlePieceWidget(
-      image: image,
+      spot: spot,
       imageSize: imageSize,
       bringToTop: bringToTop,
       sendToBack: sendToBack,
@@ -42,6 +54,7 @@ class PuzzlePiece {
   }
 
   factory PuzzlePiece.fromMap(Map<String, dynamic> json) => PuzzlePiece(
+        spotID: json[DatabasePuzzlePieceTable.columnSpotId],
         row: json[DatabasePuzzlePieceTable.columnRow],
         column: json[DatabasePuzzlePieceTable.columnColumn],
         maxRow: json[DatabasePuzzlePieceTable.columnMaxRow],
@@ -52,6 +65,7 @@ class PuzzlePiece {
 
   Map<String, dynamic> toMap() {
     return {
+      DatabasePuzzlePieceTable.columnSpotId: spotID,
       DatabasePuzzlePieceTable.columnRow: row,
       DatabasePuzzlePieceTable.columnColumn: column,
       DatabasePuzzlePieceTable.columnMaxRow: maxRow,

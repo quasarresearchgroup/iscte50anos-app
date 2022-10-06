@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:iscte_spots/pages/auth/register/registration_error.dart';
 import 'package:iscte_spots/services/auth/registration_service.dart';
+import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
-import 'package:logger/logger.dart';
 
 class SchoolRegisterForm extends StatefulWidget {
   SchoolRegisterForm({
@@ -14,7 +14,6 @@ class SchoolRegisterForm extends StatefulWidget {
     required this.formKey,
     required this.errorCode,
   }) : super(key: key);
-  final Logger _logger = Logger();
   ValueNotifier<String> chosenAffiliationType;
   ValueNotifier<String> chosenAffiliationName;
   final GlobalKey<FormState> formKey;
@@ -50,7 +49,7 @@ class _SchoolRegisterFormState extends State<SchoolRegisterForm> {
             ),
           );
         } else if (snapshot.hasError) {
-          widget._logger.e(snapshot.error);
+          LoggerService.instance.error(snapshot.error);
           return Column(
             children: [
               RichText(
@@ -66,7 +65,7 @@ class _SchoolRegisterFormState extends State<SchoolRegisterForm> {
                   ),
                 ),
                 onPressed: () {
-                  widget._logger.d("refreshing schools");
+                  LoggerService.instance.debug("refreshing schools");
                   setState(() {
                     schoolsAfilitation =
                         RegistrationService.getSchoolAffiliations();

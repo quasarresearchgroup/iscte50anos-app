@@ -1,15 +1,14 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:iscte_spots/pages/quiz/quiz_page.dart';
-import 'package:iscte_spots/widgets/util/constants.dart';
-import 'package:iscte_spots/widgets/util/iscte_theme.dart';
-import 'package:logger/logger.dart';
+import 'package:iscte_spots/services/platform_service.dart';
+import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_alert_dialog.dart';
+import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_back_button.dart';
+import 'package:iscte_spots/widgets/my_app_bar.dart';
+
 
 import '../../services/quiz/quiz_service.dart';
 import '../../widgets/dialogs/CustomDialogs.dart';
@@ -37,9 +36,9 @@ class QuizMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title:
-        const Text("Quiz"), //AppLocalizations.of(context)!.quizPageTitle)
+      appBar: MyAppBar(
+        title:"Quiz", //AppLocalizations.of(context)!.quizPageTitle)
+          leading: DynamicBackIconButton(),
       ),
       body: NotificationListener<OverscrollIndicatorNotification>(
         onNotification: (overscroll) {

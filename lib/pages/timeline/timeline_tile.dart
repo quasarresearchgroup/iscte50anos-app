@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:iscte_spots/helper/datetime_extension.dart';
+import 'package:iscte_spots/models/database/tables/database_event_table.dart';
+import 'package:iscte_spots/models/timeline/event.dart';
 import 'package:iscte_spots/pages/timeline/timeline_details_page.dart';
+import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 import 'package:timeline_tile/timeline_tile.dart';
-
-import '../../models/content.dart';
 
 class EventTimelineTile extends StatefulWidget {
   const EventTimelineTile({
@@ -19,7 +21,7 @@ class EventTimelineTile extends StatefulWidget {
   final bool isFirst;
   final bool isLast;
   final bool isEven;
-  final Content data;
+  final Event data;
   final LineStyle lineStyle;
 
   @override
@@ -53,11 +55,17 @@ class _EventTimelineTileState extends State<EventTimelineTile> {
         highlightColor: color2,
         enableFeedback: true,
         customBorder: const StadiumBorder(),
-        onTap: () => Navigator.pushNamed(
-          context,
-          TimeLineDetailsPage.pageRoute,
-          arguments: widget.data,
-        ),
+        onTap: () async {
+          setState(() {
+            widget.data.visited = true;
+          });
+          await DatabaseEventTable.update(widget.data);
+          Navigator.pushNamed(
+            context,
+            TimeLineDetailsPage.pageRoute,
+            arguments: widget.data,
+          );
+        },
         child: TimelineTile(
           beforeLineStyle: widget.lineStyle,
           afterLineStyle: widget.lineStyle,
@@ -67,12 +75,36 @@ class _EventTimelineTileState extends State<EventTimelineTile> {
           isFirst: widget.isFirst,
           isLast: widget.isLast,
           indicatorStyle: IndicatorStyle(
-            width: 25,
-            height: 25,
-            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+            width: 30,
+            height: 50,
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 5),
             drawGap: true,
-            indicator: Center(
-              child: widget.data.contentIcon,
+            indicator: Container(
+              decoration: BoxDecoration(
+                  color: !widget.isEven
+                      ? Colors.transparent
+                      : Theme.of(context).primaryColor,
+                  borderRadius: const BorderRadius.all(Radius.circular(20))),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    widget.data.dateTime.monthName(),
+                    style: TextStyle(
+                      color: widget.isEven ? Colors.white : null,
+                    ),
+                    textScaleFactor: 1,
+                    maxLines: 1,
+                  ),
+                  Text(
+                    widget.data.dateTime.day.toString(),
+                    style: TextStyle(
+                      color: widget.isEven ? Colors.white : null,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           endChild: TimelineInformationChild(
@@ -92,17 +124,16 @@ class TimelineInformationChild extends StatelessWidget {
   }) : super(key: key);
 
   final bool isEven;
-  final Content data;
+  final Event data;
 
   @override
   Widget build(BuildContext context) {
+    Color? textColor = !isEven ? Colors.white : null;
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
         decoration: BoxDecoration(
-            color: isEven
-                ? Colors.transparent
-                : Theme.of(context).primaryColor.withAlpha(200),
+            color: isEven ? Colors.transparent : Theme.of(context).primaryColor,
             borderRadius: const BorderRadius.all(Radius.circular(20))),
         child: Padding(
           padding: const EdgeInsets.all(15),
@@ -110,21 +141,27 @@ class TimelineInformationChild extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(data.getDateString()),
-                    data.description != null
-                        ? Text(
-                            data.description!,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          )
-                        : Container(),
-                  ],
-                ),
+                child: Center(
+                    child: Text(data.title,
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: textColor,
+                        ))),
               ),
-              Icon(Icons.adaptive.arrow_forward)
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Icon(
+                    Icons.adaptive.arrow_forward,
+                    color: textColor,
+                  ),
+                  data.visited
+                      ? Icon(Icons.check, color: textColor)
+                      //? const Icon(Icons.check, color: Colors.lightGreenAccent)
+                      : Container(),
+                ],
+              )
             ],
           ),
         ),
