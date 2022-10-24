@@ -11,7 +11,7 @@ class IscteTheme {
   static const BorderRadius borderRadious =
       BorderRadius.all(Radius.circular(10));
 
-  static final AppBarTheme _appBarTheme = AppBarTheme(
+  static const AppBarTheme _appBarTheme = AppBarTheme(
     //backgroundColor: Color.fromRGBO(14, 41, 194, 1),
     elevation: 0,
     // This removes the shadow from all App Bars.
@@ -23,10 +23,10 @@ class IscteTheme {
       ),
     ),
     backgroundColor: iscteColor,
-    iconTheme: const IconThemeData(color: Colors.white),
-    actionsIconTheme: const IconThemeData(color: Colors.white),
-    toolbarTextStyle: const TextStyle(color: Colors.white),
-    titleTextStyle: const TextStyle(color: Colors.white),
+    iconTheme: IconThemeData(color: Colors.white),
+    actionsIconTheme: IconThemeData(color: Colors.white),
+    toolbarTextStyle: TextStyle(color: Colors.white),
+    titleTextStyle: TextStyle(color: Colors.white),
     systemOverlayStyle: SystemUiOverlayStyle(
       statusBarColor: iscteColor,
       systemNavigationBarColor: iscteColor,
@@ -38,20 +38,19 @@ class IscteTheme {
   static NavigationRailThemeData navigationRailThemeData =
       const NavigationRailThemeData(
     backgroundColor: iscteColor,
-    selectedIconTheme: const IconThemeData(color: Colors.white),
-    unselectedIconTheme: const IconThemeData(color: Colors.white70),
+    selectedIconTheme: IconThemeData(color: Colors.white),
+    unselectedIconTheme: IconThemeData(color: Colors.white70),
     useIndicator: false,
   );
 
   static ElevatedButtonThemeData get elevatedButtonTheme {
     return ElevatedButtonThemeData(
-        style: ButtonStyle(
-          foregroundColor:
-              MaterialStateColor.resolveWith((states) => Colors.white),
-          backgroundColor:
-              MaterialStateColor.resolveWith((states) => iscteColor),
-        ),
-      );
+      style: ButtonStyle(
+        foregroundColor:
+            MaterialStateColor.resolveWith((states) => Colors.white),
+        backgroundColor: MaterialStateColor.resolveWith((states) => iscteColor),
+      ),
+    );
   }
 
   static ThemeData get lightThemeData {
@@ -110,7 +109,6 @@ class IscteTheme {
     primaryColor: IscteTheme.iscteColor,
   );
 
-
   static CupertinoThemeData cupertinoDarkThemeData = const CupertinoThemeData(
     barBackgroundColor: IscteTheme.iscteColor,
     scaffoldBackgroundColor: CupertinoColors.black,
@@ -118,7 +116,7 @@ class IscteTheme {
     brightness: Brightness.dark,
     primaryColor: IscteTheme.iscteColor,
   );
-  
+
   static InputDecoration buildInputDecoration(
       {required String hint, String? errorText, Widget? suffixIcon}) {
     return InputDecoration(

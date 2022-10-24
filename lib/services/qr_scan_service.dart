@@ -144,8 +144,10 @@ class QRScanService {
                 description: content["title"],
                 link: content["link"],
                 type: contentTypefromString(content["type"]),
+                id: 0,
               ),
             );
+            throw UnimplementedError(); //TODO
           }
           return TopicRequest(
             title: responseDecoded["title"],

@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:iscte_spots/models/database/tables/database_content_table.dart';
-import 'package:iscte_spots/models/database/tables/database_event_content_table.dart';
-import 'package:iscte_spots/models/database/tables/database_event_table.dart';
-import 'package:iscte_spots/models/database/tables/database_event_topic_table.dart';
-import 'package:iscte_spots/models/database/tables/database_topic_table.dart';
 import 'package:iscte_spots/models/timeline/content.dart';
 import 'package:iscte_spots/models/timeline/topic.dart';
 import 'package:iscte_spots/pages/timeline/rouded_timeline_icon.dart';
 import 'package:iscte_spots/services/timeline/timeline_content_service.dart';
+import 'package:iscte_spots/services/timeline/timeline_topic_service.dart';
+import 'package:logger/logger.dart';
 
 enum EventScope {
   iscte,
@@ -20,6 +17,7 @@ EventScope? eventScopefromString(String? input) {
     return EventScope.values.firstWhere(
         (element) => element.name.toLowerCase() == input?.toLowerCase());
   } on StateError {
+    Logger().e("Error on :$input");
     return null;
   }
 }
@@ -30,17 +28,25 @@ class Event {
     required this.title,
     required this.date,
     required this.scope,
+//    required this.topics,
+    required this.contentCount,
     this.visited = false,
   });
+
   final int id;
   final String title;
   final int date;
   final EventScope? scope;
   bool visited;
+  int contentCount;
+  //final List<Topic> topics;
+
+  static Logger logger = Logger();
 
   @override
   String toString() {
-    return 'Event{id: $id, title: $title, date: $date, scope: $scope, visited: $visited}';
+    // return 'Event{id: $id, title: $title, date: $date, scope: $scope, visited: $visited}';
+    return 'Event{id: $id, title: $title, date: $date, scope: $scope, visited: $visited,contentCount: $contentCount}';
   }
 
   String getDateString() {
@@ -49,29 +55,38 @@ class Event {
   }
 
   factory Event.fromMap(Map<String, dynamic> json) {
+    // Logger().d(json[DatabaseEventTable.columnDate]);
+    // Logger().d(DateTime.parse(json[DatabaseEventTable.columnDate])
+    //     .millisecondsSinceEpoch);
+    /*
+    List<Topic> topics = [];
+    for (dynamic entry in json["topics"]) {
+      topics.add(Topic.fromMap(entry));
+    }*/
     return Event(
-      id: json[DatabaseEventTable.columnId],
-      title: json[DatabaseEventTable.columnTitle],
-      date: json[DatabaseEventTable.columnDate] is int
-          ? json[DatabaseEventTable.columnDate]
-          : DateTime.parse(json[DatabaseEventTable.columnDate])
-              .millisecondsSinceEpoch,
-      scope: eventScopefromString(json[DatabaseEventTable.columnScope]),
-      visited: json[DatabaseEventTable.columnVisited] == null
+      id: json["id"],
+      title: json["title"],
+      date: json["date"] is int
+          ? json["date"]
+          : DateTime.parse(json["date"]).millisecondsSinceEpoch,
+      scope: eventScopefromString(json["scope"]),
+      visited: json["visited"] == null
           ? false
-          : json[DatabaseEventTable.columnVisited] == 1
+          : json["visited"] == 1
               ? true
               : false,
+      contentCount: json["num_content"],
+      //topics: topics,
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      DatabaseEventTable.columnId: id,
-      DatabaseEventTable.columnTitle: title,
-      DatabaseEventTable.columnDate: date,
-      DatabaseEventTable.columnScope: scope != null ? scope!.name : null,
-      DatabaseEventTable.columnVisited: visited ? 1 : 0,
+      "id": id,
+      "title": title,
+      "date": date,
+      "scope": scope != null ? scope!.name : null,
+      "visited": visited ? 1 : 0,
     };
   }
 
@@ -100,22 +115,15 @@ class Event {
   DateTime get dateTime => DateTime.fromMillisecondsSinceEpoch(date);
 
   Future<List<Topic>> get getTopicsList async {
-    List<int> allIdsWithEventId =
+    return await TimelineTopicService.fetchTopics(eventId: id);
+    /*  List<int> allIdsWithEventId =
         await DatabaseEventTopicTable.getTopicIdsFromEventId(id);
     List<Topic> topicsList =
         await DatabaseTopicTable.getAllWithIds(allIdsWithEventId);
-    return topicsList;
+    return topicsList;*/
   }
 
   Future<List<Content>> get getContentList async {
-    List<int> allIdsWithEventId =
-        await DatabaseEventContentTable.getContendIdsFromEventId(id);
-    List<Content> contentsList =
-        await DatabaseContentTable.getAllWithIds(allIdsWithEventId);
-    if (contentsList.isEmpty) {
-      contentsList = await TimelineContentService.fetchContents(eventId: id);
-    }
-
-    return contentsList;
+    return await TimelineContentService.fetchContents(eventId: id);
   }
 }

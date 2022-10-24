@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
 class YearTimelineListView extends StatefulWidget {
@@ -10,7 +11,7 @@ class YearTimelineListView extends StatefulWidget {
       required this.selectedYear})
       : super(key: key);
 
-  final Function changeYearFunction;
+  final Function(int) changeYearFunction;
   final List<int> yearsList;
   final int selectedYear;
 
@@ -19,51 +20,43 @@ class YearTimelineListView extends StatefulWidget {
 }
 
 class _YearTimelineListViewState extends State<YearTimelineListView> {
-  //late ScrollController scrollController;
+  final ItemScrollController itemController = ItemScrollController();
   List<Widget> yearsList = [];
 
   @override
   void initState() {
     super.initState();
-    //scrollController = ScrollController();
-/*
-    for (int index in widget.yearsList) {
-      yearsList.add(
-        Padding(
-          key: GlobalKey(),
-          padding: const EdgeInsets.only(bottom: 8.0),
-          child: YearTimelineTile(
-            changeYearFunction: widget.changeYearFunction,
-            year: index,
-            isSelected: widget.selectedYear == index,
-            isFirst: index == 0,
-            isLast: index == widget.yearsList.length - 1,
-          ),
+    if (itemController.isAttached) {
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) => itemController.scrollTo(
+          index: widget.yearsList.indexOf(widget.selectedYear),
+          duration: const Duration(milliseconds: 500),
         ),
       );
-    }*/
+    }
   }
 
   @override
   void dispose() {
     super.dispose();
-    //scrollController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    //Scrollable.ensureVisible(yearsList[widget.selectedYear].);
     return Container(
       decoration: BoxDecoration(color: Theme.of(context).primaryColor),
-      child: ListView.builder(
-          //controller: scrollController,
+      child: ScrollablePositionedList.builder(
+          itemScrollController: itemController,
           scrollDirection: Axis.horizontal,
           itemCount: widget.yearsList.length,
-          shrinkWrap: true,
+          shrinkWrap: false,
           itemBuilder: (BuildContext context, int index) {
+            // Key itemKey = ValueKey<int>(widget.yearsList[index]);
             return Padding(
+              // key: itemKey,
               padding: const EdgeInsets.only(bottom: 8.0),
               child: YearTimelineTile(
+                // key: itemKey,
                 changeYearFunction: widget.changeYearFunction,
                 year: widget.yearsList[index],
                 isSelected: widget.selectedYear == widget.yearsList[index],
@@ -148,7 +141,10 @@ class _YearTimelineTileState extends State<YearTimelineTile> {
             child: Center(
               child: Text(
                 widget.year.toString(),
-                style: TextStyle(fontSize: textFontSize, color: iconTextColor),
+                style: TextStyle(
+                  fontSize: textFontSize,
+                  color: iconTextColor,
+                ),
               ),
             ),
           ),

@@ -5,7 +5,6 @@ import '../../timeline/topic.dart';
 import '../database_helper.dart';
 
 class DatabaseTopicTable {
-
   static const table = 'topicTable';
 
   static const columnId = '_id';
@@ -44,8 +43,9 @@ class DatabaseTopicTable {
     Database db = await instance.database;
     List<Map<String, Object?>> rawRows =
         await db.query(table, orderBy: columnTitle);
-    List<Topic> rowsList =
-        rawRows.isNotEmpty ? rawRows.map((e) => Topic.fromMap(e)).toList() : [];
+    List<Topic> rowsList = rawRows.isNotEmpty
+        ? rawRows.map((e) => Topic.fromJson(e)).toList()
+        : [];
     return rowsList;
   }
 
@@ -58,8 +58,9 @@ class DatabaseTopicTable {
       where: '$columnId IN (${List.filled(idList.length, '?').join(',')})',
       whereArgs: idList,
     );
-    List<Topic> rowsList =
-        rawRows.isNotEmpty ? rawRows.map((e) => Topic.fromMap(e)).toList() : [];
+    List<Topic> rowsList = rawRows.isNotEmpty
+        ? rawRows.map((e) => Topic.fromJson(e)).toList()
+        : [];
     return rowsList;
   }
 
@@ -68,7 +69,7 @@ class DatabaseTopicTable {
     Database db = await instance.database;
     int insertedID = await db.insert(
       table,
-      entry.toMap(),
+      entry.toJson(),
       conflictAlgorithm: ConflictAlgorithm.ignore,
     );
 
@@ -83,12 +84,13 @@ class DatabaseTopicTable {
     for (var entry in entries) {
       batch.insert(
         table,
-        entry.toMap(),
+        entry.toJson(),
         conflictAlgorithm: ConflictAlgorithm.ignore,
       );
     }
     batch.commit();
-    LoggerService.instance.debug("Inserted: $entries into $table as batch into $table");
+    LoggerService.instance
+        .debug("Inserted: $entries into $table as batch into $table");
   }
 
   static Future<List<Topic>> where(
@@ -99,7 +101,7 @@ class DatabaseTopicTable {
         where: where, whereArgs: whereArgs, orderBy: orderBy);
 
     List<Topic> contentList = contents.isNotEmpty
-        ? contents.map((e) => Topic.fromMap(e)).toList()
+        ? contents.map((e) => Topic.fromJson(e)).toList()
         : [];
     return contentList;
   }
