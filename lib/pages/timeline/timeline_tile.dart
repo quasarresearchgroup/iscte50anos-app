@@ -100,9 +100,10 @@ class _EventTimelineTileState extends State<EventTimelineTile> {
                   children: [
                     !widget.isFirst ? verticalConnector : const Spacer(),
                     EventTimelineIndicator(
-                        isEven: isEven,
-                        event: widget.event,
-                        textColor: dateChildTextColor),
+                      isEven: isEven,
+                      event: widget.event,
+                      textColor: dateChildTextColor,
+                    ),
                     !widget.isLast ? verticalConnector : const Spacer(),
                   ],
                 ),
@@ -112,9 +113,10 @@ class _EventTimelineTileState extends State<EventTimelineTile> {
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TimelineInformationChild(
-                      isEven: isEven,
-                      data: widget.event,
-                      textColor: informationChildTextColor),
+                    isEven: isEven,
+                    data: widget.event,
+                    textColor: informationChildTextColor,
+                  ),
                 ),
               ),
             ],
