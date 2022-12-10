@@ -139,12 +139,8 @@ class QRScanService {
           var responseContentList = responseDecoded["content"];
           final List<Content> contentList = [];
           for (var content in responseContentList) {
-            contentList.add(
-              Content(
-                description: content["title"],
-                link: content["link"],
-                type: contentTypefromString(content["type"]),
-              ),
+            contentList.add(Content.fromJson(content)
+              
             );
           }
           return TopicRequest(

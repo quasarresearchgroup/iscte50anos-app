@@ -19,7 +19,7 @@
     "quizPageTitle":"Quiz",
     "leaderBoardScreen":"Ranking",
     "visitedPagesScreen":"Páginas Visitadas",
-    "timelineScreen":"Linha do Tempo",
+    "timelineScreen":"Cronologia 50 anos Iscte",
     "timelineDetailsScreen":"Detalhes",
     "puzzleScreen":"Puzzle",
     "quizScreen":"Quizzes",
@@ -73,14 +73,26 @@
 
 
     "timelineSearchResults" : "Resultados da pesquisa",
-    "timelineNothingFound" : "Nada encontrado...",
-    "timelineAvailableTopics" : "Tópicos disponiveis...",
+    "timelineNothingFound" : "Nada encontrado!",
+    "timelineAvailableTopics" : "Tópicos",
     "timelineSelectedTopics" : "Tópicos selecionados",
+    "timelineAvailableScopes" : "Ambitos",
+    "timelineSelectedScopes" : "Ambitos selecionados",
     "timelineSearchHint" : "Pesquise",
     "timelineSearchHintInsideTopic" : "Pesquisa avançada",
     "timelineSearchButton" : "Submeter",
     "timelineSelectAllButton" : "Escolher tudo",
-    "timelineSelectClearButton" : "Limpar seleção"
+    "timelineSelectClearButton" : "Limpar seleção",
 
-
+    "feedbackFormTitle":"Sugestão",
+    "feedbackFormNameField":"Nome",
+    "feedbackFormEmailField":"E-mail",
+    "feedbackFormDescriptionField":"Descrição",
+    "feedbackFormGeneralFeedbackDropdownText":"Feedback geral",
+    "feedbackFormSubmissionSuccess":"O seu feedback foi recebido!",
+    "feedbackFormSubmissionError":"Erro no envio do seu feedback, tente novamente mais tarde.",
+    "feedbackFormEmailValidation":"Por favor insira um email válido",
+    "feedbackFormValidation":"Por favor preencha este campo",
+    "feedbackFormSubmit":"Submeter",
+    "feedbackFormCancel":"Cancelar"
 }

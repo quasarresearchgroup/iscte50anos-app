@@ -72,7 +72,7 @@ class _MyAppState extends State<MyApp> {
         //showSemanticsDebugger: true,
         debugShowCheckedModeBanner: false,
         title: 'IscteSpots',
-        darkTheme: IscteTheme.darkThemeData,
+        //darkTheme: IscteTheme.darkThemeData,
         theme: IscteTheme.lightThemeData,
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,

@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:iscte_spots/models/database/tables/database_spot_table.dart';
 import 'package:iscte_spots/models/spot.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
-
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPrefsService {
@@ -86,5 +85,33 @@ class SharedPrefsService {
       }
     }
   }
+//endregion
+
+//region timeline
+  static const String _currentTimelineYearPrefsString = "timelineYear";
+  ValueNotifier<int?> currentTimelineYearNotifier = ValueNotifier<int?>(null);
+
+  static Future<bool> storeTimelineSelectedYear(int year) async {
+    try {
+      LoggerService.instance.debug("$_currentTimelineYearPrefsString : $year");
+      final prefs = await SharedPreferences.getInstance();
+      prefs.setInt(_currentTimelineYearPrefsString, year);
+      (SharedPrefsService().currentTimelineYearNotifier).value = year;
+      return true;
+    } catch (e) {
+      LoggerService.instance.error(e);
+      return false;
+    }
+  }
+
+  static Future<int?> getTimelineSelectedYear() async {
+    final prefs = await SharedPreferences.getInstance();
+    int? currentYear = prefs.getInt(_currentTimelineYearPrefsString);
+    SharedPrefsService().allPuzzleCompleteNotifier.value = false;
+    LoggerService.instance
+        .debug("$_currentTimelineYearPrefsString : $currentYear");
+    return currentYear;
+  }
+
 //endregion
 }

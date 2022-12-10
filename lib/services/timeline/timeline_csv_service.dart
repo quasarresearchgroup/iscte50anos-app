@@ -1,4 +1,6 @@
+/*
 import 'package:flutter/services.dart';
+
 import 'package:iscte_spots/models/database/tables/database_content_table.dart';
 import 'package:iscte_spots/models/database/tables/database_event_content_table.dart';
 import 'package:iscte_spots/models/database/tables/database_event_table.dart';
@@ -7,14 +9,14 @@ import 'package:iscte_spots/models/database/tables/database_topic_table.dart';
 import 'package:iscte_spots/models/timeline/content.dart';
 import 'package:iscte_spots/models/timeline/event.dart';
 import 'package:iscte_spots/models/timeline/topic.dart';
-import 'package:iscte_spots/services/logging/LoggerService.dart';
+import 'package:logger/logger.dart';
 
 class TimelineCSVService {
   static const String EventsCsvFile =
       'Resources/CSVFiles/cronologia_cinquentenario_events.tsv';
   static const String ContentsCsvFile =
       'Resources/CSVFiles/cronologia_cinquentenario_contents.tsv';
-  
+  static final Logger _logger = Logger();
 
   static Future<void> insertContentEntriesFromCSV() async {
     await _loadEventsCsv();
@@ -23,7 +25,7 @@ class TimelineCSVService {
     /* try {
       final String file = await rootBundle.loadString(timelineEntriesFile);
 
-      LoggerService.instance.debug(file.split("\n").length);
+      _logger.d(file.split("\n").length);
       file.split("\n").forEach((line) {
         List<String> lineSplit = line.split(";");
 
@@ -44,13 +46,13 @@ class TimelineCSVService {
             date: dateIntFromEpoch,
             scope: scope,
             type: contentType);
-        //LoggerService.instance.debug(content.toString());
+        //_logger.d(content.toString());
         eventsList.add(content);
       });
     } catch (e) {
-      LoggerService.instance.error(e);
+      _logger.e(e);
     } finally {
-      LoggerService.instance.debug("eventsList.length: " + eventsList.length.toString());
+      _logger.d("eventsList.length: " + eventsList.length.toString());
       await DatabaseContentTable.addBatch(eventsList);
     }*/
   }
@@ -61,7 +63,7 @@ class TimelineCSVService {
     try {
       final String file = await rootBundle.loadString(EventsCsvFile);
       List<String> splitLines = file.split("\n");
-      LoggerService.instance.debug("Events CSV length: ${splitLines.length}");
+      _logger.d("Events CSV length: ${splitLines.length}");
       for (int eventId = 1; eventId < splitLines.length; eventId++) {
         String line = splitLines[eventId];
         List<String> lineSplit = line.split("\t");
@@ -84,7 +86,7 @@ class TimelineCSVService {
           scope: eventScope,
         );
         eventsList.add(event);
-        LoggerService.instance.debug(event.toMap());
+        _logger.d(event.toMap());
         String topicName;
         for (int j = 4; j < lineSplit.length; j++) {
           topicName = lineSplit[j].replaceAll("\r", "");
@@ -108,9 +110,9 @@ class TimelineCSVService {
         }
       }
     } catch (e) {
-      LoggerService.instance.error(e);
+      _logger.e(e);
     } finally {
-      LoggerService.instance.debug("eventsList.length: ${eventsList.length}");
+      _logger.d("eventsList.length: ${eventsList.length}");
       await DatabaseEventTable.addBatch(eventsList);
       await DatabaseEventTopicTable.addBatch(eventTopicDBConnectionList);
     }
@@ -123,7 +125,7 @@ class TimelineCSVService {
     try {
       final String file = await rootBundle.loadString(ContentsCsvFile);
       List<String> splitLines = file.split("\n");
-      LoggerService.instance.debug("Content CSV length: ${splitLines.length}");
+      _logger.d("Content CSV length: ${splitLines.length}");
       for (int contentId = 1; contentId < splitLines.length; contentId++) {
         String line = splitLines[contentId];
         List<String> lineSplit = line.split("\t");
@@ -157,11 +159,12 @@ class TimelineCSVService {
         }
       }
     } catch (e) {
-      LoggerService.instance.error(e);
+      _logger.e(e);
     } finally {
-      LoggerService.instance.debug("contents.length: ${contents.length}");
+      _logger.d("contents.length: ${contents.length}");
       await DatabaseContentTable.addBatch(contents);
       await DatabaseEventContentTable.addBatch(eventContentDBConnectionList);
     }
   }
 }
+*/

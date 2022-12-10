@@ -10,12 +10,12 @@ class PlatformService {
 
   static PlatformService get instance => _instance;
 
-  bool isIos = true;
-//  bool isIos = Platform.isIOS;
-  bool isAndroid = false;
-  bool isFuchsia = false;
-  bool isLinux = false;
-  bool isMacOS = false;
-  bool isWindows = false;
+//  bool isIos = true;
+  bool isIos = Platform.isIOS;
+  bool isAndroid = Platform.isAndroid;
+  bool isFuchsia = Platform.isFuchsia;
+  bool isLinux = Platform.isLinux;
+  bool isMacOS = Platform.isMacOS;
+  bool isWindows = Platform.isWindows;
   bool isWeb = kIsWeb;
 }

@@ -6,7 +6,6 @@ import '../database_helper.dart';
 import 'database_event_table.dart';
 
 class DatabaseContentTable {
-
   static const table = 'contentTable';
 
   static const columnId = '_id';
@@ -41,7 +40,7 @@ class DatabaseContentTable {
       whereArgs: idList,
     );
     List<Content> rowsList = rawRows.isNotEmpty
-        ? rawRows.map((e) => Content.fromMap(e)).toList()
+        ? rawRows.map((e) => Content.fromJson(e)).toList()
         : [];
     return rowsList;
   }
@@ -53,7 +52,7 @@ class DatabaseContentTable {
         await db.query(table, orderBy: columnType);
 
     List<Content> contentList = contents.isNotEmpty
-        ? contents.map((e) => Content.fromMap(e)).toList()
+        ? contents.map((e) => Content.fromJson(e)).toList()
         : [];
     return contentList;
   }
@@ -63,7 +62,7 @@ class DatabaseContentTable {
     Database db = await instance.database;
     int insertedID = await db.insert(
       table,
-      content.toMap(),
+      content.toJson(),
       conflictAlgorithm: ConflictAlgorithm.abort,
     );
     LoggerService.instance.debug("Inserted: $content into $table");
@@ -77,7 +76,7 @@ class DatabaseContentTable {
     for (var entry in contents) {
       batch.insert(
         table,
-        entry.toMap(),
+        entry.toJson(),
         conflictAlgorithm: ConflictAlgorithm.abort,
       );
     }

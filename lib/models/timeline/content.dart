@@ -1,13 +1,13 @@
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:iscte_spots/models/database/tables/database_content_table.dart';
+import 'package:logger/logger.dart';
 
 enum ContentType {
-  image,
-  video,
+  doc,
   web_page,
   social_media,
-  doc,
+  video,
   music,
+  image,
 }
 
 ContentType? contentTypefromString(String? input) {
@@ -20,39 +20,45 @@ ContentType? contentTypefromString(String? input) {
 
 class Content {
   Content({
-    this.id,
-    this.description,
+    required this.id,
+    this.title,
     required this.link,
     this.type,
     this.eventId,
+    this.validated,
   });
-  final int? id;
-  final String? description;
+
+  final int id;
+  final String? title;
   final String link;
   final ContentType? type;
   final int? eventId;
+  final bool? validated;
 
+  static Logger _logger = Logger();
 
   @override
   String toString() {
-    return 'Content{id: $id, description: $description, link: $link, type: $type, eventId: $eventId}';
+    return 'Content{id: $id, title: $title, link: $link, type: $type, eventId: $eventId, validated: $validated}';
   }
 
-  factory Content.fromMap(Map<String, dynamic> json) => Content(
-        id: json[DatabaseContentTable.columnId],
-        description: json[DatabaseContentTable.columnDescription],
-        link: json[DatabaseContentTable.columnLink],
-        type: contentTypefromString(json[DatabaseContentTable.columnType]),
-        eventId: json[DatabaseContentTable.columnEventId],
+  factory Content.fromJson(Map<String, dynamic> json) => Content(
+        id: json["id"],
+        title: json["title"],
+        link: json["link"],
+        type: contentTypefromString(json["type"]),
+        eventId: json["event_id"],
+        validated: json["validated"],
       );
 
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toJson() {
     return {
-      DatabaseContentTable.columnId: id,
-      DatabaseContentTable.columnDescription: description,
-      DatabaseContentTable.columnLink: link,
-      DatabaseContentTable.columnType: type != null ? type!.name : null,
-      DatabaseContentTable.columnEventId: eventId,
+      "id": id,
+      "title": title,
+      "link": link,
+      "type": type != null ? type!.name : null,
+      "event_id": eventId,
+      "validated": validated,
     };
   }
 
