@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:iscte_spots/models/timeline/event.dart';
 import 'package:iscte_spots/pages/timeline/events/timeline_tile.dart';
+import 'package:iscte_spots/pages/timeline/state/timeline_state.dart';
 import 'package:iscte_spots/pages/timeline/web_scroll_behaviour.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:logger/logger.dart';
@@ -8,15 +9,11 @@ import 'package:logger/logger.dart';
 class EventTimelineListViewBuilder extends StatefulWidget {
   const EventTimelineListViewBuilder({
     Key? key,
-    required this.timelineYear,
     required this.handleEventSelection,
-    required this.events,
-    required this.selectedEventIndex,
+    required this.hoveredEventIndex,
   }) : super(key: key);
-  final ValueNotifier<int?> timelineYear;
-  final List<Event> events;
   final void Function(int) handleEventSelection;
-  final ValueNotifier<int?> selectedEventIndex;
+  final ValueNotifier<int?> hoveredEventIndex;
 
   @override
   State<EventTimelineListViewBuilder> createState() =>
@@ -25,15 +22,14 @@ class EventTimelineListViewBuilder extends StatefulWidget {
 
 class _EventTimelineListViewBuilderState
     extends State<EventTimelineListViewBuilder> {
-  late Future<List<Event>> currentEvents;
+  //late Future<List<Event>> currentEvents;
 
   @override
   void initState() {
     super.initState();
-
-    currentEvents = Future(() => widget.events
-        .where((element) => element.dateTime.year == widget.timelineYear.value)
-        .toList());
+    //currentEvents = Future(() => widget.events
+    //    .where((element) => element.dateTime.year == widget.timelineYear.value)
+    //    .toList());
   }
 
   List<int> eventsTimelineTileGenerator({required List<Event> eventsList}) {
@@ -66,14 +62,15 @@ class _EventTimelineListViewBuilderState
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<Event>>(
-        future: currentEvents,
+        //future: currentEvents,
+        future: TimelineState.instance.currentEventsList,
         builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            if (snapshot.data != null && snapshot.data!.isNotEmpty) {
+          if (snapshot.data != null && snapshot.hasData) {
+            if (snapshot.data!.isNotEmpty) {
               List<int> positionData =
                   eventsTimelineTileGenerator(eventsList: snapshot.data!);
               return ValueListenableBuilder<int?>(
-                  valueListenable: widget.selectedEventIndex,
+                  valueListenable: widget.hoveredEventIndex,
                   builder: (context, value, _) {
                     return ScrollConfiguration(
                       behavior: WebScrollBehaviour(),
@@ -96,7 +93,7 @@ class _EventTimelineListViewBuilderState
               );
             }
           } else {
-            return LoadingWidget();
+            return const LoadingWidget();
           }
         });
   }

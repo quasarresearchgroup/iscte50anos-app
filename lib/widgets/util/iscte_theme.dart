@@ -30,12 +30,12 @@ class IscteTheme {
     //color: Colors.transparent,
     iconTheme: IconThemeData(color: Colors.black),
     actionsIconTheme: IconThemeData(color: Colors.black),
-    systemOverlayStyle: SystemUiOverlayStyle(
+/*    systemOverlayStyle: SystemUiOverlayStyle(
       statusBarColor: iscteColor,
       systemNavigationBarColor: iscteColor,
       statusBarIconBrightness: Brightness.light, // For Android (dark icons)
       statusBarBrightness: Brightness.light, // For iOS (dark icons)
-    ),
+    ),*/
   );
 
   static NavigationRailThemeData navigationRailThemeData =

@@ -4,6 +4,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/models/timeline/event.dart';
 import 'package:iscte_spots/models/timeline/timeline_filter_params.dart';
 import 'package:iscte_spots/models/timeline/topic.dart';
+import 'package:iscte_spots/pages/timeline/filter/timeline_filter_results_page.dart';
 import 'package:iscte_spots/pages/timeline/filter/timeline_filter_scopes_widget.dart';
 import 'package:iscte_spots/pages/timeline/filter/timeline_filter_topics_widget.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
@@ -26,8 +27,12 @@ class TimelineFilterPage extends StatefulWidget {
 
   //final void Function(int) handleEventSelection;
   //final void Function(int) handleYearSelection;
-  void handleFilterSubmission(TimelineFilterParams filters, bool showResults) {
+  void handleFilterSubmission(
+      TimelineFilterParams filters, bool showResults, BuildContext context) {
     LoggerService.instance.debug("handleFilterSubmission");
+
+    Navigator.of(context)
+        .pushNamed(TimelineFilterResultsPage.pageRoute, arguments: filters);
   }
 
   final TimelineFilterParams? filterParams;
@@ -144,7 +149,7 @@ class _TimelineFilterPageState extends State<TimelineFilterPage> {
             padding: const EdgeInsets.all(8.0),
             child: DynamicTextButton(
               style: IscteTheme.iscteColor,
-              onPressed: _submitSelection,
+              onPressed: () => _submitSelection(context),
               child: Text(AppLocalizations.of(context)!.timelineSearchButton),
             ),
           ),
@@ -262,11 +267,11 @@ class _TimelineFilterPageState extends State<TimelineFilterPage> {
         tag: "searchIcon",
         child: (PlatformService.instance.isIos)
             ? CupertinoButton(
-                onPressed: _submitSelection,
+                onPressed: () => _submitSelection(context),
                 child: const Icon(CupertinoIcons.search))
             : IconButton(
                 icon: const Icon(Icons.search),
-                onPressed: _submitSelection,
+                onPressed: () => _submitSelection(context),
               ),
       ),
       actions: [
@@ -289,8 +294,8 @@ class _TimelineFilterPageState extends State<TimelineFilterPage> {
     );
   }
 
-  void _submitSelection() async {
+  void _submitSelection(BuildContext context) async {
     filterParams.searchText = searchBarController.text;
-    widget.handleFilterSubmission(filterParams, true);
+    widget.handleFilterSubmission(filterParams, true, context);
   }
 }

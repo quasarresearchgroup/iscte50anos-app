@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:iscte_spots/models/timeline/content.dart';
+import 'package:iscte_spots/models/timeline/timeline_filter_params.dart';
 import 'package:iscte_spots/pages/auth/auth_page.dart';
 import 'package:iscte_spots/pages/flickr/flickr_page.dart';
 import 'package:iscte_spots/pages/home/home_page.dart';
@@ -12,7 +13,7 @@ import 'package:iscte_spots/pages/quiz/quiz_list_menu.dart';
 import 'package:iscte_spots/pages/settings/settings_page.dart';
 import 'package:iscte_spots/pages/spotChooser/spot_chooser_page.dart';
 import 'package:iscte_spots/pages/timeline/details/timeline_details_page.dart';
-import 'package:iscte_spots/pages/timeline/filter/timeline_filter_page.dart';
+import 'package:iscte_spots/pages/timeline/filter/timeline_filter_results_page.dart';
 import 'package:iscte_spots/pages/timeline/timeline_page.dart';
 
 class PageRouter {
@@ -30,8 +31,10 @@ class PageRouter {
         return TimeLineDetailsPage(
           eventId: argument as int,
         );
-      case TimelineFilterPage.pageRoute:
-        return TimelineFilterPage();
+      case TimelineFilterResultsPage.pageRoute:
+        return TimelineFilterResultsPage.androidBuilder(
+          timelineFilterParams: argument as TimelineFilterParams,
+        );
       //case Shaker.pageRoute:
       //  return Shaker();
       case FlickrPage.pageRoute:

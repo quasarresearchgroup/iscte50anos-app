@@ -3,6 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/models/timeline/event.dart';
 import 'package:iscte_spots/models/timeline/timeline_filter_params.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_text_button.dart';
+import 'package:iscte_spots/widgets/network/error.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
 
@@ -126,7 +127,8 @@ class ScopesFilterWidget extends StatelessWidget {
             },
           );
         } else if (snapshot.hasError) {
-          return ErrorWidget(AppLocalizations.of(context)!.generalError);
+          return NetworkError(
+              display: AppLocalizations.of(context)!.generalError);
         } else {
           return const LoadingWidget();
         }

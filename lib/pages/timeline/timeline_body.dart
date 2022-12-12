@@ -6,25 +6,20 @@ import 'package:iscte_spots/models/timeline/event.dart';
 import 'package:iscte_spots/pages/timeline/events/events_timeline_listview.dart';
 import 'package:iscte_spots/pages/timeline/list_view/intents.dart';
 import 'package:iscte_spots/pages/timeline/list_view/year_timeline__listview.dart';
+import 'package:iscte_spots/pages/timeline/state/timeline_state.dart';
+import 'package:iscte_spots/widgets/network/error.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:logger/logger.dart';
+
+import '../../services/logging/LoggerService.dart';
+import 'details/timeline_details_page.dart';
 
 class TimeLineBodyBuilder extends StatefulWidget {
   const TimeLineBodyBuilder({
     Key? key,
-    this.selectedYear,
-    required this.filteredEvents,
-    required this.yearsList,
-    required this.handleYearSelection,
-    required this.handleEventSelection,
     required this.isFilterTimeline,
   }) : super(key: key);
 
-  final ValueNotifier<int?>? selectedYear;
-  final Future<List<int>> yearsList;
-  final Future<List<Event>> filteredEvents;
-  final void Function(int) handleYearSelection;
-  final void Function(int) handleEventSelection;
   final bool isFilterTimeline;
 
   @override
@@ -32,39 +27,12 @@ class TimeLineBodyBuilder extends StatefulWidget {
 }
 
 class _TimeLineBodyBuilderState extends State<TimeLineBodyBuilder> {
-  late Future<List<int>> stateYears;
-  late Function(int) stateHandleYearSelection;
-  late ValueNotifier<int?> stateSelectedYear;
-  @override
-  void initState() {
-    super.initState();
-    //assert(widget.filteredEvents != null && widget.yearsList == null || widget.filteredEvents == null && widget.yearsList != null);
-    /*if (widget.filteredEvents != null) {
-      stateYears = Future(() =>
-          widget.filteredEvents!.map((e) => e.dateTime.year).toSet().toList());
-    } else {
-      stateYears = widget.yearsList!;
-    }*/
-    stateYears = widget.yearsList;
-    stateSelectedYear = widget.selectedYear ?? ValueNotifier<int?>(null);
-
-    if (widget.isFilterTimeline) {
-      stateHandleYearSelection = (int year) {
-        setState(() {
-          stateSelectedYear.value = year;
-        });
-      };
-    } else {
-      stateHandleYearSelection = widget.handleYearSelection;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: FutureBuilder<List<int>>(
-        future: stateYears,
+        future: TimelineState.instance.yearsList,
         builder:
             (BuildContext context, AsyncSnapshot<List<int>> yearsSnapshot) {
           if (yearsSnapshot.hasData) {
@@ -75,19 +43,16 @@ class _TimeLineBodyBuilderState extends State<TimeLineBodyBuilder> {
               );
             } else {
               return FutureBuilder<List<Event>>(
-                  future: widget.filteredEvents,
+                  future: TimelineState.instance.currentEventsList,
                   builder: (BuildContext context,
                       AsyncSnapshot<List<Event>> eventsSnapshot) {
                     if (eventsSnapshot.hasData) {
-                      return TimelineBody(
-                        stateHandleYearSelection: stateHandleYearSelection,
-                        currentYear: stateSelectedYear,
-                        filteredEvents: eventsSnapshot.data!,
-                        handleEventSelection: widget.handleEventSelection,
-                        yearsList: yearsSnapshot.data!,
-                      );
+                      return const TimelineBody();
                     } else if (eventsSnapshot.hasError) {
-                      return ErrorWidget(eventsSnapshot.error!);
+                      return NetworkError(
+                        display: "Error on eventsSnapshot", //TODO
+                        onRefresh: TimelineState.refreshEventList,
+                      );
                     } else {
                       return const LoadingWidget();
                     }
@@ -96,8 +61,10 @@ class _TimeLineBodyBuilderState extends State<TimeLineBodyBuilder> {
           } else if (yearsSnapshot.connectionState != ConnectionState.done) {
             return const LoadingWidget();
           } else if (yearsSnapshot.hasError) {
-            return Center(
-                child: Text(AppLocalizations.of(context)!.generalError));
+            return NetworkError(
+              display: "Error on yearsSnapshot", //TODO
+              onRefresh: TimelineState.refreshYearList,
+            );
           } else {
             return const LoadingWidget();
           }
@@ -110,161 +77,194 @@ class _TimeLineBodyBuilderState extends State<TimeLineBodyBuilder> {
 class TimelineBody extends StatefulWidget {
   const TimelineBody({
     Key? key,
-    required this.stateHandleYearSelection,
-    required this.currentYear,
-    required this.filteredEvents,
-    required this.handleEventSelection,
-    required this.yearsList,
   }) : super(key: key);
-
-  final ValueNotifier<int?> currentYear;
-  final List<Event> filteredEvents;
-  final Function(int year) stateHandleYearSelection;
-  final void Function(int eventId) handleEventSelection;
-  final List<int> yearsList;
 
   @override
   State<TimelineBody> createState() => _TimelineBodyState();
 }
 
 class _TimelineBodyState extends State<TimelineBody> {
-  ValueNotifier<int?> selectedEventIndex = ValueNotifier(null);
-  ValueNotifier<int?> selectedYearIndex = ValueNotifier(null);
+  ValueNotifier<int?> hoveredEventIndex = ValueNotifier(null);
+  ValueNotifier<int?> hoveredYearIndexNotifier = ValueNotifier(null);
   int? lastYearIndex;
 
-  void handleEnterEvent() {
-    assert((selectedEventIndex.value == null &&
-            selectedYearIndex.value != null) ||
-        (selectedEventIndex.value != null && selectedYearIndex.value == null));
-    if (selectedEventIndex.value != null) {
-      Event selectedEvent = widget.filteredEvents[selectedEventIndex.value!];
+  void navigateToEvent(int eventId) {
+    Navigator.of(context)
+        .pushNamed(TimeLineDetailsPage.pageRoute, arguments: eventId);
+    LoggerService.instance.debug("handleEventSelection");
+  }
+
+  void handleEnterEvent(List<Event> eventsList, List<int> yearsList) {
+    assert((hoveredEventIndex.value == null &&
+            hoveredYearIndexNotifier.value != null) ||
+        (hoveredEventIndex.value != null &&
+            hoveredYearIndexNotifier.value == null));
+    if (hoveredEventIndex.value != null) {
+      Event selectedEvent = eventsList[hoveredEventIndex.value!];
       if (selectedEvent.isVisitable) {
-        widget.handleEventSelection(selectedEvent.id);
+        navigateToEvent(selectedEvent.id);
       }
-    } else if (selectedYearIndex.value != null) {
-      widget
-          .stateHandleYearSelection(widget.yearsList[selectedYearIndex.value!]);
+    } else if (hoveredYearIndexNotifier.value != null) {
+      TimelineState.changeCurrentYear(
+          yearsList[hoveredYearIndexNotifier.value!]);
     }
     Logger().i(
-        "selectedEventIndex: ${selectedEventIndex.value} ; selectedYearIndex: ${selectedYearIndex.value}");
+        "selectedEventIndex: ${hoveredEventIndex.value} ; selectedYearIndex: ${hoveredYearIndexNotifier.value}");
   }
 
-  void changeSelectedEvent(bool increase) {
-    Logger().i(
-        "increase: $increase ; widget.filteredEvents?.length ${widget.filteredEvents}");
+  void changeHoveredEvent(bool increase, List<Event> eventsList) {
+    Logger()
+        .i("increase: $increase ; widget.filteredEvents?.length $eventsList");
 
-    int index = selectedEventIndex.value != null
+    int index = hoveredEventIndex.value != null
         ? increase
-            ? selectedEventIndex.value! + 1
-            : selectedEventIndex.value! - 1
+            ? hoveredEventIndex.value! + 1
+            : hoveredEventIndex.value! - 1
         : 0;
-    if (index >= 0 && index < widget.filteredEvents.length) {
-      selectedEventIndex.value = index;
-      selectedYearIndex.value = null;
+    if (index >= 0 && index < eventsList.length) {
+      hoveredEventIndex.value = index;
+      hoveredYearIndexNotifier.value = null;
     }
   }
 
-  void changeSelectedYear(bool increase) {
-    int index = selectedYearIndex.value != null
+  void changeHoveredYear(bool increase, List<int> yearsList) {
+    int index = hoveredYearIndexNotifier.value != null
         ? increase
-            ? selectedYearIndex.value! + 1
-            : selectedYearIndex.value! - 1
-        : lastYearIndex ?? widget.yearsList.indexOf(selectedYearIndex.value!);
+            ? hoveredYearIndexNotifier.value! + 1
+            : hoveredYearIndexNotifier.value! - 1
+        : lastYearIndex ?? yearsList.indexOf(hoveredYearIndexNotifier.value!);
 
-    if (index >= 0 && index < widget.yearsList.length) {
-      selectedYearIndex.value = index;
+    if (index >= 0 && index < yearsList.length) {
+      hoveredYearIndexNotifier.value = index;
       lastYearIndex = index;
-      selectedEventIndex.value = null;
+      hoveredEventIndex.value = null;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Shortcuts(
-      shortcuts: const <ShortcutActivator, Intent>{
-        SingleActivator(LogicalKeyboardKey.arrowRight, includeRepeats: true):
-            IncrementYearsIntent(),
-        SingleActivator(LogicalKeyboardKey.arrowLeft, includeRepeats: true):
-            DecrementYearsIntent(),
-        SingleActivator(LogicalKeyboardKey.arrowDown, includeRepeats: true):
-            IncrementEventsIntent(),
-        SingleActivator(LogicalKeyboardKey.arrowUp, includeRepeats: true):
-            DecrementEventsIntent(),
-        SingleActivator(LogicalKeyboardKey.enter): EnterIntent(),
-        SingleActivator(LogicalKeyboardKey.numpadEnter): EnterIntent(),
-        SingleActivator(LogicalKeyboardKey.space): EnterIntent(),
-        SingleActivator(LogicalKeyboardKey.escape): EscapeIntent(),
-      },
-      child: Actions(
-        actions: <Type, Action<Intent>>{
-          IncrementYearsIntent: CallbackAction<IncrementYearsIntent>(
-            onInvoke: (IncrementYearsIntent intent) {
-              Logger().i("IncrementYearsIntent");
-              changeSelectedYear(true);
-            },
-          ),
-          DecrementYearsIntent: CallbackAction<DecrementYearsIntent>(
-            onInvoke: (DecrementYearsIntent intent) {
-              Logger().i("DecrementYearsIntent");
-              changeSelectedYear(false);
-            },
-          ),
-          IncrementEventsIntent: CallbackAction<IncrementEventsIntent>(
-            onInvoke: (IncrementEventsIntent intent) {
-              Logger().i("IncrementEventsIntent");
-              changeSelectedEvent(true);
-            },
-          ),
-          DecrementEventsIntent: CallbackAction<DecrementEventsIntent>(
-            onInvoke: (DecrementEventsIntent intent) {
-              Logger().i("DecrementEventsIntent");
-              changeSelectedEvent(false);
-            },
-          ),
-          EnterIntent: CallbackAction<EnterIntent>(
-              onInvoke: (EnterIntent intent) => handleEnterEvent()),
-          EscapeIntent: CallbackAction<EscapeIntent>(
-            onInvoke: (EscapeIntent intent) {
-              selectedYearIndex.value = null;
-              selectedEventIndex.value = null;
-            },
-          ),
-        },
-        child: Focus(
-          autofocus: true,
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-            Listener(
-              onPointerSignal: (PointerSignalEvent event) {
-                if (event is PointerScrollEvent) {
-                  changeSelectedYear(event.scrollDelta.direction > 0);
-                }
-              },
-              child: SizedBox(
-                height: kToolbarHeight,
-                child: YearTimelineListView(
-                  yearsList: widget.yearsList,
-                  changeYearFunction: widget.stateHandleYearSelection,
-                  currentYear: widget.currentYear,
-                  selectedYearIndex: selectedYearIndex,
-                ),
-              ),
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: EventTimelineListViewBuilder(
-                  key: UniqueKey(),
-                  events: widget.filteredEvents,
-                  timelineYear: widget.currentYear,
-                  handleEventSelection: widget.handleEventSelection,
-                  selectedEventIndex: selectedEventIndex,
-                ),
-              ),
-            ),
-          ]),
-        ),
-      ),
-    );
+    return FutureBuilder<List<Event>>(
+        future: TimelineState.instance.currentEventsList,
+        builder: (context, eventsListSnapshot) {
+          if (eventsListSnapshot.hasData) {
+            return FutureBuilder<List<int>>(
+                future: TimelineState.instance.yearsList,
+                builder: (context, yearListSnapshot) {
+                  if (yearListSnapshot.hasData) {
+                    return Shortcuts(
+                      shortcuts: const <ShortcutActivator, Intent>{
+                        SingleActivator(LogicalKeyboardKey.arrowRight,
+                            includeRepeats: true): IncrementYearsIntent(),
+                        SingleActivator(LogicalKeyboardKey.arrowLeft,
+                            includeRepeats: true): DecrementYearsIntent(),
+                        SingleActivator(LogicalKeyboardKey.arrowDown,
+                            includeRepeats: true): IncrementEventsIntent(),
+                        SingleActivator(LogicalKeyboardKey.arrowUp,
+                            includeRepeats: true): DecrementEventsIntent(),
+                        SingleActivator(LogicalKeyboardKey.enter):
+                            EnterIntent(),
+                        SingleActivator(LogicalKeyboardKey.numpadEnter):
+                            EnterIntent(),
+                        SingleActivator(LogicalKeyboardKey.space):
+                            EnterIntent(),
+                        SingleActivator(LogicalKeyboardKey.escape):
+                            EscapeIntent(),
+                      },
+                      child: Actions(
+                        actions: <Type, Action<Intent>>{
+                          IncrementYearsIntent:
+                              CallbackAction<IncrementYearsIntent>(
+                            onInvoke: (IncrementYearsIntent intent) {
+                              Logger().i("IncrementYearsIntent");
+                              changeHoveredYear(true, yearListSnapshot.data!);
+                              return null;
+                            },
+                          ),
+                          DecrementYearsIntent:
+                              CallbackAction<DecrementYearsIntent>(
+                            onInvoke: (DecrementYearsIntent intent) {
+                              Logger().i("DecrementYearsIntent");
+                              changeHoveredYear(false, yearListSnapshot.data!);
+                              return null;
+                            },
+                          ),
+                          IncrementEventsIntent:
+                              CallbackAction<IncrementEventsIntent>(
+                            onInvoke: (IncrementEventsIntent intent) {
+                              Logger().i("IncrementEventsIntent");
+                              changeHoveredEvent(
+                                  true, eventsListSnapshot.data!);
+                              return null;
+                            },
+                          ),
+                          DecrementEventsIntent:
+                              CallbackAction<DecrementEventsIntent>(
+                            onInvoke: (DecrementEventsIntent intent) {
+                              Logger().i("DecrementEventsIntent");
+                              changeHoveredEvent(
+                                  false, eventsListSnapshot.data!);
+                              return null;
+                            },
+                          ),
+                          EnterIntent: CallbackAction<EnterIntent>(
+                              onInvoke: (EnterIntent intent) =>
+                                  handleEnterEvent(eventsListSnapshot.data!,
+                                      yearListSnapshot.data!)),
+                          EscapeIntent: CallbackAction<EscapeIntent>(
+                            onInvoke: (EscapeIntent intent) {
+                              hoveredYearIndexNotifier.value = null;
+                              hoveredEventIndex.value = null;
+                              return null;
+                            },
+                          ),
+                        },
+                        child: Focus(
+                          autofocus: true,
+                          child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Listener(
+                                  onPointerSignal: (PointerSignalEvent event) {
+                                    if (event is PointerScrollEvent) {
+                                      changeHoveredYear(
+                                          event.scrollDelta.direction > 0,
+                                          yearListSnapshot.data!);
+                                    }
+                                  },
+                                  child: SizedBox(
+                                    height: kToolbarHeight,
+                                    child: YearTimelineListView(
+                                      hoveredYearIndexNotifier:
+                                          hoveredYearIndexNotifier,
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: EventTimelineListViewBuilder(
+                                      key: UniqueKey(),
+                                      handleEventSelection: navigateToEvent,
+                                      hoveredEventIndex: hoveredEventIndex,
+                                    ),
+                                  ),
+                                ),
+                              ]),
+                        ),
+                      ),
+                    );
+                  } else if (yearListSnapshot.hasError) {
+                    return NetworkError(
+                        display: yearListSnapshot.error.toString());
+                  } else {
+                    return const LoadingWidget();
+                  }
+                });
+          } else if (eventsListSnapshot.hasError) {
+            return NetworkError(display: eventsListSnapshot.error.toString());
+          } else {
+            return const LoadingWidget();
+          }
+        });
   }
 }

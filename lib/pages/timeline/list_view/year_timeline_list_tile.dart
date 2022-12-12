@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:iscte_spots/pages/timeline/state/timeline_state.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 
 class YearTimelineTile extends StatefulWidget {
   const YearTimelineTile({
     Key? key,
-    required this.changeYearFunction,
     required this.year,
     required this.isFirst,
     required this.isLast,
@@ -13,7 +13,6 @@ class YearTimelineTile extends StatefulWidget {
     required this.isHover,
   }) : super(key: key);
 
-  final Function changeYearFunction;
   final int year;
   final bool isFirst;
   final bool isLast;
@@ -39,7 +38,7 @@ class _YearTimelineTileState extends State<YearTimelineTile> {
       onExit: (event) => setState(() => isHover = false),
       child: GestureDetector(
         onTap: () {
-          widget.changeYearFunction(widget.year);
+          TimelineState.changeCurrentYear(widget.year);
         },
         child: Card(
           elevation: 2,

@@ -1,9 +1,44 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/models/timeline/feedback_form_result.dart';
+import 'package:iscte_spots/pages/timeline/state/timeline_state.dart';
 import 'package:iscte_spots/services/timeline/feedback_service.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_text_button.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
+import 'package:iscte_spots/widgets/util/loading.dart';
+
+class FeedbackFormButon extends StatelessWidget {
+  const FeedbackFormButon({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<List<int>>(
+        future: TimelineState.instance.yearsList,
+        builder: (context, snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.done:
+              if (snapshot.hasData) {
+                return IconButton(
+                  onPressed: () => showDialog(
+                    context: context,
+                    builder: (context) => FeedbackForm(
+                      yearsList: snapshot.data!,
+                      selectedYear: TimelineState.instance.selectedYear.value,
+                    ),
+                  ),
+                  icon: const Icon(Icons.feedback_outlined),
+                );
+              } else {
+                return const LoadingWidget();
+              }
+            default:
+              return const LoadingWidget();
+          }
+        });
+  }
+}
 
 class FeedbackForm extends StatefulWidget {
   FeedbackForm({Key? key, required this.yearsList, this.selectedYear})

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class NetworkError extends StatelessWidget {
+  final Function()? onRefresh;
+  final String? display;
 
-  final Function() onRefresh;
-
-  const NetworkError({Key? key, required this.onRefresh}) : super(key: key);
+  const NetworkError({Key? key, this.onRefresh, this.display})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -14,20 +16,22 @@ class NetworkError extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
-          children: const <Widget>[
-            Icon(
+          children: <Widget>[
+            const Icon(
               Icons.error_outline,
               color: Colors.red,
               size: 60,
             ),
             Padding(
-              padding: EdgeInsets.only(top: 10),
-              child: Text('Ocorreu um erro a descarregar os dados'),
+              padding: const EdgeInsets.only(top: 10),
+              child:
+                  Text(display ?? AppLocalizations.of(context)!.generalError),
+              //display ?? 'Ocorreu um erro a descarregar os dados'), //TODO
             ),
-            Padding(
+            const Padding(
               padding: EdgeInsets.all(5.0),
               child: Text(
-                'Tocar aqui para recarregar',
+                'Tocar aqui para recarregar', //TODO
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
             ),

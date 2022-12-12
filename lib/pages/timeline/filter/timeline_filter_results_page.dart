@@ -17,9 +17,18 @@ class TimelineFilterResultsPage extends StatefulWidget {
     required this.handleYearSelection,
   }) : super(key: key);
 
+  factory TimelineFilterResultsPage.androidBuilder(
+      {required TimelineFilterParams timelineFilterParams}) {
+    return TimelineFilterResultsPage(
+      timelineFilterParams: timelineFilterParams,
+      handleEventSelection: (eventId) {},
+      handleYearSelection: (year) => null,
+    );
+  }
+
   final TimelineFilterParams timelineFilterParams;
-  final void Function(int) handleEventSelection;
-  final void Function(int) handleYearSelection;
+  final void Function(int eventId) handleEventSelection;
+  final void Function(int year) handleYearSelection;
   static const String pageRoute = "results";
   static const ValueKey pageKey = ValueKey(pageRoute);
   final Logger _logger = Logger();
@@ -71,10 +80,6 @@ class _TimelineFilterResultsPageState extends State<TimelineFilterResultsPage> {
           title: AppLocalizations.of(context)!.timelineSearchResults,
         ),
         body: TimeLineBodyBuilder(
-          yearsList: filteredYears,
-          filteredEvents: filteredEvents,
-          handleEventSelection: widget.handleEventSelection,
-          handleYearSelection: widget.handleYearSelection,
           isFilterTimeline: true,
         ));
   }
