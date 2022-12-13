@@ -44,48 +44,54 @@ class _YearTimelineListViewState extends State<YearTimelineListView> {
         valueListenable: widget.hoveredYearIndexNotifier,
         builder: (context, hoverYearIndex, _) {
           return ValueListenableBuilder<int?>(
-              valueListenable: TimelineState.instance.selectedYear,
+              valueListenable: TimelineState.selectedYear,
               builder: (context, currentYear, _) {
-                return FutureBuilder<List<int>>(
-                    future: TimelineState.instance.yearsList,
-                    builder: (context, yearsListSnapshot) {
-                      if (yearsListSnapshot.connectionState ==
-                              ConnectionState.done &&
-                          yearsListSnapshot.hasData) {
-                        return ScrollConfiguration(
-                          behavior: WebScrollBehaviour(),
-                          child: ScrollablePositionedList.builder(
-                              initialScrollIndex: currentYear != null
-                                  ? yearsListSnapshot.data!.indexOf(currentYear)
-                                  : yearsListSnapshot.data!.length - 1,
-                              itemScrollController: itemController,
-                              scrollDirection: Axis.horizontal,
-                              itemCount: yearsListSnapshot.data!.length,
-                              shrinkWrap: false,
-                              itemBuilder: (
-                                BuildContext context,
-                                int index,
-                              ) =>
-                                  YearTimelineTile(
-                                    year: yearsListSnapshot.data![index],
-                                    isSelected: currentYear ==
-                                        yearsListSnapshot.data![index],
-                                    isHover: hoverYearIndex == index,
-                                    isFirst: index == 0,
-                                    isLast: index ==
-                                        yearsListSnapshot.data!.length - 1,
-                                  )),
-                        );
-                      } else if (yearsListSnapshot.connectionState ==
-                          ConnectionState.waiting) {
-                        return const LoadingWidget();
-                      } else if (yearsListSnapshot.hasError) {
-                        return NetworkError(
-                            display: yearsListSnapshot.error.toString());
-                      } else {
-                        return const LoadingWidget();
-                      }
-                    });
+                return ValueListenableBuilder<Future<List<int>>>(
+                  valueListenable: TimelineState.yearsList,
+                  builder: (context, yearsListValue, child) =>
+                      FutureBuilder<List<int>>(
+                          future: yearsListValue,
+                          builder: (context, yearsListSnapshot) {
+                            if (yearsListSnapshot.connectionState ==
+                                    ConnectionState.done &&
+                                yearsListSnapshot.hasData) {
+                              return ScrollConfiguration(
+                                behavior: WebScrollBehaviour(),
+                                child: ScrollablePositionedList.builder(
+                                    initialScrollIndex: currentYear != null
+                                        ? yearsListSnapshot.data!
+                                            .indexOf(currentYear)
+                                        : yearsListSnapshot.data!.length - 1,
+                                    itemScrollController: itemController,
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: yearsListSnapshot.data!.length,
+                                    shrinkWrap: false,
+                                    itemBuilder: (
+                                      BuildContext context,
+                                      int index,
+                                    ) =>
+                                        YearTimelineTile(
+                                          year: yearsListSnapshot.data![index],
+                                          isSelected: currentYear ==
+                                              yearsListSnapshot.data![index],
+                                          isHover: hoverYearIndex == index,
+                                          isFirst: index == 0,
+                                          isLast: index ==
+                                              yearsListSnapshot.data!.length -
+                                                  1,
+                                        )),
+                              );
+                            } else if (yearsListSnapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const LoadingWidget();
+                            } else if (yearsListSnapshot.hasError) {
+                              return NetworkError(
+                                  display: yearsListSnapshot.error.toString());
+                            } else {
+                              return const LoadingWidget();
+                            }
+                          }),
+                );
               });
         });
   }

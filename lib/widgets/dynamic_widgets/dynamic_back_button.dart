@@ -11,7 +11,6 @@ class DynamicBackIconButton extends StatelessWidget {
         ? IconButton(
             icon: const Icon(
               Icons.arrow_back,
-              color: Colors.white,
             ),
             onPressed: () {
               Navigator.of(context).pop();
@@ -20,7 +19,6 @@ class DynamicBackIconButton extends StatelessWidget {
         : CupertinoButton(
             child: const Icon(
               CupertinoIcons.back,
-              color: CupertinoColors.white,
             ),
             //color: CupertinoTheme.of(context).primaryContrastingColor,
             onPressed: () {

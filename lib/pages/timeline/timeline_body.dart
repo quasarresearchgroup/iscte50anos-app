@@ -31,44 +31,54 @@ class _TimeLineBodyBuilderState extends State<TimeLineBodyBuilder> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(10.0),
-      child: FutureBuilder<List<int>>(
-        future: TimelineState.instance.yearsList,
-        builder:
-            (BuildContext context, AsyncSnapshot<List<int>> yearsSnapshot) {
-          if (yearsSnapshot.hasData) {
-            if (yearsSnapshot.data!.isEmpty) {
-              return Center(
-                child: Text(
-                    AppLocalizations.of(context)?.timelineNothingFound ?? ""),
+      child: ValueListenableBuilder(
+        valueListenable: TimelineState.yearsList,
+        builder: (BuildContext context, Future<List<int>> currentYearsListValue,
+                Widget? child) =>
+            FutureBuilder<List<int>>(
+          future: currentYearsListValue,
+          builder:
+              (BuildContext context, AsyncSnapshot<List<int>> yearsSnapshot) {
+            if (yearsSnapshot.hasData) {
+              if (yearsSnapshot.data!.isEmpty) {
+                return Center(
+                  child: Text(
+                      AppLocalizations.of(context)?.timelineNothingFound ??
+                          "timelineNothingFound"),
+                );
+              } else {
+                return ValueListenableBuilder<Future<List<Event>>>(
+                  valueListenable: TimelineState.currentEventsList,
+                  builder: (context, Future<List<Event>> future, child) =>
+                      FutureBuilder<List<Event>>(
+                          future: future,
+                          builder: (BuildContext context,
+                              AsyncSnapshot<List<Event>> eventsSnapshot) {
+                            if (eventsSnapshot.hasData) {
+                              return const TimelineBody();
+                            } else if (eventsSnapshot.hasError) {
+                              return const NetworkError(
+                                display: "Error on eventsSnapshot", //TODO
+                                onRefresh: TimelineState.refreshEventList,
+                              );
+                            } else {
+                              return const LoadingWidget();
+                            }
+                          }),
+                );
+              }
+            } else if (yearsSnapshot.connectionState != ConnectionState.done) {
+              return const LoadingWidget();
+            } else if (yearsSnapshot.hasError) {
+              return const NetworkError(
+                display: "Error on yearsSnapshot", //TODO
+                onRefresh: TimelineState.refreshYearList,
               );
             } else {
-              return FutureBuilder<List<Event>>(
-                  future: TimelineState.instance.currentEventsList,
-                  builder: (BuildContext context,
-                      AsyncSnapshot<List<Event>> eventsSnapshot) {
-                    if (eventsSnapshot.hasData) {
-                      return const TimelineBody();
-                    } else if (eventsSnapshot.hasError) {
-                      return NetworkError(
-                        display: "Error on eventsSnapshot", //TODO
-                        onRefresh: TimelineState.refreshEventList,
-                      );
-                    } else {
-                      return const LoadingWidget();
-                    }
-                  });
+              return const LoadingWidget();
             }
-          } else if (yearsSnapshot.connectionState != ConnectionState.done) {
-            return const LoadingWidget();
-          } else if (yearsSnapshot.hasError) {
-            return NetworkError(
-              display: "Error on yearsSnapshot", //TODO
-              onRefresh: TimelineState.refreshYearList,
-            );
-          } else {
-            return const LoadingWidget();
-          }
-        },
+          },
+        ),
       ),
     );
   }
@@ -143,128 +153,139 @@ class _TimelineBodyState extends State<TimelineBody> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<Event>>(
-        future: TimelineState.instance.currentEventsList,
+    return ValueListenableBuilder<Future<List<Event>>>(
+      valueListenable: TimelineState.currentEventsList,
+      builder: (context, currentEventsListValue, child) =>
+          FutureBuilder<List<Event>>(
+        future: currentEventsListValue,
         builder: (context, eventsListSnapshot) {
           if (eventsListSnapshot.hasData) {
-            return FutureBuilder<List<int>>(
-                future: TimelineState.instance.yearsList,
-                builder: (context, yearListSnapshot) {
-                  if (yearListSnapshot.hasData) {
-                    return Shortcuts(
-                      shortcuts: const <ShortcutActivator, Intent>{
-                        SingleActivator(LogicalKeyboardKey.arrowRight,
-                            includeRepeats: true): IncrementYearsIntent(),
-                        SingleActivator(LogicalKeyboardKey.arrowLeft,
-                            includeRepeats: true): DecrementYearsIntent(),
-                        SingleActivator(LogicalKeyboardKey.arrowDown,
-                            includeRepeats: true): IncrementEventsIntent(),
-                        SingleActivator(LogicalKeyboardKey.arrowUp,
-                            includeRepeats: true): DecrementEventsIntent(),
-                        SingleActivator(LogicalKeyboardKey.enter):
-                            EnterIntent(),
-                        SingleActivator(LogicalKeyboardKey.numpadEnter):
-                            EnterIntent(),
-                        SingleActivator(LogicalKeyboardKey.space):
-                            EnterIntent(),
-                        SingleActivator(LogicalKeyboardKey.escape):
-                            EscapeIntent(),
-                      },
-                      child: Actions(
-                        actions: <Type, Action<Intent>>{
-                          IncrementYearsIntent:
-                              CallbackAction<IncrementYearsIntent>(
-                            onInvoke: (IncrementYearsIntent intent) {
-                              Logger().i("IncrementYearsIntent");
-                              changeHoveredYear(true, yearListSnapshot.data!);
-                              return null;
-                            },
-                          ),
-                          DecrementYearsIntent:
-                              CallbackAction<DecrementYearsIntent>(
-                            onInvoke: (DecrementYearsIntent intent) {
-                              Logger().i("DecrementYearsIntent");
-                              changeHoveredYear(false, yearListSnapshot.data!);
-                              return null;
-                            },
-                          ),
-                          IncrementEventsIntent:
-                              CallbackAction<IncrementEventsIntent>(
-                            onInvoke: (IncrementEventsIntent intent) {
-                              Logger().i("IncrementEventsIntent");
-                              changeHoveredEvent(
-                                  true, eventsListSnapshot.data!);
-                              return null;
-                            },
-                          ),
-                          DecrementEventsIntent:
-                              CallbackAction<DecrementEventsIntent>(
-                            onInvoke: (DecrementEventsIntent intent) {
-                              Logger().i("DecrementEventsIntent");
-                              changeHoveredEvent(
-                                  false, eventsListSnapshot.data!);
-                              return null;
-                            },
-                          ),
-                          EnterIntent: CallbackAction<EnterIntent>(
-                              onInvoke: (EnterIntent intent) =>
-                                  handleEnterEvent(eventsListSnapshot.data!,
-                                      yearListSnapshot.data!)),
-                          EscapeIntent: CallbackAction<EscapeIntent>(
-                            onInvoke: (EscapeIntent intent) {
-                              hoveredYearIndexNotifier.value = null;
-                              hoveredEventIndex.value = null;
-                              return null;
-                            },
-                          ),
+            return ValueListenableBuilder<Future<List<int>>>(
+              valueListenable: TimelineState.yearsList,
+              builder: (context, currentYearsListValue, child) => FutureBuilder<
+                      List<int>>(
+                  future: currentYearsListValue,
+                  builder: (context, yearListSnapshot) {
+                    if (yearListSnapshot.hasData) {
+                      return Shortcuts(
+                        shortcuts: const <ShortcutActivator, Intent>{
+                          SingleActivator(LogicalKeyboardKey.arrowRight,
+                              includeRepeats: true): IncrementYearsIntent(),
+                          SingleActivator(LogicalKeyboardKey.arrowLeft,
+                              includeRepeats: true): DecrementYearsIntent(),
+                          SingleActivator(LogicalKeyboardKey.arrowDown,
+                              includeRepeats: true): IncrementEventsIntent(),
+                          SingleActivator(LogicalKeyboardKey.arrowUp,
+                              includeRepeats: true): DecrementEventsIntent(),
+                          SingleActivator(LogicalKeyboardKey.enter):
+                              EnterIntent(),
+                          SingleActivator(LogicalKeyboardKey.numpadEnter):
+                              EnterIntent(),
+                          SingleActivator(LogicalKeyboardKey.space):
+                              EnterIntent(),
+                          SingleActivator(LogicalKeyboardKey.escape):
+                              EscapeIntent(),
                         },
-                        child: Focus(
-                          autofocus: true,
-                          child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Listener(
-                                  onPointerSignal: (PointerSignalEvent event) {
-                                    if (event is PointerScrollEvent) {
-                                      changeHoveredYear(
-                                          event.scrollDelta.direction > 0,
-                                          yearListSnapshot.data!);
-                                    }
-                                  },
-                                  child: SizedBox(
-                                    height: kToolbarHeight,
-                                    child: YearTimelineListView(
-                                      hoveredYearIndexNotifier:
-                                          hoveredYearIndexNotifier,
+                        child: Actions(
+                          actions: <Type, Action<Intent>>{
+                            IncrementYearsIntent:
+                                CallbackAction<IncrementYearsIntent>(
+                              onInvoke: (IncrementYearsIntent intent) {
+                                Logger().i("IncrementYearsIntent");
+                                changeHoveredYear(true, yearListSnapshot.data!);
+                                return null;
+                              },
+                            ),
+                            DecrementYearsIntent:
+                                CallbackAction<DecrementYearsIntent>(
+                              onInvoke: (DecrementYearsIntent intent) {
+                                Logger().i("DecrementYearsIntent");
+                                changeHoveredYear(
+                                    false, yearListSnapshot.data!);
+                                return null;
+                              },
+                            ),
+                            IncrementEventsIntent:
+                                CallbackAction<IncrementEventsIntent>(
+                              onInvoke: (IncrementEventsIntent intent) {
+                                Logger().i("IncrementEventsIntent");
+                                changeHoveredEvent(
+                                    true, eventsListSnapshot.data!);
+                                return null;
+                              },
+                            ),
+                            DecrementEventsIntent:
+                                CallbackAction<DecrementEventsIntent>(
+                              onInvoke: (DecrementEventsIntent intent) {
+                                Logger().i("DecrementEventsIntent");
+                                changeHoveredEvent(
+                                    false, eventsListSnapshot.data!);
+                                return null;
+                              },
+                            ),
+                            EnterIntent: CallbackAction<EnterIntent>(
+                                onInvoke: (EnterIntent intent) =>
+                                    handleEnterEvent(eventsListSnapshot.data!,
+                                        yearListSnapshot.data!)),
+                            EscapeIntent: CallbackAction<EscapeIntent>(
+                              onInvoke: (EscapeIntent intent) {
+                                hoveredYearIndexNotifier.value = null;
+                                hoveredEventIndex.value = null;
+                                return null;
+                              },
+                            ),
+                          },
+                          child: Focus(
+                            autofocus: true,
+                            child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Listener(
+                                    onPointerSignal:
+                                        (PointerSignalEvent event) {
+                                      if (event is PointerScrollEvent) {
+                                        changeHoveredYear(
+                                            event.scrollDelta.direction > 0,
+                                            yearListSnapshot.data!);
+                                      }
+                                    },
+                                    child: SizedBox(
+                                      height: kToolbarHeight,
+                                      child: YearTimelineListView(
+                                        hoveredYearIndexNotifier:
+                                            hoveredYearIndexNotifier,
+                                      ),
                                     ),
                                   ),
-                                ),
-                                Expanded(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: EventTimelineListViewBuilder(
-                                      key: UniqueKey(),
-                                      handleEventSelection: navigateToEvent,
-                                      hoveredEventIndex: hoveredEventIndex,
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: EventTimelineListViewBuilder(
+                                        key: UniqueKey(),
+                                        handleEventSelection: navigateToEvent,
+                                        hoveredEventIndex: hoveredEventIndex,
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ]),
+                                ]),
+                          ),
                         ),
-                      ),
-                    );
-                  } else if (yearListSnapshot.hasError) {
-                    return NetworkError(
-                        display: yearListSnapshot.error.toString());
-                  } else {
-                    return const LoadingWidget();
-                  }
-                });
+                      );
+                    } else if (yearListSnapshot.hasError) {
+                      return NetworkError(
+                          display: yearListSnapshot.error.toString());
+                    } else {
+                      return const LoadingWidget();
+                    }
+                  }),
+            );
           } else if (eventsListSnapshot.hasError) {
             return NetworkError(display: eventsListSnapshot.error.toString());
           } else {
             return const LoadingWidget();
           }
-        });
+        },
+      ),
+    );
   }
 }

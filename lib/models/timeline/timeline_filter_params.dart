@@ -1,11 +1,10 @@
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
 import 'package:iscte_spots/models/timeline/event.dart';
 import 'package:iscte_spots/models/timeline/topic.dart';
-import 'package:logger/logger.dart';
+import 'package:iscte_spots/services/logging/LoggerService.dart';
 
-class TimelineFilterParams with ChangeNotifier {
+class TimelineFilterParams {
   TimelineFilterParams({
     Set<Topic>? topics,
     Set<EventScope>? scopes,
@@ -14,92 +13,70 @@ class TimelineFilterParams with ChangeNotifier {
         _scopes = scopes ?? {},
         _searchText = searchText;
 
-  final Logger _logger = Logger();
-
-  Set<Topic> _topics;
-  Set<EventScope> _scopes;
-
-  String _searchText;
+  final Set<Topic> _topics;
+  final Set<EventScope> _scopes;
+  final String _searchText;
+  Set<Topic> get topics => _topics;
+  Set<EventScope> get scopes => _scopes;
   String get searchText => _searchText;
-  set searchText(String value) {
-    _searchText = value;
-    notifyListeners();
-    _logger.i(this);
+
+  TimelineFilterParams set({
+    Set<Topic>? newTopics,
+    Set<EventScope>? scopes,
+    String? searchText,
+  }) {
+    return TimelineFilterParams(
+        topics: newTopics ?? _topics,
+        scopes: scopes ?? _scopes,
+        searchText: searchText ?? this.searchText);
   }
 
-  //region Topics
-  Set<Topic> get getTopics => _topics;
-  set topics(Set<Topic> value) {
-    _topics = value;
-    notifyListeners();
-    _logger.i(this);
+  TimelineFilterParams setsearchText(Set<Topic> value) {
+    return TimelineFilterParams(
+        topics: value, searchText: this.searchText, scopes: this._scopes);
   }
 
   bool isTopicsEmpty() => _topics.isEmpty;
 
-  void addTopic(Topic topic) {
-    _topics.add(topic);
-    notifyListeners();
-    _logger.i(this);
+  TimelineFilterParams addTopic(Topic topic) {
+    return set(newTopics: topics..add(topic));
   }
 
-  void removeTopic(Topic topic) {
-    _topics.remove(topic);
-    notifyListeners();
-    _logger.i(this);
+  TimelineFilterParams removeTopic(Topic topic) {
+    return set(newTopics: topics..remove(topic));
   }
 
-  void clearTopics() {
-    _topics.clear();
-    notifyListeners();
-    _logger.i(this);
+  TimelineFilterParams clearTopics() {
+    return set(newTopics: topics..clear());
   }
 
   bool containsTopic(Topic topic) => _topics.contains(topic);
 
-  void addAllTopic(Iterable<Topic> iterableTopics) {
-    _topics.addAll(iterableTopics);
-    _logger.i(this);
-    notifyListeners();
+  TimelineFilterParams addAllTopic(Iterable<Topic> iterableTopics) {
+    return set(newTopics: topics..addAll(iterableTopics));
   }
   //endregion
 
   //region Scopes
 
-  Set<EventScope> get getScopes => _scopes;
-
-  set scopes(Set<EventScope> value) {
-    _scopes = value;
-    _logger.i(this);
-    notifyListeners();
-  }
-
   bool isScopesEmpty() => _scopes.isEmpty;
 
-  void addScope(EventScope scope) {
-    _scopes.add(scope);
-    _logger.i(this);
-    notifyListeners();
+  TimelineFilterParams addScope(EventScope scope) {
+    return set(scopes: scopes..add(scope));
   }
 
-  void removeScope(EventScope scope) {
-    _scopes.remove(scope);
-    _logger.i(this);
-    notifyListeners();
+  TimelineFilterParams removeScope(EventScope scope) {
+    return set(scopes: scopes..remove(scope));
   }
 
-  void clearScopes() {
-    _scopes.clear();
-    _logger.i(this);
-    notifyListeners();
+  TimelineFilterParams clearScopes() {
+    return set(scopes: scopes..clear());
   }
 
   bool containsScope(EventScope scope) => _scopes.contains(scope);
 
-  void addAllScope(Iterable<EventScope> iterableScopes) {
-    _scopes.addAll(iterableScopes);
-    _logger.i(this);
-    notifyListeners();
+  TimelineFilterParams addAllScope(Iterable<EventScope> iterableScopes) {
+    return set(scopes: scopes..addAll(iterableScopes));
   }
 
   //endregion
@@ -118,7 +95,7 @@ class TimelineFilterParams with ChangeNotifier {
       "scopes": json.encode(_scopes.map((e) => e.name).toList()),
       "searchText": json.encode(_searchText),
     };
-    _logger.d("map\n$map");
+    LoggerService.instance.debug("map\n$map");
     return map;
   }
 

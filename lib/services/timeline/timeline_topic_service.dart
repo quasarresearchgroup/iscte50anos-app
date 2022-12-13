@@ -9,6 +9,8 @@ import 'package:iscte_spots/services/logging/LoggerService.dart';
 class TimelineTopicService {
   static Future<List<Event>> fetchEvents(
       {List<int> topicIds = const [], List<String> scopes = const []}) async {
+    LoggerService.instance.debug("$topicIds; $scopes");
+
     try {
       String string = topicIds.fold("", (previousValue, element) {
         if (previousValue.isEmpty) {
@@ -22,7 +24,8 @@ class TimelineTopicService {
               (previousValue, String element) {
             return "$previousValue&scope=$element";
           });
-      LoggerService.instance.debug(string);
+      LoggerService.instance
+          .debug('${BackEndConstants.API_ADDRESS}/api/events/?$string');
       http.Response response = await http.get(
           Uri.parse('${BackEndConstants.API_ADDRESS}/api/events/?$string'),
           headers: <String, String>{

@@ -3,8 +3,8 @@ import 'package:iscte_spots/models/timeline/event.dart';
 import 'package:iscte_spots/pages/timeline/events/timeline_tile.dart';
 import 'package:iscte_spots/pages/timeline/state/timeline_state.dart';
 import 'package:iscte_spots/pages/timeline/web_scroll_behaviour.dart';
+import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
-import 'package:logger/logger.dart';
 
 class EventTimelineListViewBuilder extends StatefulWidget {
   const EventTimelineListViewBuilder({
@@ -43,7 +43,8 @@ class _EventTimelineListViewBuilderState
         newList.last.add(item);
       }
     }
-    Logger().d(newList.map((e) => e.map((e) => e.scope)).toList());
+    LoggerService.instance
+        .debug(newList.map((e) => e.map((e) => e.scope)).toList());
     List<int> result = [];
     for (List<Event> innerList in newList) {
       for (int i = 0; i < innerList.length; i++) {
@@ -61,41 +62,44 @@ class _EventTimelineListViewBuilderState
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<Event>>(
-        //future: currentEvents,
-        future: TimelineState.instance.currentEventsList,
-        builder: (context, snapshot) {
-          if (snapshot.data != null && snapshot.hasData) {
-            if (snapshot.data!.isNotEmpty) {
-              List<int> positionData =
-                  eventsTimelineTileGenerator(eventsList: snapshot.data!);
-              return ValueListenableBuilder<int?>(
-                  valueListenable: widget.hoveredEventIndex,
-                  builder: (context, value, _) {
-                    return ScrollConfiguration(
-                      behavior: WebScrollBehaviour(),
-                      child: ListView.builder(
-                        itemCount: snapshot.data!.length,
-                        itemBuilder: (context, index) => EventTimelineTile(
-                          isFirst: positionData[index] == 0,
-                          isLast: positionData[index] == 2,
-                          event: snapshot.data![index],
-                          index: index,
-                          handleEventSelection: widget.handleEventSelection,
-                          isSelected: value == index,
+    return ValueListenableBuilder<Future<List<Event>>>(
+      valueListenable: TimelineState.currentEventsList,
+      builder: (context, value, child) => FutureBuilder<List<Event>>(
+          //future: currentEvents,
+          future: value,
+          builder: (context, snapshot) {
+            if (snapshot.data != null && snapshot.hasData) {
+              if (snapshot.data!.isNotEmpty) {
+                List<int> positionData =
+                    eventsTimelineTileGenerator(eventsList: snapshot.data!);
+                return ValueListenableBuilder<int?>(
+                    valueListenable: widget.hoveredEventIndex,
+                    builder: (context, value, _) {
+                      return ScrollConfiguration(
+                        behavior: WebScrollBehaviour(),
+                        child: ListView.builder(
+                          itemCount: snapshot.data!.length,
+                          itemBuilder: (context, index) => EventTimelineTile(
+                            isFirst: positionData[index] == 0,
+                            isLast: positionData[index] == 2,
+                            event: snapshot.data![index],
+                            index: index,
+                            handleEventSelection: widget.handleEventSelection,
+                            isSelected: value == index,
+                          ),
                         ),
-                      ),
-                    );
-                  });
+                      );
+                    });
+              } else {
+                return const Center(
+                  child: Text("No data"),
+                );
+              }
             } else {
-              return const Center(
-                child: Text("No data"),
-              );
+              return const LoadingWidget();
             }
-          } else {
-            return const LoadingWidget();
-          }
-        });
+          }),
+    );
   }
 }
 

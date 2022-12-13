@@ -7,9 +7,9 @@ import 'package:iscte_spots/models/timeline/topic.dart';
 import 'package:iscte_spots/pages/timeline/filter/timeline_filter_results_page.dart';
 import 'package:iscte_spots/pages/timeline/filter/timeline_filter_scopes_widget.dart';
 import 'package:iscte_spots/pages/timeline/filter/timeline_filter_topics_widget.dart';
+import 'package:iscte_spots/pages/timeline/state/timeline_state.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/services/platform_service.dart';
-import 'package:iscte_spots/services/timeline/timeline_topic_service.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_text_button.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_text_field.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
@@ -43,9 +43,6 @@ class TimelineFilterPage extends StatefulWidget {
 
 class _TimelineFilterPageState extends State<TimelineFilterPage> {
   // Set<Topic> selectedTopics = {};
-  late final Future<List<Topic>> availableTopicsFuture;
-  late final Future<List<EventScope>> availableScopesFuture;
-  TimelineFilterParams filterParams = TimelineFilterParams();
 
   late final TextEditingController searchBarController;
   final double childAspectRatio = 20 / 4;
@@ -57,20 +54,12 @@ class _TimelineFilterPageState extends State<TimelineFilterPage> {
     searchBarController = TextEditingController();
     super.initState();
     if (widget.filterParams != null) {
-      filterParams = widget.filterParams!;
       // selectedTopics.addAll(widget.filterParams!.topics);
       searchBarController.text = widget.filterParams!.searchText;
     } /*
     searchBarController.addListener(() {
       filterParams.searchText = searchBarController.text;
     });*/
-    filterParams.addListener(() {
-      //widget.handleFilterSubmission(filterParams, false);
-      setState(() {});
-    });
-
-    availableTopicsFuture = TimelineTopicService.fetchAllTopics();
-    availableScopesFuture = Future(() => EventScope.values);
   }
 
   int gridCount(BuildContext context) {
@@ -127,16 +116,12 @@ class _TimelineFilterPageState extends State<TimelineFilterPage> {
                 ScopesFilterWidget(
                   titleStyle: titleStyle,
                   textStyle: textStyle,
-                  filterParams: filterParams,
-                  availableScopes: availableScopesFuture,
                   childAspectRatio: childAspectRatio,
                   gridCount: gridCount(context),
                 ),
                 TopicsFilterWidget(
                   titleStyle: titleStyle,
                   textStyle: textStyle,
-                  filterParams: filterParams,
-                  availableTopics: availableTopicsFuture,
                   childAspectRatio: childAspectRatio,
                   gridCount: gridCount(context),
                 ),
@@ -162,28 +147,27 @@ class _TimelineFilterPageState extends State<TimelineFilterPage> {
 
   Widget selectedTopicsWidget(
       final double dividerWidth, final double dividerThickness) {
-    Widget wrap = AnimatedBuilder(
-        animation: filterParams,
-        builder: (context, child) {
-          return Wrap(
-            spacing: 5,
-            runSpacing: 5,
-            alignment: WrapAlignment.start,
-            direction: Axis.horizontal,
-            children: filterParams.getTopics
-                .map((Topic topic) => Chip(
-                      label: Text(topic.title ?? "No Title"),
-                      onDeleted: () {
-                        filterParams.removeTopic(topic);
-                      },
-                    ))
-                .toList(),
-          );
-        });
+    Widget wrap = ValueListenableBuilder<TimelineFilterParams>(
+        valueListenable: TimelineState.currentTimelineFilterParams,
+        builder: (context, currentTimelineFilter, child) => Wrap(
+              spacing: 5,
+              runSpacing: 5,
+              alignment: WrapAlignment.start,
+              direction: Axis.horizontal,
+              children: currentTimelineFilter.topics
+                  .map((Topic topic) => Chip(
+                        label: Text(topic.title ?? "No Title"),
+                        onDeleted: () {
+                          currentTimelineFilter.removeTopic(topic);
+                        },
+                      ))
+                  .toList(),
+            ));
+
     return SliverToBoxAdapter(
       child: AnimatedSwitcher(
         duration: const Duration(milliseconds: 500),
-        child: filterParams.isTopicsEmpty()
+        child: TimelineState.currentTimelineFilterParams.value.isTopicsEmpty()
             ? null
             : Column(children: [
                 Padding(
@@ -212,44 +196,48 @@ class _TimelineFilterPageState extends State<TimelineFilterPage> {
 
   Widget selectedScopesWidget(
       final double dividerWidth, final double dividerThickness) {
-    Widget wrap = Wrap(
-      spacing: 5,
-      runSpacing: 5,
-      alignment: WrapAlignment.start,
-      direction: Axis.horizontal,
-      children: filterParams.getScopes
-          .map((EventScope scope) => Chip(
-                label: Text(scope.name),
-                onDeleted: () {
-                  setState(() {
-                    filterParams.removeScope(scope);
-                  });
-                },
-              ))
-          .toList(),
-    );
     return SliverToBoxAdapter(
       child: AnimatedSwitcher(
         duration: const Duration(milliseconds: 500),
-        child: filterParams.isScopesEmpty()
-            ? Container()
-            : Column(children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      "Selected Scopes",
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleLarge
-                          ?.copyWith(color: IscteTheme.iscteColor),
-                    ),
-                  ),
-                ),
-                wrap,
-                Divider(height: dividerWidth, thickness: dividerThickness),
-              ]),
+        child: ValueListenableBuilder<TimelineFilterParams>(
+            valueListenable: TimelineState.currentTimelineFilterParams,
+            builder: (context, currentTimelineFilter, child) =>
+                currentTimelineFilter.isScopesEmpty()
+                    ? Container()
+                    : Column(children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              "Selected Scopes", //TODO
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleLarge
+                                  ?.copyWith(color: IscteTheme.iscteColor),
+                            ),
+                          ),
+                        ),
+                        Wrap(
+                          spacing: 5,
+                          runSpacing: 5,
+                          alignment: WrapAlignment.start,
+                          direction: Axis.horizontal,
+                          children: currentTimelineFilter.scopes
+                              .map((EventScope scope) => Chip(
+                                    label: Text(scope.name),
+                                    onDeleted: () {
+                                      setState(() {
+                                        currentTimelineFilter
+                                            .removeScope(scope);
+                                      });
+                                    },
+                                  ))
+                              .toList(),
+                        ),
+                        Divider(
+                            height: dividerWidth, thickness: dividerThickness),
+                      ])),
       ),
     );
   }
@@ -295,7 +283,10 @@ class _TimelineFilterPageState extends State<TimelineFilterPage> {
   }
 
   void _submitSelection(BuildContext context) async {
-    filterParams.searchText = searchBarController.text;
-    widget.handleFilterSubmission(filterParams, true, context);
+    TimelineState.operateFilter(
+        (params) => params.set(searchText: searchBarController.text));
+
+    widget.handleFilterSubmission(
+        TimelineState.currentTimelineFilterParams.value, true, context);
   }
 }

@@ -14,29 +14,33 @@ class FeedbackFormButon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<int>>(
-        future: TimelineState.instance.yearsList,
-        builder: (context, snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.done:
-              if (snapshot.hasData) {
-                return IconButton(
-                  onPressed: () => showDialog(
-                    context: context,
-                    builder: (context) => FeedbackForm(
-                      yearsList: snapshot.data!,
-                      selectedYear: TimelineState.instance.selectedYear.value,
-                    ),
-                  ),
-                  icon: const Icon(Icons.feedback_outlined),
-                );
-              } else {
-                return const LoadingWidget();
-              }
-            default:
-              return const LoadingWidget();
-          }
-        });
+    return ValueListenableBuilder<Future<List<int>>>(
+      valueListenable: TimelineState.yearsList,
+      builder: (context, currentYearsListValue, child) =>
+          FutureBuilder<List<int>>(
+              future: currentYearsListValue,
+              builder: (context, snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.done:
+                    if (snapshot.hasData) {
+                      return IconButton(
+                        onPressed: () => showDialog(
+                          context: context,
+                          builder: (context) => FeedbackForm(
+                            yearsList: snapshot.data!,
+                            selectedYear: TimelineState.selectedYear.value,
+                          ),
+                        ),
+                        icon: const Icon(Icons.feedback_outlined),
+                      );
+                    } else {
+                      return const LoadingWidget();
+                    }
+                  default:
+                    return const LoadingWidget();
+                }
+              }),
+    );
   }
 }
 

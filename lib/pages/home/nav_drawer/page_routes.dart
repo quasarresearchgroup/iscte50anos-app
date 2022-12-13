@@ -26,7 +26,7 @@ class PageRouter {
       case AuthPage.pageRoute:
         return AuthPage();
       case TimelinePage.pageRoute:
-        return TimelinePage();
+        return const TimelinePage();
       case TimeLineDetailsPage.pageRoute:
         return TimeLineDetailsPage(
           eventId: argument as int,
@@ -40,13 +40,13 @@ class PageRouter {
       case FlickrPage.pageRoute:
         return FlickrPage();
       case LeaderBoardPage.pageRoute:
-        return LeaderBoardPage();
+        return const LeaderBoardPage();
       case QuizMenu.pageRoute:
-        return QuizMenu();
+        return const QuizMenu();
       case ProfilePage.pageRoute:
         return ProfilePage();
       case VisitedPagesPage.pageRoute:
-        return VisitedPagesPage();
+        return const VisitedPagesPage();
       case SettingsPage.pageRoute:
         return SettingsPage();
       case OnboardingPage.pageRoute:
