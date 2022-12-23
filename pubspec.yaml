@@ -43,6 +43,7 @@ dependencies:
   url_launcher: ^6.0.12
   youtube_player_flutter: ^8.0.0
   pinch_zoom: ^1.0.0
+  permission_handler: ^10.2.0
 
 dev_dependencies:
   flutter_lints: ^2.0.1
