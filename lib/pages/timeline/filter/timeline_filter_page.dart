@@ -4,11 +4,10 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/models/timeline/event.dart';
 import 'package:iscte_spots/models/timeline/timeline_filter_params.dart';
 import 'package:iscte_spots/models/timeline/topic.dart';
-import 'package:iscte_spots/pages/timeline/filter/timeline_filter_results_page.dart';
 import 'package:iscte_spots/pages/timeline/filter/timeline_filter_scopes_widget.dart';
 import 'package:iscte_spots/pages/timeline/filter/timeline_filter_topics_widget.dart';
+import 'package:iscte_spots/pages/timeline/state/timeline_filter_result_state.dart';
 import 'package:iscte_spots/pages/timeline/state/timeline_state.dart';
-import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/services/platform_service.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_text_button.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_text_field.dart';
@@ -27,13 +26,6 @@ class TimelineFilterPage extends StatefulWidget {
 
   //final void Function(int) handleEventSelection;
   //final void Function(int) handleYearSelection;
-  void handleFilterSubmission(
-      TimelineFilterParams filters, bool showResults, BuildContext context) {
-    LoggerService.instance.debug("handleFilterSubmission");
-
-    Navigator.of(context)
-        .pushNamed(TimelineFilterResultsPage.pageRoute, arguments: filters);
-  }
 
   final TimelineFilterParams? filterParams;
 
@@ -132,10 +124,25 @@ class _TimelineFilterPageState extends State<TimelineFilterPage> {
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: DynamicTextButton(
-              style: IscteTheme.iscteColor,
-              onPressed: () => _submitSelection(context),
-              child: Text(AppLocalizations.of(context)!.timelineSearchButton),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                DynamicTextButton(
+                  style: IscteTheme.iscteColor,
+                  onPressed: () => _submitSelection(context),
+                  child:
+                      Text(AppLocalizations.of(context)!.timelineSearchButton),
+                ),
+                const DynamicTextButton(
+                  style: IscteTheme.greyColor,
+                  onPressed: TimelineState.clearFilter,
+                  child: Text(
+                    "Clear",
+                    // TODO
+                    style: TextStyle(color: Colors.black),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -286,7 +293,6 @@ class _TimelineFilterPageState extends State<TimelineFilterPage> {
     TimelineState.operateFilter(
         (params) => params.set(searchText: searchBarController.text));
 
-    widget.handleFilterSubmission(
-        TimelineState.currentTimelineFilterParams.value, true, context);
+    TimelineFilterResultState.submitFilter(context);
   }
 }

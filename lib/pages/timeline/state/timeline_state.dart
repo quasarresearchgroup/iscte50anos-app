@@ -1,5 +1,5 @@
-import 'package:flutter/src/foundation/change_notifier.dart'
-    show ChangeNotifier, ValueNotifier;
+import 'package:flutter/material.dart';
+import 'package:flutter/src/foundation/change_notifier.dart' show ValueNotifier;
 import 'package:iscte_spots/models/timeline/event.dart';
 import 'package:iscte_spots/models/timeline/timeline_filter_params.dart';
 import 'package:iscte_spots/models/timeline/topic.dart';
@@ -8,10 +8,10 @@ import 'package:iscte_spots/services/shared_prefs_service.dart';
 import 'package:iscte_spots/services/timeline/timeline_event_service.dart';
 import 'package:iscte_spots/services/timeline/timeline_topic_service.dart';
 
-class TimelineState extends ChangeNotifier {
+class TimelineState {
   TimelineState._privateConstructor()
       : _isDialOpen = ValueNotifier<bool>(false),
-        _isFilter = ValueNotifier<bool>(false),
+        //_isFilter = ValueNotifier<bool>(false),
         _yearsList = ValueNotifier<Future<List<int>>>(
             TimelineEventService.fetchYearsList()),
         _availableTopicsFuture = ValueNotifier<Future<List<Topic>>>(
@@ -19,7 +19,7 @@ class TimelineState extends ChangeNotifier {
         _availableScopesFuture = ValueNotifier<Future<List<EventScope>>>(
             Future(() => EventScope.values)),
         _selectedYear = SharedPrefsService().currentTimelineYearNotifier,
-        _currentEventsList = ValueNotifier<Future<List<Event>>>(
+        _eventsList = ValueNotifier<Future<List<Event>>>(
             TimelineEventService.fetchEventsFromYear(
                 year: SharedPrefsService().currentTimelineYearNotifier.value ??
                     1)),
@@ -30,11 +30,12 @@ class TimelineState extends ChangeNotifier {
   //static TimelineState get instance => _instance;
 
   final ValueNotifier<bool> _isDialOpen;
-  final ValueNotifier<bool> _isFilter;
-
   static ValueNotifier<bool> get isDialOpen => _instance._isDialOpen;
+  //final ValueNotifier<bool> _isFilter;
+
   final ValueNotifier<Future<List<int>>> _yearsList;
   static ValueNotifier<Future<List<int>>> get yearsList => _instance._yearsList;
+
   final ValueNotifier<Future<List<Topic>>> _availableTopicsFuture;
   static ValueNotifier<Future<List<Topic>>> get availableTopicsFuture =>
       _instance._availableTopicsFuture;
@@ -43,9 +44,10 @@ class TimelineState extends ChangeNotifier {
       _instance._availableScopesFuture;
   final ValueNotifier<int?> _selectedYear;
   static ValueNotifier<int?> get selectedYear => _instance._selectedYear;
-  final ValueNotifier<Future<List<Event>>> _currentEventsList;
-  static ValueNotifier<Future<List<Event>>> get currentEventsList =>
-      _instance._currentEventsList;
+  final ValueNotifier<Future<List<Event>>> _eventsList;
+  static ValueNotifier<Future<List<Event>>> get eventsList =>
+      _instance._eventsList;
+
   final ValueNotifier<TimelineFilterParams> _currentTimelineFilterParams;
   static ValueNotifier<TimelineFilterParams> get currentTimelineFilterParams =>
       _instance._currentTimelineFilterParams;
@@ -53,35 +55,32 @@ class TimelineState extends ChangeNotifier {
   static void changeCurrentYear(int year) {
     LoggerService.instance.debug("changeCurrentYear $year");
     SharedPrefsService.storeTimelineSelectedYear(year);
-    if (!_instance._isFilter.value) {
-      _instance._currentEventsList.value =
-          TimelineEventService.fetchEventsFromYear(
-              year: SharedPrefsService().currentTimelineYearNotifier.value);
-    } else {}
-    _instance.notifyListeners();
+
+    _instance._eventsList.value = TimelineEventService.fetchEventsFromYear(
+        year: SharedPrefsService().currentTimelineYearNotifier.value);
+//    _instance.notifyListeners();
   }
 
   static void refreshYearList() {
     LoggerService.instance.debug("refreshYearList");
     _instance._yearsList.value = TimelineEventService.fetchYearsList();
-    _instance.notifyListeners();
+    //_instance.notifyListeners();
   }
 
   static void refreshEventList() {
     LoggerService.instance.debug(
         "refreshEventList ${SharedPrefsService().currentTimelineYearNotifier.value}");
-    _instance._currentEventsList.value =
-        TimelineEventService.fetchEventsFromYear(
-            year: SharedPrefsService().currentTimelineYearNotifier.value);
+    _instance._eventsList.value = TimelineEventService.fetchEventsFromYear(
+        year: SharedPrefsService().currentTimelineYearNotifier.value);
 
-    _instance.notifyListeners();
+    //_instance.notifyListeners();
   }
 
   static Future<void> storeEventList(List<Event> newEvents) async {
-    _instance._currentEventsList.value = Future(() => newEvents);
-    _instance._yearsList.value = _instance._currentEventsList.value
+    _instance._eventsList.value = Future(() => newEvents);
+    _instance._yearsList.value = _instance._eventsList.value
         .then((value) => value.map((e) => e.dateTime.year).toSet().toList());
-    _instance.notifyListeners();
+    //_instance.notifyListeners();
   }
 
   static Future<void> storedNewTimelineFilterParams(
@@ -89,7 +88,7 @@ class TimelineState extends ChangeNotifier {
     await SharedPrefsService.storeTimelineFilters(timelineFilterParams);
     _instance._currentTimelineFilterParams.value = timelineFilterParams;
 
-    _instance.notifyListeners();
+    // _instance.notifyListeners();
   }
 
   static Future<void> operateFilter(
@@ -101,6 +100,15 @@ class TimelineState extends ChangeNotifier {
         "${_instance._currentTimelineFilterParams.value}; to :$timelineFilterParams;");
 
     storedNewTimelineFilterParams(timelineFilterParams);
+  }
+
+//TODO add methods to generate filtered events list and use that on the filter results page instead of normal events list
+
+  static Future<void> clearFilter() async {
+    LoggerService.instance.info("clearFilter");
+    //_instance._isFilter.value = false;
+    _instance._currentTimelineFilterParams.value = TimelineFilterParams();
+    //_instance.notifyListeners();
   }
 
 /*

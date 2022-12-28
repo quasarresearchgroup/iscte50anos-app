@@ -6,6 +6,7 @@ import 'package:iscte_spots/models/timeline/content.dart';
 import 'package:iscte_spots/models/timeline/event.dart';
 import 'package:iscte_spots/models/timeline/topic.dart';
 import 'package:iscte_spots/services/flickr/flickr_url_converter_service.dart';
+import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/services/timeline/timeline_event_service.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_back_button.dart';
 import 'package:iscte_spots/widgets/my_app_bar.dart';
@@ -233,7 +234,7 @@ class TimelineDetailListContent extends StatelessWidget {
 }
 
 class TimelineDetailGridContent extends StatefulWidget {
-  TimelineDetailGridContent({
+  const TimelineDetailGridContent({
     Key? key,
     required this.content,
     required this.isEven,
@@ -251,9 +252,9 @@ class TimelineDetailGridContent extends StatefulWidget {
 }
 
 class _TimelineDetailGridContentState extends State<TimelineDetailGridContent> {
-  final Logger _logger = Logger();
-  Widget? child;
-  late YoutubePlayerController controller;
+  late final YoutubePlayerController controller;
+  late final Widget child;
+
   @override
   void initState() {
     super.initState();
@@ -297,7 +298,14 @@ class _TimelineDetailGridContentState extends State<TimelineDetailGridContent> {
             }
           });
     } else {
-      child = null;
+      child = CachedNetworkImage(
+        imageUrl: widget.content.link,
+        fadeOutDuration: const Duration(seconds: 1),
+        fadeInDuration: const Duration(seconds: 3),
+        progressIndicatorBuilder:
+            (BuildContext context, String url, DownloadProgress progress) =>
+                const LoadingWidget(),
+      );
     }
   }
 
@@ -322,7 +330,7 @@ class _TimelineDetailGridContentState extends State<TimelineDetailGridContent> {
           ListTile(
             onTap: widget.content.link.isNotEmpty
                 ? () {
-                    _logger.d("Tapped ${widget.content}");
+                    LoggerService.instance.debug("Tapped ${widget.content}");
                     HelperMethods.launchURL(widget.content.link);
                   }
                 : null,
@@ -338,10 +346,10 @@ class _TimelineDetailGridContentState extends State<TimelineDetailGridContent> {
             leading: widget.content.contentIcon,
             trailing:
                 widget.content.validated != null && widget.content.validated!
-                    ? Icon(Icons.check_box)
+                    ? const Icon(Icons.check_box)
                     : null,
           ),
-          if (child != null) Expanded(child: child!),
+          Expanded(child: child),
         ],
       ),
     );

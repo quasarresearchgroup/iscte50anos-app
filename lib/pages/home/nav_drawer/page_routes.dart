@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
 import 'package:iscte_spots/models/timeline/content.dart';
-import 'package:iscte_spots/models/timeline/timeline_filter_params.dart';
 import 'package:iscte_spots/pages/auth/auth_page.dart';
 import 'package:iscte_spots/pages/flickr/flickr_page.dart';
 import 'package:iscte_spots/pages/home/home_page.dart';
@@ -32,9 +31,7 @@ class PageRouter {
           eventId: argument as int,
         );
       case TimelineFilterResultsPage.pageRoute:
-        return TimelineFilterResultsPage.androidBuilder(
-          timelineFilterParams: argument as TimelineFilterParams,
-        );
+        return const TimelineFilterResultsPage();
       //case Shaker.pageRoute:
       //  return Shaker();
       case FlickrPage.pageRoute:

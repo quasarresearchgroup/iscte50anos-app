@@ -1,11 +1,11 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/models/timeline/event.dart';
 import 'package:iscte_spots/pages/timeline/events/events_timeline_listview.dart';
 import 'package:iscte_spots/pages/timeline/list_view/intents.dart';
 import 'package:iscte_spots/pages/timeline/list_view/year_timeline__listview.dart';
+import 'package:iscte_spots/pages/timeline/state/timeline_filter_result_state.dart';
 import 'package:iscte_spots/pages/timeline/state/timeline_state.dart';
 import 'package:iscte_spots/widgets/network/error.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
@@ -14,7 +14,7 @@ import 'package:logger/logger.dart';
 import '../../services/logging/LoggerService.dart';
 import 'details/timeline_details_page.dart';
 
-class TimeLineBodyBuilder extends StatefulWidget {
+class TimeLineBodyBuilder extends StatelessWidget {
   const TimeLineBodyBuilder({
     Key? key,
     required this.isFilterTimeline,
@@ -23,88 +23,36 @@ class TimeLineBodyBuilder extends StatefulWidget {
   final bool isFilterTimeline;
 
   @override
-  State<TimeLineBodyBuilder> createState() => _TimeLineBodyBuilderState();
-}
-
-class _TimeLineBodyBuilderState extends State<TimeLineBodyBuilder> {
-  @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: ValueListenableBuilder(
-        valueListenable: TimelineState.yearsList,
-        builder: (BuildContext context, Future<List<int>> currentYearsListValue,
-                Widget? child) =>
-            FutureBuilder<List<int>>(
-          future: currentYearsListValue,
-          builder:
-              (BuildContext context, AsyncSnapshot<List<int>> yearsSnapshot) {
-            if (yearsSnapshot.hasData) {
-              if (yearsSnapshot.data!.isEmpty) {
-                return Center(
-                  child: Text(
-                      AppLocalizations.of(context)?.timelineNothingFound ??
-                          "timelineNothingFound"),
-                );
-              } else {
-                return ValueListenableBuilder<Future<List<Event>>>(
-                  valueListenable: TimelineState.currentEventsList,
-                  builder: (context, Future<List<Event>> future, child) =>
-                      FutureBuilder<List<Event>>(
-                          future: future,
-                          builder: (BuildContext context,
-                              AsyncSnapshot<List<Event>> eventsSnapshot) {
-                            if (eventsSnapshot.hasData) {
-                              return const TimelineBody();
-                            } else if (eventsSnapshot.hasError) {
-                              return const NetworkError(
-                                display: "Error on eventsSnapshot", //TODO
-                                onRefresh: TimelineState.refreshEventList,
-                              );
-                            } else {
-                              return const LoadingWidget();
-                            }
-                          }),
-                );
-              }
-            } else if (yearsSnapshot.connectionState != ConnectionState.done) {
-              return const LoadingWidget();
-            } else if (yearsSnapshot.hasError) {
-              return const NetworkError(
-                display: "Error on yearsSnapshot", //TODO
-                onRefresh: TimelineState.refreshYearList,
-              );
-            } else {
-              return const LoadingWidget();
-            }
-          },
-        ),
-      ),
-    );
+        padding: const EdgeInsets.all(10.0),
+        child: TimelineBody(
+          isFilterTimeline: isFilterTimeline,
+        ));
   }
 }
 
-class TimelineBody extends StatefulWidget {
-  const TimelineBody({
+class TimelineBody extends StatelessWidget {
+  TimelineBody({
     Key? key,
+    required this.isFilterTimeline,
   }) : super(key: key);
 
-  @override
-  State<TimelineBody> createState() => _TimelineBodyState();
-}
+  ///Bool variable for determining which state object to be called down the widget tree: TimelineState or TimelineFilterResultsState
+  final bool isFilterTimeline;
 
-class _TimelineBodyState extends State<TimelineBody> {
-  ValueNotifier<int?> hoveredEventIndex = ValueNotifier(null);
-  ValueNotifier<int?> hoveredYearIndexNotifier = ValueNotifier(null);
+  final ValueNotifier<int?> hoveredEventIndex = ValueNotifier(null);
+  final ValueNotifier<int?> hoveredYearIndexNotifier = ValueNotifier(null);
   int? lastYearIndex;
 
-  void navigateToEvent(int eventId) {
+  void navigateToEvent(int eventId, BuildContext context) {
     Navigator.of(context)
         .pushNamed(TimeLineDetailsPage.pageRoute, arguments: eventId);
     LoggerService.instance.debug("handleEventSelection");
   }
 
-  void handleEnterEvent(List<Event> eventsList, List<int> yearsList) {
+  void handleEnterEvent(
+      List<Event> eventsList, List<int> yearsList, BuildContext context) {
     assert((hoveredEventIndex.value == null &&
             hoveredYearIndexNotifier.value != null) ||
         (hoveredEventIndex.value != null &&
@@ -112,13 +60,13 @@ class _TimelineBodyState extends State<TimelineBody> {
     if (hoveredEventIndex.value != null) {
       Event selectedEvent = eventsList[hoveredEventIndex.value!];
       if (selectedEvent.isVisitable) {
-        navigateToEvent(selectedEvent.id);
+        navigateToEvent(selectedEvent.id, context);
       }
     } else if (hoveredYearIndexNotifier.value != null) {
       TimelineState.changeCurrentYear(
           yearsList[hoveredYearIndexNotifier.value!]);
     }
-    Logger().i(
+    LoggerService.instance.info(
         "selectedEventIndex: ${hoveredEventIndex.value} ; selectedYearIndex: ${hoveredYearIndexNotifier.value}");
   }
 
@@ -154,14 +102,18 @@ class _TimelineBodyState extends State<TimelineBody> {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<Future<List<Event>>>(
-      valueListenable: TimelineState.currentEventsList,
+      valueListenable: isFilterTimeline
+          ? TimelineFilterResultState.eventsList
+          : TimelineState.eventsList,
       builder: (context, currentEventsListValue, child) =>
           FutureBuilder<List<Event>>(
         future: currentEventsListValue,
         builder: (context, eventsListSnapshot) {
           if (eventsListSnapshot.hasData) {
             return ValueListenableBuilder<Future<List<int>>>(
-              valueListenable: TimelineState.yearsList,
+              valueListenable: isFilterTimeline
+                  ? TimelineFilterResultState.yearsList
+                  : TimelineState.yearsList,
               builder: (context, currentYearsListValue, child) => FutureBuilder<
                       List<int>>(
                   future: currentYearsListValue,
@@ -191,7 +143,8 @@ class _TimelineBodyState extends State<TimelineBody> {
                             IncrementYearsIntent:
                                 CallbackAction<IncrementYearsIntent>(
                               onInvoke: (IncrementYearsIntent intent) {
-                                Logger().i("IncrementYearsIntent");
+                                LoggerService.instance
+                                    .info("IncrementYearsIntent");
                                 changeHoveredYear(true, yearListSnapshot.data!);
                                 return null;
                               },
@@ -199,7 +152,8 @@ class _TimelineBodyState extends State<TimelineBody> {
                             DecrementYearsIntent:
                                 CallbackAction<DecrementYearsIntent>(
                               onInvoke: (DecrementYearsIntent intent) {
-                                Logger().i("DecrementYearsIntent");
+                                LoggerService.instance
+                                    .info("DecrementYearsIntent");
                                 changeHoveredYear(
                                     false, yearListSnapshot.data!);
                                 return null;
@@ -208,7 +162,8 @@ class _TimelineBodyState extends State<TimelineBody> {
                             IncrementEventsIntent:
                                 CallbackAction<IncrementEventsIntent>(
                               onInvoke: (IncrementEventsIntent intent) {
-                                Logger().i("IncrementEventsIntent");
+                                LoggerService.instance
+                                    .info("IncrementEventsIntent");
                                 changeHoveredEvent(
                                     true, eventsListSnapshot.data!);
                                 return null;
@@ -217,7 +172,8 @@ class _TimelineBodyState extends State<TimelineBody> {
                             DecrementEventsIntent:
                                 CallbackAction<DecrementEventsIntent>(
                               onInvoke: (DecrementEventsIntent intent) {
-                                Logger().i("DecrementEventsIntent");
+                                LoggerService.instance
+                                    .info("DecrementEventsIntent");
                                 changeHoveredEvent(
                                     false, eventsListSnapshot.data!);
                                 return null;
@@ -226,7 +182,7 @@ class _TimelineBodyState extends State<TimelineBody> {
                             EnterIntent: CallbackAction<EnterIntent>(
                                 onInvoke: (EnterIntent intent) =>
                                     handleEnterEvent(eventsListSnapshot.data!,
-                                        yearListSnapshot.data!)),
+                                        yearListSnapshot.data!, context)),
                             EscapeIntent: CallbackAction<EscapeIntent>(
                               onInvoke: (EscapeIntent intent) {
                                 hoveredYearIndexNotifier.value = null;
@@ -254,6 +210,13 @@ class _TimelineBodyState extends State<TimelineBody> {
                                       child: YearTimelineListView(
                                         hoveredYearIndexNotifier:
                                             hoveredYearIndexNotifier,
+                                        currentYearsListValue:
+                                            currentYearsListValue,
+                                        onTap: isFilterTimeline
+                                            ? TimelineFilterResultState
+                                                .changeCurrentYear
+                                            : TimelineState.changeCurrentYear,
+                                        isFilter: isFilterTimeline,
                                       ),
                                     ),
                                   ),
@@ -264,6 +227,7 @@ class _TimelineBodyState extends State<TimelineBody> {
                                         key: UniqueKey(),
                                         handleEventSelection: navigateToEvent,
                                         hoveredEventIndex: hoveredEventIndex,
+                                        eventsList: currentEventsListValue,
                                       ),
                                     ),
                                   ),

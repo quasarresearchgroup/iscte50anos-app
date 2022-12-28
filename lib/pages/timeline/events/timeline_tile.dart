@@ -32,7 +32,7 @@ class EventTimelineTile extends StatefulWidget {
   final Event event;
 
   ///Function for handling what hapens when this event/tile is selected, should navigate to a screen showing details on the event
-  final void Function(int) handleEventSelection;
+  final void Function(int, BuildContext) handleEventSelection;
 
   @override
   State<EventTimelineTile> createState() => _EventTimelineTileState();
@@ -61,7 +61,7 @@ class _EventTimelineTileState extends State<EventTimelineTile> {
     return GestureDetector(
       onTap: widget.event.contentCount > 0
           ? () {
-              widget.handleEventSelection(widget.event.id);
+              widget.handleEventSelection(widget.event.id, context);
             }
           : null,
       child: MouseRegion(
