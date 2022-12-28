@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class IscteTheme {
-  static const Color iscteColor = Color.fromRGBO(14, 41, 194, 1);
+  static const Color iscteColor = Color.fromRGBO(13, 40, 194, 1.0);
+
   //static const Color iscteColorLight = iscteColor.withGreen(iscteColor.green + 100);
   //static const Color iscteColorDark = iscteColor.withGreen(iscteColor.green - 100);
   static const Radius appbarRadius = Radius.circular(20);
@@ -118,7 +119,7 @@ class IscteTheme {
     brightness: Brightness.dark,
     primaryColor: IscteTheme.iscteColor,
   );
-  
+
   static InputDecoration buildInputDecoration(
       {required String hint, String? errorText, Widget? suffixIcon}) {
     return InputDecoration(
