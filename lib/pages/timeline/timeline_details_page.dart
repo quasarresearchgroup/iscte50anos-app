@@ -9,14 +9,14 @@ import 'package:iscte_spots/models/timeline/topic.dart';
 import 'package:iscte_spots/pages/timeline/timeline_page.dart';
 import 'package:iscte_spots/services/flickr/flickr_url_converter_service.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
+import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_back_button.dart';
+import 'package:iscte_spots/widgets/my_app_bar.dart';
 import 'package:iscte_spots/widgets/network/error.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
-
 import 'package:url_launcher/url_launcher.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
-import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_back_button.dart';
-import 'package:iscte_spots/widgets/my_app_bar.dart';
+//import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
 class TimeLineDetailsPage extends StatefulWidget {
   static const String pageRoute = "${TimelinePage.pageRoute}/detail";
@@ -33,9 +33,11 @@ class TimeLineDetailsPage extends StatefulWidget {
 
 class _TimeLineDetailsPageState extends State<TimeLineDetailsPage> {
   final double textweight = 2;
+  final List<YoutubePlayerController> _videoControllers = [];
 
-
-  List<YoutubePlayerController> _youtubeControllers = [];
+  void addVideoController(YoutubePlayerController controller) {
+    _videoControllers.add(controller);
+  }
 
   @override
   void initState() {}
@@ -61,7 +63,8 @@ class _TimeLineDetailsPageState extends State<TimeLineDetailsPage> {
               future: allContentFromEvent,
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  LoggerService.instance.debug("event: ${widget.event} , data:${snapshot.data!} ");
+                  LoggerService.instance.debug(
+                      "event: ${widget.event} , data:${snapshot.data!} ");
                   return ListView.builder(
                     addAutomaticKeepAlives: true,
                     itemCount: (snapshot.data?.length)! + 2,
@@ -98,7 +101,20 @@ class _TimeLineDetailsPageState extends State<TimeLineDetailsPage> {
 
   Widget buildContent(Content content) {
     if (content.link.contains("youtube")) {
-      YoutubePlayerController _controller = YoutubePlayerController(
+      late final YoutubePlayerController _controller;
+      _controller = YoutubePlayerController(
+        params: const YoutubePlayerParams(
+          showControls: true,
+          mute: false,
+          showFullscreenButton: true,
+          loop: false,
+        ),
+      )..onInit = () {
+          _controller.loadVideo(content.link);
+        };
+      addVideoController(_controller);
+
+      /*YoutubePlayerController _controller = YoutubePlayerController(
         initialVideoId: YoutubePlayer.convertUrlToId(content.link)!,
         flags: const YoutubePlayerFlags(
           autoPlay: false,
@@ -108,15 +124,12 @@ class _TimeLineDetailsPageState extends State<TimeLineDetailsPage> {
           isLive: false,
           forceHD: false,
         ),
-      );
+      );*/
       return Wrap(
         children: [
-          YoutubePlayerBuilder(
-              player: YoutubePlayer(
-                controller: _controller,
-                showVideoProgressIndicator: true,
-              ),
-              builder: (context, player) => player),
+          YoutubePlayer(
+            controller: _controller,
+          ),
         ],
       );
     } else if (content.link.contains("www.flickr.com/photos")) {
@@ -179,16 +192,16 @@ class _TimeLineDetailsPageState extends State<TimeLineDetailsPage> {
 
   @override
   void deactivate() {
-    for (YoutubePlayerController controller in _youtubeControllers) {
-      controller.pause();
+    for (YoutubePlayerController controller in _videoControllers) {
+      controller.pauseVideo();
     }
     super.deactivate();
   }
 
   @override
   void dispose() {
-    for (YoutubePlayerController controller in _youtubeControllers) {
-      controller.dispose();
+    for (YoutubePlayerController controller in _videoControllers) {
+      controller.close();
     }
     super.dispose();
   }
