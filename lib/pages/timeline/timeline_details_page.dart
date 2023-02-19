@@ -1,22 +1,23 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:iscte_spots/helper/helper_methods.dart';
-import 'package:iscte_spots/models/flickr/flickr_photo.dart';
 import 'package:iscte_spots/models/timeline/content.dart';
 import 'package:iscte_spots/models/timeline/event.dart';
 import 'package:iscte_spots/models/timeline/topic.dart';
 import 'package:iscte_spots/pages/timeline/timeline_page.dart';
-import 'package:iscte_spots/services/flickr/flickr_url_converter_service.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_back_button.dart';
 import 'package:iscte_spots/widgets/my_app_bar.dart';
 import 'package:iscte_spots/widgets/network/error.dart';
-import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:url_launcher/url_launcher.dart';
 //import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
+
+import '../../helper/helper_methods.dart';
+import '../../models/flickr/flickr_photo.dart';
+import '../../services/flickr/flickr_url_converter_service.dart';
+import '../../widgets/util/iscte_theme.dart';
 
 class TimeLineDetailsPage extends StatefulWidget {
   static const String pageRoute = "${TimelinePage.pageRoute}/detail";
@@ -80,7 +81,10 @@ class _TimeLineDetailsPageState extends State<TimeLineDetailsPage> {
                           color: Colors.white,
                         );
                       } else {
-                        return buildContent(snapshot.data![index - 2]);
+                        return TimelineDetailGridContent(
+                          content: snapshot.data![index - 2],
+                          addVideoControllerCallback: addVideoController,
+                        );
                       }
                     },
                   );
@@ -99,9 +103,61 @@ class _TimeLineDetailsPageState extends State<TimeLineDetailsPage> {
     );
   }
 
-  Widget buildContent(Content content) {
-    if (content.link.contains("youtube")) {
-      late final YoutubePlayerController _controller;
+  void launchLink(String link) async {
+    var url = Uri.parse(link);
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+  @override
+  void deactivate() {
+    for (YoutubePlayerController controller in _videoControllers) {
+      controller.pauseVideo();
+    }
+    super.deactivate();
+  }
+
+  @override
+  void dispose() {
+    for (YoutubePlayerController controller in _videoControllers) {
+      controller.close();
+    }
+    super.dispose();
+  }
+}
+
+class TimelineDetailGridContent extends StatefulWidget {
+  const TimelineDetailGridContent({
+    Key? key,
+    required this.content,
+    required this.addVideoControllerCallback,
+  }) : super(key: key);
+  final Content content;
+  final void Function(YoutubePlayerController controller)
+      addVideoControllerCallback;
+
+  @override
+  State<TimelineDetailGridContent> createState() =>
+      _TimelineDetailGridContentState();
+}
+
+class _TimelineDetailGridContentState extends State<TimelineDetailGridContent> {
+  late final YoutubePlayerController _controller;
+  late final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return child;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.content.link.contains("youtube")) {
       _controller = YoutubePlayerController(
         params: const YoutubePlayerParams(
           showControls: true,
@@ -109,32 +165,20 @@ class _TimeLineDetailsPageState extends State<TimeLineDetailsPage> {
           showFullscreenButton: true,
           loop: false,
         ),
-      )..onInit = () {
-          _controller.loadVideo(content.link);
-        };
-      addVideoController(_controller);
-
-      /*YoutubePlayerController _controller = YoutubePlayerController(
-        initialVideoId: YoutubePlayer.convertUrlToId(content.link)!,
-        flags: const YoutubePlayerFlags(
-          autoPlay: false,
-          mute: false,
-          loop: false,
-          hideControls: false,
-          isLive: false,
-          forceHD: false,
-        ),
-      );*/
-      return Wrap(
+      );
+      _controller.loadVideo(widget.content.link);
+      widget.addVideoControllerCallback(_controller);
+      child = Wrap(
         children: [
           YoutubePlayer(
             controller: _controller,
           ),
         ],
       );
-    } else if (content.link.contains("www.flickr.com/photos")) {
-      return FutureBuilder<FlickrPhoto>(
-          future: FlickrUrlConverterService.getPhotofromFlickrURL(content.link),
+    } else if (widget.content.link.contains("www.flickr.com/photos")) {
+      child = FutureBuilder<FlickrPhoto>(
+          future: FlickrUrlConverterService.getPhotofromFlickrURL(
+              widget.content.link),
           builder: (BuildContext context, AsyncSnapshot<FlickrPhoto> snapshot) {
             if (snapshot.hasData) {
               FlickrPhoto photo = snapshot.data!;
@@ -167,42 +211,17 @@ class _TimeLineDetailsPageState extends State<TimeLineDetailsPage> {
             }
           });
     } else {
-      return ListTile(
-        leading: content.contentIcon,
-        title: Text(content.description ?? ""),
-        subtitle: Text(content.link),
+      child = ListTile(
+        leading: widget.content.contentIcon,
+        title: Text(widget.content.description ?? ""),
+        subtitle: Text(widget.content.link),
         onTap: () {
-          LoggerService.instance.debug(content);
-          if (content.link.isNotEmpty) {
-            HelperMethods.launchURL(content.link);
+          LoggerService.instance.debug(widget.content);
+          if (widget.content.link.isNotEmpty) {
+            HelperMethods.launchURL(widget.content.link);
           }
         },
       );
     }
-  }
-
-  void launchLink(String link) async {
-    var url = Uri.parse(link);
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url);
-    } else {
-      throw 'Could not launch $url';
-    }
-  }
-
-  @override
-  void deactivate() {
-    for (YoutubePlayerController controller in _videoControllers) {
-      controller.pauseVideo();
-    }
-    super.deactivate();
-  }
-
-  @override
-  void dispose() {
-    for (YoutubePlayerController controller in _videoControllers) {
-      controller.close();
-    }
-    super.dispose();
   }
 }
