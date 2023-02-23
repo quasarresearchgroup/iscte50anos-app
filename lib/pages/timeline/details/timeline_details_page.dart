@@ -267,9 +267,8 @@ class _TimelineDetailGridContentState extends State<TimelineDetailGridContent> {
           showFullscreenButton: true,
           loop: false,
         ),
-      )..onInit = () {
-          controller.loadVideo(widget.content.link);
-        };
+      );
+      controller.loadVideo(widget.content.link);
       widget.addVideoControllerCallback(controller);
 
       child = YoutubePlayer(

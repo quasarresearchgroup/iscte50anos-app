@@ -19,7 +19,6 @@ import 'package:iscte_spots/widgets/my_app_bar.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
 
-
 import 'spot_chooser_tile.dart';
 
 void main() async {
@@ -144,7 +143,12 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
     } else {
       return [
         SliverAppBar(
-          title: Text(AppLocalizations.of(context)!.spotChooserScreen),
+          title: Text(
+            AppLocalizations.of(context)!.spotChooserScreen,
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  color: IscteTheme.iscteColor,
+                ),
+          ),
           floating: true,
           snap: true,
           stretch: true,
@@ -178,7 +182,7 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
         mainAxisSpacing: spacing,
         crossAxisSpacing: spacing,
         children: [
-          Padding(
+          /* Padding(
             padding: EdgeInsets.symmetric(horizontal: spacing),
             child: Row(
               mainAxisSize: MainAxisSize.min,
@@ -214,7 +218,7 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
                 ),
               ],
             ),
-          ),
+          ),*/
           DynamicTextButton(
 //              style: Theme.of(context).primaryColor,
               child: Text(

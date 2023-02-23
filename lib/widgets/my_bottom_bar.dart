@@ -107,9 +107,9 @@ class _MyBottomBarState extends State<MyBottomBar> {
   Widget buildcupertino(BuildContext context) {
     return CupertinoTabBar(
       items: MyBottomBar.buildnavbaritems(context),
-      backgroundColor: Theme.of(context).primaryColor,
+      backgroundColor: IscteTheme.greyColor,
       currentIndex: widget.tabController.index,
-      activeColor: Theme.of(context).selectedRowColor,
+      activeColor: IscteTheme.iscteColor,
       inactiveColor: Theme.of(context).unselectedWidgetColor,
       height: kToolbarHeight * 1.05,
       onTap: changePage,
@@ -118,7 +118,7 @@ class _MyBottomBarState extends State<MyBottomBar> {
 
   ClipRRect buildmaterial(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.only(
+      borderRadius: const BorderRadius.only(
         topLeft: IscteTheme.appbarRadius,
         topRight: IscteTheme.appbarRadius,
       ),
@@ -127,13 +127,13 @@ class _MyBottomBarState extends State<MyBottomBar> {
           // ← carves notch for FAB in BottomAppBar
           color: Theme.of(context).primaryColor,
           // ↑ use .withAlpha(0) to debug/peek underneath ↑ BottomAppBar
-          elevation: 0,
+          elevation: 8,
           // ← removes slight shadow under FAB, hardly noticeable
           // ↑ default elevation is 8. Peek it by setting color ↑ alpha to 0
           child: BottomNavigationBar(
             currentIndex: widget.tabController.index,
-            backgroundColor: Theme.of(context).primaryColor.withOpacity(0),
-            selectedItemColor: Theme.of(context).selectedRowColor,
+            backgroundColor: IscteTheme.greyColor,
+            selectedItemColor: IscteTheme.iscteColor,
             unselectedItemColor: Theme.of(context).unselectedWidgetColor,
             //Theme.of(context).selectedRowColor.withOpacity(90),
             onTap: changePage,
