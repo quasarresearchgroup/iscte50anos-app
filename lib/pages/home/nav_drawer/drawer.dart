@@ -8,7 +8,7 @@ import 'package:iscte_spots/pages/quiz/quiz_list_menu.dart';
 import 'package:iscte_spots/pages/settings/settings_page.dart';
 import 'package:iscte_spots/pages/spotChooser/spot_chooser_page.dart';
 import 'package:iscte_spots/pages/timeline/timeline_page.dart';
-import 'package:iscte_spots/services/auth/openday_login_service.dart';
+import 'package:iscte_spots/services/auth/login_service.dart';
 
 class NavigationDrawerOpenDay extends StatelessWidget {
   const NavigationDrawerOpenDay({Key? key}) : super(key: key);
@@ -96,7 +96,7 @@ class NavigationDrawerOpenDay extends StatelessWidget {
             leading: Icon(Icons.adaptive.arrow_back_outlined),
             title: Text(AppLocalizations.of(context)!.logOutButton),
             onTap: () async {
-              await OpenDayLoginService.logOut();
+              await LoginService.logOut(context);
             },
           ),
         ],

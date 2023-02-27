@@ -9,6 +9,7 @@ import 'package:iscte_spots/pages/timeline/filter/timeline_filter_topics_widget.
 import 'package:iscte_spots/pages/timeline/state/timeline_filter_result_state.dart';
 import 'package:iscte_spots/pages/timeline/state/timeline_state.dart';
 import 'package:iscte_spots/services/platform_service.dart';
+import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_icon_button.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_text_button.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_text_field.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
@@ -258,33 +259,31 @@ class _TimelineFilterPageState extends State<TimelineFilterPage> {
           Theme.of(context).iconTheme.copyWith(color: IscteTheme.iscteColor),
       actionsIconTheme:
           Theme.of(context).iconTheme.copyWith(color: IscteTheme.iscteColor),
-      leading: Hero(
-        tag: "searchIcon",
-        child: (PlatformService.instance.isIos)
-            ? CupertinoButton(
-                onPressed: () => _submitSelection(context),
-                child: const Icon(CupertinoIcons.search))
-            : IconButton(
-                icon: const Icon(Icons.search),
-                onPressed: () => _submitSelection(context),
-              ),
+      leading: DynamicIconButton(
+        onPressed: () => _submitSelection(context),
+        child: Icon(
+          (PlatformService.instance.isIos)
+              ? CupertinoIcons.search
+              : Icons.search,
+          color: IscteTheme.iscteColor,
+        ),
       ),
       actions: [
-        (PlatformService.instance.isIos)
-            ? CupertinoButton(
-                onPressed: Navigator.of(context).pop,
-                child: const Icon(CupertinoIcons.clear))
-            : IconButton(
-                icon: const Icon(Icons.clear),
-                onPressed: Navigator.of(context).pop)
+        DynamicIconButton(
+          onPressed: Navigator.of(context).pop,
+          child: Icon(
+            (PlatformService.instance.isIos)
+                ? CupertinoIcons.clear
+                : Icons.clear,
+            color: IscteTheme.iscteColor,
+          ),
+        ),
       ],
       title: DynamicTextField(
         style: titleStyle,
         controller: searchBarController,
         placeholder: "Pesquise aqui", // TODO
         placeholderStyle: titleStyle,
-
-        //border: InputBorder.none,
       ),
     );
   }

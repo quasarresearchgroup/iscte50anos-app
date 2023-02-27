@@ -20,6 +20,7 @@ import 'package:iscte_spots/widgets/my_bottom_bar.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 import 'package:iscte_spots/widgets/util/overlays.dart';
 
+import '../timeline/feedback_form.dart';
 import 'widgets/completed_challenge_widget.dart';
 
 class HomePage extends StatefulWidget {
@@ -80,13 +81,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         }
       },
     );
-//    Spot? spot = _currentSpotNotifier.value;
-//    if(spot == null){
-//      RandomSpotService.chooseRandomSpot();
-//    }
-    //futureProfile = ProfileService().fetchProfile();
-    //currentPemit = OpenDayQRScanService.spotRequest(context: context);
-//    initFunc();
   }
 
   @override
@@ -109,73 +103,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         .then((value) => _tabController.animateTo(widget.scanSpotIndex));
   }
 
-/*
-  void rerfeshPermit() {
-    Future<SpotRequest> newPermit =
-        OpenDayQRScanService.spotRequest(context: context);
-    //Future<String?> newImageURL = newPermit
-    //  .then((value) => OpenDayQRScanService.requestRouter(context, value));
-    //_refreshProfile();
-    setState(() {
-      currentPemit = newPermit;
-    });
-  }
-*/
-
-/*
-  void _refreshProfile() {
-    futureProfile = ProfileService().fetchProfile();
-  }*/
   void showSuccessPage() {
     setState(() {
       _showSucessPage = true;
     });
   }
 
-/*
-  void changeCurrentSpot(Future<SpotRequest> request) async {
-    LoggerService.instance.debug("changing image: $request");
-    SpotRequest requestResult = await request;
-    var newImageURL =
-        await OpenDayQRScanService.requestRouter(context, requestResult);
-    if (newImageURL != null) {
-      if (newImageURL == OpenDayQRScanService.allVisited) {
-        _completedAllPuzzles();
-      } else if (!OpenDayQRScanService.isError(newImageURL)) {
-        DatabasePuzzlePieceTable.removeALL();
-        currentPemit = request;
-        setState(() {
-          currentPemit;
-        });
-        showSuccessPage();
-      }
-    }
-*/
-/*
-    if (request.locationPhotoLink != null) {
-      if (!OpenDayQRScanService.isError(request.locationPhotoLink!)) {
-        DatabasePuzzlePieceTable.removeALL();
-        //rerfeshPermit();
-        setState(() {
-          currentPuzzleImage = Image.network(request.locationPhotoLink!);
-          currentPuzzleNumber = request.spotNumber;
-          _showSucessPage = true;
-          //_refreshProfile();
-        });
-        _tabController.animateTo(widget.puzzleIndex);
-      } else if (OpenDayQRScanService.isCompleteAll(
-          request.locationPhotoLink!)) {
-        _completedAllPuzzles();
-      }
-    }
-*/ /*
-
-  }
-*/
-
   void _completedAllPuzzles() async {
-    bool _completedAllPuzzleState =
-        await SharedPrefsService.storeCompletedAllPuzzles();
+    await SharedPrefsService.storeCompletedAllPuzzles();
     _tabController.animateTo(widget.puzzleIndex);
   }
 
@@ -233,11 +168,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             NavigationRailDestination(
                               icon: Icon(Icons.menu),
                               selectedIcon: Icon(Icons.menu),
-                              label: Text('Drawer'),
+                              label: Text('Drawer'), //TODO
                             ),
                             NavigationRailDestination(
                               icon: Icon(Icons.help),
-                              label: Text('Help'),
+                              label: Text('Help'), //TODO
                             ),
                           ],
                         );
@@ -261,29 +196,34 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     return orientation == Orientation.landscape
         ? null
         : MyAppBar(
-            title: "Puzzle",
-            leading: Builder(builder: (context) {
-              if (!PlatformService.instance.isIos) {
-                return IconButton(
-                  icon: const Icon(Icons.menu),
-                  onPressed: () {
-                    Scaffold.of(context).openDrawer();
-                  },
-                );
-              } else {
-                return CupertinoButton(
-                  child: Icon(
-                    Icons.menu,
-                    color: CupertinoTheme.of(context).primaryContrastingColor,
-                  ),
-                  onPressed: () {
-                    Scaffold.of(context).openDrawer();
-                  },
-                );
-              }
-            }),
+            title: "Puzzle", //TODO
+            leading: Row(
+              children: [
+                Builder(builder: (context) {
+                  if (!PlatformService.instance.isIos) {
+                    return IconButton(
+                      icon: const Icon(Icons.menu),
+                      onPressed: () {
+                        Scaffold.of(context).openDrawer();
+                      },
+                    );
+                  } else {
+                    return CupertinoButton(
+                      child: const Icon(
+                        Icons.menu,
+                        color: IscteTheme.iscteColor,
+                      ),
+                      onPressed: () {
+                        Scaffold.of(context).openDrawer();
+                      },
+                    );
+                  }
+                }),
+                if (!PlatformService.instance.isWeb) const FeedbackFormButon(),
+              ],
+            ),
             trailing: challengeCompleteBool
-                ? Container()
+                ? null
                 : ValueListenableBuilder<Spot?>(
                     valueListenable: _currentSpotNotifier,
                     builder: (context, value, _) {
@@ -300,16 +240,18 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             onPressed: () => showHelpOverlay(
                                 context, Image.network(imgLink), orientation),
                             padding: EdgeInsets.zero,
-                            child: Icon(
+                            child: const Icon(
                               CupertinoIcons.question_circle,
-                              color: CupertinoTheme.of(context)
-                                  .primaryContrastingColor,
+                              color: IscteTheme.iscteColor,
                             ),
                           );
                         }
                       } else {
                         return DynamicIconButton(
-                            child: const Icon(SpotChooserPage.icon),
+                            child: const Icon(
+                              SpotChooserPage.icon,
+                              color: IscteTheme.iscteColor,
+                            ),
                             onPressed: () => Navigator.of(context)
                                 .pushNamed(SpotChooserPage.pageRoute));
                       }

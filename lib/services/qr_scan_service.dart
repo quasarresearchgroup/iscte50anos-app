@@ -18,7 +18,7 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:synchronized/synchronized.dart';
 
 import 'auth/auth_service.dart';
-import 'auth/openday_login_service.dart';
+import 'auth/login_service.dart';
 
 class QRScanService {
   static Future<String> extractData(final String url) async {
@@ -73,7 +73,7 @@ class QRScanService {
 
       final response = await request.close();
       if (response.statusCode == 403) {
-        OpenDayLoginService.logOut();
+        LoginService.logOut(context);
         throw LoginException();
       } else if (response.statusCode == 404) {
         throw InvalidQRException();
@@ -124,7 +124,7 @@ class QRScanService {
     final response = await request.close();
 
     if (response.statusCode == 403) {
-      OpenDayLoginService.logOut();
+      LoginService.logOut(context);
       throw LoginException();
     } else if (response.statusCode == 404) {
       throw InvalidQRException();

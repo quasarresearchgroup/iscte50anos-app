@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/models/flickr/flickr_photo.dart';
@@ -9,7 +8,6 @@ import 'package:iscte_spots/models/flickr/flickr_photoset.dart';
 import 'package:iscte_spots/services/flickr/flickr_photoset_service.dart';
 import 'package:iscte_spots/services/flickr/flickr_service.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
-import 'package:iscte_spots/services/platform_service.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_back_button.dart';
 import 'package:iscte_spots/widgets/my_app_bar.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
@@ -89,11 +87,11 @@ class _FlickAlbumPageState extends State<FlickAlbumPage> {
     return Scaffold(
         appBar: MyAppBar(
           title: widget.album.title,
-          trailing: fetching
+          /*trailing: fetching
               ? const LoadingWidget()
               : PlatformService.instance.isIos
                   ? const Icon(CupertinoIcons.check_mark)
-                  : const Icon(Icons.check),
+                  : const Icon(Icons.check),*/
           leading: const DynamicBackIconButton(),
         ),
         body: ListView.builder(

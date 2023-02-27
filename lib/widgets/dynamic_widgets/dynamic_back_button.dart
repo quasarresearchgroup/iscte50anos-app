@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:iscte_spots/services/platform_service.dart';
+import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 
 class DynamicBackIconButton extends StatelessWidget {
   const DynamicBackIconButton({Key? key}) : super(key: key);
@@ -11,19 +12,21 @@ class DynamicBackIconButton extends StatelessWidget {
         ? IconButton(
             icon: const Icon(
               Icons.arrow_back,
+              color: IscteTheme.iscteColor,
             ),
             onPressed: () {
               Navigator.of(context).pop();
             },
           )
         : CupertinoButton(
-            child: const Icon(
-              CupertinoIcons.back,
-            ),
-            //color: CupertinoTheme.of(context).primaryContrastingColor,
             onPressed: () {
               Navigator.of(context).pop();
             },
+            padding: EdgeInsets.zero,
+            child: const Icon(
+              CupertinoIcons.back,
+              color: IscteTheme.iscteColor,
+            ),
           );
   }
 }

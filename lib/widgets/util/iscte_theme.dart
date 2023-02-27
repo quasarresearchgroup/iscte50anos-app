@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class IscteTheme {
   static const Color iscteColor = Color.fromRGBO(13, 40, 194, 1);
   static const Color iscteColorSmooth = Color.fromRGBO(13, 40, 194, .3);
+
   //static const Color iscteColorSmooth = Color(0xFF00A4FF);
   static const Color greyColor = Color.fromRGBO(245, 244, 242, 1);
 
@@ -38,15 +38,15 @@ class IscteTheme {
     ),*/
   );
 
-  static NavigationRailThemeData navigationRailThemeData =
-      const NavigationRailThemeData(
+  static const NavigationRailThemeData _navigationRailThemeData =
+      NavigationRailThemeData(
     backgroundColor: iscteColor,
     selectedIconTheme: IconThemeData(color: Colors.black),
     unselectedIconTheme: IconThemeData(color: Colors.black54),
     useIndicator: false,
   );
 
-  static ElevatedButtonThemeData get elevatedButtonTheme {
+  static ElevatedButtonThemeData get _elevatedButtonTheme {
     return ElevatedButtonThemeData(
       style: ButtonStyle(
         foregroundColor:
@@ -66,9 +66,9 @@ class IscteTheme {
       primaryColor: Colors.white,
       errorColor: Colors.deepOrangeAccent,
       bottomAppBarColor: Colors.white,
-      iconTheme: ThemeData.light().iconTheme.copyWith(color: Colors.black),
+      iconTheme: ThemeData.light().iconTheme.copyWith(color: iscteColor),
       appBarTheme: _appBarTheme,
-      navigationRailTheme: navigationRailThemeData,
+      navigationRailTheme: _navigationRailThemeData,
       textTheme: ThemeData.light().textTheme.apply(
             fontFamily: 'Montserrat',
           ),
@@ -86,10 +86,11 @@ class IscteTheme {
       textButtonTheme: const TextButtonThemeData(
           style: ButtonStyle(
               foregroundColor: MaterialStatePropertyAll(iscteColor))),
-      elevatedButtonTheme: elevatedButtonTheme,
+      elevatedButtonTheme: _elevatedButtonTheme,
     );
   }
 
+/*
   static ThemeData darkThemeData = ThemeData.dark().copyWith(
     floatingActionButtonTheme:
         const FloatingActionButtonThemeData(backgroundColor: iscteColor),
@@ -114,23 +115,25 @@ class IscteTheme {
       ),
     ),
   );
-
+*/
   static CupertinoThemeData cupertinoLightThemeData = const CupertinoThemeData(
-    barBackgroundColor: IscteTheme.iscteColor,
+    //barBackgroundColor: IscteTheme.iscteColor,
     scaffoldBackgroundColor: CupertinoColors.white,
     brightness: Brightness.light,
     primaryContrastingColor: CupertinoColors.black,
     primaryColor: IscteTheme.iscteColor,
+    //primaryColor: CupertinoColors.white,
   );
 
+/*
   static CupertinoThemeData cupertinoDarkThemeData = const CupertinoThemeData(
-    barBackgroundColor: IscteTheme.iscteColor,
+    //barBackgroundColor: IscteTheme.iscteColor,
     scaffoldBackgroundColor: CupertinoColors.black,
     primaryContrastingColor: CupertinoColors.white,
     brightness: Brightness.dark,
     primaryColor: IscteTheme.iscteColor,
   );
-
+*/
   static InputDecoration buildInputDecoration(
       {required String hint, String? errorText, Widget? suffixIcon}) {
     return InputDecoration(

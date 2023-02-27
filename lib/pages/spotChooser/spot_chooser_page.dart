@@ -3,8 +3,6 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:iscte_spots/models/database/tables/database_puzzle_piece_table.dart';
 import 'package:iscte_spots/models/database/tables/database_spot_table.dart';
 import 'package:iscte_spots/models/spot.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
@@ -14,7 +12,6 @@ import 'package:iscte_spots/services/spotChooser/fetch_all_spots_service.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_back_button.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_snackbar.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_text_button.dart';
-import 'package:iscte_spots/widgets/my_app_bar.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
 
@@ -52,7 +49,7 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
     return OrientationBuilder(
       builder: (context, orientation) {
         return Scaffold(
-          floatingActionButton: SpeedDial(
+/*          floatingActionButton: SpeedDial(
             children: [
               SpeedDialChild(
                 backgroundColor: Theme.of(context).primaryColor,
@@ -77,12 +74,12 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
               Icons.add,
               color: Colors.white,
             ),
-          ),
-          appBar: orientation == Orientation.portrait
+          ),*/
+          /*appBar: orientation == Orientation.portrait
               ? null
               : MyAppBar(
                   leading: const DynamicBackIconButton(),
-                  title: AppLocalizations.of(context)!.spotChooserScreen),
+                  title: AppLocalizations.of(context)!.spotChooserScreen),*/
           body: FutureBuilder<List<Spot>>(
             future: future,
             builder: (context, snapshot) {
@@ -90,18 +87,18 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
                 return const LoadingWidget();
               }
               List<Spot> list = snapshot.data!;
-              List<Widget> slivers2 = [];
+              List<Widget> slivers = [];
               if (orientation == Orientation.portrait) {
-                slivers2.addAll(buildSliverAppBar(context));
+                slivers.addAll(buildSliverAppBar(context));
               }
 
               int crossAxisCount =
                   2; //orientation == Orientation.portrait ? 2 : 4;
               if (list.isNotEmpty) {
                 //slivers2.add(buildTopRow(list, crossAxisCount, orientation));
-                slivers2.add(buildSpotsGrid(list, crossAxisCount, orientation));
+                slivers.add(buildSpotsGrid(list, crossAxisCount, orientation));
               } else {
-                slivers2.add(const SliverList(
+                slivers.add(const SliverList(
                   delegate: SliverChildListDelegate.fixed([
                     ListTile(
                       title: Center(child: Text("No spots in list!")), //TODO
@@ -110,11 +107,12 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
                 ));
               }
               return CustomScrollView(
-                  scrollDirection: orientation == Orientation.portrait
-                      ? Axis.vertical
-                      : Axis.horizontal,
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  slivers: slivers2);
+                scrollDirection: orientation == Orientation.portrait
+                    ? Axis.vertical
+                    : Axis.horizontal,
+                physics: const BouncingScrollPhysics(),
+                slivers: slivers,
+              );
             },
           ),
         );
@@ -128,33 +126,41 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
         CupertinoSliverNavigationBar(
           padding: EdgeInsetsDirectional.zero,
           leading: const DynamicBackIconButton(),
-          backgroundColor: IscteTheme.iscteColor,
+          backgroundColor: CupertinoTheme.of(context).scaffoldBackgroundColor,
           largeTitle: Text(
             AppLocalizations.of(context)!.spotChooserScreen,
-            style: const TextStyle(color: Colors.white),
+            style: const TextStyle(color: IscteTheme.iscteColor),
           ),
         ),
         CupertinoSliverRefreshControl(
-          onRefresh: () async {
-            await refreshCallback(context);
-          },
+          onRefresh: () async => await refreshCallback(context),
         ),
       ];
     } else {
       return [
         SliverAppBar(
-          title: Text(
+          expandedHeight: 100,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          leading: const DynamicBackIconButton(),
+          /*title: Text(
             AppLocalizations.of(context)!.spotChooserScreen,
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
                   color: IscteTheme.iscteColor,
                 ),
+          ),*/
+          flexibleSpace: FlexibleSpaceBar(
+            title: Text(
+              AppLocalizations.of(context)!.spotChooserScreen,
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    color: IscteTheme.iscteColor,
+                  ),
+            ),
+            stretchModes: const [StretchMode.fadeTitle],
           ),
           floating: true,
-          snap: true,
           stretch: true,
-          onStretchTrigger: () async {
-            refreshCallback(context);
-          },
+          stretchTriggerOffset: 50,
+          onStretchTrigger: () async => await refreshCallback(context),
         )
       ];
     }
@@ -162,7 +168,7 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
 
   Future<void> refreshCallback(BuildContext context) async {
     LoggerService.instance.debug("fetching data");
-    await SpotsRequestService.fetchAllSpots();
+    await SpotsRequestService.fetchAllSpots(context);
     future = DatabaseSpotTable.getAll();
     if (mounted) {
       await DynamicSnackBar.showSnackBar(
@@ -173,8 +179,6 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
 
   Widget buildSpotsGrid(
       List<Spot> list, int crossAxisCount, Orientation orientation) {
-    double sliderMax = 20;
-    double sliderMin = 0;
     return SliverPadding(
       padding: EdgeInsets.all(spacing),
       sliver: SliverGrid.count(
@@ -182,47 +186,13 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
         mainAxisSpacing: spacing,
         crossAxisSpacing: spacing,
         children: [
-          /* Padding(
-            padding: EdgeInsets.symmetric(horizontal: spacing),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text("$blur"),
-                Expanded(
-                  child: (!PlatformService.instance.isIos)
-                      ? Slider(
-                          max: sliderMax,
-                          min: sliderMin,
-                          divisions: sliderMax.toInt() - sliderMin.toInt(),
-                          activeColor: Theme.of(context).primaryColor,
-                          label: "$blur",
-                          value: blur,
-                          onChanged: (newBlur) {
-                            setState(() {
-                              blur = newBlur;
-                            });
-                          })
-                      : CupertinoSlider(
-                          max: sliderMax,
-                          min: sliderMin,
-                          divisions: sliderMax.toInt() - sliderMin.toInt(),
-                          thumbColor: CupertinoTheme.of(context).primaryColor,
-                          activeColor: CupertinoTheme.of(context).primaryColor,
-                          value: blur,
-                          onChanged: (newBlur) {
-                            setState(() {
-                              blur = newBlur;
-                            });
-                          },
-                        ),
-                ),
-              ],
-            ),
-          ),*/
           DynamicTextButton(
-//              style: Theme.of(context).primaryColor,
+              style: IscteTheme.greyColor,
               child: Text(
                 AppLocalizations.of(context)!.random,
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      color: IscteTheme.iscteColor,
+                    ),
               ),
               onPressed: () {
                 if (list.isNotEmpty) {
@@ -248,6 +218,7 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
     );
   }
 
+//TODO remove from ui page into se++own service
   Future<void> chooseSpot(Spot spot, BuildContext context) async {
     SharedPrefsService.storeCurrentSpot(spot);
     //await DatabasePuzzlePieceTable.removeALL();

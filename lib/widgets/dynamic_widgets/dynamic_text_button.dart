@@ -19,6 +19,7 @@ class DynamicTextButton extends StatelessWidget {
         ? CupertinoButton(
             onPressed: onPressed,
             color: style,
+            padding: const EdgeInsets.all(8),
             child: child,
           )
         : TextButton(
