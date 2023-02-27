@@ -218,7 +218,7 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
     );
   }
 
-//TODO remove from ui page into se++own service
+//TODO remove from ui page into own service
   Future<void> chooseSpot(Spot spot, BuildContext context) async {
     SharedPrefsService.storeCurrentSpot(spot);
     //await DatabasePuzzlePieceTable.removeALL();
