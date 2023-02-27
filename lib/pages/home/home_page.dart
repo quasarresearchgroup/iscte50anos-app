@@ -24,7 +24,7 @@ import '../timeline/feedback_form.dart';
 import 'widgets/completed_challenge_widget.dart';
 
 class HomePage extends StatefulWidget {
-  static const pageRoute = "/homeOpenDay";
+  static const pageRoute = "/home";
 
   HomePage({Key? key}) : super(key: key);
 
@@ -132,7 +132,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     return Scaffold(
       extendBodyBehindAppBar: true,
       extendBody: true,
-      drawer: NavigationDrawerOpenDay(),
+      drawer: const MyNavigationDrawer(),
       appBar: buildAppBar(orientation, challengeCompleteBool),
       bottomNavigationBar:
           (challengeCompleteBool || orientation == Orientation.landscape)

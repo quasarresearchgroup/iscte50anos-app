@@ -10,8 +10,8 @@ import 'package:iscte_spots/pages/spotChooser/spot_chooser_page.dart';
 import 'package:iscte_spots/pages/timeline/timeline_page.dart';
 import 'package:iscte_spots/services/auth/login_service.dart';
 
-class NavigationDrawerOpenDay extends StatelessWidget {
-  const NavigationDrawerOpenDay({Key? key}) : super(key: key);
+class MyNavigationDrawer extends StatelessWidget {
+  const MyNavigationDrawer({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
