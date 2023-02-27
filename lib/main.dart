@@ -35,25 +35,19 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     if (PlatformService.instance.isIos) {
-      final Brightness platformBrightness =
-          WidgetsBinding.instance.window.platformBrightness;
       return CupertinoApp(
         builder: (BuildContext context, Widget? child) => Theme(
-          data: (platformBrightness == Brightness.dark)
-              ? IscteTheme.darkThemeData
-              : IscteTheme.lightThemeData,
+          data: IscteTheme.lightThemeData,
           child: IconTheme(
             data: CupertinoIconThemeData(
-              color: CupertinoTheme.of(context).primaryContrastingColor,
+              color: IscteTheme.iscteColor,
             ),
             child: child ?? Container(),
           ),
         ),
         debugShowCheckedModeBanner: false,
         title: 'IscteSpots',
-        theme: (platformBrightness == Brightness.dark)
-            ? IscteTheme.cupertinoDarkThemeData
-            : IscteTheme.cupertinoLightThemeData,
+        theme: IscteTheme.cupertinoLightThemeData,
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: SplashScreen(),

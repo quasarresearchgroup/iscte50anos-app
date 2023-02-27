@@ -13,13 +13,15 @@ class DynamicIconButton extends StatelessWidget {
   final Widget child;
   final void Function()? onPressed;
   final Color? style;
+
   @override
   Widget build(BuildContext context) {
     return (PlatformService.instance.isIos)
         ? CupertinoButton(
-            child: child,
             onPressed: onPressed,
             color: style,
+            padding: EdgeInsets.zero,
+            child: child,
           )
         : IconButton(
             icon: child,

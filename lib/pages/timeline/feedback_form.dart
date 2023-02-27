@@ -1,8 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/models/timeline/feedback_form_result.dart';
 import 'package:iscte_spots/pages/timeline/state/timeline_state.dart';
 import 'package:iscte_spots/services/timeline/feedback_service.dart';
+import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_icon_button.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_text_button.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
@@ -23,7 +25,7 @@ class FeedbackFormButon extends StatelessWidget {
                 switch (snapshot.connectionState) {
                   case ConnectionState.done:
                     if (snapshot.hasData) {
-                      return IconButton(
+                      return DynamicIconButton(
                         onPressed: () => showDialog(
                           context: context,
                           builder: (context) => FeedbackForm(
@@ -31,7 +33,11 @@ class FeedbackFormButon extends StatelessWidget {
                             selectedYear: TimelineState.selectedYear.value,
                           ),
                         ),
-                        icon: const Icon(Icons.feedback_outlined),
+                        child: const Icon(
+                          //Icons.feedback_outlined,
+                          CupertinoIcons.exclamationmark_bubble,
+                          color: IscteTheme.iscteColor,
+                        ),
                       );
                     } else {
                       return const LoadingWidget();

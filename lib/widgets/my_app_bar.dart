@@ -61,7 +61,7 @@ class _MyAppBarState extends State<MyAppBar> {
             actions: widget.trailing != null ? [widget.trailing!] : null,
           )
         : CupertinoNavigationBar(
-            backgroundColor: IscteTheme.iscteColor,
+            //backgroundColor: IscteTheme.iscteColor,
             automaticallyImplyMiddle: widget.automaticallyImplyLeading,
             padding: EdgeInsetsDirectional.zero,
             automaticallyImplyLeading: false,
