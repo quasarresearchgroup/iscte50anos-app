@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:iscte_spots/models/database/tables/database_puzzle_piece_table.dart';
@@ -28,6 +27,7 @@ void main() async {
 class SpotChooserPage extends StatefulWidget {
   SpotChooserPage({Key? key}) : super(key: key);
   static const String pageRoute = "SpotChooser";
+  static const IconData icon = Icons.directions_run;
 
   @override
   State<SpotChooserPage> createState() => _SpotChooserPageState();
@@ -162,7 +162,7 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
 
   Future<void> refreshCallback(BuildContext context) async {
     LoggerService.instance.debug("fetching data");
-    await SpotsRequestService.fetchAllSpots(context: context);
+    await SpotsRequestService.fetchAllSpots();
     future = DatabaseSpotTable.getAll();
     if (mounted) {
       await DynamicSnackBar.showSnackBar(

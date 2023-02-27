@@ -22,14 +22,6 @@ class MyApp extends StatefulWidget {
 
   @override
   State<MyApp> createState() => _MyAppState();
-
-  static Future<Widget> _buildPageAsync({required Widget page}) async {
-    return Future.microtask(
-      () {
-        return page;
-      },
-    );
-  }
 }
 
 class _MyAppState extends State<MyApp> {

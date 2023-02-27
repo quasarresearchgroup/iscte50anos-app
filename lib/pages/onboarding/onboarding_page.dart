@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/pages/onboarding/bottom_onboard.dart';
 import 'package:iscte_spots/pages/onboarding/onboard_tile.dart';
@@ -9,6 +8,7 @@ import 'package:lottie/lottie.dart';
 
 class OnboardingPage extends StatefulWidget {
   static const pageRoute = "/onboard";
+  static const IconData icon = Icons.departure_board;
 
   OnboardingPage({Key? key, required this.onLaunch}) : super(key: key);
 

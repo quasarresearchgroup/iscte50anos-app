@@ -73,7 +73,7 @@ class QRScanService {
 
       final response = await request.close();
       if (response.statusCode == 403) {
-        OpenDayLoginService.logOut(context);
+        OpenDayLoginService.logOut();
         throw LoginException();
       } else if (response.statusCode == 404) {
         throw InvalidQRException();
@@ -124,7 +124,7 @@ class QRScanService {
     final response = await request.close();
 
     if (response.statusCode == 403) {
-      OpenDayLoginService.logOut(context);
+      OpenDayLoginService.logOut();
       throw LoginException();
     } else if (response.statusCode == 404) {
       throw InvalidQRException();
@@ -139,9 +139,7 @@ class QRScanService {
           var responseContentList = responseDecoded["content"];
           final List<Content> contentList = [];
           for (var content in responseContentList) {
-            contentList.add(Content.fromJson(content)
-              
-            );
+            contentList.add(Content.fromJson(content));
           }
           return TopicRequest(
             title: responseDecoded["title"],

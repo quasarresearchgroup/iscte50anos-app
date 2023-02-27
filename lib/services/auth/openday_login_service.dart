@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:iscte_spots/helper/constants.dart';
 import 'package:iscte_spots/models/auth/login_form_result.dart';
@@ -9,6 +8,7 @@ import 'package:iscte_spots/models/database/tables/database_puzzle_piece_table.d
 import 'package:iscte_spots/pages/auth/auth_page.dart';
 import 'package:iscte_spots/services/auth/auth_service.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
+import 'package:iscte_spots/services/navigation/navigation_service.dart';
 import 'package:iscte_spots/services/onboard_service.dart';
 import 'package:iscte_spots/services/shared_prefs_service.dart';
 
@@ -72,7 +72,7 @@ class OpenDayLoginService {
     }
   }
 
-  static Future<void> logOut(BuildContext context) async {
+  static Future<void> logOut() async {
     LoggerService.instance.debug("Logging Out User:");
     /*const FlutterSecureStorage secureStorage = FlutterSecureStorage();
 
@@ -95,8 +95,8 @@ class OpenDayLoginService {
 */
     await AuthService.deleteUserCredentials();
     await OnboadingService.removeOnboard();
-    Navigator.of(context).popUntil(ModalRoute.withName(AuthPage.pageRoute));
-    Navigator.of(context).pushNamed(AuthPage.pageRoute);
+    NavigationService.popToFirst();
+    NavigationService.pushNamed(AuthPage.pageRoute);
     /*  } else {
       LoggerService.instance.error(
           "statusCode: ${response.statusCode} on login response:

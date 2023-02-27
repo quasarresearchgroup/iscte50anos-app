@@ -137,7 +137,7 @@ class OpenDayQRScanService {
 
       final response = await request.close();
       if (response.statusCode == 403) {
-        OpenDayLoginService.logOut(context);
+        OpenDayLoginService.logOut();
         return SpotRequest(
             locationPhotoLink: loginError, statusCode: response.statusCode);
       } else if (response.statusCode == 404) {

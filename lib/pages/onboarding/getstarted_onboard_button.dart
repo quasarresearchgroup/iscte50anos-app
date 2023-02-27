@@ -4,6 +4,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/pages/auth/auth_page.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/services/onboard_service.dart';
+import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 
 class GetStartedOnboard extends StatelessWidget {
   GetStartedOnboard({
@@ -27,17 +28,13 @@ class GetStartedOnboard extends StatelessWidget {
         }
       },
       child: SizedBox.expand(
-        child: Container(
-          color: Theme.of(context).selectedRowColor,
-          child: Center(
-            child: Text(
-              AppLocalizations.of(context)!.getStarted,
-              style: TextStyle(
-                color: Theme.of(context).primaryColor,
-                fontSize: 20.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+        child: Center(
+          child: Text(
+            AppLocalizations.of(context)!.getStarted,
+            style: Theme.of(context)
+                .textTheme
+                .titleLarge
+                ?.copyWith(color: IscteTheme.iscteColor),
           ),
         ),
       ),

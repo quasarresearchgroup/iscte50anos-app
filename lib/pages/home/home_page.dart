@@ -1,7 +1,6 @@
 import 'package:confetti/confetti.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:iscte_spots/models/database/tables/database_spot_table.dart';
 import 'package:iscte_spots/models/spot.dart';
 import 'package:iscte_spots/pages/home/nav_drawer/drawer.dart';
@@ -9,13 +8,16 @@ import 'package:iscte_spots/pages/home/puzzle/puzzle_page.dart';
 import 'package:iscte_spots/pages/home/scanPage/openday_qr_scan_page.dart';
 import 'package:iscte_spots/pages/home/widgets/sucess_scan_widget.dart';
 import 'package:iscte_spots/pages/leaderboard/leaderboard_screen.dart';
+import 'package:iscte_spots/pages/spotChooser/spot_chooser_page.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/services/platform_service.dart';
 import 'package:iscte_spots/services/shared_prefs_service.dart';
+import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_icon_button.dart';
+import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_text_button.dart';
 import 'package:iscte_spots/widgets/iscte_confetti_widget.dart';
 import 'package:iscte_spots/widgets/my_app_bar.dart';
 import 'package:iscte_spots/widgets/my_bottom_bar.dart';
-import 'package:iscte_spots/widgets/util/loading.dart';
+import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 import 'package:iscte_spots/widgets/util/overlays.dart';
 
 import 'widgets/completed_challenge_widget.dart';
@@ -306,7 +308,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           );
                         }
                       } else {
-                        return const LoadingWidget();
+                        return DynamicIconButton(
+                            child: const Icon(SpotChooserPage.icon),
+                            onPressed: () => Navigator.of(context)
+                                .pushNamed(SpotChooserPage.pageRoute));
                       }
                     },
                   ),
@@ -356,7 +361,28 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         );
                       });
                     } else {
-                      return const LoadingWidget();
+                      return Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const Icon(
+                              SpotChooserPage.icon,
+                              size: 100,
+                            ),
+                            DynamicTextButton(
+                                child: Text("Choose a Spot",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleLarge
+                                        ?.copyWith(
+                                          color: IscteTheme.iscteColor,
+                                        )), //TODO
+                                onPressed: () => Navigator.of(context)
+                                    .pushNamed(SpotChooserPage.pageRoute))
+                          ],
+                        ),
+                      );
                     }
                   }),
               IscteConfetti(confettiController: _confettiController)

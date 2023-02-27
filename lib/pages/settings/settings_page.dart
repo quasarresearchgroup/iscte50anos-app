@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/services/shared_prefs_service.dart';
@@ -6,11 +5,12 @@ import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_alert_dialog.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_back_button.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_text_button.dart';
 import 'package:iscte_spots/widgets/my_app_bar.dart';
-
 import 'package:yaml/yaml.dart';
 
 class SettingsPage extends StatefulWidget {
   static const pageRoute = "/settings";
+  static const IconData icon = Icons.settings;
+
   SettingsPage({Key? key}) : super(key: key);
 
   @override

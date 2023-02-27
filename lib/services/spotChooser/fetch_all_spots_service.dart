@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:iscte_spots/helper/constants.dart';
 import 'package:iscte_spots/models/database/tables/database_spot_table.dart';
@@ -11,12 +10,10 @@ import 'package:iscte_spots/services/auth/exceptions.dart';
 import 'package:iscte_spots/services/auth/openday_login_service.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
 
-
 class SpotsRequestService {
-  
-
-  static Future<void> fetchAllSpots({required BuildContext context}) async {
-    LoggerService.instance.debug("started getAllSpots request at ${DateTime.now()}\t");
+  static Future<void> fetchAllSpots() async {
+    LoggerService.instance
+        .debug("started getAllSpots request at ${DateTime.now()}\t");
 
     const FlutterSecureStorage secureStorage = FlutterSecureStorage();
 
@@ -38,7 +35,7 @@ class SpotsRequestService {
     try {
       final response = await request.close();
       if (response.statusCode == 403) {
-        OpenDayLoginService.logOut(context);
+        OpenDayLoginService.logOut();
         throw LoginException();
       } else if (response.statusCode == 200) {
         var responseDecoded =

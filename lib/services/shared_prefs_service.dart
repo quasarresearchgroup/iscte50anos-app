@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:iscte_spots/models/database/tables/database_spot_table.dart';
 import 'package:iscte_spots/models/spot.dart';
 import 'package:iscte_spots/models/timeline/timeline_filter_params.dart';
@@ -67,7 +68,6 @@ class SharedPrefsService {
 
 //region Current Spot
   static Future<void> storeCurrentSpot(Spot spot) async {
-    assert(spot.id != null);
     LoggerService.instance.debug("storeCurrentSpotID : $spot");
     final prefs = await SharedPreferences.getInstance();
     prefs.setInt(_currentSpotIdPrefsString, spot.id);
@@ -87,6 +87,8 @@ class SharedPrefsService {
     LoggerService.instance.debug("currentSpotID: $currentSpotID");
     if (currentSpotID == null) {
       return null;
+      //await RandomSpotService.chooseRandomSpot(); //TODO
+      //return getCurrentSpot();
     } else {
       LoggerService.instance.debug("getCurrentSpot :$currentSpotID");
 
