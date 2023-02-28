@@ -1,6 +1,7 @@
 import 'package:confetti/confetti.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/models/database/tables/database_spot_table.dart';
 import 'package:iscte_spots/models/spot.dart';
 import 'package:iscte_spots/pages/home/nav_drawer/drawer.dart';
@@ -51,7 +52,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   late final ConfettiController _confettiController;
   late final AnimationController _lottieController;
 
-  GlobalKey<State<StatefulWidget>> _key = GlobalKey();
+  // final GlobalKey<State<StatefulWidget>> _key = GlobalKey();
 
   @override
   void initState() {
@@ -313,7 +314,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               size: 100,
                             ),
                             DynamicTextButton(
-                                child: Text("Choose a Spot",
+                                child: Text(
+                                    AppLocalizations.of(context)!
+                                        .spotChooserScreen,
                                     style: Theme.of(context)
                                         .textTheme
                                         .titleLarge
