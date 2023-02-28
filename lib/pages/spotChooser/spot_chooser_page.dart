@@ -10,6 +10,7 @@ import 'package:iscte_spots/services/platform_service.dart';
 import 'package:iscte_spots/services/shared_prefs_service.dart';
 import 'package:iscte_spots/services/spotChooser/fetch_all_spots_service.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_back_button.dart';
+import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_icon_button.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_snackbar.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_text_button.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
@@ -31,8 +32,9 @@ class SpotChooserPage extends StatefulWidget {
 }
 
 class _SpotChooserPageState extends State<SpotChooserPage> {
-  double blur = 10;
-  double spacing = 10;
+  final double blur = 10;
+  final double spacing = 10;
+  final int crossAxisCount = 2;
 
   late Future<List<Spot>> future;
 
@@ -42,6 +44,11 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
   void initState() {
     super.initState();
     future = DatabaseSpotTable.getAll();
+    // future.then((List<Spot> value) {
+    //   if(value.isEmpty){
+    //     SpotsRequestService.fetchAllSpots(context);
+    //   }
+    // });
   }
 
   @override
@@ -49,37 +56,38 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
     return OrientationBuilder(
       builder: (context, orientation) {
         return Scaffold(
-/*          floatingActionButton: SpeedDial(
-            children: [
-              SpeedDialChild(
-                backgroundColor: Theme.of(context).primaryColor,
-                child: const Icon(Icons.refresh),
-                onTap: () {
-                  refreshCallback(context);
-                },
-              ),
-              SpeedDialChild(
-                backgroundColor: Theme.of(context).errorColor,
-                child: const Icon(Icons.delete),
-                onTap: () async {
-                  await DatabasePuzzlePieceTable.removeALL();
-                  await DatabaseSpotTable.removeALL();
-                  setState(() {
-                    future = DatabaseSpotTable.getAll();
-                  });
-                },
-              )
-            ],
-            child: const Icon(
-              Icons.add,
-              color: Colors.white,
-            ),
-          ),*/
+          // floatingActionButton: SpeedDial(
+          //   children: [
+          //     SpeedDialChild(
+          //       backgroundColor: Theme.of(context).primaryColor,
+          //       child: const Icon(Icons.refresh),
+          //       onTap: () {
+          //         refreshCallback(context);
+          //       },
+          //     ),
+          //     SpeedDialChild(
+          //       backgroundColor: Theme.of(context).colorScheme.error,
+          //       child: const Icon(Icons.delete),
+          //       onTap: () async {
+          //         await DatabasePuzzlePieceTable.removeALL();
+          //         await DatabaseSpotTable.removeALL();
+          //         setState(() {
+          //           future = DatabaseSpotTable.getAll();
+          //         });
+          //       },
+          //     )
+          //   ],
+          //   child: const Icon(
+          //     Icons.add,
+          //     color: Colors.white,
+          //   ),
+          // ),
           /*appBar: orientation == Orientation.portrait
               ? null
               : MyAppBar(
                   leading: const DynamicBackIconButton(),
                   title: AppLocalizations.of(context)!.spotChooserScreen),*/
+
           body: FutureBuilder<List<Spot>>(
             future: future,
             builder: (context, snapshot) {
@@ -89,28 +97,33 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
               List<Spot> list = snapshot.data!;
               List<Widget> slivers = [];
               if (orientation == Orientation.portrait) {
-                slivers.addAll(buildSliverAppBar(context));
+                slivers.addAll(buildSliverAppBar(context, list));
               }
 
-              int crossAxisCount =
-                  2; //orientation == Orientation.portrait ? 2 : 4;
               if (list.isNotEmpty) {
-                //slivers2.add(buildTopRow(list, crossAxisCount, orientation));
                 slivers.add(buildSpotsGrid(list, crossAxisCount, orientation));
               } else {
-                slivers.add(const SliverList(
-                  delegate: SliverChildListDelegate.fixed([
-                    ListTile(
-                      title: Center(child: Text("No spots in list!")), //TODO
-                    ),
-                  ]),
-                ));
+                slivers.addAll([
+                  SliverPadding(
+                    padding: EdgeInsets.all(spacing),
+                    sliver: SliverFillRemaining(
+                        child: buildDynamicRefreshButton(context, size: 50)),
+                  ),
+                  // const SliverList(
+                  //   delegate: SliverChildListDelegate.fixed([
+                  //     ListTile(
+                  //       title: Center(child: Text("No spots in list!")), //TODO
+                  //     ),
+                  //   ]),
+                  // )
+                ]);
               }
               return CustomScrollView(
                 scrollDirection: orientation == Orientation.portrait
                     ? Axis.vertical
                     : Axis.horizontal,
                 physics: const BouncingScrollPhysics(),
+                shrinkWrap: false,
                 slivers: slivers,
               );
             },
@@ -120,7 +133,26 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
     );
   }
 
-  List<Widget> buildSliverAppBar(BuildContext context) {
+  DynamicTextButton buildDynamicRefreshButton(BuildContext context,
+      {double? size}) {
+    return DynamicTextButton(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Icon(
+              PlatformService.instance.isIos
+                  ? CupertinoIcons.refresh
+                  : Icons.refresh,
+              size: size,
+            ),
+            Text("Refresh"), //TODO
+          ],
+        ),
+        onPressed: () => refreshCallback(context));
+  }
+
+  List<Widget> buildSliverAppBar(BuildContext context, List<Spot> spotsList) {
     if (PlatformService.instance.isIos) {
       return [
         CupertinoSliverNavigationBar(
@@ -134,12 +166,11 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
         ),
         CupertinoSliverRefreshControl(
           onRefresh: () async => await refreshCallback(context),
-        ),
+        )
       ];
     } else {
       return [
         SliverAppBar(
-          expandedHeight: 100,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           leading: const DynamicBackIconButton(),
           /*title: Text(
@@ -148,6 +179,18 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
                   color: IscteTheme.iscteColor,
                 ),
           ),*/
+          actions: [
+            spotsList.isEmpty
+                ? buildDynamicRefreshButton(context)
+                : DynamicIconButton(
+                    child: Icon(
+                      PlatformService.instance.isIos
+                          ? CupertinoIcons.shuffle
+                          : Icons.shuffle,
+                      color: IscteTheme.iscteColor,
+                    ),
+                    onPressed: () => chooseRandomSpotCallback(spotsList))
+          ],
           flexibleSpace: FlexibleSpaceBar(
             title: Text(
               AppLocalizations.of(context)!.spotChooserScreen,
@@ -158,10 +201,10 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
             stretchModes: const [StretchMode.fadeTitle],
           ),
           floating: true,
+          snap: true,
           stretch: true,
-          stretchTriggerOffset: 50,
           onStretchTrigger: () async => await refreshCallback(context),
-        )
+        ),
       ];
     }
   }
@@ -186,24 +229,15 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
         mainAxisSpacing: spacing,
         crossAxisSpacing: spacing,
         children: [
-          DynamicTextButton(
-              style: IscteTheme.greyColor,
-              child: Text(
-                AppLocalizations.of(context)!.random,
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      color: IscteTheme.iscteColor,
-                    ),
-              ),
-              onPressed: () {
-                if (list.isNotEmpty) {
-                  chooseSpot(list[Random().nextInt(list.length)], context);
-                } else {
-                  DynamicSnackBar.showSnackBar(
-                      context,
-                      const Text("No Spots stored!"), //TODO
-                      const Duration(seconds: 2)); //TODO
-                }
-              }),
+          // DynamicTextButton(
+          //     style: IscteTheme.greyColor,
+          //     child: Text(
+          //       AppLocalizations.of(context)!.random,
+          //       style: Theme.of(context).textTheme.titleLarge?.copyWith(
+          //             color: IscteTheme.iscteColor,
+          //           ),
+          //     ),
+          //     onPressed: () => chooseRandomSpotCallback(list)),
           ...(list
               .map(
                 (e) => ChooseSpotTile(
@@ -216,6 +250,17 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
         ],
       ),
     );
+  }
+
+  void chooseRandomSpotCallback(List<Spot> list) {
+    if (list.isNotEmpty) {
+      chooseSpot(list[Random().nextInt(list.length)], context);
+    } else {
+      DynamicSnackBar.showSnackBar(
+          context,
+          const Text("No Spots stored!"), //TODO
+          const Duration(seconds: 2)); //TODO
+    }
   }
 
 //TODO remove from ui page into own service

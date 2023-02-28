@@ -8,7 +8,7 @@ class LoadingWidget extends StatelessWidget {
     this.messagesStyle = const TextStyle(),
     this.backgroundColor,
     this.valueColor,
-    this.strokeWidth = 1,
+    this.strokeWidth = 3,
   }) : super(key: key);
 
   final TextStyle messagesStyle;
