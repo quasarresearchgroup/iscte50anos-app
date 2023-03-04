@@ -15,6 +15,9 @@ import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_text_field.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 import 'package:logger/logger.dart';
 
+import '../../../widgets/network/error.dart';
+import '../../../widgets/util/loading.dart';
+
 class TimelineFilterPage extends StatefulWidget {
   TimelineFilterPage({
     Key? key,
@@ -35,8 +38,6 @@ class TimelineFilterPage extends StatefulWidget {
 }
 
 class _TimelineFilterPageState extends State<TimelineFilterPage> {
-  // Set<Topic> selectedTopics = {};
-
   late final TextEditingController searchBarController;
   final double childAspectRatio = 20 / 4;
   final double dividerWidth = 20;
@@ -86,10 +87,46 @@ class _TimelineFilterPageState extends State<TimelineFilterPage> {
     );
   }
 
-  Padding buildBody(
+  Widget buildBody(
       {required BuildContext context,
       TextStyle? titleStyle,
       TextStyle? textStyle}) {
+    return ValueListenableBuilder(
+      valueListenable: TimelineState.availableTopicsFuture,
+      builder: (BuildContext context, Future<List<Topic>> availableTopicsValue,
+              Widget? child) =>
+          FutureBuilder<List<Topic>>(
+        future: availableTopicsValue,
+        builder: (context, topicSnapshot) {
+          return ValueListenableBuilder<Future<List<EventScope>>>(
+            valueListenable: TimelineState.availableScopesFuture,
+            builder: (context, availableScopesFutureValue, child) =>
+                FutureBuilder<List<EventScope>>(
+              future: availableScopesFutureValue,
+              builder: (context, scopeSnapshot) {
+                if (topicSnapshot.hasData && scopeSnapshot.hasData) {
+                  List<EventScope> scopes = scopeSnapshot.data!;
+                  List<Topic> topics = topicSnapshot.data!;
+                  return _buildBodyImpl(
+                      context, titleStyle, textStyle, topics, scopes);
+                } else if (topicSnapshot.hasError || scopeSnapshot.hasError) {
+                  return Center(
+                    child: NetworkError(
+                        display: AppLocalizations.of(context)!.generalError),
+                  );
+                } else {
+                  return const Center(child: LoadingWidget());
+                }
+              },
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Padding _buildBodyImpl(BuildContext context, TextStyle? titleStyle,
+      TextStyle? textStyle, List<Topic> topics, List<EventScope> scopes) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 20),
       child: Column(
@@ -104,22 +141,20 @@ class _TimelineFilterPageState extends State<TimelineFilterPage> {
                     height: 10,
                   ),
                 ),
-                //selectedScopesWidget(dividerWidth, dividerThickness),
-                //selectedTopicsWidget(dividerWidth, dividerThickness),
                 ScopesFilterWidget(
                   titleStyle: titleStyle,
                   textStyle: textStyle,
                   childAspectRatio: childAspectRatio,
                   gridCount: gridCount(context),
+                  eventScopes: scopes,
                 ),
                 TopicsFilterWidget(
                   titleStyle: titleStyle,
                   textStyle: textStyle,
                   childAspectRatio: childAspectRatio,
                   gridCount: gridCount(context),
+                  topics: topics,
                 ),
-                //SliverToBoxAdapter(child: divider),
-                //SliverToBoxAdapter(child: submitTextButton),
               ],
             ),
           ),

@@ -4,20 +4,20 @@ import 'package:iscte_spots/models/timeline/timeline_filter_params.dart';
 import 'package:iscte_spots/models/timeline/topic.dart';
 import 'package:iscte_spots/pages/timeline/state/timeline_state.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_text_button.dart';
-import 'package:iscte_spots/widgets/network/error.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
-import 'package:iscte_spots/widgets/util/loading.dart';
 
 class TopicsFilterWidget extends StatelessWidget {
   TopicsFilterWidget({
     Key? key,
     this.titleStyle,
     this.textStyle,
-    required this.gridCount,
     required this.childAspectRatio,
+    required this.gridCount,
+    required this.topics,
   }) : super(key: key);
 
   final int gridCount;
+  final List<Topic> topics;
   final double childAspectRatio;
   TextStyle? titleStyle;
   TextStyle? textStyle;
@@ -37,7 +37,7 @@ class TopicsFilterWidget extends StatelessWidget {
     return SliverList(
       delegate: SliverChildListDelegate([
         buildAvailableTopicsHeader(),
-        buildTopicsCheckBoxList(),
+        buildTopicsCheckBoxList(topics),
       ]),
     );
   }
@@ -86,60 +86,41 @@ class TopicsFilterWidget extends StatelessWidget {
     TimelineState.operateFilter((params) => params.clearTopics());
   }
 
-  Widget buildTopicsCheckBoxList() {
-    return ValueListenableBuilder(
-      valueListenable: TimelineState.availableTopicsFuture,
-      builder: (BuildContext context, Future<List<Topic>> availableTopicsValue,
-              Widget? child) =>
-          FutureBuilder<List<Topic>>(
-        future: availableTopicsValue,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            List<Topic> data = snapshot.data!;
-            return GridView.builder(
-              itemCount: data.length,
-              shrinkWrap: true,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: gridCount,
-                  childAspectRatio: childAspectRatio),
-              itemBuilder: (context, index) {
-                return ValueListenableBuilder<TimelineFilterParams>(
-                  valueListenable: TimelineState.currentTimelineFilterParams,
-                  builder: (context, currentTimelineFilter, child) =>
-                      CheckboxListTile(
-                    //activeColor: IscteTheme.iscteColor,
-                    value: TimelineState.currentTimelineFilterParams.value
-                        .containsTopic(data[index]),
-                    title: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Text(
-                        data[index].title ?? "No Title",
-                        style: textStyle,
-                      ),
-                    ),
-                    onChanged: (bool? bool) {
-                      if (bool != null) {
-                        if (bool) {
-                          TimelineState.operateFilter(
-                              (params) => params.addTopic(data[index]));
-                        } else {
-                          TimelineState.operateFilter(
-                              (params) => params.removeTopic(data[index]));
-                        }
-                      }
-                    },
-                  ),
-                );
-              },
-            );
-          } else if (snapshot.hasError) {
-            return NetworkError(
-                display: AppLocalizations.of(context)!.generalError);
-          } else {
-            return const LoadingWidget();
-          }
-        },
-      ),
+  Widget buildTopicsCheckBoxList(List<Topic> data) {
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: data.length,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: gridCount, childAspectRatio: childAspectRatio),
+      itemBuilder: (context, index) {
+        return ValueListenableBuilder<TimelineFilterParams>(
+          valueListenable: TimelineState.currentTimelineFilterParams,
+          builder: (context, currentTimelineFilter, child) => CheckboxListTile(
+            //activeColor: IscteTheme.iscteColor,
+            value: TimelineState.currentTimelineFilterParams.value
+                .containsTopic(data[index]),
+            title: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Text(
+                data[index].title ?? "No Title", //TODO
+                style: textStyle,
+              ),
+            ),
+            onChanged: (bool? bool) {
+              if (bool != null) {
+                if (bool) {
+                  TimelineState.operateFilter(
+                      (params) => params.addTopic(data[index]));
+                } else {
+                  TimelineState.operateFilter(
+                      (params) => params.removeTopic(data[index]));
+                }
+              }
+            },
+          ),
+        );
+      },
     );
   }
 }
