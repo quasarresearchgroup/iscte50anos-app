@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:iscte_spots/helper/constants.dart';
 import 'package:iscte_spots/pages/profile/placeholder.dart';
+import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_back_button.dart';
 import 'package:iscte_spots/widgets/my_app_bar.dart';
 
@@ -59,6 +60,7 @@ class _ProfileState extends State<Profile> {
   }
 
   Future<Map> fetchProfile() async {
+    LoggerService.instance.debug("fetching profile");
     try {
       isLoading = true;
       String? apiToken = await secureStorage.read(key: "backend_api_key");
@@ -77,7 +79,7 @@ class _ProfileState extends State<Profile> {
         return jsonDecode(await response.transform(utf8.decoder).join());
       }
     } catch (e) {
-      print(e);
+      LoggerService.instance.error(e);
     } finally {
       isLoading = false;
     }
@@ -181,10 +183,7 @@ class _ProfileState extends State<Profile> {
                               children: [
                                 const Text("Afiliação",
                                     style: TextStyle(fontSize: 14)),
-                                Text(
-                                    "#" +
-                                        profile["affiliation_ranking"]
-                                            .toString(),
+                                Text("#${profile["affiliation_ranking"]}",
                                     style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 18)),

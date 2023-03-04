@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:html/parser.dart' as parser;
 import 'package:http/http.dart' as http;
@@ -124,7 +125,6 @@ class QRScanService {
     final response = await request.close();
 
     if (response.statusCode == 403) {
-      LoginService.logOut(context);
       throw LoginException();
     } else if (response.statusCode == 404) {
       throw InvalidQRException();
@@ -138,15 +138,15 @@ class QRScanService {
             responseDecoded["content"] != null) {
           var responseContentList = responseDecoded["content"];
           final List<Content> contentList = [];
-          for (var content in responseContentList) {
-            contentList.add(Content.fromJson(content));
+          for (var rawContent in responseContentList) {
+            contentList.add(Content.fromJson(rawContent));
           }
           return TopicRequest(
             title: responseDecoded["title"],
             contentList: contentList,
           );
         }
-        throw Exception("Bad response");
+        throw Exception("Response without title or content keys");
       } on SocketException {
         LoggerService.instance.error("Socket Exception");
         rethrow;

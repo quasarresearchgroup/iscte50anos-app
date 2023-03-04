@@ -35,15 +35,12 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyAppBar(
-        title: "Settings",
-        leading: DynamicBackIconButton(),
+        title: "Settings", //TODO
+        leading: const DynamicBackIconButton(),
       ),
       body: ListView(
         children: [
           IscteAboutListTile(),
-          const Center(
-            child: Text("version: 1.0.10+12"),
-          ),
 /*          ExpansionTile(
             title: const Text("Shared Preferences"),
             children: [
@@ -103,21 +100,21 @@ class DynamicAboutListTile extends StatelessWidget {
 
     return ListTile(
       leading: const Icon(Icons.info),
-      title: Text("${applicationName}"),
+      title: Text("$applicationName"),
       onTap: () {
         DynamicAlertDialog.showDynamicDialog(
             context: context,
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("About ${applicationName}"),
-                Text("${applicationVersion}"),
+                Text("About $applicationName"),
+                Text("$applicationVersion"),
               ],
             ),
-            content: Text("legalese"),
+            // content: Text("legalese"),
             actions: [
               DynamicTextButton(
-                child: Text("View Licenses"),
+                child: const Text("View Licenses"), //TODO
                 onPressed: () {
                   showLicensePage(
                     context: context,
@@ -129,7 +126,7 @@ class DynamicAboutListTile extends StatelessWidget {
                 },
               ),
               DynamicTextButton(
-                child: Text("Close"),
+                child: const Text("Close"), //TODO
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
