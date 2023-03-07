@@ -9,8 +9,8 @@ import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_text_button.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
 
-class LoginOpendayPage extends StatefulWidget {
-  LoginOpendayPage({
+class LoginPage extends StatefulWidget {
+  LoginPage({
     Key? key,
     required this.changeToSignUp,
     required this.loggingComplete,
@@ -18,7 +18,7 @@ class LoginOpendayPage extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<LoginOpendayPage> createState() => _LoginOpendayState();
+  State<LoginPage> createState() => _LoginOpendayState();
   final TextEditingController userNameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final void Function() loggingComplete;
@@ -26,7 +26,7 @@ class LoginOpendayPage extends StatefulWidget {
   final Duration animatedSwitcherDuration;
 }
 
-class _LoginOpendayState extends State<LoginOpendayPage>
+class _LoginOpendayState extends State<LoginPage>
     with AutomaticKeepAliveClientMixin {
   final _loginFormkey = GlobalKey<FormState>();
 
@@ -38,16 +38,16 @@ class _LoginOpendayState extends State<LoginOpendayPage>
   bool _connectionError = false;
 
   String? get _errorText => _connectionError
-      ? "Connection Error"
+      ? AppLocalizations.of(context)!.networkError
       : _generalError
-          ? "Unknown Error"
+          ? AppLocalizations.of(context)!.generalError
           : _loginError
-              ? "Invalid Credentials"
+              ? AppLocalizations.of(context)!.loginInvalidCredentials
               : null;
 
   String? loginValidator(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Please enter some text';
+      return AppLocalizations.of(context)!.loginNoTextError;
     }
     return null;
   }
@@ -60,7 +60,8 @@ class _LoginOpendayState extends State<LoginOpendayPage>
         controller: widget.userNameController,
         textAlignVertical: TextAlignVertical.top,
         decoration: IscteTheme.buildInputDecoration(
-            hint: "Username", errorText: _errorText),
+            hint: AppLocalizations.of(context)!.loginUsername,
+            errorText: _errorText),
         textInputAction: TextInputAction.next,
         validator: loginValidator,
       ),
@@ -94,9 +95,12 @@ class _LoginOpendayState extends State<LoginOpendayPage>
       DynamicTextButton(
         style: IscteTheme.iscteColor,
         onPressed: _loginAction,
-        child: const Text(
-          "Login",
-          style: TextStyle(color: Colors.white),
+        child: Text(
+          AppLocalizations.of(context)!.loginScreen,
+          style: Theme.of(context)
+              .textTheme
+              .titleMedium
+              ?.copyWith(color: Colors.white),
         ),
       ),
     ];
@@ -157,7 +161,6 @@ class _LoginOpendayState extends State<LoginOpendayPage>
                 key: _loginFormkey,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  //mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Flexible(
                       flex: 9,
@@ -174,21 +177,25 @@ class _LoginOpendayState extends State<LoginOpendayPage>
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          const Text("Dont have an account? "), //TODO
+                          Text(AppLocalizations.of(context)!
+                              .loginDontHaveAccount),
                           DynamicTextButton(
                             onPressed: widget.changeToSignUp,
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Icon(Icons.adaptive.arrow_forward),
-                                const Text("Sign up!") //TODO
+                                Text(
+                                  AppLocalizations.of(context)!
+                                      .loginRegisterButton,
+                                )
                               ],
                             ),
                           )
                           /* ElevatedButton.icon(
                             style: ElevatedButton.styleFrom(
                                 primary: Theme.of(context).primaryColor),
-                            label: Text("Sign up!"), //TODO
+                            label: Text("Sign up!"),
                             icon: Icon(Icons.adaptive.arrow_forward),
                             onPressed: () {
                               LoggerService.instance.debug("change");

@@ -9,8 +9,14 @@
     "advance":"Avançar",
     "quizComplete":"Quiz concluído",
     "logOutButton":"Encerrar Sessão",
+    "close":"Fechar",
+    "help":"Ajuda",
+    "menu":"Menu",
 
     "generalError":"Erro",
+    "errorTouchToRefresh":"Toca aqui para recarregar!",
+    "refresh":"Atualizar",
+    "refreshed":"Atualizado",
     "noMoreDataError":"Sem mais dados",
     "networkError":"Erro de conecção",
     "random":"Aleatório",
@@ -39,6 +45,23 @@
     "loginLoginButton":"Entra!",
     "loginPassword":"Palavra passe",
     "loginUsername":"Nome de Utilizador",
+    "loginNoTextError":"Por favor escreve alguma coisa",
+    "registrationUsernameAlreadyExistsError":"Nome de utilizador já existe",
+    "registrationEmailAlreadyExistsError":"Email já tem conta associada",
+    "registrationPasswordMustMatch":"Palavras passe têm de ser identicas",
+    "registrationEmail":"email",
+    "registrationPassword":"palavra passe",
+    "registrationConfirmPassword":"confirme a palavra passe",
+    "registrationName":"nome",
+    "registrationLastName":"último nome",
+    "registrationAccountStep":"Conta",
+    "registrationSchoolStep":"Escola",
+    "registrationSchoolInvalidError":"Escola inválida",
+    "registrationSchoolNotSelectedError":"Por favor escolha uma escola",
+    "registrationSchoolLoadingError":"Erro ao carregar lista de escolas",
+    "registrationDistrictStep":"Distrito",
+    "registrationDistrictInvalidError":"Distrito inválido!",
+    "registrationDistrictNotSelectedError":"Por favor escolha um distrito",
 
     "next":"Próximo",
     "back":"Voltar",
@@ -70,6 +93,8 @@
     "qrScanConfirmation": "Tens a certeza que queres fazer scan a este spot?",
     "qrScanConfirmationAccept": "ACEITAR",
     "qrScanConfirmationCancel": "CANCELAR",
+    "qrScanPermissionText": "Precisamos de permissões para aceder à camera, para poder detetar e fazer o scan dos códigos qr",
+    "qrScanPermissionButton": "Permitir",
 
     "timelineSearchResults" : "Resultados da pesquisa",
     "timelineNothingFound" : "Nada encontrado!",
@@ -95,9 +120,12 @@
     "feedbackFormSubmit":"Submeter",
     "feedbackFormCancel":"Cancelar",
 
-    "spotChooserHelpDialogTitle":"Ajuda",
     "spotChooserHelpDialogContent":"Aqui podes escolher o próximo \"Spot\" que desejas visitar.\n Mas antes terás de completar o puzzle para ter acesso á fotografia completa.",
     "spotChooserRandomConfirmationTitle":"Escolher um Spot aleatório",
     "spotChooserRandomConfirmationButton":"Confirmo",
-    "spotChooserRandomConfirmationContent":"Tens a certeza que queres escolher um \"Spot\" aleatório?\n Esta ação vai substituir o teu puzzle atual por um novo.\n Não te preocupes, o teu progresso é armazenado se quiseres voltar a tentar mais tarde."
+    "spotChooserRandomConfirmationContent":"Tens a certeza que queres escolher um \"Spot\" aleatório?\n Esta ação vai substituir o teu puzzle atual por um novo.\n Não te preocupes, o teu progresso é armazenado se quiseres voltar a tentar mais tarde.",
+    "spotChooserNotSpotsStored":"Não temos spots armazenados!",
+
+    "settingsViewLicences":"Ver licenças"
+
 }

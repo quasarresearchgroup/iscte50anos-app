@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:iscte_spots/pages/auth/login/login_openday_page.dart';
-import 'package:iscte_spots/pages/auth/register/register_openday_page.dart';
+import 'package:iscte_spots/pages/auth/login/login_page.dart';
+import 'package:iscte_spots/pages/auth/register/register_page.dart';
 import 'package:iscte_spots/pages/home/home_page.dart';
 import 'package:iscte_spots/services/auth/login_service.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
@@ -39,12 +39,12 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     _pages = [
-      LoginOpendayPage(
+      LoginPage(
         changeToSignUp: changeToSignUp,
         loggingComplete: loggingComplete,
         animatedSwitcherDuration: animatedSwitcherDuration,
       ),
-      RegisterOpenDayPage(
+      RegisterPage(
         changeToLogIn: changeToLogIn,
         loggingComplete: loggingComplete,
         animatedSwitcherDuration: animatedSwitcherDuration,

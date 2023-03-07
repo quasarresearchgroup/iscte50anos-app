@@ -104,11 +104,12 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                const Text(
-                                    "We need permission to access the camera to scan and detect qr codes."),
+                                Text(AppLocalizations.of(context)!
+                                    .qrScanPermissionText),
                                 DynamicTextButton(
-                                    child: const Text("Give Permission"),
-                                    onPressed: () => openAppSettings())
+                                    onPressed: openAppSettings,
+                                    child: Text(AppLocalizations.of(context)!
+                                        .qrScanPermissionButton))
                               ],
                             ),
                           ), //TODO

@@ -87,11 +87,8 @@ class SharedPrefsService {
     LoggerService.instance.debug("currentSpotID: $currentSpotID");
     if (currentSpotID == null) {
       return null;
-      //await RandomSpotService.chooseRandomSpot(); //TODO
-      //return getCurrentSpot();
     } else {
       LoggerService.instance.debug("getCurrentSpot :$currentSpotID");
-
       List<Spot> spotsList =
           await DatabaseSpotTable.getAllWithIds([currentSpotID]);
       if (spotsList.isEmpty) {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/services/shared_prefs_service.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_alert_dialog.dart';
@@ -35,7 +36,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyAppBar(
-        title: "Settings", //TODO
+        title: AppLocalizations.of(context)!.settingsScreen,
         leading: const DynamicBackIconButton(),
       ),
       body: ListView(
@@ -114,7 +115,7 @@ class DynamicAboutListTile extends StatelessWidget {
             // content: Text("legalese"),
             actions: [
               DynamicTextButton(
-                child: const Text("View Licenses"), //TODO
+                child: Text(AppLocalizations.of(context)!.settingsViewLicences),
                 onPressed: () {
                   showLicensePage(
                     context: context,
@@ -126,7 +127,7 @@ class DynamicAboutListTile extends StatelessWidget {
                 },
               ),
               DynamicTextButton(
-                child: const Text("Close"), //TODO
+                child: Text(AppLocalizations.of(context)!.close),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },

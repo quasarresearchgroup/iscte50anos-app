@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/models/auth/registration_form_result.dart';
 import 'package:iscte_spots/pages/auth/register/registration_error.dart';
 import 'package:iscte_spots/pages/auth/register/school_register_widget.dart';
@@ -11,8 +12,8 @@ import 'package:lottie/lottie.dart';
 
 import 'acount_register_widget.dart';
 
-class RegisterOpenDayPage extends StatefulWidget {
-  RegisterOpenDayPage({
+class RegisterPage extends StatefulWidget {
+  RegisterPage({
     Key? key,
     required this.changeToLogIn,
     required this.loggingComplete,
@@ -20,13 +21,13 @@ class RegisterOpenDayPage extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<RegisterOpenDayPage> createState() => _RegisterOpenDayPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
   void Function() changeToLogIn;
   final void Function() loggingComplete;
   final Duration animatedSwitcherDuration;
 }
 
-class _RegisterOpenDayPageState extends State<RegisterOpenDayPage>
+class _RegisterPageState extends State<RegisterPage>
     with AutomaticKeepAliveClientMixin {
   final GlobalKey<FormState> _accountFormkey = GlobalKey<FormState>();
   final GlobalKey<FormState> _schoolFormkey = GlobalKey<FormState>();
@@ -222,14 +223,16 @@ class _RegisterOpenDayPageState extends State<RegisterOpenDayPage>
                         flex: 1,
                         child: Column(
                           children: [
-                            const Text("Already have an account?"), //TODO
+                            Text(AppLocalizations.of(context)!
+                                .loginAlreadyHaveAccount),
                             DynamicTextButton(
                               onPressed: widget.changeToLogIn,
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Icon(Icons.adaptive.arrow_back),
-                                  const Text("Log In!") //TODO
+                                  Text(AppLocalizations.of(context)!
+                                      .loginLoginButton)
                                 ],
                               ),
                             ),
@@ -249,7 +252,7 @@ class _RegisterOpenDayPageState extends State<RegisterOpenDayPage>
       Step(
         state: _stepState(0),
         isActive: _curentStep >= 0,
-        title: const Text("Account"), //TODO
+        title: Text(AppLocalizations.of(context)!.registrationAccountStep),
         content: AccountRegisterForm(
           errorCode: errorCode,
           formKey: _accountFormkey,
@@ -264,7 +267,7 @@ class _RegisterOpenDayPageState extends State<RegisterOpenDayPage>
       Step(
         state: _stepState(1),
         isActive: _curentStep >= 1,
-        title: const Text("School"), //TODO
+        title: Text(AppLocalizations.of(context)!.registrationSchoolStep),
         content: SchoolRegisterForm(
           errorCode: errorCode,
           formKey: _schoolFormkey,

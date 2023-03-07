@@ -9,8 +9,14 @@
     "advance":"Forward",
     "quizComplete":"Quiz completed",
     "logOutButton":"Log Out",
+    "close":"Close",
+    "help":"Help",
+    "menu":"Menu",
 
     "generalError":"Error",
+    "errorTouchToRefresh":"Touch here to refresh!",
+    "refresh":"Refresh",
+    "refreshed":"Refreshed",
     "noMoreDataError":"No more Data",
     "networkError":"Network Error",
     "random":"Random",
@@ -39,6 +45,25 @@
     "loginLoginButton":"Log in!",
     "loginPassword":"Password",
     "loginUsername":"Username",
+    "loginNoTextError":"Please enter some text",
+    "registrationUsernameAlreadyExistsError":"Username already exists",
+    "registrationEmailAlreadyExistsError":"Email already has an associated account",
+    "registrationPasswordMustMatch":"Passwords must match",
+    "registrationEmail":"email",
+    "registrationPassword":"password",
+    "registrationConfirmPassword":"confirm password",
+    "registrationName":"name",
+    "registrationLastName":"last name",
+    "registrationAccountStep":"Account",
+    "registrationSchoolStep":"School",
+    "registrationSchoolInvalidError":"Invalid School",
+    "registrationSchoolNotSelectedError":"Please select a school",
+    "registrationSchoolLoadingError":"Error while loading schools",
+    "registrationDistrictStep":"District",
+    "registrationDistrictInvalidError":"Invalid District",
+    "registrationDistrictNotSelectedError":"Please select a district",
+
+
 
     "next":"Next",
     "back":"Back",
@@ -71,6 +96,8 @@
     "qrScanConfirmation": "Are you sure you want to scan this spot?",
     "qrScanConfirmationAccept": "ACCEPT",
     "qrScanConfirmationCancel": "CANCEL",
+    "qrScanPermissionText": "We need permission to access the camera to scan and detect qr codes",
+    "qrScanPermissionButton": "Give Permission",
 
 
     "timelineSearchResults" : "Search results",
@@ -97,10 +124,11 @@
     "feedbackFormSubmit":"Submit",
     "feedbackFormCancel":"Cancel",
 
-    "spotChooserHelpDialogTitle":"Help",
     "spotChooserHelpDialogContent":"Here you can choose the next \"Spot\" you wish to visit.\n But first you have to complete the puzzle to view the whole picture.",
     "spotChooserRandomConfirmationTitle":"Choose a random spot",
     "spotChooserRandomConfirmationButton":"Confirm",
-    "spotChooserRandomConfirmationContent":"Are you sure you want to choose a random \"Spot\"?\n This will replace you current puzzle with a new one.\n Dont worry, your progress is saved if you want to try again later."
+    "spotChooserRandomConfirmationContent":"Are you sure you want to choose a random \"Spot\"?\n This will replace you current puzzle with a new one.\n Dont worry, your progress is saved if you want to try again later.",
+    "spotChooserNotSpotsStored":"No Spots stored!",
 
+    "settingsViewLicences":"View Licences"
 }

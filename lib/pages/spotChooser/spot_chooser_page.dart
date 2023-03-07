@@ -140,7 +140,10 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
                   : Icons.refresh,
               size: size,
             ),
-            if (displayText) const Text("Refresh"), //TODO
+            if (displayText)
+              Text(
+                AppLocalizations.of(context)!.refresh,
+              ),
           ],
         ),
         onPressed: () => _refreshCallback(context));
@@ -217,7 +220,7 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
   void _displayHelpDialog(BuildContext context) {
     DynamicAlertDialog.showDynamicDialog(
       context: context,
-      title: Text(AppLocalizations.of(context)!.spotChooserHelpDialogTitle),
+      title: Text(AppLocalizations.of(context)!.help),
       content: Text(AppLocalizations.of(context)!.spotChooserHelpDialogContent),
     );
   }
@@ -228,7 +231,9 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
     future = DatabaseSpotTable.getAll();
     if (mounted) {
       await DynamicSnackBar.showSnackBar(
-          context, const Text("Refreshed"), const Duration(seconds: 2)); //TODO
+          context,
+          Text(AppLocalizations.of(context)!.refreshed),
+          const Duration(seconds: 2)); //TODO
     }
     setState(() {});
   }
@@ -260,7 +265,8 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
       DynamicAlertDialog.showDynamicDialog(
           context: context,
           title: Text(
-              AppLocalizations.of(context)!.spotChooserRandomConfirmationTitle),
+            AppLocalizations.of(context)!.spotChooserRandomConfirmationTitle,
+          ),
           content: Text(AppLocalizations.of(context)!
               .spotChooserRandomConfirmationContent),
           actions: [
@@ -276,7 +282,9 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
     } else {
       DynamicSnackBar.showSnackBar(
           context,
-          const Text("No Spots stored!"), //TODO
+          Text(
+            AppLocalizations.of(context)!.spotChooserNotSpotsStored,
+          ),
           const Duration(seconds: 2)); //TODO
     }
   }
