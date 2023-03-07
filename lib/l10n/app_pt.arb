@@ -71,7 +71,6 @@
     "qrScanConfirmationAccept": "ACEITAR",
     "qrScanConfirmationCancel": "CANCELAR",
 
-
     "timelineSearchResults" : "Resultados da pesquisa",
     "timelineNothingFound" : "Nada encontrado!",
     "timelineAvailableTopics" : "Tópicos",
@@ -94,5 +93,11 @@
     "feedbackFormEmailValidation":"Por favor insira um email válido",
     "feedbackFormValidation":"Por favor preencha este campo",
     "feedbackFormSubmit":"Submeter",
-    "feedbackFormCancel":"Cancelar"
+    "feedbackFormCancel":"Cancelar",
+
+    "spotChooserHelpDialogTitle":"Ajuda",
+    "spotChooserHelpDialogContent":"Aqui podes escolher o próximo \"Spot\" que desejas visitar.\n Mas antes terás de completar o puzzle para ter acesso á fotografia completa.",
+    "spotChooserRandomConfirmationTitle":"Escolher um Spot aleatório",
+    "spotChooserRandomConfirmationButton":"Confirmo",
+    "spotChooserRandomConfirmationContent":"Tens a certeza que queres escolher um \"Spot\" aleatório?\n Esta ação vai substituir o teu puzzle atual por um novo.\n Não te preocupes, o teu progresso é armazenado se quiseres voltar a tentar mais tarde."
 }

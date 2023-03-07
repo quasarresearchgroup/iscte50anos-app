@@ -9,6 +9,7 @@ import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/services/platform_service.dart';
 import 'package:iscte_spots/services/shared_prefs_service.dart';
 import 'package:iscte_spots/services/spotChooser/fetch_all_spots_service.dart';
+import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_alert_dialog.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_back_button.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_icon_button.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_snackbar.dart';
@@ -101,21 +102,14 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
               }
 
               if (list.isNotEmpty) {
-                slivers.add(buildSpotsGrid(list, orientation));
+                slivers.add(_buildSpotsGrid(list, orientation));
               } else {
                 slivers.addAll([
                   SliverPadding(
-                    padding: EdgeInsets.all(SPACING),
+                    padding: const EdgeInsets.all(SPACING),
                     sliver: SliverFillRemaining(
                         child: buildDynamicRefreshButton(context, size: 50)),
                   ),
-                  // const SliverList(
-                  //   delegate: SliverChildListDelegate.fixed([
-                  //     ListTile(
-                  //       title: Center(child: Text("No spots in list!")), //TODO
-                  //     ),
-                  //   ]),
-                  // )
                 ]);
               }
               return CustomScrollView(
@@ -134,7 +128,7 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
   }
 
   DynamicTextButton buildDynamicRefreshButton(BuildContext context,
-      {double? size}) {
+      {double? size, bool displayText = true}) {
     return DynamicTextButton(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -146,10 +140,10 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
                   : Icons.refresh,
               size: size,
             ),
-            Text("Refresh"), //TODO
+            if (displayText) const Text("Refresh"), //TODO
           ],
         ),
-        onPressed: () => refreshCallback(context));
+        onPressed: () => _refreshCallback(context));
   }
 
   List<Widget> buildSliverAppBar(BuildContext context, List<Spot> spotsList) {
@@ -165,7 +159,7 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
           ),
         ),
         CupertinoSliverRefreshControl(
-          onRefresh: () async => await refreshCallback(context),
+          onRefresh: () async => await _refreshCallback(context),
         )
       ];
     } else {
@@ -180,16 +174,27 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
                 ),
           ),*/
           actions: [
-            spotsList.isEmpty
-                ? buildDynamicRefreshButton(context)
-                : DynamicIconButton(
-                    child: Icon(
-                      PlatformService.instance.isIos
-                          ? CupertinoIcons.shuffle
-                          : Icons.shuffle,
-                      color: IscteTheme.iscteColor,
-                    ),
-                    onPressed: () => chooseRandomSpotCallback(spotsList))
+            if (spotsList.isEmpty)
+              buildDynamicRefreshButton(context, displayText: false),
+            if (spotsList.isNotEmpty)
+              DynamicIconButton(
+                  child: Icon(
+                    PlatformService.instance.isIos
+                        ? CupertinoIcons.shuffle
+                        : Icons.shuffle,
+                    color: IscteTheme.iscteColor,
+                  ),
+                  onPressed: () =>
+                      _chooseRandomSpotCallback(spotsList, context)),
+            if (spotsList.isNotEmpty)
+              DynamicIconButton(
+                  child: Icon(
+                    PlatformService.instance.isIos
+                        ? CupertinoIcons.question_circle
+                        : Icons.question_mark_rounded,
+                    color: IscteTheme.iscteColor,
+                  ),
+                  onPressed: () => _displayHelpDialog(context)),
           ],
           flexibleSpace: FlexibleSpaceBar(
             title: Text(
@@ -203,14 +208,22 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
           floating: true,
           snap: true,
           stretch: true,
-          onStretchTrigger: () async => await refreshCallback(context),
+          onStretchTrigger: () async => await _refreshCallback(context),
         ),
       ];
     }
   }
 
-  Future<void> refreshCallback(BuildContext context) async {
-    LoggerService.instance.debug("fetching data");
+  void _displayHelpDialog(BuildContext context) {
+    DynamicAlertDialog.showDynamicDialog(
+      context: context,
+      title: Text(AppLocalizations.of(context)!.spotChooserHelpDialogTitle),
+      content: Text(AppLocalizations.of(context)!.spotChooserHelpDialogContent),
+    );
+  }
+
+  Future<void> _refreshCallback(BuildContext context) async {
+    LoggerService.instance.debug("refreshing spot chooser page");
     await SpotsRequestService.fetchAllSpots(context);
     future = DatabaseSpotTable.getAll();
     if (mounted) {
@@ -220,7 +233,7 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
     setState(() {});
   }
 
-  Widget buildSpotsGrid(List<Spot> spots, Orientation orientation) {
+  Widget _buildSpotsGrid(List<Spot> spots, Orientation orientation) {
     return SliverPadding(
       padding: const EdgeInsets.all(SPACING),
       sliver: SliverGrid.count(
@@ -233,7 +246,7 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
                 (e) => ChooseSpotTile(
                   spot: e,
                   blur: BLUR,
-                  chooseSpotCallback: chooseSpot,
+                  chooseSpotCallback: _chooseSpotCallback,
                 ),
               )
               .toList())
@@ -242,9 +255,24 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
     );
   }
 
-  void chooseRandomSpotCallback(List<Spot> list) {
+  void _chooseRandomSpotCallback(List<Spot> list, BuildContext context) {
     if (list.isNotEmpty) {
-      chooseSpot(list[Random().nextInt(list.length)], context);
+      DynamicAlertDialog.showDynamicDialog(
+          context: context,
+          title: Text(
+              AppLocalizations.of(context)!.spotChooserRandomConfirmationTitle),
+          content: Text(AppLocalizations.of(context)!
+              .spotChooserRandomConfirmationContent),
+          actions: [
+            DynamicTextButton(
+                child: Text(AppLocalizations.of(context)!
+                    .spotChooserRandomConfirmationButton),
+                onPressed: () {
+                  _chooseSpotCallback(
+                      list[Random().nextInt(list.length)], context);
+                  Navigator.of(context).pop();
+                })
+          ]);
     } else {
       DynamicSnackBar.showSnackBar(
           context,
@@ -254,7 +282,8 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
   }
 
 //TODO remove from ui page into own service
-  Future<void> chooseSpot(Spot spot, BuildContext context) async {
+  Future<void> _chooseSpotCallback(Spot spot, BuildContext context) async {
+    LoggerService.instance.debug("choosing new spot $spot");
     SharedPrefsService.storeCurrentSpot(spot);
     //await DatabasePuzzlePieceTable.removeALL();
     if (mounted) {

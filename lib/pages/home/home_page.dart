@@ -230,7 +230,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     builder: (context, value, _) {
                       if (value?.photoLink != null) {
                         String imgLink = value!.photoLink;
-                        if (!PlatformService.instance.isIos) {
+                        return DynamicIconButton(
+                          child: PlatformService.instance.isIos
+                              ? const Icon(CupertinoIcons.question)
+                              : const Icon(Icons.question_mark),
+                          onPressed: () => showHelpOverlay(
+                              context, Image.network(imgLink), orientation),
+                        );
+                        /*  if (!PlatformService.instance.isIos) {
                           return IconButton(
                             icon: const Icon(Icons.help),
                             onPressed: () => showHelpOverlay(
@@ -246,7 +253,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               color: IscteTheme.iscteColor,
                             ),
                           );
-                        }
+                        }*/
                       } else {
                         return DynamicIconButton(
                             child: const Icon(

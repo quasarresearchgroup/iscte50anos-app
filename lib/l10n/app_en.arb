@@ -95,6 +95,12 @@
     "feedbackFormEmailValidation":"Please enter a valid email",
     "feedbackFormValidation":"Please fill this field",
     "feedbackFormSubmit":"Submit",
-    "feedbackFormCancel":"Cancel"
+    "feedbackFormCancel":"Cancel",
+
+    "spotChooserHelpDialogTitle":"Help",
+    "spotChooserHelpDialogContent":"Here you can choose the next \"Spot\" you wish to visit.\n But first you have to complete the puzzle to view the whole picture.",
+    "spotChooserRandomConfirmationTitle":"Choose a random spot",
+    "spotChooserRandomConfirmationButton":"Confirm",
+    "spotChooserRandomConfirmationContent":"Are you sure you want to choose a random \"Spot\"?\n This will replace you current puzzle with a new one.\n Dont worry, your progress is saved if you want to try again later."
 
 }

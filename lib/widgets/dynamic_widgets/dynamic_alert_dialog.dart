@@ -7,7 +7,8 @@ class DynamicAlertDialog extends StatelessWidget {
   final Widget? content;
   final Widget? title;
 
-  const DynamicAlertDialog({Key? key, this.actions, this.content, this.title})
+  const DynamicAlertDialog._internal(
+      {Key? key, this.actions, this.content, this.title})
       : super(key: key);
 
   static showDynamicDialog({
@@ -27,7 +28,7 @@ class DynamicAlertDialog extends StatelessWidget {
         barrierDismissible: barrierDismissible,
         barrierLabel: barrierLabel,
         builder: (context) {
-          return DynamicAlertDialog(
+          return DynamicAlertDialog._internal(
             actions: actions,
             content: content,
             title: title,
@@ -41,7 +42,7 @@ class DynamicAlertDialog extends StatelessWidget {
         barrierDismissible: barrierDismissible,
         barrierLabel: barrierLabel,
         builder: (context) {
-          return DynamicAlertDialog(
+          return DynamicAlertDialog._internal(
             actions: actions,
             content: content,
             title: title,

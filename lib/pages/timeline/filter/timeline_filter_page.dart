@@ -26,7 +26,6 @@ class TimelineFilterPage extends StatefulWidget {
 
   static const String pageRoute = "filter";
   static const ValueKey pageKey = ValueKey(pageRoute);
-  final Logger _logger = Logger();
 
   //final void Function(int) handleEventSelection;
   //final void Function(int) handleYearSelection;
