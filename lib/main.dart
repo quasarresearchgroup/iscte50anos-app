@@ -39,7 +39,7 @@ class _MyAppState extends State<MyApp> {
         builder: (BuildContext context, Widget? child) => Theme(
           data: IscteTheme.lightThemeData,
           child: IconTheme(
-            data: CupertinoIconThemeData(
+            data: const CupertinoIconThemeData(
               color: IscteTheme.iscteColor,
             ),
             child: child ?? Container(),

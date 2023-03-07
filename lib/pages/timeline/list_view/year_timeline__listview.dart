@@ -96,8 +96,9 @@ class _YearTimelineListViewState extends State<YearTimelineListView> {
                           ConnectionState.waiting) {
                         return const LoadingWidget();
                       } else if (yearsListSnapshot.hasError) {
-                        return NetworkError(
-                            display: yearsListSnapshot.error.toString());
+                        return DynamicErrorWidget(
+                          display: yearsListSnapshot.error.toString(),
+                        );
                       } else {
                         return const LoadingWidget();
                       }

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:iscte_spots/models/auth/registration_form_result.dart';
 import 'package:iscte_spots/pages/auth/register/registration_error.dart';
 import 'package:iscte_spots/pages/auth/register/school_register_widget.dart';
 import 'package:iscte_spots/services/auth/registration_service.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
+import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_text_button.dart';
+import 'package:iscte_spots/widgets/network/error.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:lottie/lottie.dart';
 
@@ -27,8 +28,8 @@ class RegisterOpenDayPage extends StatefulWidget {
 
 class _RegisterOpenDayPageState extends State<RegisterOpenDayPage>
     with AutomaticKeepAliveClientMixin {
-  GlobalKey<FormState> _accountFormkey = GlobalKey<FormState>();
-  GlobalKey<FormState> _schoolFormkey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _accountFormkey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _schoolFormkey = GlobalKey<FormState>();
   int _curentStep = 0;
   bool _isLodading = false;
 
@@ -193,10 +194,10 @@ class _RegisterOpenDayPageState extends State<RegisterOpenDayPage>
                                     children: [
                                       Expanded(
                                         child: ElevatedButton(
+                                          onPressed: _onStepContinue,
                                           child: Text(
                                             isLastStep ? "CONFIRM" : "NEXT",
                                           ),
-                                          onPressed: _onStepContinue,
                                         ),
                                       ),
                                       const SizedBox(width: 12),
@@ -204,8 +205,8 @@ class _RegisterOpenDayPageState extends State<RegisterOpenDayPage>
                                           ? Container()
                                           : Expanded(
                                               child: ElevatedButton(
-                                                child: const Text("BACK"),
                                                 onPressed: _onStepCancel,
+                                                child: const Text("BACK"),
                                               ),
                                             ),
                                     ],
@@ -221,16 +222,17 @@ class _RegisterOpenDayPageState extends State<RegisterOpenDayPage>
                         flex: 1,
                         child: Column(
                           children: [
-                            Text("Already have an account?"),
-                            ElevatedButton.icon(
-                                style: ElevatedButton.styleFrom(
-                                    primary: Theme.of(context).primaryColor),
-                                label: Text("Log In!"),
-                                icon: Icon(Icons.adaptive.arrow_back),
-                                onPressed: () {
-                                  LoggerService.instance.debug("change");
-                                  widget.changeToLogIn();
-                                }),
+                            const Text("Already have an account?"), //TODO
+                            DynamicTextButton(
+                              onPressed: widget.changeToLogIn,
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(Icons.adaptive.arrow_back),
+                                  const Text("Log In!") //TODO
+                                ],
+                              ),
+                            ),
                           ],
                         ),
                       )
@@ -243,21 +245,11 @@ class _RegisterOpenDayPageState extends State<RegisterOpenDayPage>
   }
 
   List<Step> getSteps() {
-    var registrationFormResult = RegistrationFormResult(
-      username: userNameController.text,
-      firstName: nameController.text,
-      lastName: lastNameController.text,
-      email: emailController.text,
-      password: passwordController.text,
-      passwordConfirmation: passwordConfirmationController.text,
-      affiliationType: chosenaffiliationType.value,
-      affiliationName: chosenAffiliationName.value,
-    );
     return [
       Step(
         state: _stepState(0),
         isActive: _curentStep >= 0,
-        title: const Text("Account"),
+        title: const Text("Account"), //TODO
         content: AccountRegisterForm(
           errorCode: errorCode,
           formKey: _accountFormkey,
@@ -272,7 +264,7 @@ class _RegisterOpenDayPageState extends State<RegisterOpenDayPage>
       Step(
         state: _stepState(1),
         isActive: _curentStep >= 1,
-        title: const Text("School"),
+        title: const Text("School"), //TODO
         content: SchoolRegisterForm(
           errorCode: errorCode,
           formKey: _schoolFormkey,
@@ -292,7 +284,12 @@ class CompleteForm extends StatelessWidget {
     return Container(
       color: Colors.green,
       child: Lottie.network(
-          'https://assets6.lottiefiles.com/packages/lf20_Vwcw5D.json'),
+        'https://assets6.lottiefiles.com/packages/lf20_Vwcw5D.json',
+        errorBuilder: (context, error, stackTrace) =>
+            DynamicErrorWidget.networkError(
+          context: context,
+        ),
+      ),
     );
   }
 }

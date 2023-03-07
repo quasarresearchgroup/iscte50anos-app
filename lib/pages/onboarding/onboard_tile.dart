@@ -39,7 +39,7 @@ class _OnboardTileState extends State<OnboardTile> {
 
   @override
   Widget build(BuildContext context) {
-    const Duration opacityAnimationDuration = const Duration(milliseconds: 500);
+    const Duration opacityAnimationDuration = Duration(milliseconds: 500);
     return Container(
       color: widget.color,
       child: SafeArea(

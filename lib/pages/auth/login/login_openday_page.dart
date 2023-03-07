@@ -93,11 +93,11 @@ class _LoginOpendayState extends State<LoginOpendayPage>
     return [
       DynamicTextButton(
         style: IscteTheme.iscteColor,
+        onPressed: _loginAction,
         child: const Text(
           "Login",
           style: TextStyle(color: Colors.white),
         ),
-        onPressed: _loginAction,
       ),
     ];
   }
@@ -169,23 +169,35 @@ class _LoginOpendayState extends State<LoginOpendayPage>
                             ...generateFormButtons()
                           ]),
                     ),
-/*                    Flexible(
+                    Flexible(
                       flex: 1,
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Text("Dont have an account? "),
-                          ElevatedButton.icon(
-                              style: ElevatedButton.styleFrom(
-                                  primary: Theme.of(context).primaryColor),
-                              label: Text("Sign up!"),
-                              icon: Icon(Icons.adaptive.arrow_forward),
-                              onPressed: () {
-                                LoggerService.instance.debug("change");
-                                widget.changeToSignUp();
-                              }),
+                          const Text("Dont have an account? "), //TODO
+                          DynamicTextButton(
+                            onPressed: widget.changeToSignUp,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.adaptive.arrow_forward),
+                                const Text("Sign up!") //TODO
+                              ],
+                            ),
+                          )
+                          /* ElevatedButton.icon(
+                            style: ElevatedButton.styleFrom(
+                                primary: Theme.of(context).primaryColor),
+                            label: Text("Sign up!"), //TODO
+                            icon: Icon(Icons.adaptive.arrow_forward),
+                            onPressed: () {
+                              LoggerService.instance.debug("change");
+                              widget.changeToSignUp();
+                            },
+                          ),*/
                         ],
                       ),
-                    ),*/
+                    ),
                   ],
                 ),
               ),

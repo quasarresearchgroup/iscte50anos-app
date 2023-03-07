@@ -163,7 +163,7 @@ class _TimeLineDetailsPageState extends State<TimeLineDetailsPage> {
                         ],
                       );
                     } else if (snapshot.hasError) {
-                      return NetworkError(onRefresh: () {
+                      return DynamicErrorWidget(onRefresh: () {
                         setState(() {
                           allContentFromEvent = snapshotEvent.getContentList;
                         });
@@ -219,7 +219,7 @@ class TimelineDetailListContent extends StatelessWidget {
       tileColor: !isEven ? IscteTheme.greyColor : Colors.transparent,
       leading: content.contentIcon,
       trailing: content.validated != null && content.validated!
-          ? Icon(Icons.check_box)
+          ? const Icon(Icons.check_box)
           : null,
       title: Text(
           content.title != null
@@ -291,7 +291,7 @@ class _TimelineDetailGridContentState extends State<TimelineDetailGridContent> {
                     const LoadingWidget(),
               );
             } else if (snapshot.hasError) {
-              return NetworkError(onRefresh: () {});
+              return DynamicErrorWidget(onRefresh: () {});
             } else {
               return const LoadingWidget();
             }

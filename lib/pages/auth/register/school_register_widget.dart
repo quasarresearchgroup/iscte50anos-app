@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:iscte_spots/pages/auth/register/registration_error.dart';
 import 'package:iscte_spots/services/auth/registration_service.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
@@ -54,18 +53,18 @@ class _SchoolRegisterFormState extends State<SchoolRegisterForm> {
             children: [
               RichText(
                 text: const TextSpan(
-                  text: "Error while loading schools!",
+                  text: "Error while loading schools!", //TODO
                 ),
               ),
               TextButton(
                 child: Text(
-                  "Tap to Refresh",
+                  "Tap to Refresh", //TODO
                   style: TextStyle(
                     color: Theme.of(context).errorColor,
                   ),
                 ),
                 onPressed: () {
-                  LoggerService.instance.debug("refreshing schools");
+                  LoggerService.instance.debug("refreshing schools"); //TODO
                   setState(() {
                     schoolsAfilitation =
                         RegistrationService.getSchoolAffiliations();
@@ -117,19 +116,19 @@ class _SchoolRegisterFormState extends State<SchoolRegisterForm> {
     }).toList();
 
     return [
-      const Text("District"),
+      const Text("District"), //TODO
       DropdownButtonFormField<String>(
         menuMaxHeight: MediaQuery.of(context).size.height / 2,
         autovalidateMode: autovalidateMode2,
         isExpanded: true,
         value: widget.chosenAffiliationType.value,
-        hint: const Text("District"),
+        hint: const Text("District"), //TODO
         items: districtList,
         validator: (String? value) {
           if (widget.errorCode == RegistrationError.invalidAffiliation) {
-            return 'Invalid District';
+            return 'Invalid District'; //TODO
           } else if (value == "-") {
-            return 'Please select a District';
+            return 'Please select a District'; //TODO
           }
           return null;
         },
@@ -143,19 +142,19 @@ class _SchoolRegisterFormState extends State<SchoolRegisterForm> {
         },
       ),
       const SizedBox(height: 10),
-      const Text("School"),
+      const Text("School"), //TODO
       DropdownButtonFormField<String>(
         menuMaxHeight: MediaQuery.of(context).size.height / 2,
         autovalidateMode: autovalidateMode2,
         isExpanded: true,
         value: widget.chosenAffiliationName.value,
-        hint: const Text("School"),
+        hint: const Text("School"), //TODO
         items: schoolsList,
         validator: (String? value) {
           if (widget.errorCode == RegistrationError.invalidAffiliation) {
-            return 'Invalid School';
+            return 'Invalid School'; //TODO
           } else if (value == "-") {
-            return 'Please select a School';
+            return 'Please select a School'; //TODO
           }
           return null;
         },

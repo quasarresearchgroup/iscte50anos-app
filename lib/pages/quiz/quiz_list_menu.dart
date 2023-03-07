@@ -5,10 +5,10 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:iscte_spots/pages/quiz/quiz_page.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_back_button.dart';
 import 'package:iscte_spots/widgets/my_app_bar.dart';
+import 'package:iscte_spots/widgets/network/error.dart';
 
 import '../../services/quiz/quiz_service.dart';
 import '../../widgets/dialogs/CustomDialogs.dart';
-import '../../widgets/network/error.dart';
 
 //const API_ADDRESS = "http://192.168.1.124";
 
@@ -75,18 +75,19 @@ class _QuizListState extends State<QuizList> {
       isTrialLoading = false;
 
       int newTrialNumber = newTrialInfo["trial_number"];
-
-      Navigator.of(context)
-          .push(MaterialPageRoute(
-              builder: (context) => QuizPage(
-                    quizNumber: quizNumber,
-                    trialNumber: newTrialNumber,
-                  )))
-          .then((value) {
-        setState(() {
-          futureQuizList = fetchFunction();
+      if (mounted) {
+        Navigator.of(context)
+            .push(MaterialPageRoute(
+                builder: (context) => QuizPage(
+                      quizNumber: quizNumber,
+                      trialNumber: newTrialNumber,
+                    )))
+            .then((value) {
+          setState(() {
+            futureQuizList = fetchFunction();
+          });
         });
-      });
+      }
     } catch (e) {
       setState(() {
         isTrialLoading = false;
@@ -102,13 +103,13 @@ class _QuizListState extends State<QuizList> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: const <Widget>[
-                Text('Gerando Quiz... Aguarde'),
+                Text('Gerando Quiz... Aguarde'), //TODO
                 Padding(
                   padding: EdgeInsets.all(10.0),
                   child: SizedBox(
-                    child: CircularProgressIndicator.adaptive(),
                     width: 60,
                     height: 60,
+                    child: CircularProgressIndicator.adaptive(),
                   ),
                 ),
               ],
@@ -143,7 +144,7 @@ class _QuizListState extends State<QuizList> {
                         child: items.isEmpty
                             ? const Center(
                                 child: Text(
-                                    "Não existem Quizzes disponíveis de momento"))
+                                    "Não existem Quizzes disponíveis de momento")) //TODO
                             : ListView.builder(
                                 //shrinkWrap: true,
                                 physics: const AlwaysScrollableScrollPhysics(),
@@ -162,7 +163,7 @@ class _QuizListState extends State<QuizList> {
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: 16)),
                                         subtitle: Text(
-                                            "Pontos: ${items[index]["score"]} \nTentativas: ${items[index]["num_trials"]}"
+                                            "Pontos: ${items[index]["score"]} \nTentativas: ${items[index]["num_trials"]}" //TODO
                                             "\nTopicos: ${items[index]["topic_names"]}"),
                                         children: [
                                           QuizDetail(
@@ -191,13 +192,13 @@ class _QuizListState extends State<QuizList> {
                         ConnectionState.done) {
                       return const Center(
                         child: SizedBox(
-                          child: CircularProgressIndicator.adaptive(),
                           width: 60,
                           height: 60,
+                          child: CircularProgressIndicator.adaptive(),
                         ),
                       );
                     } else if (snapshot.hasError) {
-                      return NetworkError(onRefresh: () {
+                      return DynamicErrorWidget(onRefresh: () {
                         setState(() {
                           futureQuizList = fetchFunction();
                         });
@@ -205,9 +206,9 @@ class _QuizListState extends State<QuizList> {
                     } else {
                       return const Center(
                         child: SizedBox(
-                          child: CircularProgressIndicator.adaptive(),
                           width: 60,
                           height: 60,
+                          child: CircularProgressIndicator.adaptive(),
                         ),
                       );
                     }
@@ -247,7 +248,7 @@ class QuizDetail extends StatelessWidget {
                 return Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("Tentativa ${trial["number"]}"),
+                    Text("Tentativa ${trial["number"]}"), //TODO
                     const SizedBox(
                       height: 5,
                     ),
@@ -255,9 +256,9 @@ class QuizDetail extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           Text(
-                              "Pontos: ${trial["is_completed"] ? trial["score"] : "-"}"),
+                              "Pontos: ${trial["is_completed"] ? trial["score"] : "-"}"), //TODO
                           Text(
-                              "Progresso: ${trial["progress"]}/${trial["quiz_size"]}"),
+                              "Progresso: ${trial["progress"]}/${trial["quiz_size"]}"), //TODO
                         ]),
                     const SizedBox(
                       height: 5,
@@ -265,7 +266,7 @@ class QuizDetail extends StatelessWidget {
                     if (!trial["is_completed"])
                       ElevatedButton(
                           onPressed: () => showYesNoWarningDialog(
-                                  "Deseja continuar esta tentativa de quiz?",
+                                  "Deseja continuar esta tentativa de quiz?", //TODO
                                   () {
                                 Navigator.of(context).pop();
                                 Navigator.of(context)
@@ -278,7 +279,7 @@ class QuizDetail extends StatelessWidget {
                                   returnToQuizList();
                                 });
                               }, context),
-                          child: const Text("Continuar")),
+                          child: const Text("Continuar")), //TODO
                     const Divider(
                       thickness: 2,
                     ),
@@ -289,12 +290,12 @@ class QuizDetail extends StatelessWidget {
             ElevatedButton(
                 onPressed: () {
                   showYesNoWarningDialog(
-                      "Deseja iniciar uma tentativa de Quiz? "
-                      "(Certifique-se que tem uma ligação de Internet estável)",
+                      "Deseja iniciar uma tentativa de Quiz? " //TODO
+                      "(Certifique-se que tem uma ligação de Internet estável)", //TODO
                       startQuiz,
                       context);
                 },
-                child: const Text("Iniciar nova tentativa"))
+                child: const Text("Iniciar nova tentativa")) //TODO
         ],
       ),
     );

@@ -236,7 +236,7 @@ class TimelineBody extends StatelessWidget {
                         ),
                       );
                     } else if (yearListSnapshot.hasError) {
-                      return NetworkError(
+                      return DynamicErrorWidget(
                           display: yearListSnapshot.error.toString());
                     } else {
                       return const LoadingWidget();
@@ -244,7 +244,8 @@ class TimelineBody extends StatelessWidget {
                   }),
             );
           } else if (eventsListSnapshot.hasError) {
-            return NetworkError(display: eventsListSnapshot.error.toString());
+            return DynamicErrorWidget(
+                display: eventsListSnapshot.error.toString());
           } else {
             return const LoadingWidget();
           }

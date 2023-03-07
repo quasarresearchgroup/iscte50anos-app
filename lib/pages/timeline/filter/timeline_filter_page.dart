@@ -12,10 +12,9 @@ import 'package:iscte_spots/services/platform_service.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_icon_button.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_text_button.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_text_field.dart';
+import 'package:iscte_spots/widgets/network/error.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
-import 'package:logger/logger.dart';
 
-import '../../../widgets/network/error.dart';
 import '../../../widgets/util/loading.dart';
 
 class TimelineFilterPage extends StatefulWidget {
@@ -110,7 +109,7 @@ class _TimelineFilterPageState extends State<TimelineFilterPage> {
                       context, titleStyle, textStyle, topics, scopes);
                 } else if (topicSnapshot.hasError || scopeSnapshot.hasError) {
                   return Center(
-                    child: NetworkError(
+                    child: DynamicErrorWidget(
                         display: AppLocalizations.of(context)!.generalError),
                   );
                 } else {
