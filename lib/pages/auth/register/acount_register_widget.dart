@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:iscte_spots/pages/auth/register/registration_error.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 
@@ -37,10 +36,12 @@ class _AccountRegisterFormState extends State<AccountRegisterForm> {
     List<Widget> formFields = generateFormFields();
     return Form(
       key: widget.formKey,
-      child:
-          Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-        ...formFields,
-      ]),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          ...formFields,
+        ],
+      ),
     );
   }
 
@@ -53,13 +54,13 @@ class _AccountRegisterFormState extends State<AccountRegisterForm> {
         textAlignVertical: TextAlignVertical.top,
         textInputAction: TextInputAction.next,
         decoration: IscteTheme.buildInputDecoration(
-            hint: "userName",
+            hint: "username", //TODO
             errorText: (widget.errorCode == RegistrationError.existingUsername)
-                ? 'Username already exists'
+                ? 'Username already exists' //TODO
                 : null),
         validator: (value) {
           if (value == null || value.isEmpty) {
-            return 'Please enter some text';
+            return 'Please enter some text'; //TODO
           }
           return null;
         },
@@ -69,10 +70,10 @@ class _AccountRegisterFormState extends State<AccountRegisterForm> {
         controller: widget.nameController,
         textAlignVertical: TextAlignVertical.top,
         textInputAction: TextInputAction.next,
-        decoration: IscteTheme.buildInputDecoration(hint: "name"),
+        decoration: IscteTheme.buildInputDecoration(hint: "name"), //TODO
         validator: (value) {
           if (value == null || value.isEmpty) {
-            return 'Please enter some text';
+            return 'Please enter some text'; //TODO
           }
           return null;
         },
@@ -82,10 +83,10 @@ class _AccountRegisterFormState extends State<AccountRegisterForm> {
         controller: widget.lastNameController,
         textAlignVertical: TextAlignVertical.top,
         textInputAction: TextInputAction.next,
-        decoration: IscteTheme.buildInputDecoration(hint: "last name"),
+        decoration: IscteTheme.buildInputDecoration(hint: "last name"), //TODO
         validator: (value) {
           if (value == null || value.isEmpty) {
-            return 'Please enter some text';
+            return 'Please enter some text'; //TODO
           }
           return null;
         },
@@ -96,18 +97,18 @@ class _AccountRegisterFormState extends State<AccountRegisterForm> {
         textAlignVertical: TextAlignVertical.top,
         textInputAction: TextInputAction.next,
         decoration: IscteTheme.buildInputDecoration(
-            hint: "email",
+            hint: "email", //TODO
             errorText: (widget.errorCode == RegistrationError.existingEmail)
-                ? 'Email already exists'
+                ? 'Email already exists' //TODO
                 : null),
         validator: (value) {
           if (value == null || value.isEmpty) {
-            return 'Please enter some text';
+            return 'Please enter some text'; //TODO
           } else if (!RegExp(r"\S+[@]\S+\.\S+").hasMatch(value) ||
               widget.errorCode == RegistrationError.invalidEmail) {
             //RegExp Explanation (checks for @ followed by any number of non whitespace character followed by a dot "." and then followed by any number of non whitespace characters)
             //https://regex101.com/r/TZDJmb/1
-            return 'Please enter a valid email';
+            return 'Please enter a valid email'; //TODO
           }
           return null;
         },
@@ -119,9 +120,9 @@ class _AccountRegisterFormState extends State<AccountRegisterForm> {
         textAlignVertical: TextAlignVertical.center,
         textInputAction: TextInputAction.next,
         decoration: IscteTheme.buildInputDecoration(
-            hint: "password",
+            hint: "password", //TODO
             errorText: (widget.errorCode == RegistrationError.passwordNotMatch)
-                ? 'Passwords must match'
+                ? 'Passwords must match' //TODO
                 : null,
             suffixIcon: IconButton(
               onPressed: () {
@@ -139,7 +140,7 @@ class _AccountRegisterFormState extends State<AccountRegisterForm> {
             )),
         validator: (value) {
           if (value == null || value.isEmpty) {
-            return 'Please enter some text';
+            return 'Please enter some text'; //TODO
           }
           return null;
         },
@@ -151,9 +152,9 @@ class _AccountRegisterFormState extends State<AccountRegisterForm> {
         textInputAction: TextInputAction.done,
         textAlignVertical: TextAlignVertical.center,
         decoration: IscteTheme.buildInputDecoration(
-            hint: "confirm password",
+            hint: "confirm password", //TODO
             errorText: (widget.errorCode == RegistrationError.passwordNotMatch)
-                ? 'Passwords must match'
+                ? 'Passwords must match' //TODO
                 : null,
             suffixIcon: InkWell(
               onTap: () {
@@ -176,9 +177,9 @@ class _AccountRegisterFormState extends State<AccountRegisterForm> {
             )),
         validator: (value) {
           if (value == null || value.isEmpty) {
-            return 'Please enter some text';
+            return 'Please enter some text'; //TODO
           } else if (value != widget.passwordController.text) {
-            return 'Passwords must match';
+            return 'Passwords must match'; //TODO
           }
           return null;
         },

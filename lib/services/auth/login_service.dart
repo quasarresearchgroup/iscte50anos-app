@@ -12,7 +12,7 @@ import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/services/onboard_service.dart';
 import 'package:iscte_spots/services/shared_prefs_service.dart';
 
-class OpenDayLoginService {
+class LoginService {
   static Future<int> login(LoginFormResult loginFormResult) async {
     LoggerService.instance.debug("Logging in User: $loginFormResult");
     try {
@@ -97,6 +97,9 @@ class OpenDayLoginService {
     await OnboadingService.removeOnboard();
     Navigator.of(context).popUntil(ModalRoute.withName(AuthPage.pageRoute));
     Navigator.of(context).pushNamed(AuthPage.pageRoute);
+
+    //NavigationService.popToFirst();
+    //NavigationService.pushNamed(AuthPage.pageRoute);
     /*  } else {
       LoggerService.instance.error(
           "statusCode: ${response.statusCode} on login response:

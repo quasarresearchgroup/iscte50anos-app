@@ -95,6 +95,7 @@ pubspec.lock
 **/xcuserdata/
 
 /android/local.properties
+android/key.properties
 
 *.properties
 !/android/gradle.properties

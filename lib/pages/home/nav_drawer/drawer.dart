@@ -8,16 +8,16 @@ import 'package:iscte_spots/pages/quiz/quiz_list_menu.dart';
 import 'package:iscte_spots/pages/settings/settings_page.dart';
 import 'package:iscte_spots/pages/spotChooser/spot_chooser_page.dart';
 import 'package:iscte_spots/pages/timeline/timeline_page.dart';
-import 'package:iscte_spots/services/auth/openday_login_service.dart';
+import 'package:iscte_spots/services/auth/login_service.dart';
 
-class NavigationDrawerOpenDay extends StatelessWidget {
-  const NavigationDrawerOpenDay({Key? key}) : super(key: key);
+class MyNavigationDrawer extends StatelessWidget {
+  const MyNavigationDrawer({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final List<Widget> menuWidgetList = [
       ListTile(
-        leading: const Icon(Icons.directions_run),
+        leading: const Icon(SpotChooserPage.icon),
         title: Text(AppLocalizations.of(context)!.spotChooserScreen),
         onTap: () {
 //          PageRoutes.animateToPage(context, page: TimelinePage());
@@ -25,7 +25,7 @@ class NavigationDrawerOpenDay extends StatelessWidget {
         },
       ),
       ListTile(
-        leading: const Icon(Icons.timeline),
+        leading: const Icon(TimelinePage.icon),
         title: Text(AppLocalizations.of(context)!.timelineScreen),
         onTap: () {
 //          PageRoutes.animateToPage(context, page: TimelinePage());
@@ -42,7 +42,7 @@ class NavigationDrawerOpenDay extends StatelessWidget {
         },
       ),*/
       ListTile(
-        leading: const Icon(Icons.help),
+        leading: const Icon(QuizMenu.icon),
         title: Text(AppLocalizations.of(context)!.quizScreen),
         onTap: () {
           //PageRoutes.animateToPage(context, page: QuizPage());
@@ -50,7 +50,7 @@ class NavigationDrawerOpenDay extends StatelessWidget {
         },
       ),
       ListTile(
-        leading: const FaIcon(FontAwesomeIcons.flickr),
+        leading: const FaIcon(FlickrPage.icon),
         title: Text(AppLocalizations.of(context)!.flickrScreen),
         onTap: () {
 //          PageRoutes.animateToPage(context, page: FlickrPage());
@@ -69,7 +69,7 @@ class NavigationDrawerOpenDay extends StatelessWidget {
         title: const Text("Account"),
         children: [
           ListTile(
-            leading: const Icon(Icons.person),
+            leading: const Icon(ProfilePage.icon),
             title: Text(AppLocalizations.of(context)!.profileScreen),
             onTap: () async {
               //PageRoutes.animateToPage(context, page: ProfilePage());
@@ -77,14 +77,14 @@ class NavigationDrawerOpenDay extends StatelessWidget {
             },
           ),
           ListTile(
-              leading: const Icon(Icons.settings),
+              leading: const Icon(SettingsPage.icon),
               title: Text(AppLocalizations.of(context)!.settingsScreen),
               onTap: () async {
                 //PageRoutes.animateToPage(context, page: ProfilePage());
                 Navigator.of(context).popAndPushNamed(SettingsPage.pageRoute);
               }),
           ListTile(
-            leading: const Icon(Icons.departure_board),
+            leading: const Icon(OnboardingPage.icon),
             title: const Text('Onboarding'),
             onTap: () {
               //PageRoutes.animateToPage(context, page: OnboardingPage());
@@ -96,7 +96,7 @@ class NavigationDrawerOpenDay extends StatelessWidget {
             leading: Icon(Icons.adaptive.arrow_back_outlined),
             title: Text(AppLocalizations.of(context)!.logOutButton),
             onTap: () async {
-              await OpenDayLoginService.logOut(context);
+              await LoginService.logOut(context);
             },
           ),
         ],

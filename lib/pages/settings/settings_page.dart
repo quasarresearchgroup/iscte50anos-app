@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/services/shared_prefs_service.dart';
@@ -6,11 +5,12 @@ import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_alert_dialog.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_back_button.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_text_button.dart';
 import 'package:iscte_spots/widgets/my_app_bar.dart';
-
 import 'package:yaml/yaml.dart';
 
 class SettingsPage extends StatefulWidget {
   static const pageRoute = "/settings";
+  static const IconData icon = Icons.settings;
+
   SettingsPage({Key? key}) : super(key: key);
 
   @override
@@ -35,15 +35,12 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyAppBar(
-        title: "Settings",
-        leading: DynamicBackIconButton(),
+        title: "Settings", //TODO
+        leading: const DynamicBackIconButton(),
       ),
       body: ListView(
         children: [
           IscteAboutListTile(),
-          const Center(
-            child: Text("version: 1.0.10+12"),
-          ),
 /*          ExpansionTile(
             title: const Text("Shared Preferences"),
             children: [
@@ -103,21 +100,21 @@ class DynamicAboutListTile extends StatelessWidget {
 
     return ListTile(
       leading: const Icon(Icons.info),
-      title: Text("${applicationName}"),
+      title: Text("$applicationName"),
       onTap: () {
         DynamicAlertDialog.showDynamicDialog(
             context: context,
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("About ${applicationName}"),
-                Text("${applicationVersion}"),
+                Text("About $applicationName"),
+                Text("$applicationVersion"),
               ],
             ),
-            content: Text("legalese"),
+            // content: Text("legalese"),
             actions: [
               DynamicTextButton(
-                child: Text("View Licenses"),
+                child: const Text("View Licenses"), //TODO
                 onPressed: () {
                   showLicensePage(
                     context: context,
@@ -129,7 +126,7 @@ class DynamicAboutListTile extends StatelessWidget {
                 },
               ),
               DynamicTextButton(
-                child: Text("Close"),
+                child: const Text("Close"), //TODO
                 onPressed: () {
                   Navigator.of(context).pop();
                 },

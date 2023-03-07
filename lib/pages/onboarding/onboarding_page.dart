@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/pages/onboarding/bottom_onboard.dart';
 import 'package:iscte_spots/pages/onboarding/onboard_tile.dart';
 import 'package:iscte_spots/pages/onboarding/skip_onboard_button.dart';
+import 'package:iscte_spots/widgets/network/error.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 import 'package:lottie/lottie.dart';
 
 class OnboardingPage extends StatefulWidget {
   static const pageRoute = "/onboard";
+  static const IconData icon = Icons.departure_board;
 
   OnboardingPage({Key? key, required this.onLaunch}) : super(key: key);
 
@@ -76,10 +77,11 @@ class _OnboardingPageState extends State<OnboardingPage>
             automaticallyImplyLeading: false,
             actions: [
               SkipButton(
-                  pageController: _pageController,
-                  numPages: children.length,
-                  animDuration: animDuration,
-                  textStyle: textStyle)
+                pageController: _pageController,
+                numPages: children.length,
+                animDuration: animDuration,
+                textStyle: textStyle,
+              )
             ]),
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -118,8 +120,10 @@ class _OnboardingPageState extends State<OnboardingPage>
           textScaleFactor: 2,
         ),
         center: Lottie.network(
-            //"https://assets8.lottiefiles.com/packages/lf20_97qzkt8d.json"),
-            "https://assets1.lottiefiles.com/packages/lf20_z7bpt8g7.json"),
+          //"https://assets8.lottiefiles.com/packages/lf20_97qzkt8d.json"),
+          "https://assets1.lottiefiles.com/packages/lf20_z7bpt8g7.json",
+          errorBuilder: _lottieErrorBuilder,
+        ),
         bottom: Text(
           AppLocalizations.of(context)!.onboardingText1,
           textScaleFactor: 1.5,
@@ -132,7 +136,10 @@ class _OnboardingPageState extends State<OnboardingPage>
           AppLocalizations.of(context)!.onboardingTitle2,
           textScaleFactor: 2,
         ),
-        center: Image.asset("Resources/Img/Campus/campus-iscte-3.jpg"),
+        center: Image.asset(
+          "Resources/Img/Campus/campus-iscte-3.jpg",
+          errorBuilder: _lottieErrorBuilder,
+        ),
         bottom: Text(
           AppLocalizations.of(context)!.onboardingText2,
           textScaleFactor: 1.5,
@@ -146,7 +153,9 @@ class _OnboardingPageState extends State<OnboardingPage>
           textScaleFactor: 2,
         ),
         center: Lottie.network(
-            "https://assets7.lottiefiles.com/packages/lf20_ykxkplzg.json"),
+          "https://assets7.lottiefiles.com/packages/lf20_ykxkplzg.json",
+          errorBuilder: _lottieErrorBuilder,
+        ),
         //"https://assets4.lottiefiles.com/packages/lf20_1LsvAZ.json"),
         bottom: Text(
           AppLocalizations.of(context)!.onboardingText3,
@@ -161,7 +170,9 @@ class _OnboardingPageState extends State<OnboardingPage>
           textScaleFactor: 2,
         ),
         center: Lottie.network(
-            "https://assets9.lottiefiles.com/packages/lf20_smcd09k7.json"),
+          "https://assets9.lottiefiles.com/packages/lf20_smcd09k7.json",
+          errorBuilder: _lottieErrorBuilder,
+        ),
         bottom: Text(
           AppLocalizations.of(context)!.onboardingText4,
           textScaleFactor: 1.5,
@@ -175,7 +186,9 @@ class _OnboardingPageState extends State<OnboardingPage>
           textScaleFactor: 2,
         ),
         center: Lottie.network(
-            "https://assets7.lottiefiles.com/packages/lf20_bq55cmov.json"),
+          "https://assets7.lottiefiles.com/packages/lf20_bq55cmov.json",
+          errorBuilder: _lottieErrorBuilder,
+        ),
         bottom: Text(
           AppLocalizations.of(context)!.onboardingText5,
           textScaleFactor: 1.5,
@@ -189,7 +202,9 @@ class _OnboardingPageState extends State<OnboardingPage>
           textScaleFactor: 2,
         ),
         center: Lottie.network(
-            "https://assets1.lottiefiles.com/packages/lf20_0YHgFn.json"),
+          "https://assets1.lottiefiles.com/packages/lf20_0YHgFn.json",
+          errorBuilder: _lottieErrorBuilder,
+        ),
         bottom: Text(
           AppLocalizations.of(context)!.onboardingText6,
           textScaleFactor: 1.5,
@@ -198,5 +213,12 @@ class _OnboardingPageState extends State<OnboardingPage>
         color: Colors.green,
       ),
     ];
+  }
+
+  Widget _lottieErrorBuilder(
+      BuildContext context, Object error, StackTrace? stackTrace) {
+    return DynamicErrorWidget.networkError(
+      context: context,
+    );
   }
 }

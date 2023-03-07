@@ -8,7 +8,7 @@ class RoundedTimelineIcon extends StatelessWidget {
 
   final double borderRadious = 10;
   final double padding = 10;
-  final Image child;
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {

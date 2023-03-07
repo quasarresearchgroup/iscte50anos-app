@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -11,7 +10,6 @@ import 'package:iscte_spots/pages/flickr/flickr_album_page.dart';
 import 'package:iscte_spots/services/flickr/flickr_iscte_album_service.dart';
 import 'package:iscte_spots/services/flickr/flickr_service.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
-import 'package:iscte_spots/services/platform_service.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_back_button.dart';
 import 'package:iscte_spots/widgets/my_app_bar.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
@@ -19,6 +17,8 @@ import 'package:iscte_spots/widgets/util/overlays.dart';
 
 class FlickrPage extends StatefulWidget {
   static const pageRoute = "/flickr";
+  static const IconData icon = FontAwesomeIcons.flickr;
+
   final FlickrIscteAlbumService flickrService = FlickrIscteAlbumService();
   final PageController _pageController = PageController(viewportFraction: 0.8);
   final int fetchThreshHold = 1000;
@@ -64,7 +64,7 @@ class _FlickrPageState extends State<FlickrPage> {
       });
     }, onError: (error) {
       LoggerService.instance.error(error);
-      showNetworkErrorOverlay(context );
+      showNetworkErrorOverlay(context);
       noMoreData = error == FlickrService.noDataError;
     });
   }
@@ -88,7 +88,7 @@ class _FlickrPageState extends State<FlickrPage> {
         networkError = false;
       } on SocketException catch (e) {
         LoggerService.instance.error(e);
-        showNetworkErrorOverlay(context );
+        showNetworkErrorOverlay(context);
         networkError = true;
       } finally {
         setState(() {
@@ -108,34 +108,40 @@ class _FlickrPageState extends State<FlickrPage> {
           title: AppLocalizations.of(context)!.flickrScreen,
           leading: const DynamicBackIconButton(),
           trailing: Row(mainAxisSize: MainAxisSize.min, children: [
-            Padding(
+            /*Padding(
               padding: const EdgeInsets.all(10.0),
               child: Center(
                   child: Text(
                 "${activePage + 1} / ${fetchedPhotosets.length}",
                 textScaleFactor: 1.25,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyMedium
+                    ?.copyWith(color: IscteTheme.iscteColor),
               )),
-            ),
+            ),*/
             Padding(
               padding: const EdgeInsets.all(10.0),
               child: Center(
-                child: fetching
-                    ? const LoadingWidget()
-                    : networkError
-                        ? const Icon(Icons.signal_wifi_connected_no_internet_4)
-                        : PlatformService.instance.isIos
+                  child: fetching
+                      ? const LoadingWidget()
+                      : networkError
+                          ? const Icon(
+                              Icons.signal_wifi_connected_no_internet_4)
+                          : null
+                  /*          PlatformService.instance.isIos
                             ? const Icon(CupertinoIcons.check_mark)
-                            : const Icon(Icons.check),
-              ),
+                            : const Icon(Icons.check),*/
+                  ),
             ),
           ]),
         ),
-        floatingActionButton: FloatingActionButton(
+        /*floatingActionButton: FloatingActionButton(
           child: const FaIcon(FontAwesomeIcons.rotateRight),
           onPressed: () {
             fetchMorePhotosets();
           },
-        ),
+        ),*/
         body: !hasData
             ? SizedBox.expand(
                 child: noMoreData

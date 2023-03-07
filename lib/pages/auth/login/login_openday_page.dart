@@ -1,18 +1,15 @@
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/models/auth/login_form_result.dart';
-import 'package:iscte_spots/services/auth/openday_login_service.dart';
+import 'package:iscte_spots/services/auth/login_service.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_text_button.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
 
 class LoginOpendayPage extends StatefulWidget {
-
   LoginOpendayPage({
     Key? key,
     required this.changeToSignUp,
@@ -96,11 +93,11 @@ class _LoginOpendayState extends State<LoginOpendayPage>
     return [
       DynamicTextButton(
         style: IscteTheme.iscteColor,
+        onPressed: _loginAction,
         child: const Text(
           "Login",
           style: TextStyle(color: Colors.white),
         ),
-        onPressed: _loginAction,
       ),
     ];
   }
@@ -114,10 +111,10 @@ class _LoginOpendayState extends State<LoginOpendayPage>
     try {
       if (_loginFormkey.currentState!.validate()) {
         LoginFormResult loginFormResult = LoginFormResult(
-            username: widget.userNameController.text,
-            password: widget.passwordController.text,
-          );
-        int statusCode = await OpenDayLoginService.login(
+          username: widget.userNameController.text,
+          password: widget.passwordController.text,
+        );
+        int statusCode = await LoginService.login(
           loginFormResult,
         );
         if (statusCode == 200) {
@@ -126,7 +123,8 @@ class _LoginOpendayState extends State<LoginOpendayPage>
           setState(() {
             _loginError = true;
           });
-          LoggerService.instance.error("Login error!: statusCode: $statusCode; loginForm: $loginFormResult;");
+          LoggerService.instance.error(
+              "Login error!: statusCode: $statusCode; loginForm: $loginFormResult;");
         }
       }
     } on SocketException {
@@ -171,23 +169,35 @@ class _LoginOpendayState extends State<LoginOpendayPage>
                             ...generateFormButtons()
                           ]),
                     ),
-/*                    Flexible(
+                    Flexible(
                       flex: 1,
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Text("Dont have an account? "),
-                          ElevatedButton.icon(
-                              style: ElevatedButton.styleFrom(
-                                  primary: Theme.of(context).primaryColor),
-                              label: Text("Sign up!"),
-                              icon: Icon(Icons.adaptive.arrow_forward),
-                              onPressed: () {
-                                LoggerService.instance.debug("change");
-                                widget.changeToSignUp();
-                              }),
+                          const Text("Dont have an account? "), //TODO
+                          DynamicTextButton(
+                            onPressed: widget.changeToSignUp,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.adaptive.arrow_forward),
+                                const Text("Sign up!") //TODO
+                              ],
+                            ),
+                          )
+                          /* ElevatedButton.icon(
+                            style: ElevatedButton.styleFrom(
+                                primary: Theme.of(context).primaryColor),
+                            label: Text("Sign up!"), //TODO
+                            icon: Icon(Icons.adaptive.arrow_forward),
+                            onPressed: () {
+                              LoggerService.instance.debug("change");
+                              widget.changeToSignUp();
+                            },
+                          ),*/
                         ],
                       ),
-                    ),*/
+                    ),
                   ],
                 ),
               ),

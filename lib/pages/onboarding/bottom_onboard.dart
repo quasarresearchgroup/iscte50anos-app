@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 
 import 'getstarted_onboard_button.dart';
 import 'next_onboard_button.dart';
 
 class BottomSheetOnboard extends StatelessWidget {
-  var bottomSheetHeight;
-  var animDuration;
-  var numPages;
-  var pageController;
-  var currentPage;
-  var changePage;
-  var textStyle;
-
-  bool onLaunch;
+  final double bottomSheetHeight;
+  final Duration animDuration;
+  final int numPages;
+  final PageController pageController;
+  final int currentPage;
+  final Function(int page) changePage;
+  final TextStyle textStyle;
+  final bool onLaunch;
 
   BottomSheetOnboard({
     Key? key,
@@ -44,7 +44,7 @@ class BottomSheetOnboard extends StatelessWidget {
         width: isActive ? 24.0 : 16.0,
         decoration: BoxDecoration(
           color: isActive
-              ? Theme.of(context).selectedRowColor
+              ? IscteTheme.iscteColor
               : Theme.of(context).unselectedWidgetColor,
           borderRadius: const BorderRadius.all(Radius.circular(12)),
         ),
@@ -85,7 +85,6 @@ class BottomSheetOnboard extends StatelessWidget {
                     buildPageIndicator: _buildPageIndicator,
                     pageController: pageController,
                     changePage: changePage,
-                    textStyle: textStyle,
                   )
                 : GetStartedOnboard(
                     onLaunch: onLaunch,

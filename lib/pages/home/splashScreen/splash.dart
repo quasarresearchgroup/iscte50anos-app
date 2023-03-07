@@ -6,7 +6,7 @@ import 'package:iscte_spots/pages/auth/auth_page.dart';
 import 'package:iscte_spots/pages/home/home_page.dart';
 import 'package:iscte_spots/pages/home/splashScreen/shake.dart';
 import 'package:iscte_spots/pages/onboarding/onboarding_page.dart';
-import 'package:iscte_spots/services/auth/openday_login_service.dart';
+import 'package:iscte_spots/services/auth/login_service.dart';
 import 'package:iscte_spots/services/onboard_service.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -26,7 +26,7 @@ class _SplashScreenState extends State<SplashScreen> {
     bool isLoggedIn;
     bool isOnboarded;
     try {
-      isLoggedIn = await OpenDayLoginService.isLoggedIn();
+      isLoggedIn = await LoginService.isLoggedIn();
       isOnboarded = await OnboadingService.isOnboarded();
     } on SocketException {
       isLoggedIn = false;

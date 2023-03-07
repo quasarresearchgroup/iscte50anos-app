@@ -1,160 +1,109 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:timeline_tile/timeline_tile.dart';
+import 'package:iscte_spots/pages/timeline/list_view/year_timeline_list_tile.dart';
+import 'package:iscte_spots/pages/timeline/state/timeline_filter_result_state.dart';
+import 'package:iscte_spots/pages/timeline/state/timeline_state.dart';
+import 'package:iscte_spots/pages/timeline/web_scroll_behaviour.dart';
+import 'package:iscte_spots/widgets/network/error.dart';
+import 'package:iscte_spots/widgets/util/loading.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class YearTimelineListView extends StatefulWidget {
-  const YearTimelineListView(
-      {Key? key,
-      required this.changeYearFunction,
-      required this.yearsList,
-      required this.selectedYear})
-      : super(key: key);
+  const YearTimelineListView({
+    Key? key,
+    required this.hoveredYearIndexNotifier,
+    required this.currentYearsListValue,
+    required this.onTap,
+    required this.isFilter,
+  }) : super(key: key);
 
-  final Function changeYearFunction;
-  final List<int> yearsList;
-  final int selectedYear;
+  final ValueNotifier<int?> hoveredYearIndexNotifier;
+  final Future<List<int>> currentYearsListValue;
+  final bool isFilter;
+
+  /// Callback to use for click event for each tile in the list view
+  final void Function(int year)? onTap;
 
   @override
   State<YearTimelineListView> createState() => _YearTimelineListViewState();
 }
 
 class _YearTimelineListViewState extends State<YearTimelineListView> {
-  //late ScrollController scrollController;
-  List<Widget> yearsList = [];
+  final ItemScrollController itemController = ItemScrollController();
 
   @override
   void initState() {
     super.initState();
-    //scrollController = ScrollController();
-/*
-    for (int index in widget.yearsList) {
-      yearsList.add(
-        Padding(
-          key: GlobalKey(),
-          padding: const EdgeInsets.only(bottom: 8.0),
-          child: YearTimelineTile(
-            changeYearFunction: widget.changeYearFunction,
-            year: index,
-            isSelected: widget.selectedYear == index,
-            isFirst: index == 0,
-            isLast: index == widget.yearsList.length - 1,
-          ),
-        ),
-      );
-    }*/
+    widget.hoveredYearIndexNotifier.addListener(() {
+      if (widget.hoveredYearIndexNotifier.value != null) {
+        itemController.scrollTo(
+            index: widget.hoveredYearIndexNotifier.value!,
+            duration: const Duration(milliseconds: 300));
+      }
+    });
   }
 
   @override
   void dispose() {
     super.dispose();
-    //scrollController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    //Scrollable.ensureVisible(yearsList[widget.selectedYear].);
-    return Container(
-      decoration: BoxDecoration(color: Theme.of(context).primaryColor),
-      child: ListView.builder(
-          //controller: scrollController,
-          scrollDirection: Axis.horizontal,
-          itemCount: widget.yearsList.length,
-          shrinkWrap: true,
-          itemBuilder: (BuildContext context, int index) {
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 8.0),
-              child: YearTimelineTile(
-                changeYearFunction: widget.changeYearFunction,
-                year: widget.yearsList[index],
-                isSelected: widget.selectedYear == widget.yearsList[index],
-                isFirst: index == 0,
-                isLast: index == widget.yearsList.length - 1,
-              ),
-            );
-          }),
-    );
-  }
-}
-
-class YearTimelineTile extends StatefulWidget {
-  const YearTimelineTile(
-      {Key? key,
-      required this.changeYearFunction,
-      required this.year,
-      required this.isFirst,
-      required this.isLast,
-      required this.isSelected})
-      : super(key: key);
-
-  final Function changeYearFunction;
-  final int year;
-  final bool isFirst;
-  final bool isLast;
-  final bool isSelected;
-
-  @override
-  State<YearTimelineTile> createState() => _YearTimelineTileState();
-}
-
-class _YearTimelineTileState extends State<YearTimelineTile> {
-  @override
-  Widget build(BuildContext context) {
-    const double textFontSize = 20.0;
-    const double minWidth2 = 90;
-    const double radius = 15;
-    final Color color2 = Colors.white.withOpacity(0.3);
-    const double timelineIconOffset = 0.7;
-    Color iconTextColor = Theme.of(context).selectedRowColor;
-    LineStyle lineStyle = LineStyle(color: iconTextColor, thickness: 6);
-
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        splashColor: color2,
-        highlightColor: color2,
-        enableFeedback: true,
-        customBorder: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(radius))),
-        onTap: () {
-          setState(() {
-            widget.changeYearFunction(widget.year);
-          });
-        },
-        child: TimelineTile(
-          beforeLineStyle: lineStyle,
-          afterLineStyle: lineStyle,
-          axis: TimelineAxis.horizontal,
-          alignment: TimelineAlign.manual,
-          lineXY: timelineIconOffset,
-          isFirst: widget.isFirst,
-          isLast: widget.isLast,
-          hasIndicator: true,
-          indicatorStyle: IndicatorStyle(
-            drawGap: true,
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            indicator: Center(
-                child: widget.isSelected
-                    ? Icon(
-                        FontAwesomeIcons.calendarCheck,
-                        color: iconTextColor,
-                      )
-                    : Icon(
-                        FontAwesomeIcons.calendar,
-                        color: iconTextColor,
-                      )),
-          ),
-          startChild: Container(
-            constraints: const BoxConstraints(minWidth: minWidth2),
-            child: Center(
-              child: Text(
-                widget.year.toString(),
-                style: TextStyle(fontSize: textFontSize, color: iconTextColor),
-              ),
-            ),
-          ),
-          //),
-        ),
-      ),
-    );
+    return ValueListenableBuilder<int?>(
+        valueListenable: widget.hoveredYearIndexNotifier,
+        builder: (context, hoverYearIndex, _) {
+          return ValueListenableBuilder<int?>(
+              valueListenable: widget.isFilter
+                  ? TimelineFilterResultState.selectedYear
+                  : TimelineState.selectedYear,
+              builder: (context, currentYear, _) {
+                return FutureBuilder<List<int>>(
+                    future: widget.currentYearsListValue,
+                    builder: (context, yearsListSnapshot) {
+                      if (yearsListSnapshot.connectionState ==
+                              ConnectionState.done &&
+                          yearsListSnapshot.hasData) {
+                        return ScrollConfiguration(
+                          behavior: WebScrollBehaviour(),
+                          child: ScrollablePositionedList.builder(
+                              initialScrollIndex: currentYear != null
+                                  ? yearsListSnapshot.data!
+                                          .contains(currentYear)
+                                      ? yearsListSnapshot.data!
+                                          .indexOf(currentYear)
+                                      : yearsListSnapshot.data!.length - 1
+                                  : yearsListSnapshot.data!.length - 1,
+                              itemScrollController: itemController,
+                              scrollDirection: Axis.horizontal,
+                              itemCount: yearsListSnapshot.data!.length,
+                              shrinkWrap: false,
+                              itemBuilder: (
+                                BuildContext context,
+                                int index,
+                              ) =>
+                                  YearTimelineTile(
+                                    year: yearsListSnapshot.data![index],
+                                    isSelected: currentYear ==
+                                        yearsListSnapshot.data![index],
+                                    isHover: hoverYearIndex == index,
+                                    isFirst: index == 0,
+                                    isLast: index ==
+                                        yearsListSnapshot.data!.length - 1,
+                                    onTap: widget.onTap,
+                                  )),
+                        );
+                      } else if (yearsListSnapshot.connectionState ==
+                          ConnectionState.waiting) {
+                        return const LoadingWidget();
+                      } else if (yearsListSnapshot.hasError) {
+                        return DynamicErrorWidget(
+                          display: yearsListSnapshot.error.toString(),
+                        );
+                      } else {
+                        return const LoadingWidget();
+                      }
+                    });
+              });
+        });
   }
 }

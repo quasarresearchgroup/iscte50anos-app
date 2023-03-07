@@ -22,14 +22,6 @@ class MyApp extends StatefulWidget {
 
   @override
   State<MyApp> createState() => _MyAppState();
-
-  static Future<Widget> _buildPageAsync({required Widget page}) async {
-    return Future.microtask(
-      () {
-        return page;
-      },
-    );
-  }
 }
 
 class _MyAppState extends State<MyApp> {
@@ -43,25 +35,19 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     if (PlatformService.instance.isIos) {
-      final Brightness platformBrightness =
-          WidgetsBinding.instance.window.platformBrightness;
       return CupertinoApp(
         builder: (BuildContext context, Widget? child) => Theme(
-          data: (platformBrightness == Brightness.dark)
-              ? IscteTheme.darkThemeData
-              : IscteTheme.lightThemeData,
+          data: IscteTheme.lightThemeData,
           child: IconTheme(
-            data: CupertinoIconThemeData(
-              color: CupertinoTheme.of(context).primaryContrastingColor,
+            data: const CupertinoIconThemeData(
+              color: IscteTheme.iscteColor,
             ),
             child: child ?? Container(),
           ),
         ),
         debugShowCheckedModeBanner: false,
         title: 'IscteSpots',
-        theme: (platformBrightness == Brightness.dark)
-            ? IscteTheme.cupertinoDarkThemeData
-            : IscteTheme.cupertinoLightThemeData,
+        theme: IscteTheme.cupertinoLightThemeData,
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: SplashScreen(),
@@ -72,7 +58,7 @@ class _MyAppState extends State<MyApp> {
         //showSemanticsDebugger: true,
         debugShowCheckedModeBanner: false,
         title: 'IscteSpots',
-        darkTheme: IscteTheme.darkThemeData,
+        //darkTheme: IscteTheme.darkThemeData,
         theme: IscteTheme.lightThemeData,
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,

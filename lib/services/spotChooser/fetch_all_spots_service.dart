@@ -8,21 +8,21 @@ import 'package:iscte_spots/models/database/tables/database_spot_table.dart';
 import 'package:iscte_spots/models/spot.dart';
 import 'package:iscte_spots/services/auth/auth_service.dart';
 import 'package:iscte_spots/services/auth/exceptions.dart';
-import 'package:iscte_spots/services/auth/openday_login_service.dart';
+import 'package:iscte_spots/services/auth/login_service.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
 
-
 class SpotsRequestService {
-  
-
-  static Future<void> fetchAllSpots({required BuildContext context}) async {
-    LoggerService.instance.debug("started getAllSpots request at ${DateTime.now()}\t");
+  static Future<void> fetchAllSpots(BuildContext context) async {
+    LoggerService.instance
+        .debug("started getAllSpots request at ${DateTime.now()}\t");
 
     const FlutterSecureStorage secureStorage = FlutterSecureStorage();
 
     String? apiToken =
         await secureStorage.read(key: AuthService.backendApiKeyStorageLocation);
     if (apiToken == null) {
+      LoggerService.instance.error("No apitoken stored");
+      await LoginService.logOut(context);
       throw LoginException();
     }
 
@@ -38,7 +38,7 @@ class SpotsRequestService {
     try {
       final response = await request.close();
       if (response.statusCode == 403) {
-        OpenDayLoginService.logOut(context);
+        await LoginService.logOut(context);
         throw LoginException();
       } else if (response.statusCode == 200) {
         var responseDecoded =

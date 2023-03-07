@@ -4,7 +4,6 @@ import 'package:iscte_spots/services/platform_service.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_back_button.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 
-
 class MyAppBar extends StatefulWidget with PreferredSizeWidget {
   MyAppBar({
     Key? key,
@@ -42,19 +41,27 @@ class _MyAppBarState extends State<MyAppBar> {
         ? Text(
             widget.title!,
             overflow: TextOverflow.ellipsis,
-            style: const TextStyle(color: Colors.white),
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  color: IscteTheme.iscteColor,
+                ),
           )
         : widget.middle;
     return !PlatformService.instance.isIos
         ? AppBar(
             leadingWidth: 100,
             automaticallyImplyLeading: widget.automaticallyImplyLeading,
+            iconTheme: Theme.of(context)
+                .iconTheme
+                .copyWith(color: IscteTheme.iscteColor),
+            actionsIconTheme: Theme.of(context)
+                .iconTheme
+                .copyWith(color: IscteTheme.iscteColor),
             leading: widget.leading ?? const DynamicBackIconButton(),
             title: middle,
             actions: widget.trailing != null ? [widget.trailing!] : null,
           )
         : CupertinoNavigationBar(
-            backgroundColor: IscteTheme.iscteColor,
+            //backgroundColor: IscteTheme.iscteColor,
             automaticallyImplyMiddle: widget.automaticallyImplyLeading,
             padding: EdgeInsetsDirectional.zero,
             automaticallyImplyLeading: false,

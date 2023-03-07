@@ -6,7 +6,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:iscte_spots/helper/constants.dart';
 import 'package:iscte_spots/models/requests/spot_request.dart';
 import 'package:iscte_spots/services/auth/auth_service.dart';
-import 'package:iscte_spots/services/auth/openday_login_service.dart';
+import 'package:iscte_spots/services/auth/login_service.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/services/shared_prefs_service.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -137,7 +137,7 @@ class OpenDayQRScanService {
 
       final response = await request.close();
       if (response.statusCode == 403) {
-        OpenDayLoginService.logOut(context);
+        LoginService.logOut(context);
         return SpotRequest(
             locationPhotoLink: loginError, statusCode: response.statusCode);
       } else if (response.statusCode == 404) {

@@ -2,7 +2,7 @@ name: iscte_spots
 description: Flutter project to support iscte's 50th aniversary.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-version: 1.0.11+0
+version: 1.0.12+15
 
 environment:
   sdk: ">=2.14.0 <3.0.0"
@@ -20,11 +20,11 @@ dependencies:
     sdk: flutter
   intl: ^0.17.0
   logger: ^1.1.0
-  timeline_tile: ^2.0.0
+  #timeline_tile: ^2.0.0
   sqflite: ^2.0.0+4
   #path_provider: ^2.0.7
   #country_icons: ^2.0.2
-  #flutter_svg: ^1.0.0
+  flutter_svg: ^1.0.0
   #image: ^3.1.1
   animated_splash_screen: ^1.2.0
   flutter_native_splash: ^2.1.0
@@ -43,6 +43,8 @@ dependencies:
   url_launcher: ^6.0.12
   youtube_player_iframe: ^4.0.4
   pinch_zoom: ^1.0.0
+  scrollable_positioned_list: ^0.3.5
+  google_fonts: ^3.0.1
   permission_handler: ^10.2.0
 
 dev_dependencies:
@@ -64,3 +66,17 @@ flutter:
     - Resources/Img/TimelineIcons/
     - Resources/Img/LeaderBoardIcons/
     - pubspec.yaml
+
+fonts:
+  - family: Montserrat
+    fonts:
+      - asset: Resources/Fonts/Montserrat/Montserrat-Regular.ttf
+      - asset: Resources/Fonts/Montserrat/Montserrat-Italic.ttf
+      - asset: Resources/Fonts/Montserrat/Montserrat-Bold.ttf
+        weight: 700
+      - asset: Resources/Fonts/Montserrat/Montserrat-BoldItalic.ttf
+        weight: 700
+      - asset: Resources/Fonts/Montserrat/Montserrat-Thin.ttf
+        weight: 100
+      - asset: Resources/Fonts/Montserrat/Montserrat-ThinItalic.ttf
+        weight: 100

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:html/parser.dart' as parser;
 import 'package:http/http.dart' as http;
@@ -18,7 +19,7 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:synchronized/synchronized.dart';
 
 import 'auth/auth_service.dart';
-import 'auth/openday_login_service.dart';
+import 'auth/login_service.dart';
 
 class QRScanService {
   static Future<String> extractData(final String url) async {
@@ -73,7 +74,7 @@ class QRScanService {
 
       final response = await request.close();
       if (response.statusCode == 403) {
-        OpenDayLoginService.logOut(context);
+        LoginService.logOut(context);
         throw LoginException();
       } else if (response.statusCode == 404) {
         throw InvalidQRException();
@@ -124,7 +125,6 @@ class QRScanService {
     final response = await request.close();
 
     if (response.statusCode == 403) {
-      OpenDayLoginService.logOut(context);
       throw LoginException();
     } else if (response.statusCode == 404) {
       throw InvalidQRException();
@@ -138,21 +138,15 @@ class QRScanService {
             responseDecoded["content"] != null) {
           var responseContentList = responseDecoded["content"];
           final List<Content> contentList = [];
-          for (var content in responseContentList) {
-            contentList.add(
-              Content(
-                description: content["title"],
-                link: content["link"],
-                type: contentTypefromString(content["type"]),
-              ),
-            );
+          for (var rawContent in responseContentList) {
+            contentList.add(Content.fromJson(rawContent));
           }
           return TopicRequest(
             title: responseDecoded["title"],
             contentList: contentList,
           );
         }
-        throw Exception("Bad response");
+        throw Exception("Response without title or content keys");
       } on SocketException {
         LoggerService.instance.error("Socket Exception");
         rethrow;

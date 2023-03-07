@@ -19,7 +19,7 @@
     "quizPageTitle":"Quiz",
     "leaderBoardScreen":"Leaderboard",
     "visitedPagesScreen":"Visited Pages",
-    "timelineScreen":"Timeline",
+    "timelineScreen":"Chronology 50 years",
     "timelineDetailsScreen":"Details",
     "puzzleScreen":"Puzzle",
     "quizScreen":"Quizzes",
@@ -74,13 +74,33 @@
 
 
     "timelineSearchResults" : "Search results",
-    "timelineNothingFound" : "Nothing found...",
-    "timelineAvailableTopics" : "Available Topics...",
+    "timelineNothingFound" : "Nothing found!",
+    "timelineAvailableTopics" : "Topics",
     "timelineSelectedTopics" : "Selected Topics",
+    "timelineAvailableScopes" : "Scopes",
+    "timelineSelectedScopes" : "Selected Scopes",
     "timelineSearchHint" : "Search",
     "timelineSearchHintInsideTopic" : "Advanced search",
     "timelineSearchButton" : "Submit",
     "timelineSelectAllButton" : "Select all",
-    "timelineSelectClearButton" : "Clear selection"
+    "timelineSelectClearButton" : "Clear selection",
+
+    "feedbackFormTitle":"Feedback",
+    "feedbackFormNameField":"Name",
+    "feedbackFormEmailField":"E-mail",
+    "feedbackFormDescriptionField":"Description",
+    "feedbackFormGeneralFeedbackDropdownText":"General Feedback",
+    "feedbackFormSubmissionSuccess":"Your feedback was registered!",
+    "feedbackFormSubmissionError":"Error while sending your feedback, please try again later.",
+    "feedbackFormEmailValidation":"Please enter a valid email",
+    "feedbackFormValidation":"Please fill this field",
+    "feedbackFormSubmit":"Submit",
+    "feedbackFormCancel":"Cancel",
+
+    "spotChooserHelpDialogTitle":"Help",
+    "spotChooserHelpDialogContent":"Here you can choose the next \"Spot\" you wish to visit.\n But first you have to complete the puzzle to view the whole picture.",
+    "spotChooserRandomConfirmationTitle":"Choose a random spot",
+    "spotChooserRandomConfirmationButton":"Confirm",
+    "spotChooserRandomConfirmationContent":"Are you sure you want to choose a random \"Spot\"?\n This will replace you current puzzle with a new one.\n Dont worry, your progress is saved if you want to try again later."
 
 }

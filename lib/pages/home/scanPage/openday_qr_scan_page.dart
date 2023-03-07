@@ -8,6 +8,7 @@ import 'package:iscte_spots/models/spot.dart';
 import 'package:iscte_spots/pages/home/scanPage/qr_scan_camera_controls.dart';
 import 'package:iscte_spots/pages/home/scanPage/qr_scan_results.dart';
 import 'package:iscte_spots/services/auth/exceptions.dart';
+import 'package:iscte_spots/services/auth/login_service.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/services/platform_service.dart';
 import 'package:iscte_spots/services/qr_scan_service.dart';
@@ -158,29 +159,35 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
               if (continueScan && spotInfoRequest.id != null) {
                 _lastScan = now;
 
-                Spot spot = (await DatabaseSpotTable.getAllWithIds(
-                        [spotInfoRequest.id!]))
-                    .first;
-                if (!spot.visited) {
-                  spot.visited = true;
-                  await DatabaseSpotTable.update(spot);
+                List<Spot> spots = (await DatabaseSpotTable.getAllWithIds(
+                    [spotInfoRequest.id!]));
+                if (spots.isNotEmpty) {
+                  Spot spot = spots.first;
+                  if (!spot.visited) {
+                    spot.visited = true;
+                    await DatabaseSpotTable.update(spot);
+                  }
                 }
-                Future<TopicRequest> topicRequest = QRScanService.topicRequest(
-                    context: context, topicID: spotInfoRequest.id!);
-                TopicRequest topicRequestCompleted = await topicRequest;
-                LoggerService.instance
-                    .debug("spotInfoRequest: $topicRequestCompleted");
                 if (mounted) {
-                  Navigator.of(context).pushNamed(
-                    QRScanResults.pageRoute,
-                    arguments: topicRequestCompleted.contentList,
-                  );
+                  TopicRequest topicRequestCompleted =
+                      await QRScanService.topicRequest(
+                          context: context, topicID: spotInfoRequest.id!);
+
+                  LoggerService.instance
+                      .debug("spotInfoRequest: $topicRequestCompleted");
+                  if (mounted) {
+                    Navigator.of(context).pushNamed(
+                      QRScanResults.pageRoute,
+                      arguments: topicRequestCompleted.contentList,
+                    );
+                  }
                 }
               }
             }
           }
         } on LoginException {
           LoggerService.instance.error("LoginException");
+          LoginService.logOut(context);
         } on InvalidQRException {
           LoggerService.instance.error("InvalidQRException");
         } catch (e) {

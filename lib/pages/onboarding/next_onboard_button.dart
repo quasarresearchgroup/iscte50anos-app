@@ -2,22 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
+import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 
 class NextOnboardButton extends StatelessWidget {
   NextOnboardButton({
     Key? key,
     required PageController pageController,
     required Function() buildPageIndicator,
-    required this.textStyle,
     required this.changePage,
   })  : _pageController = pageController,
         _buildPageIndicator = buildPageIndicator,
         super(key: key);
 
-  void Function(int page) changePage;
-  final _buildPageIndicator;
+  final void Function(int page) changePage;
+  final Function() _buildPageIndicator;
   final PageController _pageController;
-  final TextStyle textStyle;
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +50,10 @@ class NextOnboardButton extends StatelessWidget {
                   children: <Widget>[
                     Text(
                       AppLocalizations.of(context)!.next,
-                      style: textStyle,
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleLarge
+                          ?.copyWith(color: IscteTheme.iscteColor),
                     ),
                     const SizedBox(width: 10.0),
                     const Icon(
