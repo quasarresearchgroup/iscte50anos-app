@@ -1,14 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:iscte_spots/services/platform_service.dart';
-import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_alert_dialog.dart';
-import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_back_button.dart';
-import 'package:iscte_spots/widgets/my_app_bar.dart';
 
-
-import '../../widgets/dialogs/CustomDialogs.dart';
 import './quiz.dart';
+import '../../widgets/dialogs/CustomDialogs.dart';
 
 //Main for isolated testing
 void main() {
@@ -34,23 +28,27 @@ class _QuizPageState extends State<QuizPage> {
   Widget build(BuildContext context) {
     return WillPopScope(
         onWillPop: () async {
-          showYesNoWarningDialog("Deseja sair do Quiz?", () {
-            Navigator.of(context).pop(); //Exit dialog
-            Navigator.of(context).pop();
-          }, context);
+          showYesNoWarningDialog(
+            context: context,
+            text: AppLocalizations.of(context)!.quizQuit,
+            methodOnYes: () {
+              Navigator.of(context).pop(); //Exit dialog
+              Navigator.of(context).pop();
+            },
+          );
           return false;
         },
         child: Scaffold(
-     /*   appBar: AppBar(
+          /*   appBar: AppBar(
           title: Text(AppLocalizations.of(context)?.quizPageTitle ?? "Quiz"),
         ),*/
-        body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(5.0),
-            child: Quiz(trialNumber: widget.trialNumber, quizNumber: widget.quizNumber)
-          ),
-        ), //Padding
-      )
-    );
+          body: SafeArea(
+            child: Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: Quiz(
+                    trialNumber: widget.trialNumber,
+                    quizNumber: widget.quizNumber)),
+          ), //Padding
+        ));
   }
 }

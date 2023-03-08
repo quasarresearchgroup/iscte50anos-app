@@ -31,10 +31,10 @@ class MyBottomBar extends StatefulWidget {
         label: AppLocalizations.of(context)!.mainMenu,
         //backgroundColor: Theme.of(context).primaryColor,
       ),
-      const BottomNavigationBarItem(
+      BottomNavigationBarItem(
           icon: leaderboardIcon,
           //backgroundColor: Theme.of(context).primaryColor,
-          label: "Rankings"),
+          label: AppLocalizations.of(context)!.leaderBoardScreen),
       BottomNavigationBarItem(
           icon: scanIcon,
           //backgroundColor: Theme.of(context).primaryColor,
@@ -83,9 +83,11 @@ class _MyBottomBarState extends State<MyBottomBar> {
 
   Widget buildLandscape(BuildContext context) {
     return NavigationRail(
+      backgroundColor: Colors.white,
       onDestinationSelected: (index) {
         widget.tabController.animateTo(index);
       },
+      selectedIconTheme: Theme.of(context).iconTheme,
       selectedIndex: widget.tabController.index,
       destinations: <NavigationRailDestination>[
         NavigationRailDestination(

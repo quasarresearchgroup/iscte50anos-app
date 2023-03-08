@@ -39,11 +39,11 @@ class DynamicErrorWidget extends StatelessWidget {
                   style: Theme.of(context).textTheme.bodyLarge),
             ),
             if (onRefresh != null)
-              const Padding(
-                padding: EdgeInsets.all(5.0),
+              Padding(
+                padding: const EdgeInsets.all(5.0),
                 child: Text(
-                  'Tocar aqui para recarregar', //TODO
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                  AppLocalizations.of(context)!.errorTouchToRefresh,
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
               ),
           ],

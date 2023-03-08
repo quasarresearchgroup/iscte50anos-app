@@ -167,12 +167,11 @@ class _TimelineFilterPageState extends State<TimelineFilterPage> {
                   child:
                       Text(AppLocalizations.of(context)!.timelineSearchButton),
                 ),
-                const DynamicTextButton(
+                DynamicTextButton(
                   style: IscteTheme.greyColor,
                   onPressed: TimelineState.clearFilter,
                   child: Text(
-                    "Clear",
-                    // TODO
+                    AppLocalizations.of(context)!.timelineSelectClearButton,
                     style: TextStyle(color: Colors.black),
                   ),
                 ),
@@ -251,7 +250,8 @@ class _TimelineFilterPageState extends State<TimelineFilterPage> {
                           child: Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              "Selected Scopes", //TODO
+                              AppLocalizations.of(context)!
+                                  .timelineSelectedScopes,
                               style: Theme.of(context)
                                   .textTheme
                                   .titleLarge
@@ -315,7 +315,7 @@ class _TimelineFilterPageState extends State<TimelineFilterPage> {
       title: DynamicTextField(
         style: titleStyle,
         controller: searchBarController,
-        placeholder: "Pesquise aqui", // TODO
+        placeholder: AppLocalizations.of(context)!.timelineSearchHint,
         placeholderStyle: titleStyle,
       ),
     );

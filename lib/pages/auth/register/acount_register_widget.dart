@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/pages/auth/register/registration_error.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 
@@ -54,13 +55,14 @@ class _AccountRegisterFormState extends State<AccountRegisterForm> {
         textAlignVertical: TextAlignVertical.top,
         textInputAction: TextInputAction.next,
         decoration: IscteTheme.buildInputDecoration(
-            hint: "username", //TODO
+            hint: AppLocalizations.of(context)!.loginUsername,
             errorText: (widget.errorCode == RegistrationError.existingUsername)
-                ? 'Username already exists' //TODO
+                ? AppLocalizations.of(context)!
+                    .registrationUsernameAlreadyExistsError
                 : null),
         validator: (value) {
           if (value == null || value.isEmpty) {
-            return 'Please enter some text'; //TODO
+            return AppLocalizations.of(context)!.loginNoTextError;
           }
           return null;
         },
@@ -70,10 +72,11 @@ class _AccountRegisterFormState extends State<AccountRegisterForm> {
         controller: widget.nameController,
         textAlignVertical: TextAlignVertical.top,
         textInputAction: TextInputAction.next,
-        decoration: IscteTheme.buildInputDecoration(hint: "name"), //TODO
+        decoration: IscteTheme.buildInputDecoration(
+            hint: AppLocalizations.of(context)!.registrationName),
         validator: (value) {
           if (value == null || value.isEmpty) {
-            return 'Please enter some text'; //TODO
+            return AppLocalizations.of(context)!.loginNoTextError;
           }
           return null;
         },
@@ -83,10 +86,11 @@ class _AccountRegisterFormState extends State<AccountRegisterForm> {
         controller: widget.lastNameController,
         textAlignVertical: TextAlignVertical.top,
         textInputAction: TextInputAction.next,
-        decoration: IscteTheme.buildInputDecoration(hint: "last name"), //TODO
+        decoration: IscteTheme.buildInputDecoration(
+            hint: AppLocalizations.of(context)!.registrationLastName),
         validator: (value) {
           if (value == null || value.isEmpty) {
-            return 'Please enter some text'; //TODO
+            return AppLocalizations.of(context)!.loginNoTextError;
           }
           return null;
         },
@@ -97,18 +101,19 @@ class _AccountRegisterFormState extends State<AccountRegisterForm> {
         textAlignVertical: TextAlignVertical.top,
         textInputAction: TextInputAction.next,
         decoration: IscteTheme.buildInputDecoration(
-            hint: "email", //TODO
+            hint: AppLocalizations.of(context)!.registrationEmail,
             errorText: (widget.errorCode == RegistrationError.existingEmail)
-                ? 'Email already exists' //TODO
+                ? AppLocalizations.of(context)!
+                    .registrationEmailAlreadyExistsError
                 : null),
         validator: (value) {
           if (value == null || value.isEmpty) {
-            return 'Please enter some text'; //TODO
+            return AppLocalizations.of(context)!.loginNoTextError;
           } else if (!RegExp(r"\S+[@]\S+\.\S+").hasMatch(value) ||
               widget.errorCode == RegistrationError.invalidEmail) {
             //RegExp Explanation (checks for @ followed by any number of non whitespace character followed by a dot "." and then followed by any number of non whitespace characters)
             //https://regex101.com/r/TZDJmb/1
-            return 'Please enter a valid email'; //TODO
+            return AppLocalizations.of(context)!.loginNoTextError;
           }
           return null;
         },
@@ -120,9 +125,9 @@ class _AccountRegisterFormState extends State<AccountRegisterForm> {
         textAlignVertical: TextAlignVertical.center,
         textInputAction: TextInputAction.next,
         decoration: IscteTheme.buildInputDecoration(
-            hint: "password", //TODO
+            hint: AppLocalizations.of(context)!.registrationPassword,
             errorText: (widget.errorCode == RegistrationError.passwordNotMatch)
-                ? 'Passwords must match' //TODO
+                ? AppLocalizations.of(context)!.registrationPasswordMustMatch
                 : null,
             suffixIcon: IconButton(
               onPressed: () {
@@ -140,7 +145,7 @@ class _AccountRegisterFormState extends State<AccountRegisterForm> {
             )),
         validator: (value) {
           if (value == null || value.isEmpty) {
-            return 'Please enter some text'; //TODO
+            return AppLocalizations.of(context)!.loginNoTextError;
           }
           return null;
         },
@@ -152,9 +157,9 @@ class _AccountRegisterFormState extends State<AccountRegisterForm> {
         textInputAction: TextInputAction.done,
         textAlignVertical: TextAlignVertical.center,
         decoration: IscteTheme.buildInputDecoration(
-            hint: "confirm password", //TODO
+            hint: AppLocalizations.of(context)!.registrationConfirmPassword,
             errorText: (widget.errorCode == RegistrationError.passwordNotMatch)
-                ? 'Passwords must match' //TODO
+                ? AppLocalizations.of(context)!.registrationPasswordMustMatch
                 : null,
             suffixIcon: InkWell(
               onTap: () {
@@ -177,9 +182,9 @@ class _AccountRegisterFormState extends State<AccountRegisterForm> {
             )),
         validator: (value) {
           if (value == null || value.isEmpty) {
-            return 'Please enter some text'; //TODO
+            return AppLocalizations.of(context)!.loginNoTextError;
           } else if (value != widget.passwordController.text) {
-            return 'Passwords must match'; //TODO
+            return AppLocalizations.of(context)!.registrationPasswordMustMatch;
           }
           return null;
         },

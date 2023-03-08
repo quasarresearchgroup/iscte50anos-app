@@ -150,6 +150,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       valueListenable: _currentSpotNotifier,
                       builder: (context, value, _) {
                         return NavigationRail(
+                          backgroundColor: Colors.white,
+                          selectedIconTheme: Theme.of(context).iconTheme,
                           onDestinationSelected: (index) {
                             if (index == 0) {
                               Scaffold.of(context).openDrawer();
@@ -165,15 +167,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             }
                           },
                           selectedIndex: 0,
-                          destinations: const <NavigationRailDestination>[
+                          destinations: <NavigationRailDestination>[
                             NavigationRailDestination(
-                              icon: Icon(Icons.menu),
-                              selectedIcon: Icon(Icons.menu),
-                              label: Text('Drawer'), //TODO
+                              icon: const Icon(Icons.menu),
+                              selectedIcon: const Icon(Icons.menu),
+                              label: Text(AppLocalizations.of(context)!.menu),
                             ),
                             NavigationRailDestination(
-                              icon: Icon(Icons.help),
-                              label: Text('Help'), //TODO
+                              icon: const Icon(Icons.question_mark),
+                              label: Text(AppLocalizations.of(context)!.help),
                             ),
                           ],
                         );
@@ -197,7 +199,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     return orientation == Orientation.landscape
         ? null
         : MyAppBar(
-            title: "Puzzle", //TODO
+            title: AppLocalizations.of(context)!.puzzleScreen,
             leading: Row(
               children: [
                 Builder(builder: (context) {
@@ -237,31 +239,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           onPressed: () => showHelpOverlay(
                               context, Image.network(imgLink), orientation),
                         );
-                        /*  if (!PlatformService.instance.isIos) {
-                          return IconButton(
-                            icon: const Icon(Icons.help),
-                            onPressed: () => showHelpOverlay(
-                                context, Image.network(imgLink), orientation),
-                          );
-                        } else {
-                          return CupertinoButton(
-                            onPressed: () => showHelpOverlay(
-                                context, Image.network(imgLink), orientation),
-                            padding: EdgeInsets.zero,
-                            child: const Icon(
-                              CupertinoIcons.question_circle,
-                              color: IscteTheme.iscteColor,
-                            ),
-                          );
-                        }*/
                       } else {
                         return DynamicIconButton(
-                            child: const Icon(
-                              SpotChooserPage.icon,
-                              color: IscteTheme.iscteColor,
-                            ),
-                            onPressed: () => Navigator.of(context)
-                                .pushNamed(SpotChooserPage.pageRoute));
+                          child: const Icon(
+                            SpotChooserPage.icon,
+                            color: IscteTheme.iscteColor,
+                          ),
+                          onPressed: () => Navigator.of(context)
+                              .pushNamed(SpotChooserPage.pageRoute),
+                        );
                       }
                     },
                   ),
@@ -329,7 +315,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                         .titleLarge
                                         ?.copyWith(
                                           color: IscteTheme.iscteColor,
-                                        )), //TODO
+                                        )),
                                 onPressed: () => Navigator.of(context)
                                     .pushNamed(SpotChooserPage.pageRoute))
                           ],
@@ -340,38 +326,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               IscteConfetti(confettiController: _confettiController)
             ],
           )),
-    );
-  }
-
-  GestureDetector buildErrorWidget() {
-    return GestureDetector(
-      onTap: () {
-        //rerfeshPermit();
-      },
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: const [
-            Icon(
-              Icons.error_outline,
-              color: Colors.red,
-              size: 60,
-            ),
-            Padding(
-              padding: EdgeInsets.only(top: 10),
-              child: Text('Ocorreu um erro a descarregar os dados'), //TODO
-            ),
-            Padding(
-              padding: EdgeInsets.all(5.0),
-              child: Text(
-                'Tocar aqui para recarregar', //TODO
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-            )
-          ],
-        ),
-      ),
     );
   }
 }

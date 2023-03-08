@@ -20,9 +20,9 @@ class TimelineState {
             Future(() => EventScope.values)),
         _selectedYear = SharedPrefsService().currentTimelineYearNotifier,
         _eventsList = ValueNotifier<Future<List<Event>>>(
-            TimelineEventService.fetchEventsFromYear(
-                year: SharedPrefsService().currentTimelineYearNotifier.value ??
-                    1)),
+          TimelineEventService.fetchEventsFromYear(
+              year: SharedPrefsService().currentTimelineYearNotifier.value),
+        ),
         _currentTimelineFilterParams =
             SharedPrefsService().currentTimelineFilterNotifier;
 
