@@ -31,10 +31,10 @@ class MyBottomBar extends StatefulWidget {
         label: AppLocalizations.of(context)!.mainMenu,
         //backgroundColor: Theme.of(context).primaryColor,
       ),
-      const BottomNavigationBarItem(
+      BottomNavigationBarItem(
           icon: leaderboardIcon,
           //backgroundColor: Theme.of(context).primaryColor,
-          label: "Rankings"), //TODO
+          label: AppLocalizations.of(context)!.leaderBoardScreen),
       BottomNavigationBarItem(
           icon: scanIcon,
           //backgroundColor: Theme.of(context).primaryColor,

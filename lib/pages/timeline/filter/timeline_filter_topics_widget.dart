@@ -97,13 +97,14 @@ class TopicsFilterWidget extends StatelessWidget {
         return ValueListenableBuilder<TimelineFilterParams>(
           valueListenable: TimelineState.currentTimelineFilterParams,
           builder: (context, currentTimelineFilter, child) => CheckboxListTile(
-            //activeColor: IscteTheme.iscteColor,
             value: TimelineState.currentTimelineFilterParams.value
                 .containsTopic(data[index]),
             title: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Text(
-                data[index].title ?? "No Title", //TODO
+                data[index].title ??
+                    AppLocalizations.of(context)!
+                        .timelineFilterTopicNoTitleError,
                 style: textStyle,
               ),
             ),

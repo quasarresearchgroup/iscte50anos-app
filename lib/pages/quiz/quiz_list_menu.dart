@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:iscte_spots/pages/quiz/quiz_page.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_back_button.dart';
@@ -34,8 +35,8 @@ class QuizMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyAppBar(
-        title: "Quiz", //AppLocalizations.of(context)!.quizPageTitle)
-        leading: DynamicBackIconButton(),
+        title: AppLocalizations.of(context)!.quizPageTitle,
+        leading: const DynamicBackIconButton(),
       ),
       body: NotificationListener<OverscrollIndicatorNotification>(
         onNotification: (overscroll) {
@@ -102,9 +103,9 @@ class _QuizListState extends State<QuizList> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
-              children: const <Widget>[
-                Text('Gerando Quiz... Aguarde'), //TODO
-                Padding(
+              children: <Widget>[
+                Text(AppLocalizations.of(context)!.quizGenerating),
+                const Padding(
                   padding: EdgeInsets.all(10.0),
                   child: SizedBox(
                     width: 60,
@@ -117,13 +118,14 @@ class _QuizListState extends State<QuizList> {
           )
         : Column(
             children: [
-              const SizedBox(
+              SizedBox(
                 // Container to hold the description
                 height: 50,
                 child: Center(
-                  child: Text("Quizzes disponíveis",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                  child: Text(
+                    AppLocalizations.of(context)!.quizAvailable,
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
                 ),
               ),
               Expanded(
@@ -142,9 +144,10 @@ class _QuizListState extends State<QuizList> {
                           });
                         },
                         child: items.isEmpty
-                            ? const Center(
-                                child: Text(
-                                    "Não existem Quizzes disponíveis de momento")) //TODO
+                            ? Center(
+                                child: Text(AppLocalizations.of(context)!
+                                    .quizNoneAvailable),
+                              )
                             : ListView.builder(
                                 //shrinkWrap: true,
                                 physics: const AlwaysScrollableScrollPhysics(),
@@ -163,8 +166,8 @@ class _QuizListState extends State<QuizList> {
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: 16)),
                                         subtitle: Text(
-                                            "Pontos: ${items[index]["score"]} \nTentativas: ${items[index]["num_trials"]}" //TODO
-                                            "\nTopicos: ${items[index]["topic_names"]}"),
+                                            "${AppLocalizations.of(context)!.quizPoints}: ${items[index]["score"]} \n${AppLocalizations.of(context)!.quizAttempts}: ${items[index]["num_trials"]}"
+                                            "\n${AppLocalizations.of(context)!.quizTopics}: ${items[index]["topic_names"]}"),
                                         children: [
                                           QuizDetail(
                                               startQuiz: () {
@@ -248,7 +251,8 @@ class QuizDetail extends StatelessWidget {
                 return Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("Tentativa ${trial["number"]}"), //TODO
+                    Text(
+                        "${AppLocalizations.of(context)!.quizAttempt}: ${trial["number"]}"),
                     const SizedBox(
                       height: 5,
                     ),
@@ -256,30 +260,34 @@ class QuizDetail extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           Text(
-                              "Pontos: ${trial["is_completed"] ? trial["score"] : "-"}"), //TODO
+                              "${AppLocalizations.of(context)!.quizPoints}: ${trial["is_completed"] ? trial["score"] : "-"}"),
                           Text(
-                              "Progresso: ${trial["progress"]}/${trial["quiz_size"]}"), //TODO
+                              "${AppLocalizations.of(context)!.quizProgress}: ${trial["progress"]}/${trial["quiz_size"]}"),
                         ]),
                     const SizedBox(
                       height: 5,
                     ),
                     if (!trial["is_completed"])
                       ElevatedButton(
-                          onPressed: () => showYesNoWarningDialog(
-                                  "Deseja continuar esta tentativa de quiz?", //TODO
-                                  () {
-                                Navigator.of(context).pop();
-                                Navigator.of(context)
-                                    .push(MaterialPageRoute(
-                                        builder: (context) => QuizPage(
-                                              quizNumber: quiz["number"],
-                                              trialNumber: trial["number"],
-                                            )))
-                                    .then((value) {
-                                  returnToQuizList();
-                                });
-                              }, context),
-                          child: const Text("Continuar")), //TODO
+                        onPressed: () => showYesNoWarningDialog(
+                          context: context,
+                          text:
+                              AppLocalizations.of(context)!.quizContinueAttempt,
+                          methodOnYes: () {
+                            Navigator.of(context).pop();
+                            Navigator.of(context)
+                                .push(MaterialPageRoute(
+                                    builder: (context) => QuizPage(
+                                          quizNumber: quiz["number"],
+                                          trialNumber: trial["number"],
+                                        )))
+                                .then((value) {
+                              returnToQuizList();
+                            });
+                          },
+                        ),
+                        child: Text(AppLocalizations.of(context)!.quizContinue),
+                      ),
                     const Divider(
                       thickness: 2,
                     ),
@@ -288,14 +296,15 @@ class QuizDetail extends StatelessWidget {
               }),
           if (quiz["num_trials"] < MAX_TRIALS)
             ElevatedButton(
-                onPressed: () {
-                  showYesNoWarningDialog(
-                      "Deseja iniciar uma tentativa de Quiz? " //TODO
-                      "(Certifique-se que tem uma ligação de Internet estável)", //TODO
-                      startQuiz,
-                      context);
-                },
-                child: const Text("Iniciar nova tentativa")) //TODO
+              onPressed: () {
+                showYesNoWarningDialog(
+                  context: context,
+                  text: AppLocalizations.of(context)!.quizBeginAttemptWarning,
+                  methodOnYes: startQuiz,
+                );
+              },
+              child: Text(AppLocalizations.of(context)!.quizBeginAttempt),
+            )
         ],
       ),
     );

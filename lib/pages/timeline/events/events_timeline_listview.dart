@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/models/timeline/event.dart';
 import 'package:iscte_spots/pages/timeline/events/timeline_tile.dart';
 import 'package:iscte_spots/pages/timeline/web_scroll_behaviour.dart';
@@ -90,8 +91,8 @@ class _EventTimelineListViewBuilderState
                     );
                   });
             } else {
-              return const Center(
-                child: Text("No data"), //TODO
+              return Center(
+                child: Text(AppLocalizations.of(context)!.timelineEventNoData),
               );
             }
           } else {

@@ -2,10 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/services/platform_service.dart';
 import 'package:iscte_spots/services/quiz/quiz_service.dart';
 import 'package:iscte_spots/widgets/dialogs/CustomDialogs.dart';
+import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_text_button.dart';
 import 'package:iscte_spots/widgets/network/error.dart';
 import 'package:pinch_zoom/pinch_zoom.dart';
 
@@ -117,8 +119,7 @@ class _QuizState extends State<Quiz> {
         } else {
           selectedAnswerIds.add(answer);
         }
-        LoggerService.instance
-            .info("Selected answers:" + selectedAnswerIds.toString());
+        LoggerService.instance.info("Selected answers:$selectedAnswerIds");
       } else {
         if (selectedAnswerIds.isEmpty) {
           selectedAnswerIds.add(answer);
@@ -150,40 +151,33 @@ class _QuizState extends State<Quiz> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                        "Pontuação da tentativa: ${response["trial_score"]}"), //TODO
-                    (PlatformService.instance.isIos)
-                        ? CupertinoButton(
-                            child: const Text("Voltar"), //TODO
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            })
-                        : ElevatedButton(
-                            child: const Text("Voltar"), //TODO
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                          )
+                        "${AppLocalizations.of(context)!.quizPointsOfTrial}: ${response["trial_score"]}"),
+                    DynamicTextButton(
+                        onPressed: Navigator.of(context).pop,
+                        child: Text(AppLocalizations.of(context)!.back)),
                   ],
                 ),
               );
             }
             Map trialQuestion = response;
-            Map question = trialQuestion["question"]; //TODO
+            Map question = trialQuestion["question"];
 
             return Column(
               children: [
-                Text("Pergunta ${trialQuestion["number"]}/8"), //TODO
+                Text(
+                    "${AppLocalizations.of(context)!.quizQuestion} ${trialQuestion["number"]}/8"),
                 const SizedBox(height: 5),
                 isTimed
                     ? Padding(
                         padding: const EdgeInsets.only(left: 10.0, right: 10.0),
                         child: LinearProgressIndicator(
                           value: getTimePercentage(),
-                          semanticsLabel: 'Linear progress indicator', //TODO
+                          semanticsLabel: 'Linear progress indicator',
                         ),
                       )
-                    : const Text(
-                        "Explorar o Campus (Pergunta sem tempo)"), //TODO
+                    : Text(
+                        AppLocalizations.of(context)!.quizGeoQuestion,
+                      ),
                 Question(
                   question['text'].toString(),
                 ), //Question
@@ -208,7 +202,10 @@ class _QuizState extends State<Quiz> {
                     (PlatformService.instance.isIos)
                         ? CupertinoButton(
                             child: Text(
-                                submitted ? "Submetido" : "Submeter"), //TODO
+                              submitted
+                                  ? AppLocalizations.of(context)!.submitted
+                                  : AppLocalizations.of(context)!.submit,
+                            ),
                             onPressed: () {
                               submitAnswer(trialQuestion["number"]);
                             })
@@ -222,62 +219,49 @@ class _QuizState extends State<Quiz> {
                                     submitAnswer(trialQuestion["number"]);
                                   },
                             child: submitted
-                                ? const Text("Submetido") //TODO
+                                ? Text(AppLocalizations.of(context)!.submitted)
                                 : submitting
                                     ? const SizedBox(
+                                        width: 10,
+                                        height: 10,
                                         child:
                                             CircularProgressIndicator.adaptive(
                                                 strokeWidth: 2),
-                                        width: 10,
-                                        height: 10)
-                                    : const Text("Submeter"),
+                                      )
+                                    : Text(
+                                        AppLocalizations.of(context)!.submit,
+                                      ),
                           ),
                     const SizedBox(width: 10),
                     // ----- Next button -----
-                    (PlatformService.instance.isIos)
-                        ? CupertinoButton(
-                            onPressed: !submitted && !isTimed
-                                ? null
-                                : countdown > 0 && !submitted
-                                    ? () {
+                    DynamicTextButton(
+                      onPressed: !submitted && !isTimed
+                          ? null
+                          : countdown > 0 && !submitted
+                              ? () {
+                                  setState(() {
+                                    showYesNoWarningDialog(
+                                      context: context,
+                                      text: AppLocalizations.of(context)!
+                                          .quizProgressNoAnswer,
+                                      methodOnYes: () {
                                         setState(() {
-                                          showYesNoWarningDialog(
-                                              "Deseja avançar sem responder?", //TODO
-                                              () {
-                                            setState(() {
-                                              Navigator.of(context).pop();
-                                              futureQuestion =
-                                                  getNextQuestion();
-                                            });
-                                          }, context);
-                                        });
-                                      }
-                                    : () => setState(() {
+                                          Navigator.of(context).pop();
                                           futureQuestion = getNextQuestion();
-                                        }),
-                            child: Text("Seguinte"))
-                        : ElevatedButton(
-                            onPressed: !submitted && !isTimed
-                                ? null
-                                : countdown > 0 && !submitted
-                                    ? () {
-                                        setState(() {
-                                          showYesNoWarningDialog(
-                                              "Deseja avançar sem responder?", //TODO
-                                              () {
-                                            setState(() {
-                                              Navigator.of(context).pop();
-                                              futureQuestion =
-                                                  getNextQuestion();
-                                            });
-                                          }, context);
                                         });
-                                      }
-                                    : () => setState(() {
-                                          futureQuestion = getNextQuestion();
-                                        }),
-                            child: const Text("Seguinte"), //TODO
-                          )
+                                      },
+                                    );
+                                  });
+                                }
+                              : () => setState(
+                                    () {
+                                      futureQuestion = getNextQuestion();
+                                    },
+                                  ),
+                      child: Text(
+                        AppLocalizations.of(context)!.quizNext,
+                      ),
+                    ),
                   ],
                 )
               ],

@@ -12,6 +12,11 @@
     "close":"Fechar",
     "help":"Ajuda",
     "menu":"Menu",
+    "submit":"Submit",
+    "submitted":"Submitted",
+    "no":"Não",
+    "yes":"Sim",
+    "warningTitle":"Aviso",
 
     "generalError":"Erro",
     "errorTouchToRefresh":"Toca aqui para recarregar!",
@@ -23,7 +28,7 @@
 
     "mainMenu": "Puzzle",
     "quizPageTitle":"Quiz",
-    "leaderBoardScreen":"Ranking",
+    "leaderBoardScreen":"Rankings",
     "visitedPagesScreen":"Páginas Visitadas",
     "timelineScreen":"Cronologia 50 anos",
     "timelineDetailsScreen":"Detalhes",
@@ -96,6 +101,7 @@
     "qrScanPermissionText": "Precisamos de permissões para aceder à camera, para poder detetar e fazer o scan dos códigos qr",
     "qrScanPermissionButton": "Permitir",
 
+    "timelineSearchHint" : "Pesquise aqui",
     "timelineSearchResults" : "Resultados da pesquisa",
     "timelineNothingFound" : "Nada encontrado!",
     "timelineAvailableTopics" : "Tópicos",
@@ -107,6 +113,8 @@
     "timelineSearchButton" : "Submeter",
     "timelineSelectAllButton" : "Escolher tudo",
     "timelineSelectClearButton" : "Limpar seleção",
+    "timelineEventNoData" : "Sem Informação",
+    "timelineFilterTopicNoTitleError" : "Sem título",
 
     "feedbackFormTitle":"Sugestão",
     "feedbackFormNameField":"Nome",
@@ -126,6 +134,28 @@
     "spotChooserRandomConfirmationContent":"Tens a certeza que queres escolher um \"Spot\" aleatório?\n Esta ação vai substituir o teu puzzle atual por um novo.\n Não te preocupes, o teu progresso é armazenado se quiseres voltar a tentar mais tarde.",
     "spotChooserNotSpotsStored":"Não temos spots armazenados!",
 
-    "settingsViewLicences":"Ver licenças"
+    "settingsViewLicences":"Ver licenças",
+
+    "quizPointsOfTrial":"Pontuação da tentativa:",
+    "quizGeoQuestion":"Explorar o Campus (Pergunta sem limite de tempo):",
+    "quizQuestion":"Pergunta",
+    "quizProgress":"Progresso",
+    "quizProgressNoAnswer":"Deseja avançar sem responder?",
+    "quizNext":"Seguinte",
+    "quizGenerating":"A gerando o seu quiz, por favor aguarde",
+    "quizAvailable":"Quizzes disponíveis",
+    "quizNoneAvailable":"Não existem Quizzes disponíveis de momento",
+    "quizContinueAttempt":"Deseja continuar esta tentativa de quiz?",
+
+    "quizPoints":"Pontos",
+    "quizAttempts":"Tentativas",
+    "quizAttempt":"Tentativa",
+    "quizTopics":"Tópicos",
+    "quizProgress":"Progresso",
+    "quizContinue":"Continuar",
+    "quizBeginAttemptWarning":"Continue",
+    "quizBeginAttemptWarning":"Deseja iniciar uma tentativa de Quiz?\n(Certifique-se que tem uma ligação de Internet estável)",
+    "quizBeginAttempt":"Iniciar nova tentativa",
+    "quizQuit":"Deseja sair do Quiz?"
 
 }
