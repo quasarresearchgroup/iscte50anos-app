@@ -7,6 +7,7 @@ import 'package:iscte_spots/services/auth/registration_service.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_text_button.dart';
 import 'package:iscte_spots/widgets/network/error.dart';
+import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:lottie/lottie.dart';
 
@@ -74,8 +75,17 @@ class _RegisterPageState extends State<RegisterPage>
         });
       }
     } else if (isSecondStep) {
-      if (_schoolFormkey.currentState!.validate() &&
-          _accountFormkey.currentState!.validate()) {
+      String? affiliationType;
+      String? affiliationName;
+      if (_schoolFormkey.currentState == null) {
+        affiliationType = null;
+        affiliationName = null;
+      } else if (_schoolFormkey.currentState!.validate()) {
+        affiliationType = chosenaffiliationType.value;
+        affiliationName = chosenAffiliationName.value;
+      }
+
+      if (_accountFormkey.currentState!.validate()) {
         var registrationFormResult = RegistrationFormResult(
           username: userNameController.text,
           firstName: nameController.text,
@@ -83,8 +93,8 @@ class _RegisterPageState extends State<RegisterPage>
           email: emailController.text,
           password: passwordController.text,
           passwordConfirmation: passwordConfirmationController.text,
-          affiliationType: chosenaffiliationType.value,
-          affiliationName: chosenAffiliationName.value,
+          affiliationType: affiliationType,
+          affiliationName: affiliationName,
         );
         /*
       var registrationFormResult = RegistrationFormResult(
@@ -176,47 +186,59 @@ class _RegisterPageState extends State<RegisterPage>
                     children: [
                       Flexible(
                         flex: 9,
-                        child: Stepper(
-                          type: StepperType.vertical,
-                          currentStep: _curentStep,
-                          onStepContinue: _onStepContinue,
-                          onStepCancel: _onStepCancel,
-                          controlsBuilder:
-                              (BuildContext context, ControlsDetails details) {
-                            final bool isLastStep =
-                                _curentStep == getSteps().length - 1;
-                            final bool isFirst = _curentStep == 0;
+                        child: Theme(
+                          data: ThemeData(
+                            colorScheme: Theme.of(context)
+                                .colorScheme
+                                .copyWith(primary: IscteTheme.iscteColor),
+                          ),
+                          child: Stepper(
+                            type: StepperType.vertical,
+                            currentStep: _curentStep,
+                            onStepContinue: _onStepContinue,
+                            onStepCancel: _onStepCancel,
+                            controlsBuilder: (BuildContext context,
+                                ControlsDetails details) {
+                              final bool isLastStep =
+                                  _curentStep == getSteps().length - 1;
+                              final bool isFirst = _curentStep == 0;
 
-                            return Container(
-                              margin: const EdgeInsets.only(top: 30),
-                              child: Column(
-                                children: [
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        child: ElevatedButton(
-                                          onPressed: _onStepContinue,
-                                          child: Text(
-                                            isLastStep ? "CONFIRM" : "NEXT",
+                              return Container(
+                                margin: const EdgeInsets.only(top: 30),
+                                child: Column(
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: ElevatedButton(
+                                            onPressed: _onStepContinue,
+                                            child: Text(isLastStep
+                                                ? AppLocalizations.of(context)!
+                                                    .confirm
+                                                : AppLocalizations.of(context)!
+                                                    .next),
                                           ),
                                         ),
-                                      ),
-                                      const SizedBox(width: 12),
-                                      isFirst
-                                          ? Container()
-                                          : Expanded(
-                                              child: ElevatedButton(
-                                                onPressed: _onStepCancel,
-                                                child: const Text("BACK"),
+                                        const SizedBox(width: 12),
+                                        isFirst
+                                            ? Container()
+                                            : Expanded(
+                                                child: ElevatedButton(
+                                                  onPressed: _onStepCancel,
+                                                  child: Text(
+                                                      AppLocalizations.of(
+                                                              context)!
+                                                          .back),
+                                                ),
                                               ),
-                                            ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                          steps: getSteps(),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                            steps: getSteps(),
+                          ),
                         ),
                       ),
                       Flexible(

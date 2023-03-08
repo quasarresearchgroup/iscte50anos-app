@@ -8,17 +8,17 @@ import 'package:iscte_spots/pages/auth/register/registration_error.dart';
 import 'package:iscte_spots/services/auth/auth_service.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
 
-
 class RegistrationService {
-  static const String AfiliationsFile = 'Resources/openday_affiliations.json';
+  static const String AfiliationsFile =
+      'Resources/Affiliations/openday_affiliations.json';
 
   static Future<Map<String, dynamic>> getSchoolAffiliations() async {
     await Future.delayed(Duration(seconds: 1));
 
     try {
       final String file = await rootBundle.loadString(AfiliationsFile);
-      var jsonText =
-          await rootBundle.loadString('Resources/openday_affiliations.json');
+      var jsonText = await rootBundle
+          .loadString('Resources/Affiliations/openday_affiliations.json');
       Map<String, dynamic> affiliationMap =
           json.decode(utf8.decode(jsonText.codeUnits));
       return affiliationMap;
@@ -45,46 +45,53 @@ class RegistrationService {
 
   static Future<RegistrationError> registerNewUser(
       RegistrationFormResult registrationFormResult) async {
-    LoggerService.instance.debug("registering new User:\n$registrationFormResult");
+    try {
+      LoggerService.instance
+          .debug("registering new User:\n$registrationFormResult");
 
-    HttpClient client = HttpClient();
-    client.badCertificateCallback =
-        ((X509Certificate cert, String host, int port) => true);
+      HttpClient client = HttpClient();
+      client.badCertificateCallback =
+          ((X509Certificate cert, String host, int port) => true);
 
-    final HttpClientRequest request = await client
-        .postUrl(Uri.parse('${BackEndConstants.API_ADDRESS}/api/auth/signup'));
+      final HttpClientRequest request = await client.postUrl(
+          Uri.parse('${BackEndConstants.API_ADDRESS}/api/auth/signup'));
 
-    request.headers.set('content-type', 'application/json');
-    request.add(utf8.encode(json.encode(registrationFormResult.toMap())));
+      request.headers.set('content-type', 'application/json');
+      request.add(utf8.encode(json.encode(registrationFormResult.toMap())));
 
-    HttpClientResponse response = await request.close();
-    LoggerService.instance.debug("response: $response");
-    LoggerService.instance.debug("statusCode: ${response.statusCode}");
-    var decodedResponse =
-        await jsonDecode(await response.transform(utf8.decoder).join());
-    LoggerService.instance.debug("response: $decodedResponse");
+      HttpClientResponse response = await request.close();
+      LoggerService.instance.debug("response: $response");
+      LoggerService.instance.debug("statusCode: ${response.statusCode}");
+      var decodedResponse =
+          await jsonDecode(await response.transform(utf8.decoder).join());
+      LoggerService.instance.debug("response: $decodedResponse");
 
-    RegistrationError responseRegistrationError;
-    if (decodedResponse["code"] != null) {
-      int responseErrorCode = decodedResponse["code"];
-      responseRegistrationError =
-          RegistrationErrorExtension.registrationErrorConstructor(
-              responseErrorCode);
-    } else {
-      String responseApiToken = decodedResponse["api_token"];
-      LoggerService.instance.debug("Created new user with token: $responseApiToken");
+      RegistrationError responseRegistrationError;
+      if (decodedResponse["code"] != null) {
+        int responseErrorCode = decodedResponse["code"];
+        responseRegistrationError =
+            RegistrationErrorExtension.registrationErrorConstructor(
+                responseErrorCode);
+      } else {
+        String responseApiToken = decodedResponse["api_token"];
+        LoggerService.instance
+            .debug("Created new user with token: $responseApiToken");
 
-      AuthService.storeLogInCredenials(
-        username: registrationFormResult.username,
-        password: registrationFormResult.password,
-        apiKey: responseApiToken,
-      );
-      responseRegistrationError = RegistrationError.noError;
+        AuthService.storeLogInCredenials(
+          username: registrationFormResult.username,
+          password: registrationFormResult.password,
+          apiKey: responseApiToken,
+        );
+        responseRegistrationError = RegistrationError.noError;
+      }
+      client.close();
+
+      LoggerService.instance.debug(
+          "response error code: $responseRegistrationError ; code: ${responseRegistrationError.code}");
+      return responseRegistrationError;
+    } catch (e) {
+      LoggerService.instance.error(e);
+      return RegistrationError.generalError;
     }
-    client.close();
-
-    LoggerService.instance.debug(
-        "response error code: $responseRegistrationError ; code: ${responseRegistrationError.code}");
-    return responseRegistrationError;
   }
 }
