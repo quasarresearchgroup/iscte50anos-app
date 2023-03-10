@@ -5,6 +5,7 @@ import 'package:iscte_spots/helper/constants.dart';
 import 'package:iscte_spots/pages/leaderboard/leaderboard_screen.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:iscte_spots/services/auth/auth_storage_service.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
 
 import '../../pages/leaderboard/leaderboard_screen.dart';
@@ -19,7 +20,7 @@ class QuizService {
 
   static Future<List<dynamic>> getQuizList() async {
     try {
-      String? apiToken = await secureStorage.read(key: "backend_api_key");
+      String? apiToken = await secureStorage.read(key: LoginStorageService.backendApiKeyStorageLocation);
       //String? apiToken = "8eb7f1e61ef68a526cf5a1fb6ddb0903bc0678c1";
 
       HttpClient client = HttpClient();

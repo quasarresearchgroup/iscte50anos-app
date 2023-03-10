@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:iscte_spots/helper/constants.dart';
 import 'package:iscte_spots/models/auth/registration_form_result.dart';
 import 'package:iscte_spots/pages/auth/register/registration_error.dart';
-import 'package:iscte_spots/services/auth/auth_service.dart';
+import 'package:iscte_spots/services/auth/auth_storage_service.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
 
 class RegistrationService {
@@ -77,14 +77,14 @@ class RegistrationService {
         LoggerService.instance
             .debug("Created new user with token: $responseApiToken");
 
-        AuthService.storeLogInCredenials(
-          username: registrationFormResult.username,
-          password: registrationFormResult.password,
-          apiKey: responseApiToken,
-        );
-        responseRegistrationError = RegistrationError.noError;
-      }
-      client.close();
+      LoginStorageService.storeLogInCredenials(
+        username: registrationFormResult.username,
+        password: registrationFormResult.password,
+        apiKey: responseApiToken,
+      );
+      responseRegistrationError = RegistrationError.noError;
+    }
+    client.close();
 
       LoggerService.instance.debug(
           "response error code: $responseRegistrationError ; code: ${responseRegistrationError.code}");

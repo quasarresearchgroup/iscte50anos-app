@@ -7,7 +7,7 @@ import 'package:iscte_spots/helper/constants.dart';
 import 'package:iscte_spots/models/auth/login_form_result.dart';
 import 'package:iscte_spots/models/database/tables/database_puzzle_piece_table.dart';
 import 'package:iscte_spots/pages/auth/auth_page.dart';
-import 'package:iscte_spots/services/auth/auth_service.dart';
+import 'package:iscte_spots/services/auth/auth_storage_service.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/services/onboard_service.dart';
 import 'package:iscte_spots/services/shared_prefs_service.dart';
@@ -33,7 +33,7 @@ class LoginService {
       String? responseApiToken = decodedResponse["api_token"];
 
       if (response.statusCode == 200 && responseApiToken != null) {
-        AuthService.storeLogInCredenials(
+        LoginStorageService.storeLogInCredenials(
           username: loginFormResult.username,
           password: loginFormResult.password,
           apiKey: responseApiToken,
@@ -51,9 +51,9 @@ class LoginService {
   static Future<bool> isLoggedIn() async {
     const storage = FlutterSecureStorage();
     String? username =
-        await storage.read(key: AuthService.usernameStorageLocation);
+        await storage.read(key: LoginStorageService.usernameStorageLocation);
     String? password =
-        await storage.read(key: AuthService.passwordStorageLocation);
+        await storage.read(key: LoginStorageService.passwordStorageLocation);
     LoggerService.instance.debug("username : $username ; password : $password");
     if (username != null && password != null) {
       int loginresult = await login(
@@ -93,7 +93,7 @@ class LoginService {
         await jsonDecode(await response.transform(utf8.decoder).join());
     if (response.statusCode == 200) {
 */
-    await AuthService.deleteUserCredentials();
+    await LoginStorageService.deleteUserCredentials();
     await OnboadingService.removeOnboard();
     Navigator.of(context).popUntil(ModalRoute.withName(AuthPage.pageRoute));
     Navigator.of(context).pushNamed(AuthPage.pageRoute);
