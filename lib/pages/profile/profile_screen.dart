@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:iscte_spots/helper/constants.dart';
 import 'package:iscte_spots/pages/profile/placeholder.dart';
+import 'package:iscte_spots/services/auth/auth_storage_service.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_back_button.dart';
 import 'package:iscte_spots/widgets/my_app_bar.dart';
@@ -63,9 +64,9 @@ class _ProfileState extends State<Profile> {
     LoggerService.instance.debug("fetching profile");
     try {
       isLoading = true;
-      String? apiToken = await secureStorage.read(key: "backend_api_key");
+      String? apiToken = await secureStorage.read(key: LoginStorageService.backendApiKeyStorageLocation);
       //String? apiToken = "8eb7f1e61ef68a526cf5a1fb6ddb0903bc0678c1";
-
+      LoggerService.instance.debug(apiToken);
       HttpClient client = HttpClient();
       client.badCertificateCallback =
           ((X509Certificate cert, String host, int port) => true);
@@ -77,6 +78,8 @@ class _ProfileState extends State<Profile> {
 
       if (response.statusCode == 200) {
         return jsonDecode(await response.transform(utf8.decoder).join());
+      }else{
+        LoggerService.instance.error("status code: ${jsonDecode(await response.transform(utf8.decoder).join())}");
       }
     } catch (e) {
       LoggerService.instance.error(e);

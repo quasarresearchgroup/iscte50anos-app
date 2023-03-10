@@ -134,6 +134,7 @@ class _LoginOpendayState extends State<LoginPage>
         setState(() {
           _loginError = true;
         });
+
         LoggerService.instance.error("Iscte Login error!:");
       }
     } on SocketException {

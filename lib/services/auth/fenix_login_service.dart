@@ -50,8 +50,8 @@ class IscteLoginService {
         IDP_CLIENT_ID,
         IDP_REDIRECT_URI,
         issuer: IDP_ISSUER,
-        scopes: ['upn', 'openid', 'profile'],
-        //scopes: ['upn', 'openid', 'profile', 'offline_access'],
+        //scopes: ['upn', 'openid', 'profile'],
+        scopes: ['upn', 'openid', 'profile', 'offline_access'],
         //promptValues: ['login']
       ),
     );
@@ -90,13 +90,13 @@ class IscteLoginService {
         .debug("Obtained api token. Status: ${response.statusCode}");
 
     if (response.statusCode == 200) {
-      var apiToken = await response.transform(utf8.decoder).join();
+      dynamic apiToken = await jsonDecode(await response.transform(utf8.decoder).join());
       LoggerService.instance.debug("API Token: $apiToken");
       //secureStorage.write(key: 'api_token', value: apiToken["access_token"]);
       IscteLoginStorageService.storeFenixLogInCredenials(
-          refreshToken: refreshToken, apiToken: apiToken);
-
-      // TODO Route to Profile or Home Page
+        refreshToken: refreshToken,
+        apiKey: apiToken["api_token"].toString(),
+      );
       return true;
     }
 

@@ -28,21 +28,21 @@ class LoginStorageService {
 }
 
 class IscteLoginStorageService{
-  static const String backendApiKeyStorageLocation = 'backend_api_key';
+  static const String _backendApiKeyStorageLocation = LoginStorageService.backendApiKeyStorageLocation;
   static const String refreshTokenStorageLocation = 'refresh_token';
 
   static storeFenixLogInCredenials(
       {required String? refreshToken,
-        required String? apiToken}) async {
+        required String? apiKey}) async {
     const secureStorage = FlutterSecureStorage();
-    await secureStorage.write(key: backendApiKeyStorageLocation, value: apiToken);
+    await secureStorage.write(key: _backendApiKeyStorageLocation, value: apiKey);
     await secureStorage.write(key: refreshTokenStorageLocation, value: refreshToken);
     LoggerService.instance.debug("Stored Fenix user credentials in secure storage");
   }
 
   static deleteUserCredentials() async {
     const storage = FlutterSecureStorage();
-    await storage.delete(key: backendApiKeyStorageLocation);
+    await storage.delete(key: _backendApiKeyStorageLocation);
     await storage.delete(key: refreshTokenStorageLocation);
     LoggerService.instance.debug("Deleted Fenix user credentials");
   }

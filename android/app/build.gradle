@@ -57,7 +57,7 @@ android {
         targetSdkVersion 33
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
-        manifestPlaceholders = [
+        manifestPlaceholders += [
                 'appAuthRedirectScheme': 'pt.iscteiul.vultos'
         ]
         multiDexEnabled true

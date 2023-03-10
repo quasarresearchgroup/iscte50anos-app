@@ -66,7 +66,7 @@
             <string>Editor</string>
             <key>CFBundleURLSchemes</key>
             <array>
-                <string><your_custom_scheme></string>
+                <string><pt.iscteiul.vultos></string>
             </array>
         </dict>
     </array>
