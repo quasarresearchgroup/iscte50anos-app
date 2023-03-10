@@ -8,6 +8,7 @@ import 'package:iscte_spots/models/auth/login_form_result.dart';
 import 'package:iscte_spots/models/database/tables/database_puzzle_piece_table.dart';
 import 'package:iscte_spots/pages/auth/auth_page.dart';
 import 'package:iscte_spots/services/auth/auth_storage_service.dart';
+import 'package:iscte_spots/services/auth/fenix_login_service.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/services/onboard_service.dart';
 import 'package:iscte_spots/services/shared_prefs_service.dart';
@@ -93,6 +94,7 @@ class LoginService {
         await jsonDecode(await response.transform(utf8.decoder).join());
     if (response.statusCode == 200) {
 */
+    await IscteLoginService.logout();
     await LoginStorageService.deleteUserCredentials();
     await OnboadingService.removeOnboard();
     Navigator.of(context).popUntil(ModalRoute.withName(AuthPage.pageRoute));

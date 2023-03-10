@@ -8,6 +8,8 @@ import 'package:iscte_spots/pages/quiz/quiz_list_menu.dart';
 import 'package:iscte_spots/pages/settings/settings_page.dart';
 import 'package:iscte_spots/pages/spotChooser/spot_chooser_page.dart';
 import 'package:iscte_spots/pages/timeline/timeline_page.dart';
+import 'package:iscte_spots/services/auth/auth_storage_service.dart';
+import 'package:iscte_spots/services/auth/fenix_login_service.dart';
 import 'package:iscte_spots/services/auth/login_service.dart';
 
 class MyNavigationDrawer extends StatelessWidget {
