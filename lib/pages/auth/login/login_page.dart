@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/models/auth/login_form_result.dart';
-import 'package:iscte_spots/services/auth/auth_storage_service.dart';
 import 'package:iscte_spots/services/auth/fenix_login_service.dart';
 import 'package:iscte_spots/services/auth/login_service.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
@@ -225,6 +224,7 @@ class _LoginOpendayState extends State<LoginPage>
                             generateFormButtons()
                           ]),
                     ),
+                    /*
                     Flexible(
                       flex: 1,
                       child: Column(
@@ -245,19 +245,9 @@ class _LoginOpendayState extends State<LoginPage>
                               ],
                             ),
                           )
-                          /* ElevatedButton.icon(
-                            style: ElevatedButton.styleFrom(
-                                primary: Theme.of(context).primaryColor),
-                            label: Text("Sign up!"),
-                            icon: Icon(Icons.adaptive.arrow_forward),
-                            onPressed: () {
-                              LoggerService.instance.debug("change");
-                              widget.changeToSignUp();
-                            },
-                          ),*/
                         ],
                       ),
-                    ),
+                    ),*/
                   ],
                 ),
               ),
