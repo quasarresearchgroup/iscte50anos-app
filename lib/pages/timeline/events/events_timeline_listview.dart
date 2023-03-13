@@ -9,12 +9,12 @@ import 'package:iscte_spots/widgets/util/loading.dart';
 class EventTimelineListViewBuilder extends StatefulWidget {
   const EventTimelineListViewBuilder({
     Key? key,
+    this.hoveredEventIndexNotifier,
     required this.handleEventSelection,
-    required this.hoveredEventIndex,
     required this.eventsList,
   }) : super(key: key);
   final void Function(int, BuildContext) handleEventSelection;
-  final ValueNotifier<int?> hoveredEventIndex;
+  final ValueNotifier<int?>? hoveredEventIndexNotifier;
   final Future<List<Event>> eventsList;
 
   @override
@@ -24,14 +24,9 @@ class EventTimelineListViewBuilder extends StatefulWidget {
 
 class _EventTimelineListViewBuilderState
     extends State<EventTimelineListViewBuilder> {
-  //late Future<List<Event>> currentEvents;
-
   @override
   void initState() {
     super.initState();
-    //currentEvents = Future(() => widget.events
-    //    .where((element) => element.dateTime.year == widget.timelineYear.value)
-    //    .toList());
   }
 
   List<int> eventsTimelineTileGenerator({required List<Event> eventsList}) {
@@ -65,74 +60,55 @@ class _EventTimelineListViewBuilderState
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<Event>>(
-        //future: currentEvents,
-        future: widget.eventsList,
-        builder: (context, snapshot) {
-          if (snapshot.data != null && snapshot.hasData) {
-            if (snapshot.data!.isNotEmpty) {
-              List<int> positionData =
-                  eventsTimelineTileGenerator(eventsList: snapshot.data!);
-              return ValueListenableBuilder<int?>(
-                  valueListenable: widget.hoveredEventIndex,
-                  builder: (context, value, _) {
-                    return ScrollConfiguration(
-                      behavior: WebScrollBehaviour(),
-                      child: ListView.builder(
-                        itemCount: snapshot.data!.length,
-                        itemBuilder: (context, index) => EventTimelineTile(
-                          isFirst: positionData[index] == 0,
-                          isLast: positionData[index] == 2,
-                          event: snapshot.data![index],
-                          index: index,
-                          handleEventSelection: widget.handleEventSelection,
-                          isSelected: value == index,
+      future: widget.eventsList,
+      builder: (context, AsyncSnapshot<List<Event>> snapshot) {
+        if (snapshot.data != null && snapshot.hasData) {
+          if (snapshot.data!.isNotEmpty) {
+            List<int> positionData =
+                eventsTimelineTileGenerator(eventsList: snapshot.data!);
+            return widget.hoveredEventIndexNotifier != null
+                ? ValueListenableBuilder<int?>(
+                    valueListenable: widget.hoveredEventIndexNotifier!,
+                    builder: (context, int? hoveredEventIndex, _) {
+                      return ScrollConfiguration(
+                        behavior: WebScrollBehaviour(),
+                        child: ListView.builder(
+                          itemCount: snapshot.data!.length,
+                          itemBuilder: (context, index) => EventTimelineTile(
+                            isFirst: positionData[index] == 0,
+                            isLast: positionData[index] == 2,
+                            event: snapshot.data![index],
+                            index: index,
+                            handleEventSelection: widget.handleEventSelection,
+                            isSelected: hoveredEventIndex == index,
+                          ),
                         ),
+                      );
+                    },
+                  )
+                : ScrollConfiguration(
+                    behavior: WebScrollBehaviour(),
+                    child: ListView.builder(
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (context, index) => EventTimelineTile(
+                        isFirst: positionData[index] == 0,
+                        isLast: positionData[index] == 2,
+                        event: snapshot.data![index],
+                        index: index,
+                        handleEventSelection: widget.handleEventSelection,
+                        isSelected: false,
                       ),
-                    );
-                  });
-            } else {
-              return Center(
-                child: Text(AppLocalizations.of(context)!.timelineEventNoData),
-              );
-            }
+                    ),
+                  );
           } else {
-            return const LoadingWidget();
+            return Center(
+              child: Text(AppLocalizations.of(context)!.timelineEventNoData),
+            );
           }
-        });
-  }
-}
-
-class EventTimelineListView extends StatelessWidget {
-  const EventTimelineListView({
-    Key? key,
-    required this.data,
-    required this.handleEventSelection,
-    required this.selectedEventIndex,
-  }) : super(key: key);
-
-  final List<Event> data;
-  final void Function(int, BuildContext) handleEventSelection;
-  final ValueNotifier<int?> selectedEventIndex;
-
-  @override
-  Widget build(BuildContext context) {
-    return ValueListenableBuilder<int?>(
-        valueListenable: selectedEventIndex,
-        builder: (context, value, _) {
-          return ScrollConfiguration(
-            behavior: WebScrollBehaviour(),
-            child: ListView.builder(
-              itemCount: data.length,
-              itemBuilder: (context, index) => EventTimelineTile(
-                index: index,
-                event: data[index],
-                isFirst: index == 0,
-                isLast: index == data.length - 1,
-                handleEventSelection: handleEventSelection,
-                isSelected: index == value,
-              ),
-            ),
-          );
-        });
+        } else {
+          return const LoadingWidget();
+        }
+      },
+    );
   }
 }

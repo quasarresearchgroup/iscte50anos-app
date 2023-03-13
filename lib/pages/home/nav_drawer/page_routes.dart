@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:iscte_spots/models/timeline/content.dart';
+import 'package:iscte_spots/models/requests/spot_info_request.dart';
 import 'package:iscte_spots/pages/auth/auth_page.dart';
 import 'package:iscte_spots/pages/flickr/flickr_page.dart';
 import 'package:iscte_spots/pages/home/home_page.dart';
@@ -51,7 +51,9 @@ class PageRouter {
           onLaunch: false,
         );
       case QRScanResults.pageRoute:
-        return QRScanResults(data: argument as List<Content>);
+        return QRScanResults(
+          spotInfoRequest: argument as SpotInfoRequest,
+        );
       case SpotChooserPage.pageRoute:
         return SpotChooserPage();
       default:

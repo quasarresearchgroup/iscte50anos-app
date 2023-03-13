@@ -1,3 +1,4 @@
+/*
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
@@ -99,3 +100,4 @@ class QRScanPageState extends State<QRScanPage> {
     );
   }
 }
+*/

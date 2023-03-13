@@ -25,15 +25,16 @@ class TimeLineBodyBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: TimelineBody(
-          isFilterTimeline: isFilterTimeline,
-        ));
+      padding: const EdgeInsets.all(10.0),
+      child: TimelineKeyboardEventWrapper(
+        isFilterTimeline: isFilterTimeline,
+      ),
+    );
   }
 }
 
-class TimelineBody extends StatelessWidget {
-  TimelineBody({
+class TimelineKeyboardEventWrapper extends StatelessWidget {
+  TimelineKeyboardEventWrapper({
     Key? key,
     required this.isFilterTimeline,
   }) : super(key: key);
@@ -41,7 +42,7 @@ class TimelineBody extends StatelessWidget {
   ///Bool variable for determining which state object to be called down the widget tree: TimelineState or TimelineFilterResultsState
   final bool isFilterTimeline;
 
-  final ValueNotifier<int?> hoveredEventIndex = ValueNotifier(null);
+  final ValueNotifier<int?> hoveredEventIndexNotifier = ValueNotifier(null);
   final ValueNotifier<int?> hoveredYearIndexNotifier = ValueNotifier(null);
   int? lastYearIndex;
 
@@ -53,12 +54,12 @@ class TimelineBody extends StatelessWidget {
 
   void handleEnterEvent(
       List<Event> eventsList, List<int> yearsList, BuildContext context) {
-    assert((hoveredEventIndex.value == null &&
+    assert((hoveredEventIndexNotifier.value == null &&
             hoveredYearIndexNotifier.value != null) ||
-        (hoveredEventIndex.value != null &&
+        (hoveredEventIndexNotifier.value != null &&
             hoveredYearIndexNotifier.value == null));
-    if (hoveredEventIndex.value != null) {
-      Event selectedEvent = eventsList[hoveredEventIndex.value!];
+    if (hoveredEventIndexNotifier.value != null) {
+      Event selectedEvent = eventsList[hoveredEventIndexNotifier.value!];
       if (selectedEvent.isVisitable) {
         navigateToEvent(selectedEvent.id, context);
       }
@@ -67,20 +68,20 @@ class TimelineBody extends StatelessWidget {
           yearsList[hoveredYearIndexNotifier.value!]);
     }
     LoggerService.instance.info(
-        "selectedEventIndex: ${hoveredEventIndex.value} ; selectedYearIndex: ${hoveredYearIndexNotifier.value}");
+        "selectedEventIndex: ${hoveredEventIndexNotifier.value} ; selectedYearIndex: ${hoveredYearIndexNotifier.value}");
   }
 
   void changeHoveredEvent(bool increase, List<Event> eventsList) {
     Logger()
         .i("increase: $increase ; widget.filteredEvents?.length $eventsList");
 
-    int index = hoveredEventIndex.value != null
+    int index = hoveredEventIndexNotifier.value != null
         ? increase
-            ? hoveredEventIndex.value! + 1
-            : hoveredEventIndex.value! - 1
+            ? hoveredEventIndexNotifier.value! + 1
+            : hoveredEventIndexNotifier.value! - 1
         : 0;
     if (index >= 0 && index < eventsList.length) {
-      hoveredEventIndex.value = index;
+      hoveredEventIndexNotifier.value = index;
       hoveredYearIndexNotifier.value = null;
     }
   }
@@ -95,7 +96,7 @@ class TimelineBody extends StatelessWidget {
     if (index >= 0 && index < yearsList.length) {
       hoveredYearIndexNotifier.value = index;
       lastYearIndex = index;
-      hoveredEventIndex.value = null;
+      hoveredEventIndexNotifier.value = null;
     }
   }
 
@@ -105,9 +106,9 @@ class TimelineBody extends StatelessWidget {
       valueListenable: isFilterTimeline
           ? TimelineFilterResultState.eventsList
           : TimelineState.eventsList,
-      builder: (context, currentEventsListValue, child) =>
+      builder: (context, currentEventsListFuture, child) =>
           FutureBuilder<List<Event>>(
-        future: currentEventsListValue,
+        future: currentEventsListFuture,
         builder: (context, eventsListSnapshot) {
           if (eventsListSnapshot.hasData) {
             return ValueListenableBuilder<Future<List<int>>>(
@@ -117,7 +118,8 @@ class TimelineBody extends StatelessWidget {
               builder: (context, currentYearsListValue, child) => FutureBuilder<
                       List<int>>(
                   future: currentYearsListValue,
-                  builder: (context, yearListSnapshot) {
+                  builder:
+                      (context, AsyncSnapshot<List<int>> yearListSnapshot) {
                     if (yearListSnapshot.hasData) {
                       return Shortcuts(
                         shortcuts: const <ShortcutActivator, Intent>{
@@ -186,52 +188,38 @@ class TimelineBody extends StatelessWidget {
                             EscapeIntent: CallbackAction<EscapeIntent>(
                               onInvoke: (EscapeIntent intent) {
                                 hoveredYearIndexNotifier.value = null;
-                                hoveredEventIndex.value = null;
+                                hoveredEventIndexNotifier.value = null;
                                 return null;
                               },
                             ),
                           },
                           child: Focus(
                             autofocus: true,
-                            child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Listener(
-                                    onPointerSignal:
-                                        (PointerSignalEvent event) {
-                                      if (event is PointerScrollEvent) {
-                                        changeHoveredYear(
-                                            event.scrollDelta.direction > 0,
-                                            yearListSnapshot.data!);
-                                      }
-                                    },
-                                    child: SizedBox(
-                                      height: kToolbarHeight,
-                                      child: YearTimelineListView(
-                                        hoveredYearIndexNotifier:
-                                            hoveredYearIndexNotifier,
-                                        currentYearsListValue:
-                                            currentYearsListValue,
-                                        onTap: isFilterTimeline
-                                            ? TimelineFilterResultState
-                                                .changeCurrentYear
-                                            : TimelineState.changeCurrentYear,
-                                        isFilter: isFilterTimeline,
-                                      ),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: EventTimelineListViewBuilder(
-                                        key: UniqueKey(),
-                                        handleEventSelection: navigateToEvent,
-                                        hoveredEventIndex: hoveredEventIndex,
-                                        eventsList: currentEventsListValue,
-                                      ),
-                                    ),
-                                  ),
-                                ]),
+                            child: TimelineBody(
+                                changeHoveredYearCallback: changeHoveredYear,
+                                keyboardScrollCallback:
+                                    (PointerSignalEvent event) {
+                                  if (event is PointerScrollEvent) {
+                                    changeHoveredYear(
+                                        event.scrollDelta.direction > 0,
+                                        yearListSnapshot.data!);
+                                  }
+                                },
+                                hoveredYearIndexNotifier:
+                                    hoveredYearIndexNotifier,
+                                yearsListFuture: currentYearsListValue,
+                                isFilterTimeline: isFilterTimeline,
+                                handleEventSelection: navigateToEvent,
+                                hoveredEventIndexNotifier:
+                                    hoveredEventIndexNotifier,
+                                eventsListFuture: currentEventsListFuture,
+                                changeYearCallback: isFilterTimeline
+                                    ? TimelineFilterResultState
+                                        .changeCurrentYear
+                                    : TimelineState.changeCurrentYear,
+                                currentYearNotifier: isFilterTimeline
+                                    ? TimelineFilterResultState.selectedYear
+                                    : TimelineState.selectedYear),
                           ),
                         ),
                       );
@@ -251,6 +239,69 @@ class TimelineBody extends StatelessWidget {
           }
         },
       ),
+    );
+  }
+}
+
+class TimelineBody extends StatelessWidget {
+  TimelineBody({
+    Key? key,
+    required this.yearsListFuture,
+    required this.eventsListFuture,
+    required this.isFilterTimeline,
+    required this.handleEventSelection,
+    required this.currentYearNotifier,
+    this.changeHoveredYearCallback,
+    this.changeYearCallback,
+    this.hoveredEventIndexNotifier,
+    this.hoveredYearIndexNotifier,
+    this.keyboardScrollCallback,
+  }) : super(key: key) {}
+
+  final void Function(bool, List<int>)? changeHoveredYearCallback;
+  final void Function(PointerSignalEvent)? keyboardScrollCallback;
+
+  final ValueNotifier<int?> currentYearNotifier;
+  final ValueNotifier<int?>? hoveredYearIndexNotifier;
+  final Future<List<int>> yearsListFuture;
+  final void Function(int)? changeYearCallback;
+
+  final void Function(int, BuildContext) handleEventSelection;
+  final ValueNotifier<int?>? hoveredEventIndexNotifier;
+  final Future<List<Event>> eventsListFuture;
+
+  final bool isFilterTimeline;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Listener(
+          onPointerSignal: keyboardScrollCallback,
+          child: SizedBox(
+            height: kToolbarHeight,
+            child: YearTimeline(
+              hoveredYearIndexNotifier: hoveredYearIndexNotifier,
+              currentYearsListValue: yearsListFuture,
+              changeYearCallback: changeYearCallback,
+              currentYearNotifier: currentYearNotifier,
+              isFilter: isFilterTimeline,
+            ),
+          ),
+        ),
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: EventTimelineListViewBuilder(
+              key: UniqueKey(),
+              handleEventSelection: handleEventSelection,
+              hoveredEventIndexNotifier: hoveredEventIndexNotifier,
+              eventsList: eventsListFuture,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

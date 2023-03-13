@@ -40,7 +40,7 @@
     "registerScreen":"Registar",
     "loginScreen":"Entrar",
     "profileScreen":"Perfil",
-    "qrScanResultScreen":"Conteudos do Spot",
+    "qrScanResultScreen":"Eventos de {topic}",
     "spotChooserScreen":"Escolha o próximo spot",
 
     "loginInvalidCredentials":"Credenciais inválidos",

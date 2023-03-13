@@ -4,24 +4,19 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:html/parser.dart' as parser;
-import 'package:http/http.dart' as http;
 import 'package:iscte_spots/helper/constants.dart';
-import 'package:iscte_spots/models/database/tables/database_page_table.dart';
 import 'package:iscte_spots/models/requests/spot_info_request.dart';
 import 'package:iscte_spots/models/requests/topic_request.dart';
 import 'package:iscte_spots/models/timeline/content.dart';
-import 'package:iscte_spots/models/visited_url.dart';
-import 'package:iscte_spots/pages/home/scanPage/qr_scan_page.dart';
 import 'package:iscte_spots/services/auth/exceptions.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import 'package:synchronized/synchronized.dart';
 
 import 'auth/auth_storage_service.dart';
 import 'auth/login_service.dart';
 
 class QRScanService {
+/*
   static Future<String> extractData(final String url) async {
     LoggerService.instance.debug("url:$url");
     try {
@@ -50,14 +45,15 @@ class QRScanService {
       return 'ERROR: ${e.toString()}.';
     }
   }
+*/
 
   static Future<SpotInfoRequest> spotInfoRequest(
       {required BuildContext context, required Barcode barcode}) async {
     LoggerService.instance
         .debug("started request at ${DateTime.now()}\t${barcode.rawValue}");
     const FlutterSecureStorage secureStorage = FlutterSecureStorage();
-    String? apiToken =
-        await secureStorage.read(key: LoginStorageService.backendApiKeyStorageLocation);
+    String? apiToken = await secureStorage.read(
+        key: LoginStorageService.backendApiKeyStorageLocation);
     if (apiToken == null) {
       throw LoginException();
     }
@@ -108,8 +104,8 @@ class QRScanService {
   static Future<TopicRequest> topicRequest(
       {required BuildContext context, required int topicID}) async {
     const FlutterSecureStorage secureStorage = FlutterSecureStorage();
-    String? apiToken =
-        await secureStorage.read(key: LoginStorageService.backendApiKeyStorageLocation);
+    String? apiToken = await secureStorage.read(
+        key: LoginStorageService.backendApiKeyStorageLocation);
     if (apiToken == null) {
       throw LoginException();
     }

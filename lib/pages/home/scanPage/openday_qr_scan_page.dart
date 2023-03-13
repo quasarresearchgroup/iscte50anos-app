@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/models/database/tables/database_spot_table.dart';
 import 'package:iscte_spots/models/requests/spot_info_request.dart';
-import 'package:iscte_spots/models/requests/topic_request.dart';
 import 'package:iscte_spots/models/spot.dart';
 import 'package:iscte_spots/pages/home/scanPage/qr_scan_camera_controls.dart';
 import 'package:iscte_spots/pages/home/scanPage/qr_scan_results.dart';
@@ -151,40 +150,43 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
 
             SpotInfoRequest spotInfoRequest =
                 await QRScanService.spotInfoRequest(
-                    context: context, barcode: barcode);
+              context: context,
+              barcode: barcode,
+            );
             LoggerService.instance.debug(spotInfoRequest);
+            bool continueScan;
             if (mounted) {
-              bool continueScan = await launchConfirmationDialog(
-                  context, spotInfoRequest.title ?? "");
+              continueScan = await launchConfirmationDialog(
+                context,
+                spotInfoRequest.title ?? "",
+              );
+            } else {
+              continueScan = false;
+            }
 
-              if (continueScan && spotInfoRequest.id != null) {
-                _lastScan = now;
+            if (continueScan && spotInfoRequest.id != null) {
+              _lastScan = now;
 
-                List<Spot> spots = (await DatabaseSpotTable.getAllWithIds(
-                    [spotInfoRequest.id!]));
-                if (spots.isNotEmpty) {
-                  Spot spot = spots.first;
-                  if (!spot.visited) {
-                    spot.visited = true;
-                    await DatabaseSpotTable.update(spot);
-                  }
+              List<Spot> spots = (await DatabaseSpotTable.getAllWithIds(
+                  [spotInfoRequest.id!]));
+              if (spots.isNotEmpty) {
+                Spot spot = spots.first;
+                if (!spot.visited) {
+                  spot.visited = true;
+                  await DatabaseSpotTable.update(spot);
                 }
-                if (mounted) {
-                  TopicRequest topicRequestCompleted =
-                      await QRScanService.topicRequest(
-                          context: context, topicID: spotInfoRequest.id!);
-
-                  LoggerService.instance
-                      .debug("spotInfoRequest: $topicRequestCompleted");
-                  if (mounted) {
-                    Navigator.of(context).pushNamed(
-                      QRScanResults.pageRoute,
-                      arguments: topicRequestCompleted.contentList,
-                    );
-                  }
-                }
+                LoggerService.instance.error(["ahaha1"]);
+              }
+              if (mounted) {
+                LoggerService.instance.error(["ahaha", spotInfoRequest]);
+                Navigator.of(context).pushNamed(
+                  QRScanResults.pageRoute,
+                  arguments: spotInfoRequest,
+                );
               }
             }
+          } else {
+            LoggerService.instance.debug("try scanning again later!");
           }
         } on LoginException {
           LoggerService.instance.error("LoginException");
