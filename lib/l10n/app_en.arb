@@ -70,6 +70,7 @@
 
     "next":"Next",
     "back":"Back",
+    "confirm":"Confirm",
     "dismiss":"Dismiss",
     "getStarted":"Get Started!",
 
@@ -136,7 +137,7 @@
 
     "settingsViewLicences":"View Licences",
 
-    "quizPointsOfTrial":"Attempt score:",
+    "quizPointsOfTrial":"Attempt score",
     "quizGeoQuestion":"Explore the Campus (Question without time limit):",
     "quizQuestion":"Question",
     "quizProgressNoAnswer":"Do you wish to proceed without answering?",
@@ -148,7 +149,7 @@
 
     "quizPoints":"Points",
     "quizAttempts":"Tries",
-    "quizAttempt":"Try",
+    "quizAttempt":"Trial",
     "quizTopics":"Topics",
     "quizProgress":"Progress",
     "quizContinue":"Continue",

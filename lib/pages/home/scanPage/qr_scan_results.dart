@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/helper/helper_methods.dart';
 import 'package:iscte_spots/models/timeline/content.dart';
@@ -7,7 +6,7 @@ import 'package:iscte_spots/services/logging/LoggerService.dart';
 
 class QRScanResults extends StatelessWidget {
   static const String pageRoute = "QRScanResults";
-  QRScanResults({
+  const QRScanResults({
     Key? key,
     required this.data,
   }) : super(key: key);

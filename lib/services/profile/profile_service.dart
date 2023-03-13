@@ -3,6 +3,8 @@ import 'dart:io';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:iscte_spots/helper/constants.dart';
+import 'package:iscte_spots/services/auth/auth_storage_service.dart';
+import 'package:iscte_spots/services/logging/LoggerService.dart';
 
 class ProfileService {
   static final ProfileService _instance = ProfileService._internal();
@@ -24,7 +26,8 @@ class ProfileService {
           ((X509Certificate cert, String host, int port) => true);
       final request = await client.getUrl(
           Uri.parse('${BackEndConstants.API_ADDRESS}/api/users/profile'));
-      String? apiToken = await secureStorage.read(key: "backend_api_key");
+      String? apiToken = await secureStorage.read(key: LoginStorageService.backendApiKeyStorageLocation);
+
       request.headers.add("Authorization", "Token $apiToken");
 
       final response = await request.close();
@@ -36,7 +39,7 @@ class ProfileService {
         return userProfile;
       }
     } catch (e) {
-      print(e);
+      LoggerService.instance.error(e);
     }
     throw Exception("Failed to load profile");
   }

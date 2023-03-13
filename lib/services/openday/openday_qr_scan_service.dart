@@ -5,7 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:iscte_spots/helper/constants.dart';
 import 'package:iscte_spots/models/requests/spot_request.dart';
-import 'package:iscte_spots/services/auth/auth_service.dart';
+import 'package:iscte_spots/services/auth/auth_storage_service.dart';
 import 'package:iscte_spots/services/auth/login_service.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/services/shared_prefs_service.dart';
@@ -115,7 +115,7 @@ class OpenDayQRScanService {
     const FlutterSecureStorage secureStorage = FlutterSecureStorage();
 
     String? apiToken =
-        await secureStorage.read(key: AuthService.backendApiKeyStorageLocation);
+        await secureStorage.read(key: LoginStorageService.backendApiKeyStorageLocation);
     if (apiToken == null) {
       return SpotRequest(locationPhotoLink: loginError, statusCode: 403);
     }

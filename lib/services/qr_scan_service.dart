@@ -18,7 +18,7 @@ import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:synchronized/synchronized.dart';
 
-import 'auth/auth_service.dart';
+import 'auth/auth_storage_service.dart';
 import 'auth/login_service.dart';
 
 class QRScanService {
@@ -57,7 +57,7 @@ class QRScanService {
         .debug("started request at ${DateTime.now()}\t${barcode.rawValue}");
     const FlutterSecureStorage secureStorage = FlutterSecureStorage();
     String? apiToken =
-        await secureStorage.read(key: AuthService.backendApiKeyStorageLocation);
+        await secureStorage.read(key: LoginStorageService.backendApiKeyStorageLocation);
     if (apiToken == null) {
       throw LoginException();
     }
@@ -109,7 +109,7 @@ class QRScanService {
       {required BuildContext context, required int topicID}) async {
     const FlutterSecureStorage secureStorage = FlutterSecureStorage();
     String? apiToken =
-        await secureStorage.read(key: AuthService.backendApiKeyStorageLocation);
+        await secureStorage.read(key: LoginStorageService.backendApiKeyStorageLocation);
     if (apiToken == null) {
       throw LoginException();
     }

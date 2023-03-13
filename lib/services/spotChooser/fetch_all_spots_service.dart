@@ -6,7 +6,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:iscte_spots/helper/constants.dart';
 import 'package:iscte_spots/models/database/tables/database_spot_table.dart';
 import 'package:iscte_spots/models/spot.dart';
-import 'package:iscte_spots/services/auth/auth_service.dart';
+import 'package:iscte_spots/services/auth/auth_storage_service.dart';
 import 'package:iscte_spots/services/auth/exceptions.dart';
 import 'package:iscte_spots/services/auth/login_service.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
@@ -19,7 +19,7 @@ class SpotsRequestService {
     const FlutterSecureStorage secureStorage = FlutterSecureStorage();
 
     String? apiToken =
-        await secureStorage.read(key: AuthService.backendApiKeyStorageLocation);
+        await secureStorage.read(key: LoginStorageService.backendApiKeyStorageLocation);
     if (apiToken == null) {
       LoggerService.instance.error("No apitoken stored");
       await LoginService.logOut(context);

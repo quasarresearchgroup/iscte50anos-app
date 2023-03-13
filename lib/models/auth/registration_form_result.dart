@@ -6,8 +6,8 @@ class RegistrationFormResult {
     required this.password,
     required this.passwordConfirmation,
     required this.email,
-    required this.affiliationType,
-    required this.affiliationName,
+    this.affiliationType = "",
+    this.affiliationName = "",
   });
   final String username;
   final String firstName;
@@ -15,8 +15,8 @@ class RegistrationFormResult {
   final String password;
   final String passwordConfirmation;
   final String email;
-  final String affiliationType;
-  final String affiliationName;
+  final String? affiliationType;
+  final String? affiliationName;
 
   @override
   String toString() {

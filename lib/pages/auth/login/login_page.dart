@@ -1,8 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/models/auth/login_form_result.dart';
+import 'package:iscte_spots/services/auth/fenix_login_service.dart';
 import 'package:iscte_spots/services/auth/login_service.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_text_button.dart';
@@ -90,11 +92,11 @@ class _LoginOpendayState extends State<LoginPage>
     ];
   }
 
-  List<Widget> generateFormButtons() {
-    return [
+  Widget generateFormButtons() {
+    return Column(children: [
       DynamicTextButton(
         style: IscteTheme.iscteColor,
-        onPressed: _loginAction,
+        onPressed: _loginCallback,
         child: Text(
           AppLocalizations.of(context)!.loginScreen,
           style: Theme.of(context)
@@ -103,10 +105,60 @@ class _LoginOpendayState extends State<LoginPage>
               ?.copyWith(color: Colors.white),
         ),
       ),
-    ];
+      DynamicTextButton(
+        style: IscteTheme.iscteColor,
+        onPressed: _iscteLoginCallback,
+        child: Text(
+          "Fenix Login", //TODO
+          style: Theme.of(context)
+              .textTheme
+              .titleMedium
+              ?.copyWith(color: Colors.white),
+        ),
+      ),
+    ]);
   }
 
-  Future<void> _loginAction() async {
+  Future<void> _iscteLoginCallback() async {
+    setState(() {
+      _loginError = false;
+      _generalError = false;
+      _isLoading = true;
+    });
+    try {
+      bool loginSuccess = await IscteLoginService.login();
+      if (loginSuccess) {
+        widget.loggingComplete();
+      } else {
+        setState(() {
+          _loginError = true;
+        });
+
+        LoggerService.instance.error("Iscte Login error!:");
+      }
+    } on SocketException {
+      setState(() {
+        _connectionError = true;
+      });
+      LoggerService.instance.error("SocketException on login!");
+    } on PlatformException catch (e) {
+      LoggerService.instance.error(e);
+      setState(() {
+        _loginError = true;
+      });
+    } catch (e) {
+      setState(() {
+        _generalError = true;
+      });
+      LoggerService.instance.error(e);
+    }
+
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  Future<void> _loginCallback() async {
     setState(() {
       _loginError = false;
       _generalError = false;
@@ -169,9 +221,10 @@ class _LoginOpendayState extends State<LoginPage>
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             ...generateFormFields(),
-                            ...generateFormButtons()
+                            generateFormButtons()
                           ]),
                     ),
+                    /*
                     Flexible(
                       flex: 1,
                       child: Column(
@@ -192,19 +245,9 @@ class _LoginOpendayState extends State<LoginPage>
                               ],
                             ),
                           )
-                          /* ElevatedButton.icon(
-                            style: ElevatedButton.styleFrom(
-                                primary: Theme.of(context).primaryColor),
-                            label: Text("Sign up!"),
-                            icon: Icon(Icons.adaptive.arrow_forward),
-                            onPressed: () {
-                              LoggerService.instance.debug("change");
-                              widget.changeToSignUp();
-                            },
-                          ),*/
                         ],
                       ),
-                    ),
+                    ),*/
                   ],
                 ),
               ),
