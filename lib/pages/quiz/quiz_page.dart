@@ -6,7 +6,12 @@ import '../../widgets/dialogs/CustomDialogs.dart';
 
 //Main for isolated testing
 void main() {
-  runApp(MaterialApp(home: QuizPage(quizNumber: 1, trialNumber: 1)));
+  runApp(MaterialApp(
+      home: QuizPage(
+    quizNumber: 1,
+    trialNumber: 1,
+    numQuestions: 1,
+  )));
 }
 
 class QuizPage extends StatefulWidget {
@@ -14,9 +19,14 @@ class QuizPage extends StatefulWidget {
 
   final int quizNumber;
   final int trialNumber;
+  final int numQuestions;
 
-  QuizPage({Key? key, required this.quizNumber, required this.trialNumber})
-      : super(key: key);
+  QuizPage({
+    Key? key,
+    required this.quizNumber,
+    required this.trialNumber,
+    required this.numQuestions,
+  }) : super(key: key);
   @override
   State<StatefulWidget> createState() {
     return _QuizPageState();
@@ -48,6 +58,7 @@ class _QuizPageState extends State<QuizPage> {
             child: Quiz(
               trialNumber: widget.trialNumber,
               quizNumber: widget.quizNumber,
+              numQuestions: widget.numQuestions,
             ),
           ),
         ), //Padding

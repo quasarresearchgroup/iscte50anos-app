@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:iscte_spots/pages/quiz/quiz_page.dart';
+import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_back_button.dart';
 import 'package:iscte_spots/widgets/my_app_bar.dart';
 import 'package:iscte_spots/widgets/network/error.dart';
@@ -76,13 +77,19 @@ class _QuizListState extends State<QuizList> {
       isTrialLoading = false;
 
       int newTrialNumber = newTrialInfo["trial_number"];
+      int numQuestions = newTrialInfo["numQuestions"] ?? 1000;
+      LoggerService.instance.debug(newTrialInfo);
       if (mounted) {
         Navigator.of(context)
-            .push(MaterialPageRoute(
-                builder: (context) => QuizPage(
-                      quizNumber: quizNumber,
-                      trialNumber: newTrialNumber,
-                    )))
+            .push(
+          MaterialPageRoute(
+            builder: (context) => QuizPage(
+              quizNumber: quizNumber,
+              trialNumber: newTrialNumber,
+              numQuestions: numQuestions,
+            ),
+          ),
+        )
             .then((value) {
           setState(() {
             futureQuizList = fetchFunction();
@@ -135,6 +142,7 @@ class _QuizListState extends State<QuizList> {
                     List<Widget> children;
                     if (snapshot.hasData) {
                       var items = snapshot.data as List<dynamic>;
+                      LoggerService.instance.debug(items);
                       return RefreshIndicator(
                         onRefresh: () async {
                           setState(() {
@@ -154,35 +162,42 @@ class _QuizListState extends State<QuizList> {
                                 itemCount: items.length,
                                 itemBuilder: (context, index) {
                                   int quizNumber = items[index]["number"];
+                                  int score = items[index]["score"];
                                   int trials = items[index]["num_trials"];
+                                  var topicNames = items[index]["topic_names"];
+                                  int numQuestions =
+                                      items[index]["num_questions"] ?? 0;
                                   return Padding(
                                     padding: const EdgeInsets.only(
                                         left: 10.0, right: 10.0),
                                     child: Card(
                                       child: ExpansionTile(
                                         title: Text(
-                                            "Quiz ${items[index]["number"].toString()}",
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 16)),
+                                          "Quiz ${items[index]["number"].toString()}",
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16,
+                                          ),
+                                        ),
                                         subtitle: Text(
-                                            "${AppLocalizations.of(context)!.quizPoints}: ${items[index]["score"]} \n${AppLocalizations.of(context)!.quizAttempts}: ${items[index]["num_trials"]}"
-                                            "\n${AppLocalizations.of(context)!.quizTopics}: ${items[index]["topic_names"]}"),
+                                            "${AppLocalizations.of(context)!.quizPoints}: ${score} \n${AppLocalizations.of(context)!.quizAttempts}: ${trials}"
+                                            "\n${AppLocalizations.of(context)!.quizTopics}: ${topicNames}"),
                                         children: [
                                           QuizDetail(
-                                              startQuiz: () {
-                                                setState(() {
-                                                  Navigator.of(context).pop();
-                                                  startTrial(quizNumber);
-                                                });
-                                              },
-                                              returnToQuizList: () {
-                                                setState(() {
-                                                  futureQuizList =
-                                                      fetchFunction();
-                                                });
-                                              },
-                                              quiz: items[index])
+                                            quiz: items[index],
+                                            startQuiz: () {
+                                              setState(() {
+                                                Navigator.of(context).pop();
+                                                startTrial(quizNumber);
+                                              });
+                                            },
+                                            returnToQuizList: () {
+                                              setState(() {
+                                                futureQuizList =
+                                                    fetchFunction();
+                                              });
+                                            },
+                                          )
                                         ],
                                         //minVerticalPadding: 10.0,
                                       ),
@@ -224,12 +239,12 @@ class _QuizListState extends State<QuizList> {
 }
 
 class QuizDetail extends StatelessWidget {
-  const QuizDetail(
-      {Key? key,
-      required this.startQuiz,
-      required this.quiz,
-      required this.returnToQuizList})
-      : super(key: key);
+  const QuizDetail({
+    Key? key,
+    required this.startQuiz,
+    required this.quiz,
+    required this.returnToQuizList,
+  }) : super(key: key);
 
   final Function() startQuiz;
   final Function() returnToQuizList;
@@ -276,11 +291,15 @@ class QuizDetail extends StatelessWidget {
                           methodOnYes: () {
                             Navigator.of(context).pop();
                             Navigator.of(context)
-                                .push(MaterialPageRoute(
-                                    builder: (context) => QuizPage(
-                                          quizNumber: quiz["number"],
-                                          trialNumber: trial["number"],
-                                        )))
+                                .push(
+                              MaterialPageRoute(
+                                builder: (context) => QuizPage(
+                                  quizNumber: quiz["number"],
+                                  trialNumber: trial["number"],
+                                  numQuestions: trial["quiz_size"],
+                                ),
+                              ),
+                            )
                                 .then((value) {
                               returnToQuizList();
                             });
