@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/models/database/tables/database_spot_table.dart';
 import 'package:iscte_spots/models/requests/spot_info_request.dart';
+import 'package:iscte_spots/models/requests/topic_request.dart';
 import 'package:iscte_spots/models/spot.dart';
 import 'package:iscte_spots/pages/home/scanPage/qr_scan_camera_controls.dart';
 import 'package:iscte_spots/pages/home/scanPage/qr_scan_results.dart';
@@ -175,10 +176,17 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
                   spot.visited = true;
                   await DatabaseSpotTable.update(spot);
                 }
-                LoggerService.instance.error(["ahaha1"]);
               }
               if (mounted) {
-                LoggerService.instance.error(["ahaha", spotInfoRequest]);
+                TopicRequest topicRequestCompleted =
+                    await QRScanService.topicRequest(
+                        context: context, topicID: spotInfoRequest.id!);
+
+                LoggerService.instance
+                    .debug("spotInfoRequest: $topicRequestCompleted");
+              }
+
+              if (mounted) {
                 Navigator.of(context).pushNamed(
                   QRScanResults.pageRoute,
                   arguments: spotInfoRequest,
@@ -235,34 +243,35 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
           });
     } else {
       await showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: ((BuildContext context) {
-            return AlertDialog(
-              title: Text(AppLocalizations.of(context)!.qrScanConfirmation),
-              content: Text(topicTitle),
-              actions: [
-                TextButton(
-                  child: Text(
-                      AppLocalizations.of(context)!.qrScanConfirmationCancel),
-                  onPressed: () {
-                    LoggerService.instance.debug("Pressed \"CANCEL\"");
-                    continueScan = false;
-                    Navigator.pop(context);
-                  },
-                ),
-                TextButton(
-                  child: Text(
-                      AppLocalizations.of(context)!.qrScanConfirmationAccept),
-                  onPressed: () {
-                    LoggerService.instance.debug("Pressed \"ACCEPT\"");
-                    continueScan = true;
-                    Navigator.pop(context);
-                  },
-                ),
-              ],
-            );
-          }));
+        context: context,
+        barrierDismissible: false,
+        builder: ((BuildContext context) {
+          return AlertDialog(
+            title: Text(AppLocalizations.of(context)!.qrScanConfirmation),
+            content: Text(topicTitle),
+            actions: [
+              TextButton(
+                child: Text(
+                    AppLocalizations.of(context)!.qrScanConfirmationCancel),
+                onPressed: () {
+                  LoggerService.instance.debug("Pressed \"CANCEL\"");
+                  continueScan = false;
+                  Navigator.pop(context);
+                },
+              ),
+              TextButton(
+                child: Text(
+                    AppLocalizations.of(context)!.qrScanConfirmationAccept),
+                onPressed: () {
+                  LoggerService.instance.debug("Pressed \"ACCEPT\"");
+                  continueScan = true;
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          );
+        }),
+      );
     }
     return continueScan;
   }

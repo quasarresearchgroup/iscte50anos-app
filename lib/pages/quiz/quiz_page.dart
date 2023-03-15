@@ -27,28 +27,31 @@ class _QuizPageState extends State<QuizPage> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-        onWillPop: () async {
-          showYesNoWarningDialog(
-            context: context,
-            text: AppLocalizations.of(context)!.quizQuit,
-            methodOnYes: () {
-              Navigator.of(context).pop(); //Exit dialog
-              Navigator.of(context).pop();
-            },
-          );
-          return false;
-        },
-        child: Scaffold(
-          /*   appBar: AppBar(
+      onWillPop: () async {
+        showYesNoWarningDialog(
+          context: context,
+          text: AppLocalizations.of(context)!.quizQuit,
+          methodOnYes: () {
+            Navigator.of(context).pop(); //Exit dialog
+            Navigator.of(context).pop();
+          },
+        );
+        return false;
+      },
+      child: Scaffold(
+        /*   appBar: AppBar(
           title: Text(AppLocalizations.of(context)?.quizPageTitle ?? "Quiz"),
         ),*/
-          body: SafeArea(
-            child: Padding(
-                padding: const EdgeInsets.all(5.0),
-                child: Quiz(
-                    trialNumber: widget.trialNumber,
-                    quizNumber: widget.quizNumber)),
-          ), //Padding
-        ));
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: Quiz(
+              trialNumber: widget.trialNumber,
+              quizNumber: widget.quizNumber,
+            ),
+          ),
+        ), //Padding
+      ),
+    );
   }
 }
