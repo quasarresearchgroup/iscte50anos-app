@@ -152,7 +152,7 @@ class _QuizState extends State<Quiz> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             Map response = snapshot.data as Map;
-            LoggerService.instance.debug(response);
+            //LoggerService.instance.debug(response);
 
             if (response.containsKey("trial_score")) {
               return Center(
