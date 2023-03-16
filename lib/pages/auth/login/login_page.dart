@@ -109,7 +109,7 @@ class _LoginOpendayState extends State<LoginPage>
         style: IscteTheme.iscteColor,
         onPressed: _iscteLoginCallback,
         child: Text(
-          "Fenix Login", //TODO
+          "Login Iscte", //TODO
           style: Theme.of(context)
               .textTheme
               .titleMedium
