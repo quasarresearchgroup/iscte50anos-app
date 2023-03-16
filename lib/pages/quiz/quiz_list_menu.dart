@@ -77,7 +77,7 @@ class _QuizListState extends State<QuizList> {
       isTrialLoading = false;
 
       int newTrialNumber = newTrialInfo["trial_number"];
-      int numQuestions = newTrialInfo["numQuestions"] ?? 1000;
+      int numQuestions = newTrialInfo["quiz_size"] ?? 0;
       LoggerService.instance.debug(newTrialInfo);
       if (mounted) {
         Navigator.of(context)

@@ -6,7 +6,7 @@ import '../../widgets/dialogs/CustomDialogs.dart';
 
 //Main for isolated testing
 void main() {
-  runApp(MaterialApp(
+  runApp(const MaterialApp(
       home: QuizPage(
     quizNumber: 1,
     trialNumber: 1,
@@ -21,7 +21,7 @@ class QuizPage extends StatefulWidget {
   final int trialNumber;
   final int numQuestions;
 
-  QuizPage({
+  const QuizPage({
     Key? key,
     required this.quizNumber,
     required this.trialNumber,

@@ -21,7 +21,7 @@ class Quiz extends StatefulWidget {
   final int quizNumber;
   final int numQuestions;
 
-  Quiz({
+  const Quiz({
     Key? key,
     required this.trialNumber,
     required this.quizNumber,
@@ -82,7 +82,11 @@ class _QuizState extends State<Quiz> {
       Map answer = {"choices": selectedAnswerIds};
       LoggerService.instance.debug(answer.toString());
       submitted = await QuizService.answerQuestion(
-          widget.quizNumber, widget.trialNumber, question, answer);
+        widget.quizNumber,
+        widget.trialNumber,
+        question,
+        answer,
+      );
       if (submitted) {
         timer?.cancel();
       }
@@ -159,8 +163,11 @@ class _QuizState extends State<Quiz> {
                     Text(
                         "${AppLocalizations.of(context)!.quizPointsOfTrial}: ${response["trial_score"]}"),
                     DynamicTextButton(
-                        onPressed: Navigator.of(context).pop,
-                        child: Text(AppLocalizations.of(context)!.back)),
+                      onPressed: Navigator.of(context).pop,
+                      child: Text(
+                        AppLocalizations.of(context)!.back,
+                      ),
+                    ),
                   ],
                 ),
               );
