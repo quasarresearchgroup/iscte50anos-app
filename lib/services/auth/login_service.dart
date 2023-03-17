@@ -55,7 +55,13 @@ class LoginService {
         await storage.read(key: LoginStorageService.usernameStorageLocation);
     String? password =
         await storage.read(key: LoginStorageService.passwordStorageLocation);
-    LoggerService.instance.debug("username : $username ; password : $password");
+    String? token = await storage.read(
+        key: LoginStorageService.backendApiKeyStorageLocation);
+    LoggerService.instance
+        .debug("username : $username ; password : $password; token : $token");
+
+    if (token != null) return true;
+
     if (username != null && password != null) {
       int loginresult = await login(
         LoginFormResult(
@@ -63,11 +69,7 @@ class LoginService {
           password: password,
         ),
       );
-      if (loginresult == 200) {
-        return true;
-      } else {
-        return false;
-      }
+      return loginresult == 200;
     } else {
       return false;
     }

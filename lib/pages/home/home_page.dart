@@ -201,6 +201,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         : MyAppBar(
             title: AppLocalizations.of(context)!.puzzleScreen,
             leading: Row(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Builder(builder: (context) {
                   if (!PlatformService.instance.isIos) {

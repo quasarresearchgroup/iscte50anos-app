@@ -160,6 +160,31 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
             AppLocalizations.of(context)!.spotChooserScreen,
             style: const TextStyle(color: IscteTheme.iscteColor),
           ),
+          trailing: spotsList.isEmpty
+              ? buildDynamicRefreshButton(context, displayText: false)
+              : Row(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    DynamicIconButton(
+                        child: Icon(
+                          PlatformService.instance.isIos
+                              ? CupertinoIcons.shuffle
+                              : Icons.shuffle,
+                          color: IscteTheme.iscteColor,
+                        ),
+                        onPressed: () =>
+                            _chooseRandomSpotCallback(spotsList, context)),
+                    DynamicIconButton(
+                        child: Icon(
+                          PlatformService.instance.isIos
+                              ? CupertinoIcons.question_circle
+                              : Icons.question_mark_rounded,
+                          color: IscteTheme.iscteColor,
+                        ),
+                        onPressed: () => _displayHelpDialog(context)),
+                  ],
+                ),
         ),
         CupertinoSliverRefreshControl(
           onRefresh: () async => await _refreshCallback(context),
