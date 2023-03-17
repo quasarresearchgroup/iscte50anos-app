@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/models/database/tables/database_spot_table.dart';
 import 'package:iscte_spots/models/spot.dart';
+import 'package:iscte_spots/pages/home/state/PuzzleState.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/services/platform_service.dart';
 import 'package:iscte_spots/services/shared_prefs_service.dart';
@@ -317,10 +318,10 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
 //TODO remove from ui page into own service
   Future<void> _chooseSpotCallback(Spot spot, BuildContext context) async {
     LoggerService.instance.debug("choosing new spot $spot");
-    SharedPrefsService.storeCurrentSpot(spot);
+    await SharedPrefsService.storeCurrentSpot(spot);
+    await PuzzleState.changeSpot(spot.id);
     //await DatabasePuzzlePieceTable.removeALL();
-    if (mounted) {
-      Navigator.of(context).pop();
-    }
+    if (!mounted) return;
+    Navigator.of(context).pop();
   }
 }

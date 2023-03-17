@@ -26,11 +26,11 @@ class ChooseSpotTile extends StatefulWidget {
 }
 
 class _ChooseSpotTileState extends State<ChooseSpotTile> {
-  late final Future<int> _completePercentageFuture;
+  late final Future<double> _completePercentageFuture;
   @override
   void initState() {
     super.initState();
-    _completePercentageFuture = fetchCompletePercentage(widget.spot);
+    _completePercentageFuture = DatabasePuzzlePieceTable.fetchCompletePercentage(widget.spot.id);
   }
 
   @override
@@ -80,13 +80,13 @@ class _ChooseSpotTileState extends State<ChooseSpotTile> {
                                 Icons.check,
                                 size: 40,
                               )
-                            : FutureBuilder<int>(
+                            : FutureBuilder<double>(
                                 future: _completePercentageFuture,
                                 builder: (BuildContext context,
-                                    AsyncSnapshot<int> snapshot) {
+                                    AsyncSnapshot<double> snapshot) {
                                   if (snapshot.hasData) {
                                     return Text(
-                                      "${snapshot.data!}%",
+                                      "${snapshot.data!*100}%",
                                       style: const TextStyle(
                                           fontSize: 20,
                                           overflow: TextOverflow.ellipsis),
@@ -105,9 +105,5 @@ class _ChooseSpotTileState extends State<ChooseSpotTile> {
         });
   }
 
-  Future<int> fetchCompletePercentage(Spot spot) async {
-    int nPlacedPieces =
-        (await DatabasePuzzlePieceTable.getAllFromSpot(spot.id)).length;
-    return (nPlacedPieces * 100 / (PuzzlePage.cols * PuzzlePage.rows)).round();
-  }
+
 }

@@ -11,7 +11,7 @@ class DynamicAlertDialog extends StatelessWidget {
       {Key? key, this.actions, this.content, this.title})
       : super(key: key);
 
-  static showDynamicDialog({
+  static Future<void> showDynamicDialog({
     required BuildContext context,
     final List<Widget>? actions,
     final Widget? content,
@@ -22,7 +22,7 @@ class DynamicAlertDialog extends StatelessWidget {
     bool useRootNavigator = true,
   }) async {
     if (PlatformService.instance.isIos) {
-      showCupertinoDialog(
+      await showCupertinoDialog(
         useRootNavigator: useRootNavigator,
         context: context,
         barrierDismissible: barrierDismissible,
@@ -36,7 +36,7 @@ class DynamicAlertDialog extends StatelessWidget {
         },
       );
     } else {
-      showDialog(
+      await showDialog(
         useRootNavigator: useRootNavigator,
         context: context,
         barrierDismissible: barrierDismissible,

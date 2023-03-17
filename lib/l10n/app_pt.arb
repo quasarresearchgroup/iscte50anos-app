@@ -157,6 +157,10 @@
     "quizBeginAttemptWarning":"Continue",
     "quizBeginAttemptWarning":"Deseja iniciar uma tentativa de Quiz?\n(Certifique-se que tem uma ligação de Internet estável)",
     "quizBeginAttempt":"Iniciar nova tentativa",
-    "quizQuit":"Deseja sair do Quiz?"
+    "quizQuit":"Deseja sair do Quiz?",
+
+    "puzzleProgress":"Progresso: {progressValue}%",
+    "puzzleCompleteDialog":"Agora que completaste o puzzle podes explorar o campus em busca do spot da imagem e fazer scan do código qr que lá encontráres"
+
 
 }

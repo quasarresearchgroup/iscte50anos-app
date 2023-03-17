@@ -1,12 +1,16 @@
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:iscte_spots/models/auth/login_form_result.dart';
+
+//import 'package:iscte_spots/models/auth/login_form_result.dart';
 import 'package:iscte_spots/services/auth/fenix_login_service.dart';
-import 'package:iscte_spots/services/auth/login_service.dart';
+
+//import 'package:iscte_spots/services/auth/login_service.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
+import 'package:iscte_spots/services/platform_service.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_text_button.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
@@ -93,36 +97,43 @@ class _LoginOpendayState extends State<LoginPage>
   }
 
   Widget generateFormButtons() {
-    return Column(children: [
-      DynamicTextButton(
-        style: IscteTheme.iscteColor,
-        onPressed: _loginCallback,
-        child: Text(
-          AppLocalizations.of(context)!.loginScreen,
-          style: Theme.of(context)
-              .textTheme
-              .titleMedium
-              ?.copyWith(color: Colors.white),
-        ),
-      ),
-      DynamicTextButton(
-        style: IscteTheme.iscteColor,
-        onPressed: _iscteLoginCallback,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.lock),
-            Text(
-              "Login Iscte", //TODO
+    return Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          /*DynamicTextButton(
+            style: IscteTheme.iscteColor,
+            onPressed: _loginCallback,
+            child: Text(
+              AppLocalizations.of(context)!.loginScreen,
               style: Theme.of(context)
                   .textTheme
                   .titleMedium
                   ?.copyWith(color: Colors.white),
             ),
-          ],
-        ),
-      ),
-    ]);
+          ),
+          const SizedBox(height: 10),*/
+          DynamicTextButton(
+            style: IscteTheme.iscteColor,
+            onPressed: _iscteLoginCallback,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(PlatformService.instance.isIos
+                    ? CupertinoIcons.lock
+                    : Icons.lock),
+                Text(
+                  "Login Iscte", //TODO
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleMedium
+                      ?.copyWith(color: Colors.white),
+                ),
+              ],
+            ),
+          ),
+        ]);
   }
 
   Future<void> _iscteLoginCallback() async {
@@ -164,6 +175,7 @@ class _LoginOpendayState extends State<LoginPage>
     });
   }
 
+/*
   Future<void> _loginCallback() async {
     setState(() {
       _loginError = false;
@@ -205,6 +217,7 @@ class _LoginOpendayState extends State<LoginPage>
       _isLoading = false;
     });
   }
+*/
 
   @override
   Widget build(BuildContext context) {
@@ -226,7 +239,7 @@ class _LoginOpendayState extends State<LoginPage>
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            ...generateFormFields(),
+                            //...generateFormFields(),
                             generateFormButtons()
                           ]),
                     ),
