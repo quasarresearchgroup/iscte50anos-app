@@ -201,8 +201,10 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
           LoginService.logOut(context);
         } on InvalidQRException {
           LoggerService.instance.error("InvalidQRException");
+          launchQRErrorDialog(context);
         } catch (e) {
           LoggerService.instance.error(e);
+          launchQRErrorDialog(context);
         }
         setState(() => _requesting = false);
       },
@@ -274,6 +276,53 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
       );
     }
     return continueScan;
+  }
+
+  Future<void> launchQRErrorDialog(context) async {
+    String scanErrorTitle = "Erro no scan";
+    String alertContent =
+        "Ocorreu um erro durante o scan, tente outra vez ou tente mais tarde";
+    String okButton = "OK";
+
+    if (PlatformService.instance.isIos) {
+      await showCupertinoDialog(
+          context: context,
+          builder: (context) {
+            return CupertinoAlertDialog(
+              title: Text(scanErrorTitle),
+              content: Text(alertContent),
+              actions: [
+                CupertinoButton(
+                  child: Text(okButton), //TODO
+                  onPressed: () {
+                    LoggerService.instance.debug("Pressed \"OK\"");
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
+            );
+          });
+    } else {
+      await showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: ((BuildContext context) {
+          return AlertDialog(
+            title: Text(scanErrorTitle),
+            content: Text(alertContent),
+            actions: [
+              TextButton(
+                child: Text(okButton),
+                onPressed: () {
+                  LoggerService.instance.debug("Pressed \"OK\"");
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          );
+        }),
+      );
+    }
   }
 
   Widget myQRView(BuildContext context) => MobileScanner(
