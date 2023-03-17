@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:iscte_spots/services/leaderboard/leaderboard_service.dart';
 import 'package:iscte_spots/helper/constants.dart';
+import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 
 //const API_ADDRESS = "http://192.168.1.124";
@@ -153,7 +154,7 @@ class _AffiliationLeaderboardState extends State<AffiliationLeaderboard>
   bool firstSearch = false;
   bool canSearch = false;
 
-  late Map<String, dynamic> affiliationMap;
+  Map<String, dynamic> affiliationMap = {"-":["-"]};
   bool readJson = false;
 
   Future<List<dynamic>> fetchLeaderboard() async {
@@ -177,7 +178,7 @@ class _AffiliationLeaderboardState extends State<AffiliationLeaderboard>
     throw Exception('Failed to load leaderboard');
   }
 
-  Future<String> loadAffiliationData() async {
+  Future<String> loadAffiliationDataFromFile() async {
     var jsonText =
         await rootBundle.loadString('Resources/Affiliations/affiliations.json');
     readJson = true;
@@ -186,10 +187,35 @@ class _AffiliationLeaderboardState extends State<AffiliationLeaderboard>
     return 'success';
   }
 
+  Future<String> fetchAffiliationData() async {
+    try {
+      String? apiToken = await secureStorage.read(key: "backend_api_key");
+
+      HttpClient client = HttpClient();
+      client.badCertificateCallback =
+      ((X509Certificate cert, String host, int port) => true);
+      final request = await client.getUrl(Uri.parse(
+          '${BackEndConstants.API_ADDRESS}/api/users/affiliations'));
+      request.headers.add("Authorization", "Token $apiToken");
+      final response = await request.close();
+
+      if (response.statusCode == 200) {
+        affiliationMap = jsonDecode(await response.transform(utf8.decoder).join());
+        setState((){});
+        return "success";
+      }
+    } catch (e) {
+      LoggerService.instance.debug(e);
+    }
+    return "fail";
+  }
+
   @override
   void initState() {
     super.initState();
-    loadAffiliationData();
+    fetchAffiliationData();
+    //loadAffiliationDataFromFile();
+    setState((){});
   }
 
   @override
@@ -208,7 +234,6 @@ class _AffiliationLeaderboardState extends State<AffiliationLeaderboard>
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
           ),
         ),
-        if (readJson)
           Row(
             children: [
               const SizedBox(width: 15),
