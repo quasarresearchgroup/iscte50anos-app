@@ -5,6 +5,7 @@ import 'package:iscte_spots/models/timeline/feedback_form_result.dart';
 import 'package:iscte_spots/pages/timeline/state/timeline_state.dart';
 import 'package:iscte_spots/services/timeline/feedback_service.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_icon_button.dart';
+import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_snackbar.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_text_button.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
@@ -107,21 +108,20 @@ class _FeedbackFormState extends State<FeedbackForm> {
           feedbackFormResult: feedbackresult);
 
       if (!mounted) return;
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        sendFeedbackSuccess
-            ? SnackBar(
-                content: Text(AppLocalizations.of(context)!
-                    .feedbackFormSubmissionSuccess),
-                backgroundColor: IscteTheme.iscteColor,
-              )
-            : SnackBar(
-                content: Text(
-                    AppLocalizations.of(context)!.feedbackFormSubmissionError),
-                backgroundColor: Theme.of(context).errorColor,
-              ),
-      );
       Navigator.of(context).pop();
+      DynamicSnackBar.showSnackBar(
+        context,
+        sendFeedbackSuccess
+            ? Text(
+                AppLocalizations.of(context)!.feedbackFormSubmissionSuccess,
+                style: const TextStyle(color: IscteTheme.iscteColor),
+              )
+            : Text(
+                AppLocalizations.of(context)!.feedbackFormSubmissionError,
+                style: TextStyle(color: Theme.of(context).colorScheme.error),
+              ),
+        const Duration(seconds: 2),
+      );
     }
   }
 

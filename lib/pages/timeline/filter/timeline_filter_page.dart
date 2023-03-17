@@ -18,7 +18,7 @@ import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 import '../../../widgets/util/loading.dart';
 
 class TimelineFilterPage extends StatefulWidget {
-  TimelineFilterPage({
+  const TimelineFilterPage({
     Key? key,
     this.filterParams,
   }) : super(key: key);

@@ -113,7 +113,7 @@ class _LoginOpendayState extends State<LoginPage>
           children: [
             const Icon(Icons.lock),
             Text(
-              "login.iscte-iul.pt", //TODO
+              "Login Iscte", //TODO
               style: Theme.of(context)
                   .textTheme
                   .titleMedium

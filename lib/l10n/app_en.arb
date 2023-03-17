@@ -40,7 +40,7 @@
     "registerScreen":"Sign In",
     "loginScreen":"Login",
     "profileScreen":"Profile",
-    "qrScanResultScreen":"Contents from the Spot",
+    "qrScanResultScreen":"Events from {topic}",
     "spotChooserScreen":"Choose the next spot",
 
     "loginInvalidCredentials":"Invalid Credentials",

@@ -37,13 +37,15 @@ class _MyAppBarState extends State<MyAppBar> {
 
   @override
   Widget build(BuildContext context) {
-    var middle = widget.title != null
+    Widget? middle = widget.title != null
         ? Text(
             widget.title!,
             overflow: TextOverflow.ellipsis,
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: IscteTheme.iscteColor,
-                ),
+            style: PlatformService.instance.isIos
+                ? const TextStyle(color: IscteTheme.iscteColor)
+                : Theme.of(context).textTheme.titleLarge?.copyWith(
+                      color: IscteTheme.iscteColor,
+                    ),
           )
         : widget.middle;
     return !PlatformService.instance.isIos

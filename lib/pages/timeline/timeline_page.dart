@@ -57,7 +57,7 @@ class _TimelinePageState extends State<TimelinePage> {
                     : width * 0.7
                 : width * 0.8
             : width,
-        child: TimelineFilterPage(),
+        child: const TimelineFilterPage(),
       ),
       body: const TimeLineBodyBuilder(
         isFilterTimeline: false,

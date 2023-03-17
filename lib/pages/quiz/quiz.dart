@@ -19,11 +19,13 @@ const double ANSWER_TIME = 10000; //ms
 class Quiz extends StatefulWidget {
   final int trialNumber;
   final int quizNumber;
+  final int numQuestions;
 
-  Quiz({
+  const Quiz({
     Key? key,
     required this.trialNumber,
     required this.quizNumber,
+    required this.numQuestions,
   }) : super(key: key);
 
   @override
@@ -49,7 +51,9 @@ class _QuizState extends State<Quiz> {
     try {
       timer?.cancel();
       final question = await QuizService.getNextQuestion(
-          widget.quizNumber, widget.trialNumber);
+        widget.quizNumber,
+        widget.trialNumber,
+      );
       selectedAnswerIds.clear();
       submitted = false;
 
@@ -78,7 +82,11 @@ class _QuizState extends State<Quiz> {
       Map answer = {"choices": selectedAnswerIds};
       LoggerService.instance.debug(answer.toString());
       submitted = await QuizService.answerQuestion(
-          widget.quizNumber, widget.trialNumber, question, answer);
+        widget.quizNumber,
+        widget.trialNumber,
+        question,
+        answer,
+      );
       if (submitted) {
         timer?.cancel();
       }
@@ -144,6 +152,8 @@ class _QuizState extends State<Quiz> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             Map response = snapshot.data as Map;
+            //LoggerService.instance.debug(response);
+
             if (response.containsKey("trial_score")) {
               return Center(
                 child: Column(
@@ -153,8 +163,11 @@ class _QuizState extends State<Quiz> {
                     Text(
                         "${AppLocalizations.of(context)!.quizPointsOfTrial}: ${response["trial_score"]}"),
                     DynamicTextButton(
-                        onPressed: Navigator.of(context).pop,
-                        child: Text(AppLocalizations.of(context)!.back)),
+                      onPressed: Navigator.of(context).pop,
+                      child: Text(
+                        AppLocalizations.of(context)!.back,
+                      ),
+                    ),
                   ],
                 ),
               );
@@ -165,7 +178,7 @@ class _QuizState extends State<Quiz> {
             return Column(
               children: [
                 Text(
-                    "${AppLocalizations.of(context)!.quizQuestion} ${trialQuestion["number"]}/8"),
+                    "${AppLocalizations.of(context)!.quizQuestion} ${trialQuestion["number"]}/${widget.numQuestions}"),
                 const SizedBox(height: 5),
                 isTimed
                     ? Padding(

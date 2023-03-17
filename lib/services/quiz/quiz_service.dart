@@ -1,26 +1,21 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:http/http.dart' as http;
 import 'package:iscte_spots/helper/constants.dart';
 import 'package:iscte_spots/pages/leaderboard/leaderboard_screen.dart';
-
-import 'package:http/http.dart' as http;
 import 'package:iscte_spots/services/auth/auth_storage_service.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
-
-import '../../pages/leaderboard/leaderboard_screen.dart';
-import '../flickr/flickr_service.dart';
 
 const API_ADDRESS = BackEndConstants.API_ADDRESS;
 const API_ADDRESS_TEST = "http://192.168.1.66";
 const FLICKR_API_KEY = "c16f27dcc1c8674dd6daa3a26bd24520";
 
 class QuizService {
-  
-
   static Future<List<dynamic>> getQuizList() async {
     try {
-      String? apiToken = await secureStorage.read(key: LoginStorageService.backendApiKeyStorageLocation);
+      String? apiToken = await secureStorage.read(
+          key: LoginStorageService.backendApiKeyStorageLocation);
       //String? apiToken = "8eb7f1e61ef68a526cf5a1fb6ddb0903bc0678c1";
 
       HttpClient client = HttpClient();
@@ -136,8 +131,7 @@ class QuizService {
 
   static Future<String> getPhotoURLfromQuizFlickrURL(String url) async {
     try {
-
-      if(url == ""){
+      if (url == "") {
         return "https://www.iscte-iul.pt/assets/files/2021/12/07/1638876926013_logo_50_anos_main.png";
       }
 
@@ -156,11 +150,11 @@ class QuizService {
             "https://farm$farm.staticflickr.com/$server/$photoid\_$photoSecret\_z.jpg";
 
         return imagesrc;
-      }else{
+      } else {
         throw Exception();
       }
     } catch (e) {
-      LoggerService.instance.debug(e);
+      LoggerService.instance.error(e);
       rethrow;
     }
   }

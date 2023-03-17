@@ -77,8 +77,7 @@ class Event {
   bool get isVisitable => contentCount > 0;
 
   String getDateString() {
-    DateTime dateDateTime = DateTime.fromMillisecondsSinceEpoch(date);
-    return "${dateDateTime.year}-${dateDateTime.month}-${dateDateTime.day}";
+    return "${dateTime.year}-${dateTime.month}-${dateTime.day}";
   }
 
   factory Event.fromMap(Map<String, dynamic> json) {
