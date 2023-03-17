@@ -154,7 +154,7 @@ class _AffiliationLeaderboardState extends State<AffiliationLeaderboard>
   bool firstSearch = false;
   bool canSearch = false;
 
-  Map<String, dynamic> affiliationMap = {"-":"-"};
+  Map<String, dynamic> affiliationMap = {"-":["-"]};
   bool readJson = false;
 
   Future<List<dynamic>> fetchLeaderboard() async {
@@ -201,6 +201,7 @@ class _AffiliationLeaderboardState extends State<AffiliationLeaderboard>
 
       if (response.statusCode == 200) {
         affiliationMap = jsonDecode(await response.transform(utf8.decoder).join());
+        setState((){});
         return "success";
       }
     } catch (e) {
@@ -213,6 +214,7 @@ class _AffiliationLeaderboardState extends State<AffiliationLeaderboard>
   void initState() {
     super.initState();
     fetchAffiliationData();
+    //loadAffiliationDataFromFile();
     setState((){});
   }
 
@@ -232,7 +234,6 @@ class _AffiliationLeaderboardState extends State<AffiliationLeaderboard>
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
           ),
         ),
-        if (readJson)
           Row(
             children: [
               const SizedBox(width: 15),

@@ -108,12 +108,18 @@ class _LoginOpendayState extends State<LoginPage>
       DynamicTextButton(
         style: IscteTheme.iscteColor,
         onPressed: _iscteLoginCallback,
-        child: Text(
-          "login.iscte-iul.pt", //TODO
-          style: Theme.of(context)
-              .textTheme
-              .titleMedium
-              ?.copyWith(color: Colors.white),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.lock),
+            Text(
+              "login.iscte-iul.pt", //TODO
+              style: Theme.of(context)
+                  .textTheme
+                  .titleMedium
+                  ?.copyWith(color: Colors.white),
+            ),
+          ],
         ),
       ),
     ]);
