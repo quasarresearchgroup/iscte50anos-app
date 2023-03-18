@@ -22,8 +22,9 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:synchronized/synchronized.dart';
 
 class QRScanPageOpenDay extends StatefulWidget {
-  const QRScanPageOpenDay({Key? key /*, required this.changeImage*/,
-    required this.completedAllPuzzle})
+  const QRScanPageOpenDay(
+      {Key? key /*, required this.changeImage*/,
+      required this.completedAllPuzzle})
       : super(key: key);
 
   //final void Function(Future<SpotRequest> request) changeImage;
@@ -54,9 +55,7 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
   @override
   void initState() {
     super.initState();
-    cameraPermission = Permission.camera
-        .request()
-        .isGranted;
+    cameraPermission = Permission.camera.request().isGranted;
   }
 
   @override
@@ -72,9 +71,7 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
 
   @override
   Widget build(BuildContext context) {
-    Size mediaQuerySize = MediaQuery
-        .of(context)
-        .size;
+    Size mediaQuerySize = MediaQuery.of(context).size;
     return Stack(
       alignment: Alignment.center,
       children: <Widget>[
@@ -103,27 +100,24 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
                 if (snapshot.hasData) {
                   return !snapshot.data!
                       ? SizedBox(
-                    width: MediaQuery
-                        .of(context)
-                        .size
-                        .width * 0.5,
-                    child: Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: controlsDecoration,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(AppLocalizations.of(context)!
-                              .qrScanPermissionText),
-                          DynamicTextButton(
-                              onPressed: openAppSettings,
-                              child: Text(AppLocalizations.of(context)!
-                                  .qrScanPermissionButton))
-                        ],
-                      ),
-                    ), //TODO
-                  )
+                          width: MediaQuery.of(context).size.width * 0.5,
+                          child: Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: controlsDecoration,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(AppLocalizations.of(context)!
+                                    .qrScanPermissionText),
+                                DynamicTextButton(
+                                    onPressed: openAppSettings,
+                                    child: Text(AppLocalizations.of(context)!
+                                        .qrScanPermissionButton))
+                              ],
+                            ),
+                          ), //TODO
+                        )
                       : const SizedBox.shrink();
                 }
                 return const SizedBox.shrink();
@@ -145,15 +139,17 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
     );
   }
 
-  Future<void> checkLaunchBarcode(BuildContext context,
-      BarcodeCapture barcode) async {
+  Future<void> checkLaunchBarcode(
+      BuildContext context, BarcodeCapture barcode) async {
     if (_requesting) {
       LoggerService.instance.debug("try scanning again later!");
       return;
     }
 
     try {
-      setState(() => _requesting = true);
+      setState(() {
+        _requesting = true;
+      });
       LoggerService.instance.debug("scanned new code");
 
       SpotInfoRequest spotInfoRequest = await QRScanService.spotInfoRequest(
@@ -171,7 +167,7 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
 
       if (continueScan && spotInfoRequest.id != null) {
         List<Spot> spots =
-        (await DatabaseSpotTable.getAllWithIds([spotInfoRequest.id!]));
+            (await DatabaseSpotTable.getAllWithIds([spotInfoRequest.id!]));
         if (spots.isNotEmpty) {
           Spot spot = spots.first;
           if (!spot.visited) {
@@ -180,8 +176,7 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
           }
         }
         if (mounted) {
-          TopicRequest topicRequestCompleted =
-          await QRScanService.topicRequest(
+          TopicRequest topicRequestCompleted = await QRScanService.topicRequest(
               context: context, topicID: spotInfoRequest.id!);
 
           LoggerService.instance
@@ -212,7 +207,9 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
       }
     }
 
-    setState(() => _requesting = false);
+    setState(() {
+      _requesting = false;
+    });
   }
 
   Future<bool> launchConfirmationDialog(context, String topicTitle) async {
@@ -220,14 +217,14 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
 
     await DynamicAlertDialog.showDynamicDialog(
         context: context,
-        title: Text(AppLocalizations.of(context)!.qrScanConfirmation),
-        content: Text(topicTitle),
+        title:
+            Text(AppLocalizations.of(context)!.qrScanConfirmation(topicTitle)),
+        //content: Text(topicTitle),
         actions: [
           DynamicTextButton(
             child: Text(
               AppLocalizations.of(context)!.qrScanConfirmationCancel,
-              style: Theme
-                  .of(context)
+              style: Theme.of(context)
                   .textTheme
                   .titleMedium
                   ?.copyWith(color: IscteTheme.iscteColor),
@@ -241,8 +238,7 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
           DynamicTextButton(
             child: Text(
               AppLocalizations.of(context)!.qrScanConfirmationAccept,
-              style: Theme
-                  .of(context)
+              style: Theme.of(context)
                   .textTheme
                   .titleMedium
                   ?.copyWith(color: IscteTheme.iscteColor),
@@ -254,69 +250,7 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
             },
           )
         ]);
-/*
-    if (PlatformService.instance.isIos) {
-      await showCupertinoDialog(
-          context: context,
-          builder: (context) {
-            return CupertinoAlertDialog(
-              title: Text(AppLocalizations.of(context)!.qrScanConfirmation),
-              content: Text(topicTitle),
-              actions: [
-                CupertinoButton(
-                  child: Text(
-                      AppLocalizations.of(context)!.qrScanConfirmationCancel),
-                  onPressed: () {
-                    LoggerService.instance.debug("Pressed \"CANCEL\"");
-                    continueScan = false;
-                    Navigator.pop(context);
-                  },
-                ),
-                CupertinoButton(
-                  child: Text(
-                      AppLocalizations.of(context)!.qrScanConfirmationAccept),
-                  onPressed: () {
-                    LoggerService.instance.debug("Pressed \"ACCEPT\"");
-                    continueScan = true;
-                    Navigator.pop(context);
-                  },
-                ),
-              ],
-            );
-          });
-    } else {
-      await showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: ((BuildContext context) {
-          return AlertDialog(
-            title: Text(AppLocalizations.of(context)!.qrScanConfirmation),
-            content: Text(topicTitle),
-            actions: [
-              TextButton(
-                child: Text(
-                    AppLocalizations.of(context)!.qrScanConfirmationCancel),
-                onPressed: () {
-                  LoggerService.instance.debug("Pressed \"CANCEL\"");
-                  continueScan = false;
-                  Navigator.pop(context);
-                },
-              ),
-              TextButton(
-                child: Text(
-                    AppLocalizations.of(context)!.qrScanConfirmationAccept),
-                onPressed: () {
-                  LoggerService.instance.debug("Pressed \"ACCEPT\"");
-                  continueScan = true;
-                  Navigator.pop(context);
-                },
-              ),
-            ],
-          );
-        }),
-      );
-    }
-*/
+
     return continueScan;
   }
 
@@ -327,11 +261,18 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
     String okButton = "OK";
     await DynamicAlertDialog.showDynamicDialog(
       context: context,
-      title: Text(scanErrorTitle), //TODO
-      content: Text(alertContent), //TODO
+      title: Text(AppLocalizations.of(context)!.qrScanErrorAlertDialogTitle),
+      //TODO
+      content:
+          Text(AppLocalizations.of(context)!.qrScanErrorAlertDialogContent),
       actions: [
         DynamicTextButton(
-          child: Text(okButton), //TODO
+          child: Text(
+            okButton,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  color: IscteTheme.iscteColor,
+                ),
+          ),
           onPressed: () {
             LoggerService.instance.debug("Pressed \"OK\"");
             Navigator.pop(context);
@@ -341,8 +282,7 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
     );
   }
 
-  Widget myQRView(BuildContext context) =>
-      MobileScanner(
+  Widget myQRView(BuildContext context) => MobileScanner(
         key: qrKey,
         controller: qrController,
         onDetect: (BarcodeCapture newCode) async {
