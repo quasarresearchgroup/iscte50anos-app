@@ -219,7 +219,6 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
         context: context,
         title:
             Text(AppLocalizations.of(context)!.qrScanConfirmation(topicTitle)),
-        //content: Text(topicTitle),
         actions: [
           DynamicTextButton(
             child: Text(
@@ -255,14 +254,10 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
   }
 
   Future<void> launchQRErrorDialog(context) async {
-    String scanErrorTitle = "Erro no scan";
-    String alertContent =
-        "Ocorreu um erro durante o scan, tente outra vez ou tente mais tarde";
     String okButton = "OK";
     await DynamicAlertDialog.showDynamicDialog(
       context: context,
       title: Text(AppLocalizations.of(context)!.qrScanErrorAlertDialogTitle),
-      //TODO
       content:
           Text(AppLocalizations.of(context)!.qrScanErrorAlertDialogContent),
       actions: [

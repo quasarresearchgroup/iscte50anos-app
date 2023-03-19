@@ -276,7 +276,7 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
                 (e) => ChooseSpotTile(
                   spot: e,
                   blur: BLUR,
-                  chooseSpotCallback: _chooseSpotCallback,
+                  chooseSpotCallback: spotChooserTapCallback,
                 ),
               )
               .toList())
@@ -298,10 +298,10 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
             DynamicTextButton(
                 child: Text(AppLocalizations.of(context)!
                     .spotChooserRandomConfirmationButton),
-                onPressed: () {
-                  _chooseSpotCallback(
+                onPressed: () async {
+                  await _chooseSpotCallback(
                       list[Random().nextInt(list.length)], context);
-                  Navigator.of(context).pop();
+                  if (mounted) Navigator.of(context).pop();
                 })
           ]);
     } else {
@@ -314,11 +314,44 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
     }
   }
 
+  Future<void> spotChooserTapCallback(Spot spot, BuildContext context) async {
+    LoggerService.instance.debug("spotChooserTapCallback");
+    await DynamicAlertDialog.showDynamicDialog(
+        context: context,
+        title: const Text("Are you sure you want to choose this spot?"),
+        actions: [
+          DynamicTextButton(
+            child: Text(
+              AppLocalizations.of(context)!.qrScanConfirmationAccept,
+              style: Theme.of(context)
+                  .textTheme
+                  .titleMedium
+                  ?.copyWith(color: IscteTheme.iscteColor),
+            ),
+            onPressed: () {
+              _chooseSpotCallback(spot, context);
+              Navigator.of(context).pop();
+            },
+          ),
+          DynamicTextButton(
+            child: Text(
+              AppLocalizations.of(context)!.qrScanConfirmationCancel,
+              style: Theme.of(context)
+                  .textTheme
+                  .titleMedium
+                  ?.copyWith(color: IscteTheme.iscteColor),
+            ),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ]);
+  }
+
 //TODO remove from ui page into own service
   Future<void> _chooseSpotCallback(Spot spot, BuildContext context) async {
+    //await DatabasePuzzlePieceTable.removeALL();
+
     LoggerService.instance.debug("choosing new spot $spot");
     SharedPrefsService.storeCurrentSpot(spot);
-    //await DatabasePuzzlePieceTable.removeALL();
     if (mounted) {
       Navigator.of(context).pop();
     }

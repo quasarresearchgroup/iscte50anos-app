@@ -54,9 +54,9 @@ class _ChooseSpotTileState extends State<ChooseSpotTile> {
                   ),
                   child: InkWell(
                     enableFeedback: true,
-                    splashColor: Colors.black,
-                    onTap: () {
-                      widget.chooseSpotCallback(widget.spot, context);
+                    //splashColor: Colors.black,
+                    onTap: () async {
+                      await widget.chooseSpotCallback(widget.spot, context);
                     },
                     child: Container(
                       decoration: BoxDecoration(
@@ -71,7 +71,7 @@ class _ChooseSpotTileState extends State<ChooseSpotTile> {
                   right: 10,
                   top: 10,
                   child: Card(
-                    color: Theme.of(context).backgroundColor.withAlpha(100),
+                    color: Theme.of(context).colorScheme.background.withAlpha(100),
                     child: SizedBox.square(
                       dimension: 50,
                       child: Center(
