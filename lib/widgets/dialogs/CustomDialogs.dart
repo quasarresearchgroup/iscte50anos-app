@@ -3,13 +3,13 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_alert_dialog.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_text_button.dart';
 
-void showYesNoWarningDialog({
+Future<void> showYesNoWarningDialog({
   required BuildContext context,
   required String text,
   Function()? methodOnYes,
   Function()? methodOnNo,
-}) {
-  DynamicAlertDialog.showDynamicDialog(
+}) async {
+  await DynamicAlertDialog.showDynamicDialog(
     context: context,
     actions: [
       DynamicTextButton(
