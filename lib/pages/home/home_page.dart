@@ -250,7 +250,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         String imgLink = value!.photoLink;
                         return DynamicIconButton(
                           child: PlatformService.instance.isIos
-                              ? const Icon(CupertinoIcons.question)
+                              ? const Icon(
+                                  CupertinoIcons.question,
+                                  color: IscteTheme.iscteColor,
+                                )
                               : const Icon(Icons.question_mark),
                           onPressed: () => showHelpOverlay(
                               context, Image.network(imgLink), orientation),

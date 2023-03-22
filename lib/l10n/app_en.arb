@@ -96,11 +96,23 @@
     "qrScanNotificationDisabled": "Spots are disabled now...",
     "qrScanNotificationAllVisited": "Good! You finished the task.\n Now go to the meeting point.",
     "qrScanNotificationFoundSpot": "Wow you found the spot!!",
-    "qrScanConfirmation": "Are you sure you want to scan this spot?",
+    "qrScanConfirmation": "Are you sure you want to scan the spot related to the {topic} topic?",
+    "@qrScanConfirmation": {
+      "description": "QrScanConfirmation dialog to show to the user when he scans a certain qrcode",
+      "placeholders": {
+        "topic": {
+          "type": "String",
+          "example": "Comunidade"
+        }
+      }
+    },
+    "qrScanConfirmationVisited": "Are you sure you want to revisit the spot related to the {topic} topic?",
     "qrScanConfirmationAccept": "ACCEPT",
     "qrScanConfirmationCancel": "CANCEL",
     "qrScanPermissionText": "We need permission to access the camera to scan and detect qr codes",
     "qrScanPermissionButton": "Give Permission",
+    "qrScanErrorAlertDialogContent":"An error occurred during the scan, try again or wait a bit",
+    "qrScanErrorAlertDialogTitle":"Scan error",
 
     "timelineSearchHint" : "Search here",
     "timelineSearchResults" : "Search results",
