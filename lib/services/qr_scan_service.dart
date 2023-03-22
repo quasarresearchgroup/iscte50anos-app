@@ -85,9 +85,10 @@ class QRScanService {
             return SpotInfoRequest(
               id: responseDecoded["id"],
               title: responseDecoded["title"],
+              visited: responseDecoded["visited"] ?? false,
             );
           } else {
-            LoggerService.instance.debug("No title in spotInfoRequest");
+            LoggerService.instance.error("No title in spotInfoRequest");
           }
         }
         throw Exception("Bad response");

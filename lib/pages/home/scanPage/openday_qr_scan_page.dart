@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/models/database/tables/database_spot_table.dart';
@@ -10,16 +9,13 @@ import 'package:iscte_spots/pages/home/scanPage/qr_scan_results.dart';
 import 'package:iscte_spots/services/auth/exceptions.dart';
 import 'package:iscte_spots/services/auth/login_service.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
-import 'package:iscte_spots/services/platform_service.dart';
 import 'package:iscte_spots/services/qr_scan_service.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_alert_dialog.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_text_button.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
-import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:synchronized/synchronized.dart';
 
 class QRScanPageOpenDay extends StatefulWidget {
   const QRScanPageOpenDay(
@@ -161,9 +157,10 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
       if (mounted) {
         continueScan = await launchConfirmationDialog(
           context,
-          spotInfoRequest.title ?? "",
+          spotInfoRequest,
         );
       }
+      LoggerService.instance.debug("continueScan: $continueScan");
 
       if (continueScan && spotInfoRequest.id != null) {
         List<Spot> spots =
@@ -212,13 +209,19 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
     });
   }
 
-  Future<bool> launchConfirmationDialog(context, String topicTitle) async {
+  Future<bool> launchConfirmationDialog(
+      context, SpotInfoRequest spotInfo) async {
     bool continueScan = false;
 
     await DynamicAlertDialog.showDynamicDialog(
         context: context,
-        title:
-            Text(AppLocalizations.of(context)!.qrScanConfirmation(topicTitle)),
+        title: Text(
+          spotInfo.visited
+              ? AppLocalizations.of(context)!
+                  .qrScanConfirmationVisited(spotInfo.title ?? "")
+              : AppLocalizations.of(context)!
+                  .qrScanConfirmation(spotInfo.title ?? ""),
+        ),
         actions: [
           DynamicTextButton(
             child: Text(

@@ -97,6 +97,16 @@
     "qrScanNotificationAllVisited": "Boa! Terminaste a tarefa.\n Agora vai ter ao ponto de encontro.",
     "qrScanNotificationFoundSpot": "Wow encontraste o Spot!!",
     "qrScanConfirmation": "Tens a certeza que queres fazer scan ao spot relativo ao topico {topic}?",
+    "@qrScanConfirmation": {
+      "description": "Texto que aparece no titulo de um dialogo de aviso ao utilizador quando este faz scan de algum código qr",
+      "placeholders": {
+        "topic": {
+          "type": "String",
+          "example": "Comunidade"
+        }
+      }
+    },
+    "qrScanConfirmationVisited": "Tens a certeza que queres visitar o spot relativo ao topico {topic} otra  vez?",
     "qrScanConfirmationAccept": "ACEITAR",
     "qrScanConfirmationCancel": "CANCELAR",
     "qrScanPermissionText": "Precisamos de permissões para aceder à camera, para poder detetar e fazer o scan dos códigos qr",

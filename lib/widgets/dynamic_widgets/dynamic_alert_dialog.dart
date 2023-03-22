@@ -22,7 +22,7 @@ class DynamicAlertDialog extends StatelessWidget {
     bool useRootNavigator = true,
   }) async {
     if (PlatformService.instance.isIos) {
-      showCupertinoDialog(
+      await showCupertinoDialog(
         useRootNavigator: useRootNavigator,
         context: context,
         barrierDismissible: barrierDismissible,
@@ -36,7 +36,7 @@ class DynamicAlertDialog extends StatelessWidget {
         },
       );
     } else {
-      showDialog(
+      await showDialog(
         useRootNavigator: useRootNavigator,
         context: context,
         barrierDismissible: barrierDismissible,
