@@ -8,6 +8,7 @@ import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_back_button.dart';
 import 'package:iscte_spots/widgets/my_app_bar.dart';
 import 'package:iscte_spots/widgets/network/error.dart';
+import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 
 import '../../services/quiz/quiz_service.dart';
 import '../../widgets/dialogs/CustomDialogs.dart';
@@ -174,14 +175,19 @@ class _QuizListState extends State<QuizList> {
                                       child: ExpansionTile(
                                         title: Text(
                                           "Quiz ${items[index]["number"].toString()}",
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16,
-                                          ),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .titleLarge
+                                              ?.copyWith(
+                                                color: IscteTheme.iscteColor,
+                                              ),
                                         ),
                                         subtitle: Text(
-                                            "${AppLocalizations.of(context)!.quizPoints}: ${score} \n${AppLocalizations.of(context)!.quizAttempts}: ${trials}"
-                                            "\n${AppLocalizations.of(context)!.quizTopics}: ${topicNames}"),
+                                            "${AppLocalizations.of(context)!.quizPoints}: $score \n${AppLocalizations.of(context)!.quizAttempts}: $trials"
+                                            "\n${AppLocalizations.of(context)!.quizTopics}: $topicNames",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyMedium),
                                         children: [
                                           QuizDetail(
                                             quiz: items[index],
