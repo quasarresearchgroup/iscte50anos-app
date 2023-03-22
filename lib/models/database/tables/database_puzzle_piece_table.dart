@@ -1,12 +1,13 @@
+import 'package:flutter/foundation.dart';
 import 'package:iscte_spots/models/database/tables/database_spot_table.dart';
 import 'package:iscte_spots/models/puzzle_piece.dart';
+import 'package:iscte_spots/pages/home/puzzle/puzzle_page.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../database_helper.dart';
 
 class DatabasePuzzlePieceTable {
-
   static const table = 'puzzlePieceTable';
 
   static const columnSpotId = "spot_id";
@@ -46,14 +47,10 @@ class DatabasePuzzlePieceTable {
     LoggerService.instance.debug("Created $table");
   }
 
-  static Future<List<PuzzlePiece>> getAll({int? row, int? col}) async {
+  static Future<List<PuzzlePiece>> getAll() async {
     DatabaseHelper instance = DatabaseHelper.instance;
     Database db = await instance.database;
-    List<Map<String, Object?>> contents = row != null && col != null
-        ? await db.query(table,
-            where: '$columnRow = ? AND $columnColumn = ?',
-            whereArgs: [row, col])
-        : await db.query(table);
+    List<Map<String, Object?>> contents = await db.query(table);
 
     List<PuzzlePiece> contentList = contents.isNotEmpty
         ? contents.map((e) => PuzzlePiece.fromMap(e)).toList()
@@ -61,21 +58,14 @@ class DatabasePuzzlePieceTable {
     return contentList;
   }
 
-  static Future<List<PuzzlePiece>> getAllFromSpot(int spotId,
-      {int? row, int? col}) async {
+  static Future<List<PuzzlePiece>> getAllFromSpot(int spotId) async {
     DatabaseHelper instance = DatabaseHelper.instance;
     Database db = await instance.database;
-    List<Map<String, Object?>> contents = row != null && col != null
-        ? await db.query(
-            table,
-            where: '$columnSpotId = ? AND $columnRow = ? AND $columnColumn = ?',
-            whereArgs: [spotId, row, col],
-          )
-        : await db.query(
-            table,
-            where: '$columnSpotId = ?',
-            whereArgs: [spotId],
-          );
+    List<Map<String, Object?>> contents = await db.query(
+      table,
+      where: '$columnSpotId = ?',
+      whereArgs: [spotId],
+    );
 
     List<PuzzlePiece> contentList = contents.isNotEmpty
         ? contents.map((e) => PuzzlePiece.fromMap(e)).toList()
@@ -123,7 +113,8 @@ class DatabasePuzzlePieceTable {
   static Future<int> remove(int row, int column) async {
     DatabaseHelper instance = DatabaseHelper.instance;
     Database db = await instance.database;
-    LoggerService.instance.debug("Removing entry with row:$row and column:$column from $table");
+    LoggerService.instance
+        .debug("Removing entry with row:$row and column:$column from $table");
     return await db.delete(table,
         where: '$columnRow = ? AND $columnColumn = ?',
         whereArgs: [row, column]);
@@ -141,5 +132,11 @@ class DatabasePuzzlePieceTable {
     var result = await db.execute('DROP TABLE IF EXISTS $table');
     LoggerService.instance.debug("Dropping $table");
     return result;
+  }
+
+  static Future<double> fetchCompletePercentage(int spotId) async {
+    int nPlacedPieces =
+        (await DatabasePuzzlePieceTable.getAllFromSpot(spotId)).length;
+    return (nPlacedPieces / (PuzzlePage.cols * PuzzlePage.rows));
   }
 }

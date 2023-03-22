@@ -7,12 +7,14 @@ import 'package:iscte_spots/models/spot.dart';
 import 'package:iscte_spots/pages/home/nav_drawer/drawer.dart';
 import 'package:iscte_spots/pages/home/puzzle/puzzle_page.dart';
 import 'package:iscte_spots/pages/home/scanPage/openday_qr_scan_page.dart';
+import 'package:iscte_spots/pages/home/state/PuzzleState.dart';
 import 'package:iscte_spots/pages/home/widgets/sucess_scan_widget.dart';
 import 'package:iscte_spots/pages/leaderboard/leaderboard_screen.dart';
 import 'package:iscte_spots/pages/spotChooser/spot_chooser_page.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/services/platform_service.dart';
 import 'package:iscte_spots/services/shared_prefs_service.dart';
+import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_alert_dialog.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_icon_button.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_text_button.dart';
 import 'package:iscte_spots/widgets/iscte_confetti_widget.dart';
@@ -91,7 +93,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     _lottieController.dispose();
   }
 
-  completePuzzleCallback() {
+  completePuzzleCallback() async {
     LoggerService.instance.debug("Completed Puzzle!!");
     _confettiController.play();
     Spot? spot = _currentSpotNotifier.value;
@@ -99,8 +101,20 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       spot.visited = true;
       DatabaseSpotTable.update(spot);
     }
+    await DynamicAlertDialog.showDynamicDialog(
+        context: context,
+        title: Text(AppLocalizations.of(context)!.help),
+        content: Text(AppLocalizations.of(context)!.puzzleCompleteDialog),
+        actions: [
+          DynamicTextButton(
+              child: Text(AppLocalizations.of(context)!.confirm),
+              onPressed: () {
+                Navigator.of(context).pop();
+              })
+        ]);
+
     setState(() {});
-    Future.delayed(const Duration(seconds: 2))
+    Future.delayed(const Duration(seconds: 1))
         .then((value) => _tabController.animateTo(widget.scanSpotIndex));
   }
 
@@ -288,49 +302,92 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     return SafeArea(
       child: Padding(
           padding: const EdgeInsets.all(10.0),
-          child: Stack(
-            children: [
-              ValueListenableBuilder<Spot?>(
-                  valueListenable: _currentSpotNotifier,
-                  builder: (context, value, _) {
-                    if (value != null) {
-                      return LayoutBuilder(builder: (context, constraints) {
-                        return PuzzlePage(
-                          spot: value,
-                          completeCallback: completePuzzleCallback,
-                          constraints: constraints,
-                        );
-                      });
-                    } else {
-                      return Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
+          child: ValueListenableBuilder<Spot?>(
+              valueListenable: _currentSpotNotifier,
+              builder: (context, currentSpot, _) {
+                if (currentSpot != null) {
+                  return Column(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Expanded(
+                        child: Stack(
                           children: [
-                            const Icon(
-                              SpotChooserPage.icon,
-                              size: 100,
+                            LayoutBuilder(
+                              builder: (context, constraints) {
+                                return PuzzlePage(
+                                  spot: currentSpot,
+                                  completeCallback: completePuzzleCallback,
+                                  constraints: constraints,
+                                );
+                              },
                             ),
-                            DynamicTextButton(
-                                child: Text(
-                                    AppLocalizations.of(context)!
-                                        .spotChooserScreen,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleLarge
-                                        ?.copyWith(
-                                          color: IscteTheme.iscteColor,
-                                        )),
-                                onPressed: () => Navigator.of(context)
-                                    .pushNamed(SpotChooserPage.pageRoute))
+                            IscteConfetti(
+                              confettiController: _confettiController,
+                            )
                           ],
                         ),
-                      );
-                    }
-                  }),
-              IscteConfetti(confettiController: _confettiController)
-            ],
-          )),
+                      ),
+                      ValueListenableBuilder<double>(
+                          valueListenable: PuzzleState.currentPuzzleProgress,
+                          builder: (context, double progress, _) {
+                            return Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                TweenAnimationBuilder<double>(
+                                  duration: const Duration(milliseconds: 250),
+                                  curve: Curves.easeInOut,
+                                  tween: Tween<double>(
+                                    begin: 0,
+                                    end: progress,
+                                  ),
+                                  builder: (context, value, _) =>
+                                      LinearProgressIndicator(
+                                    value: value,
+                                    color: IscteTheme.iscteColor,
+                                    backgroundColor: IscteTheme.greyColor,
+                                  ),
+                                ),
+                                Text(
+                                  AppLocalizations.of(context)!
+                                      .puzzleProgress((progress * 100).round()),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleMedium
+                                      ?.copyWith(
+                                        color: IscteTheme.iscteColor,
+                                      ),
+                                )
+                              ],
+                            );
+                          }),
+                    ],
+                  );
+                } else {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          SpotChooserPage.icon,
+                          size: 100,
+                        ),
+                        DynamicTextButton(
+                            child: Text(
+                                AppLocalizations.of(context)!.spotChooserScreen,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleLarge
+                                    ?.copyWith(
+                                      color: IscteTheme.iscteColor,
+                                    )),
+                            onPressed: () => Navigator.of(context)
+                                .pushNamed(SpotChooserPage.pageRoute))
+                      ],
+                    ),
+                  );
+                }
+              })),
     );
   }
 }

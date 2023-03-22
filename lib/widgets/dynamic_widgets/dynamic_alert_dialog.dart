@@ -11,7 +11,7 @@ class DynamicAlertDialog extends StatelessWidget {
       {Key? key, this.actions, this.content, this.title})
       : super(key: key);
 
-  static showDynamicDialog({
+  static Future<void> showDynamicDialog({
     required BuildContext context,
     final List<Widget>? actions,
     final Widget? content,
