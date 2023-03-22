@@ -114,7 +114,9 @@ class _LoginOpendayState extends State<LoginPage>
           ),
           const SizedBox(height: 10),*/
           DynamicTextButton(
-            style: IscteTheme.iscteColor,
+            style: ButtonStyle(
+                backgroundColor:
+                    MaterialStateProperty.all(IscteTheme.iscteColor)),
             onPressed: _iscteLoginCallback,
             child: Row(
               mainAxisSize: MainAxisSize.min,

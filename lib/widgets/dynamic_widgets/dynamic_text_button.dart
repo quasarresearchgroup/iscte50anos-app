@@ -6,33 +6,42 @@ class DynamicTextButton extends StatelessWidget {
   const DynamicTextButton({
     Key? key,
     required this.child,
-    required this.onPressed,
+    this.onPressed,
     this.style,
   }) : super(key: key);
   final Widget child;
   final void Function()? onPressed;
-  final Color? style;
+  final ButtonStyle? style;
 
   @override
   Widget build(BuildContext context) {
     return (PlatformService.instance.isIos)
         ? CupertinoButton(
             onPressed: onPressed,
-            color: style,
+            disabledColor:
+                style?.foregroundColor?.resolve({MaterialState.disabled}) ??
+                    CupertinoColors.quaternarySystemFill,
+            color: style?.foregroundColor?.resolve({
+              MaterialState.focused,
+              MaterialState.hovered,
+              MaterialState.pressed,
+              MaterialState.selected,
+            }),
             padding: const EdgeInsets.all(8),
             child: child,
           )
         : TextButton(
             onPressed: onPressed,
-            style: ButtonStyle(
+            style: style,
+            child: child,
+/*            style: ButtonStyle(
               backgroundColor: style != null
                   ? MaterialStateProperty.all<Color>(style!)
                   : null,
               foregroundColor: style != null
                   ? MaterialStateProperty.all<Color>(Colors.white)
                   : null,
-            ),
-            child: child,
+            ),*/
           );
   }
 }

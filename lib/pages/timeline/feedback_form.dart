@@ -137,7 +137,9 @@ class _FeedbackFormState extends State<FeedbackForm> {
       actions: [
         DynamicTextButton(
           onPressed: submitForm,
-          style: IscteTheme.iscteColor,
+          style: ButtonStyle(
+              foregroundColor:
+                  MaterialStateProperty.all(IscteTheme.iscteColor)),
           child: Text(
             AppLocalizations.of(context)!.feedbackFormSubmit,
             style: base?.copyWith(color: Colors.white),
@@ -145,7 +147,9 @@ class _FeedbackFormState extends State<FeedbackForm> {
         ),
         DynamicTextButton(
           onPressed: Navigator.of(context).pop,
-          style: IscteTheme.iscteColor,
+          style: ButtonStyle(
+              foregroundColor:
+                  MaterialStateProperty.all(IscteTheme.iscteColor)),
           child: Text(
             AppLocalizations.of(context)!.feedbackFormCancel,
             style: base?.copyWith(color: Colors.white),

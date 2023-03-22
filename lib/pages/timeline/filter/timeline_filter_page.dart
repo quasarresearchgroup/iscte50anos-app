@@ -162,17 +162,21 @@ class _TimelineFilterPageState extends State<TimelineFilterPage> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 DynamicTextButton(
-                  style: IscteTheme.iscteColor,
+                  style: ButtonStyle(
+                      foregroundColor:
+                          MaterialStateProperty.all(IscteTheme.iscteColor)),
                   onPressed: () => _submitSelection(context),
                   child:
                       Text(AppLocalizations.of(context)!.timelineSearchButton),
                 ),
                 DynamicTextButton(
-                  style: IscteTheme.greyColor,
+                  style: ButtonStyle(
+                      foregroundColor:
+                          MaterialStateProperty.all(IscteTheme.iscteColor)),
                   onPressed: TimelineState.clearFilter,
                   child: Text(
                     AppLocalizations.of(context)!.timelineSelectClearButton,
-                    style: TextStyle(color: Colors.black),
+                    style: const TextStyle(color: Colors.black),
                   ),
                 ),
               ],
