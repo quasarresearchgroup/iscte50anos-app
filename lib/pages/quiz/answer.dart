@@ -7,10 +7,11 @@ class Answer extends StatelessWidget {
   final int answerId;
 
   final bool isMultipleChoice;
+  final bool enabled;
   final List<int> selectedAnswers;
 
   const Answer(this.selectHandler, this.answerText, this.answerId,
-      this.isMultipleChoice, this.selectedAnswers,
+      this.isMultipleChoice, this.selectedAnswers, this.enabled,
       {Key? key})
       : super(key: key);
 
@@ -23,9 +24,11 @@ class Answer extends StatelessWidget {
               title: Text(answerText),
               dense: true,
               value: answerId,
-              onChanged: (value) {
-                selectHandler(value as int, false);
-              },
+              onChanged: enabled
+                  ? null
+                  : (value) {
+                      selectHandler(value as int, false);
+                    },
               groupValue: selectedAnswers.isEmpty ? -1 : selectedAnswers[0],
               visualDensity: const VisualDensity(horizontal: -4),
             ),
@@ -35,13 +38,15 @@ class Answer extends StatelessWidget {
               key: ValueKey(answerId),
               title: Text(answerText),
               controlAffinity: ListTileControlAffinity.leading,
-
               dense: true,
-              onChanged: (bool? value) {
-                selectHandler(answerId, true);
-              },
+              onChanged: enabled
+                  ? null
+                  : (bool? value) {
+                      selectHandler(answerId, true);
+                    },
               value: selectedAnswers.contains(answerId),
               visualDensity: const VisualDensity(horizontal: -4),
-          )); //Container
+            ),
+          ); //Container
   }
 }
