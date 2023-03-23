@@ -4,10 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
 //import 'package:iscte_spots/models/auth/login_form_result.dart';
 import 'package:iscte_spots/services/auth/fenix_login_service.dart';
-
 //import 'package:iscte_spots/services/auth/login_service.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/services/platform_service.dart';
@@ -120,17 +118,20 @@ class _LoginOpendayState extends State<LoginPage>
             onPressed: _iscteLoginCallback,
             child: Row(
               mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Icon(PlatformService.instance.isIos
-                    ? CupertinoIcons.lock
-                    : Icons.lock),
+                Icon(
+                  PlatformService.instance.isIos
+                      ? CupertinoIcons.lock
+                      : Icons.lock,
+                  color: Colors.white,
+                ),
+                const SizedBox(width: 10),
                 Text(
                   "Login Iscte", //TODO
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleMedium
-                      ?.copyWith(color: Colors.white),
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        color: Colors.white,
+                      ),
                 ),
               ],
             ),
