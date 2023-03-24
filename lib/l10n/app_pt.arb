@@ -155,6 +155,7 @@
     "quizQuestion":"Pergunta",
     "quizProgress":"Progresso",
     "quizProgressNoAnswer":"Deseja avançar sem responder?",
+    "quizTimerEndNoAnswer":"O seu tempo para responder a esta pergunta acabou sem nenhuma submissão efetuada!\nNão receberá pontos por esta questão.",
     "quizNext":"Seguinte",
     "quizGenerating":"A gerando o seu quiz, por favor aguarde",
     "quizAvailable":"Quizzes disponíveis",

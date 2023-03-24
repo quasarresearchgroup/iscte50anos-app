@@ -51,6 +51,7 @@ class _QuizState extends State<Quiz> {
   double countdown = 10000;
 
   Future<Map> getNextQuestion() async {
+    LoggerService.instance.debug("getNextQuestion called");
     try {
       stopTimer();
       final question = await QuizService.getNextQuestion(
@@ -79,7 +80,7 @@ class _QuizState extends State<Quiz> {
     }
   }
 
-  submitAnswer(int question) async {
+  void submitAnswer(int question) async {
     submitting = true;
     try {
       Map answer = {"choices": selectedAnswerIds};
@@ -109,18 +110,18 @@ class _QuizState extends State<Quiz> {
     return countdown / ANSWER_TIME;
   }
 
-  stopTimer() {
+  void stopTimer() {
     LoggerService.instance.debug("Stopping QuestionTimer");
     timer?.cancel();
   }
 
-  removeTimer() {
+  void removeTimer() {
     LoggerService.instance.debug("Removing QuestionTimer");
     timer = null;
     countdown = 1;
   }
 
-  startTimer() {
+  void startTimer() {
     LoggerService.instance.debug("Starting QuestionTimer");
     timer?.cancel();
     countdown = ANSWER_TIME;
@@ -131,14 +132,14 @@ class _QuizState extends State<Quiz> {
           timer.cancel();
           DynamicAlertDialog.showDynamicDialog(
             context: context,
-            title: Text("data"),
+            title: Text(AppLocalizations.of(context)!.quizTimerEndNoAnswer),
           );
         }
       });
     });
   }
 
-  selectAnswer(int answer, bool multiple) {
+  void selectAnswer(int answer, bool multiple) {
     setState(() {
       if (multiple) {
         if (selectedAnswerIds.contains(answer)) {
@@ -163,6 +164,17 @@ class _QuizState extends State<Quiz> {
     timer?.cancel();
     super.dispose();
   }
+
+  final ButtonStyle buttonStyle = ButtonStyle(
+    foregroundColor: MaterialStateProperty.resolveWith(
+      (Set<MaterialState> states) {
+        if (states.contains(MaterialState.disabled)) {
+          return IscteTheme.greyColor;
+        }
+        return IscteTheme.iscteColor;
+      },
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -201,7 +213,7 @@ class _QuizState extends State<Quiz> {
                 child: QuizImage(
                   flickrUrl: question["image_link"],
                   onLoadCallback: startTimer,
-                  onErrorCallback: removeTimer,
+                  onErrorCallback: startTimer,
                   key: ValueKey(question["image_link"]),
                 ),
               ),
@@ -236,16 +248,7 @@ class _QuizState extends State<Quiz> {
                             submitting
                         ? null
                         : () => submitAnswer(trialQuestion["number"]),
-                    style: ButtonStyle(
-                      foregroundColor: MaterialStateProperty.resolveWith(
-                        (Set<MaterialState> states) {
-                          if (states.contains(MaterialState.disabled)) {
-                            return IscteTheme.greyColor;
-                          }
-                          return IscteTheme.iscteColor;
-                        },
-                      ),
-                    ),
+                    style: buttonStyle,
                     child: submitted
                         ? Text(AppLocalizations.of(context)!.submitted)
                         : submitting
@@ -263,10 +266,31 @@ class _QuizState extends State<Quiz> {
                   const SizedBox(width: 10),
                   // ----- Next button -----
                   DynamicTextButton(
-                    onPressed: () => nextButtonCallback(context),
-                    child: Text(
-                      AppLocalizations.of(context)!.quizNext,
-                    ),
+                    style: buttonStyle,
+                    onPressed: !submitted && !isTimed
+                        ? null
+                        : countdown > 0 && !submitted
+                            ? () {
+                                setState(() {
+                                  showYesNoWarningDialog(
+                                    context: context,
+                                    text: AppLocalizations.of(context)!
+                                        .quizProgressNoAnswer,
+                                    methodOnYes: () {
+                                      setState(() {
+                                        Navigator.of(context).pop();
+                                        futureQuestion = getNextQuestion();
+                                      });
+                                    },
+                                  );
+                                });
+                              }
+                            : () => setState(
+                                  () {
+                                    futureQuestion = getNextQuestion();
+                                  },
+                                ),
+                    child: Text(AppLocalizations.of(context)!.quizNext),
                   ),
                 ],
               )
@@ -289,21 +313,5 @@ class _QuizState extends State<Quiz> {
         } //Column
       },
     );
-  }
-
-  void Function()? nextButtonCallback(BuildContext context) {
-    LoggerService.instance.debug("nextButtonCallback called");
-    return !submitted && !isTimed
-        ? null
-        : countdown > 0 && !submitted
-            ? () async => await showYesNoWarningDialog(
-                  context: context,
-                  text: AppLocalizations.of(context)!.quizProgressNoAnswer,
-                  methodOnYes: () => setState(() {
-                    Navigator.of(context).pop();
-                    futureQuestion = getNextQuestion();
-                  }),
-                )
-            : () => setState(() => futureQuestion = getNextQuestion());
   }
 }
