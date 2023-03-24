@@ -44,65 +44,71 @@ class IscteLoginService {
   static Future<bool> login() async {
     // GET ACCESS TOKEN AND ID TOKEN FROM OKTA
 
-    final AuthorizationTokenResponse? result =
-        await appAuth.authorizeAndExchangeCode(
-      AuthorizationTokenRequest(
-        IDP_CLIENT_ID,
-        IDP_REDIRECT_URI,
-        issuer: IDP_ISSUER,
-        //scopes: ['upn', 'openid', 'profile'],
-        scopes: ['upn', 'openid', 'profile', 'offline_access'],
-        //promptValues: ['login']
-      ),
-    );
-    String? refreshToken = result?.refreshToken;
+    try {
+      final AuthorizationTokenResponse? result =
+          await appAuth.authorizeAndExchangeCode(
+        AuthorizationTokenRequest(
+          IDP_CLIENT_ID,
+          IDP_REDIRECT_URI,
+          issuer: IDP_ISSUER,
+          //scopes: ['upn', 'openid', 'profile'],
+          scopes: ['upn', 'openid', 'profile', 'offline_access'],
+          //promptValues: ['login']
+        ),
+      );
+      if (result == null || result.refreshToken == null) {
+        return false;
+      }
 
-    final Map<String, dynamic> idToken =
-        IscteLoginService.parseIdToken(result?.idToken ?? "");
-    final profile = await getUserDetails(result?.accessToken ?? "");
-    print("IDTOKEN: $idToken");
-    print("----------------------------------------------------");
+      String refreshToken = result.refreshToken!;
 
-    print("PROFILE INFO: $profile");
+      final Map<String, dynamic> idToken =
+          IscteLoginService.parseIdToken(result.idToken ?? "");
+      final profile = await getUserDetails(result.accessToken ?? "");
+      LoggerService.instance.debug("IDTOKEN: $idToken\nPROFILE INFO: $profile");
 
-    //await secureStorage.write(
-    //    key: 'refresh_token', value: result?.refreshToken,);
+      //await secureStorage.write(
+      //    key: 'refresh_token', value: result?.refreshToken,);
 
-    // Exchange OKTA access token to API Token
-    /*Response tokenExchange = await http.post(
+      // Exchange OKTA access token to API Token
+      /*Response tokenExchange = await http.post(
         Uri.parse('$API_ADDRESS/api/auth/'),
         body: {"access_token": result?.accessToken});*/
 
-    HttpClient client = HttpClient();
-    client.badCertificateCallback =
-        ((X509Certificate cert, String host, int port) => true);
+      HttpClient client = HttpClient();
+      client.badCertificateCallback =
+          ((X509Certificate cert, String host, int port) => true);
 
-    final request = await client.postUrl(Uri.parse('$API_ADDRESS/api/auth/'));
+      final request = await client.postUrl(Uri.parse('$API_ADDRESS/api/auth/'));
 
-    request.headers.set('content-type', 'application/json');
-    var tokenRequestBody =
-        utf8.encode(json.encode({"access_token": result?.accessToken}));
-    request.headers.set('Content-Length', tokenRequestBody.length);
-    request.add(tokenRequestBody);
-    final response = await request.close();
+      request.headers.set('content-type', 'application/json');
+      var tokenRequestBody =
+          utf8.encode(json.encode({"access_token": result.accessToken}));
+      request.headers.set('Content-Length', tokenRequestBody.length);
+      request.add(tokenRequestBody);
+      final response = await request.close();
 
-    LoggerService.instance
-        .debug("Obtained api token. Status: ${response.statusCode}");
+      LoggerService.instance
+          .debug("Obtained api token. Status: ${response.statusCode}");
 
-    if (response.statusCode == 200) {
-      dynamic apiToken = await jsonDecode(await response.transform(utf8.decoder).join());
-      LoggerService.instance.debug("API Token: $apiToken");
-      //secureStorage.write(key: 'api_token', value: apiToken["access_token"]);
-      IscteLoginStorageService.storeFenixLogInCredenials(
-        refreshToken: refreshToken,
-        apiKey: apiToken["api_token"].toString(),
-      );
-      return true;
+      if (response.statusCode == 200) {
+        dynamic apiToken =
+            await jsonDecode(await response.transform(utf8.decoder).join());
+        LoggerService.instance.debug("API Token: $apiToken");
+        //secureStorage.write(key: 'api_token', value: apiToken["access_token"]);
+        IscteLoginStorageService.storeFenixLogInCredenials(
+          refreshToken: refreshToken,
+          apiKey: apiToken["api_token"].toString(),
+        );
+        return true;
+      }
+
+      return false;
+
+      // final Map apiToken = json.decode(utf8.decode(tokenExchange.body.codeUnits));
+    } catch (e, _) {
+      return false;
     }
-
-    return false;
-
-    // final Map apiToken = json.decode(utf8.decode(tokenExchange.body.codeUnits));
   }
 
   static Future<void> logout() async {

@@ -174,7 +174,7 @@
     "quizQuit":"Deseja sair do Quiz?",
 
     "puzzleProgress":"Progresso: {progressValue}%",
-    "puzzleCompleteDialog":"Agora que completaste o puzzle podes explorar o campus em busca do spot da imagem e fazer scan do código qr que lá encontráres"
+    "puzzleCompleteDialog":"Agora vai para o Spot da fotografia e digitaliza o código QR que lá encontrarás!"
 
 
 }

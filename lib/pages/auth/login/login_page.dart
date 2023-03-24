@@ -2,16 +2,18 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-//import 'package:iscte_spots/models/auth/login_form_result.dart';
+import 'package:iscte_spots/models/auth/login_form_result.dart';
 import 'package:iscte_spots/services/auth/fenix_login_service.dart';
-//import 'package:iscte_spots/services/auth/login_service.dart';
+import 'package:iscte_spots/services/auth/login_service.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/services/platform_service.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_text_button.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
+
+bool DONTHAVEACCOUNT = false;
+bool LOGINBUTTON = false;
 
 class LoginPage extends StatefulWidget {
   LoginPage({
@@ -99,18 +101,21 @@ class _LoginOpendayState extends State<LoginPage>
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          /*DynamicTextButton(
-            style: IscteTheme.iscteColor,
-            onPressed: _loginCallback,
-            child: Text(
-              AppLocalizations.of(context)!.loginScreen,
-              style: Theme.of(context)
-                  .textTheme
-                  .titleMedium
-                  ?.copyWith(color: Colors.white),
+          if (LOGINBUTTON)
+            DynamicTextButton(
+              style: const ButtonStyle(
+                  foregroundColor:
+                      MaterialStatePropertyAll(IscteTheme.iscteColor)),
+              onPressed: _loginCallback,
+              child: Text(
+                AppLocalizations.of(context)!.loginScreen,
+                style: Theme.of(context)
+                    .textTheme
+                    .titleMedium
+                    ?.copyWith(color: Colors.white),
+              ),
             ),
-          ),
-          const SizedBox(height: 10),*/
+          if (LOGINBUTTON) const SizedBox(height: 10),
           DynamicTextButton(
             style: ButtonStyle(
                 backgroundColor:
@@ -153,7 +158,6 @@ class _LoginOpendayState extends State<LoginPage>
         setState(() {
           _loginError = true;
         });
-
         LoggerService.instance.error("Iscte Login error!:");
       }
     } on SocketException {
@@ -161,11 +165,6 @@ class _LoginOpendayState extends State<LoginPage>
         _connectionError = true;
       });
       LoggerService.instance.error("SocketException on login!");
-    } on PlatformException catch (e) {
-      LoggerService.instance.error(e);
-      setState(() {
-        _loginError = true;
-      });
     } catch (e) {
       setState(() {
         _generalError = true;
@@ -178,7 +177,6 @@ class _LoginOpendayState extends State<LoginPage>
     });
   }
 
-/*
   Future<void> _loginCallback() async {
     setState(() {
       _loginError = false;
@@ -191,9 +189,7 @@ class _LoginOpendayState extends State<LoginPage>
           username: widget.userNameController.text,
           password: widget.passwordController.text,
         );
-        int statusCode = await LoginService.login(
-          loginFormResult,
-        );
+        int statusCode = await LoginService.login(loginFormResult);
         if (statusCode == 200) {
           widget.loggingComplete();
         } else {
@@ -220,7 +216,6 @@ class _LoginOpendayState extends State<LoginPage>
       _isLoading = false;
     });
   }
-*/
 
   @override
   Widget build(BuildContext context) {
@@ -246,30 +241,30 @@ class _LoginOpendayState extends State<LoginPage>
                             generateFormButtons()
                           ]),
                     ),
-                    /*
-                    Flexible(
-                      flex: 1,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(AppLocalizations.of(context)!
-                              .loginDontHaveAccount),
-                          DynamicTextButton(
-                            onPressed: widget.changeToSignUp,
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(Icons.adaptive.arrow_forward),
-                                Text(
-                                  AppLocalizations.of(context)!
-                                      .loginRegisterButton,
-                                )
-                              ],
-                            ),
-                          )
-                        ],
+                    if (DONTHAVEACCOUNT)
+                      Flexible(
+                        flex: 1,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(AppLocalizations.of(context)!
+                                .loginDontHaveAccount),
+                            DynamicTextButton(
+                              onPressed: widget.changeToSignUp,
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(Icons.adaptive.arrow_forward),
+                                  Text(
+                                    AppLocalizations.of(context)!
+                                        .loginRegisterButton,
+                                  )
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
                       ),
-                    ),*/
                   ],
                 ),
               ),

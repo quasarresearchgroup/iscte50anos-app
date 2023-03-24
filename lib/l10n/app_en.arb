@@ -171,6 +171,6 @@
     "quizQuit":"Do you wish to quit the Quiz?",
 
     "puzzleProgress":"Progress: {progressValue}%",
-    "puzzleCompleteDialog":"Now that you have completed the puzzle you can go look for that spot in the campus and scan the qr code you find there"
+    "puzzleCompleteDialog":"Now go to the Spot in the photo and scan the QR code you will find there!"
 
 }
