@@ -1,18 +1,17 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:iscte_spots/pages/quiz/answer.dart';
+import 'package:iscte_spots/pages/quiz/question.dart';
 import 'package:iscte_spots/pages/quiz/quiz_image.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
-import 'package:iscte_spots/services/platform_service.dart';
 import 'package:iscte_spots/services/quiz/quiz_service.dart';
 import 'package:iscte_spots/widgets/dialogs/CustomDialogs.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_alert_dialog.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_text_button.dart';
 import 'package:iscte_spots/widgets/network/error.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
-import 'package:pinch_zoom/pinch_zoom.dart';
 
 import 'package:iscte_spots/pages/quiz/answer.dart';
 import 'package:iscte_spots/pages/quiz/question.dart';
@@ -122,6 +121,8 @@ class _QuizState extends State<Quiz> {
   }
 
   void startTimer() {
+    if (!isTimed) return;
+
     LoggerService.instance.debug("Starting QuestionTimer");
     timer?.cancel();
     countdown = ANSWER_TIME;
@@ -208,7 +209,6 @@ class _QuizState extends State<Quiz> {
               Text(
                   "${AppLocalizations.of(context)!.quizQuestion} ${trialQuestion["number"]}/${widget.numQuestions}"),
               const SizedBox(height: 5),
-              Question(question['text'].toString()), //Question
               Expanded(
                 child: QuizImage(
                   flickrUrl: question["image_link"],
@@ -217,6 +217,8 @@ class _QuizState extends State<Quiz> {
                   key: ValueKey(question["image_link"]),
                 ),
               ),
+              Question(question['text'].toString()), //Question
+              const SizedBox(height: 5),
               isTimed
                   ? Padding(
                       padding: const EdgeInsets.only(left: 10.0, right: 10.0),
