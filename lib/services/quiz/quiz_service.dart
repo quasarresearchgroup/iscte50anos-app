@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:iscte_spots/helper/constants.dart';
+import 'package:iscte_spots/models/quiz/next_question_fetch_info.dart';
 import 'package:iscte_spots/pages/leaderboard/leaderboard_screen.dart';
 import 'package:iscte_spots/services/auth/auth_storage_service.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
@@ -70,7 +71,10 @@ class QuizService {
     throw Exception('Failed to start trial');
   }
 
-  static Future<Map> getNextQuestion(int quiz, int trial) async {
+  static Future<NextQuestionFetchInfo> getNextQuestion(
+    int quiz,
+    int trial,
+  ) async {
     try {
       String? apiToken = await secureStorage.read(key: "backend_api_key");
 
@@ -86,7 +90,9 @@ class QuizService {
       final response = await request.close();
 
       if (response.statusCode == 201) {
-        return jsonDecode(await response.transform(utf8.decoder).join());
+        var json = jsonDecode(await response.transform(utf8.decoder).join());
+        NextQuestionFetchInfo info = NextQuestionFetchInfo.fromJson(json);
+        return info;
       }
     } catch (e) {
       LoggerService.instance.debug(e);

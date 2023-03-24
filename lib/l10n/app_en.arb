@@ -156,6 +156,7 @@
     "quizQuestion":"Question",
     "quizProgressNoAnswer":"Do you wish to proceed without answering?",
     "quizTimerEndNoAnswer":"Your time to answer the question finished without any submission!\nYou will not receive any points for this question.",
+    "quizTimerEndNoAnswerTitle":"Time's up!",
     "quizNext":"Next",
     "quizGenerating":"Generating quiz, please wait",
     "quizAvailable":"Available quizzes",

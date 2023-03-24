@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class Answer extends StatelessWidget {
+class AnswerWidget extends StatelessWidget {
   final Function(int, bool) selectHandler;
 
   final String answerText;
@@ -10,7 +10,7 @@ class Answer extends StatelessWidget {
   final bool enabled;
   final List<int> selectedAnswers;
 
-  const Answer(this.selectHandler, this.answerText, this.answerId,
+  const AnswerWidget(this.selectHandler, this.answerText, this.answerId,
       this.isMultipleChoice, this.selectedAnswers, this.enabled,
       {Key? key})
       : super(key: key);
