@@ -10,6 +10,7 @@ class DynamicBackIconButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return (!PlatformService.instance.isIos)
         ? IconButton(
+            padding: EdgeInsets.zero,
             icon: const Icon(
               Icons.arrow_back,
               color: IscteTheme.iscteColor,

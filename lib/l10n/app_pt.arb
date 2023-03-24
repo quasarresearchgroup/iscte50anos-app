@@ -11,6 +11,7 @@
     "logOutButton":"Encerrar Sessão",
     "close":"Fechar",
     "help":"Ajuda",
+    "explanation":"Explicação",
     "menu":"Menu",
     "submit":"Responder",
     "submitted":"Respondido",
@@ -73,6 +74,8 @@
     "confirm":"Confirmar",
     "dismiss":"Ok",
     "getStarted":"Começa!",
+
+    "onboardingPage" : "Explicação do jogo",
     "onboardingTitle1" : "Acesso à app",
     "onboardingText1" : "Usa os credenciais dados pela nossa staff para poderes participar no jogo com a app.",
     "onboardingTitle2" : "O jogo dos IscteSpots",

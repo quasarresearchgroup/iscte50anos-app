@@ -8,8 +8,6 @@ import 'package:iscte_spots/pages/quiz/quiz_list_menu.dart';
 import 'package:iscte_spots/pages/settings/settings_page.dart';
 import 'package:iscte_spots/pages/spotChooser/spot_chooser_page.dart';
 import 'package:iscte_spots/pages/timeline/timeline_page.dart';
-import 'package:iscte_spots/services/auth/auth_storage_service.dart';
-import 'package:iscte_spots/services/auth/fenix_login_service.dart';
 import 'package:iscte_spots/services/auth/login_service.dart';
 
 class MyNavigationDrawer extends StatelessWidget {
@@ -68,39 +66,30 @@ class MyNavigationDrawer extends StatelessWidget {
         },
       ),*/
       ExpansionTile(
-        title: const Text("Account"),
+        title: Text(
+          "Account",
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
         children: [
           ListTile(
-            leading: const Icon(ProfilePage.icon),
-            title: Text(AppLocalizations.of(context)!.profileScreen),
-            onTap: () async {
-              //PageRoutes.animateToPage(context, page: ProfilePage());
-              Navigator.of(context).popAndPushNamed(ProfilePage.pageRoute);
-            },
-          ),
+              leading: const Icon(ProfilePage.icon),
+              title: Text(AppLocalizations.of(context)!.profileScreen),
+              onTap: () =>
+                  Navigator.of(context).popAndPushNamed(ProfilePage.pageRoute)),
           ListTile(
               leading: const Icon(SettingsPage.icon),
               title: Text(AppLocalizations.of(context)!.settingsScreen),
-              onTap: () async {
-                //PageRoutes.animateToPage(context, page: ProfilePage());
-                Navigator.of(context).popAndPushNamed(SettingsPage.pageRoute);
-              }),
+              onTap: () => Navigator.of(context)
+                  .popAndPushNamed(SettingsPage.pageRoute)),
           ListTile(
-            leading: const Icon(OnboardingPage.icon),
-            title: const Text('Onboarding'),
-            onTap: () {
-              //PageRoutes.animateToPage(context, page: OnboardingPage());
-
-              Navigator.of(context).popAndPushNamed(OnboardingPage.pageRoute);
-            },
-          ),
+              leading: const Icon(OnboardingPage.icon),
+              title: Text(AppLocalizations.of(context)!.onboardingPage),
+              onTap: () => Navigator.of(context)
+                  .popAndPushNamed(OnboardingPage.pageRoute)),
           ListTile(
-            leading: Icon(Icons.adaptive.arrow_back_outlined),
-            title: Text(AppLocalizations.of(context)!.logOutButton),
-            onTap: () async {
-              await LoginService.logOut(context);
-            },
-          ),
+              leading: Icon(Icons.adaptive.arrow_back_outlined),
+              title: Text(AppLocalizations.of(context)!.logOutButton),
+              onTap: () async => await LoginService.logOut(context)),
         ],
       ),
     ];

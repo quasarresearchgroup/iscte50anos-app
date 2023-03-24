@@ -183,7 +183,8 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
                               : Icons.question_mark_rounded,
                           color: IscteTheme.iscteColor,
                         ),
-                        onPressed: () => _displayHelpDialog(context)),
+                        onPressed: () =>
+                            _displaySpotChooserExplanationDialog(context)),
                   ],
                 ),
         ),
@@ -223,7 +224,8 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
                         : Icons.question_mark_rounded,
                     color: IscteTheme.iscteColor,
                   ),
-                  onPressed: () => _displayHelpDialog(context)),
+                  onPressed: () =>
+                      _displaySpotChooserExplanationDialog(context)),
           ],
           flexibleSpace: FlexibleSpaceBar(
             title: Text(
@@ -243,10 +245,10 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
     }
   }
 
-  void _displayHelpDialog(BuildContext context) {
+  void _displaySpotChooserExplanationDialog(BuildContext context) {
     DynamicAlertDialog.showDynamicDialog(
       context: context,
-      title: Text(AppLocalizations.of(context)!.help),
+      title: Text(AppLocalizations.of(context)!.explanation),
       content: Text(AppLocalizations.of(context)!.spotChooserHelpDialogContent),
     );
   }

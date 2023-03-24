@@ -1,23 +1,23 @@
+import 'package:iscte_spots/models/database/database_helper.dart';
 import 'package:iscte_spots/models/spot.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:sqflite/sqflite.dart';
 
-import '../database_helper.dart';
-
 class DatabaseSpotTable {
-
   static const table = 'spotTable';
 
   static const columnId = '_id';
   static const columnPhotoLink = 'photo_link';
   static const columnVisited = 'visited';
+  static const columnPuzzleComplete = 'puzzleComplete';
 
   static Future onCreate(Database db) async {
     var sql = '''
       CREATE TABLE $table(
       $columnId INTEGER PRIMARY KEY,
       $columnPhotoLink TEXT UNIQUE,
-      $columnVisited BOOLEAN NOT NULL CHECK ( $columnVisited IN ( 0 , 1 ) ) DEFAULT 0
+      $columnVisited BOOLEAN NOT NULL CHECK ( $columnVisited IN ( 0 , 1 ) ) DEFAULT 0,
+      $columnPuzzleComplete BOOLEAN NOT NULL CHECK ( $columnVisited IN ( 0 , 1 ) ) DEFAULT 0
       )
     ''';
 

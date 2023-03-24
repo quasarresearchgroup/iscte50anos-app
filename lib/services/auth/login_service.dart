@@ -99,8 +99,8 @@ class LoginService {
     await IscteLoginService.logout();
     await LoginStorageService.deleteUserCredentials();
     await OnboadingService.removeOnboard();
-    Navigator.of(context).popUntil(ModalRoute.withName(AuthPage.pageRoute));
-    Navigator.of(context).pushNamed(AuthPage.pageRoute);
+    Navigator.of(context).popUntil((route) => route.isFirst);
+    Navigator.of(context).pushReplacementNamed(AuthPage.pageRoute);
 
     //NavigationService.popToFirst();
     //NavigationService.pushNamed(AuthPage.pageRoute);

@@ -11,6 +11,7 @@
     "logOutButton":"Log Out",
     "close":"Close",
     "help":"Help",
+    "explanation":"Explanation",
     "menu":"Menu",
     "submit":"Submit",
     "submitted":"Submitted",
@@ -74,6 +75,7 @@
     "dismiss":"Dismiss",
     "getStarted":"Get Started!",
 
+    "onboardingPage" : "Onboarding",
     "onboardingTitle1" : "Access to the App",
     "onboardingText1" : "Use the Credentials given to you by our staff so you can participate in the game using the app.",
     "onboardingTitle2" : "The IscteSpots game",

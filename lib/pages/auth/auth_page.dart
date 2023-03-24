@@ -61,8 +61,12 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
         LoggerService.instance
             .debug("listenning to complete login animation $status");
         if (status == AnimationStatus.completed) {
-          Future.delayed(const Duration(milliseconds: 500)).then((value) =>
-              Navigator.popAndPushNamed(context, HomePage.pageRoute));
+          Future.delayed(
+            const Duration(milliseconds: 500),
+          ).then(
+            (value) =>
+                Navigator.pushReplacementNamed(context, HomePage.pageRoute),
+          );
         }
       },
     );
@@ -71,14 +75,14 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
   }
 
   void initFunc() async {
-    bool _loggedIn;
+    bool loggedIn;
     try {
-      _loggedIn = await LoginService.isLoggedIn();
+      loggedIn = await LoginService.isLoggedIn();
     } on SocketException {
-      _loggedIn = false;
+      loggedIn = false;
     }
     setState(() {
-      _isLoggedIn = _loggedIn;
+      _isLoggedIn = loggedIn;
       _isLoading = false;
     });
     if (_isLoggedIn) {

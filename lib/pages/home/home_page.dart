@@ -98,24 +98,22 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     _confettiController.play();
     Spot? spot = _currentSpotNotifier.value;
     if (spot != null) {
-      spot.visited = true;
+      spot.puzzleComplete = true;
       DatabaseSpotTable.update(spot);
     }
     await DynamicAlertDialog.showDynamicDialog(
-        context: context,
-        title: Text(AppLocalizations.of(context)!.help),
-        content: Text(AppLocalizations.of(context)!.puzzleCompleteDialog),
-        actions: [
-          DynamicTextButton(
-              child: Text(AppLocalizations.of(context)!.confirm),
-              onPressed: () {
-                Navigator.of(context).pop();
-              })
-        ]);
+      context: context,
+      title: Text(AppLocalizations.of(context)!.help),
+      content: Text(AppLocalizations.of(context)!.puzzleCompleteDialog),
+      actions: [
+        DynamicTextButton(
+          onPressed: Navigator.of(context).pop,
+          child: Text(AppLocalizations.of(context)!.confirm),
+        )
+      ],
+    );
 
     setState(() {});
-    Future.delayed(const Duration(seconds: 1))
-        .then((value) => _tabController.animateTo(widget.scanSpotIndex));
   }
 
   void showSuccessPage() {
@@ -259,14 +257,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               context, Image.network(imgLink), orientation),
                         );
                       } else {
-                        return DynamicIconButton(
-                          child: const Icon(
-                            SpotChooserPage.icon,
-                            color: IscteTheme.iscteColor,
-                          ),
-                          onPressed: () => Navigator.of(context)
-                              .pushNamed(SpotChooserPage.pageRoute),
-                        );
+                        return Container();
                       }
                     },
                   ),
@@ -364,26 +355,32 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   );
                 } else {
                   return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        const Icon(
-                          SpotChooserPage.icon,
-                          size: 100,
+                    child: InkWell(
+                      onTap: () => Navigator.of(context)
+                          .pushNamed(SpotChooserPage.pageRoute),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const Icon(
+                              SpotChooserPage.icon,
+                              size: 100,
+                            ),
+                            Text(
+                              AppLocalizations.of(context)!.spotChooserScreen,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleLarge
+                                  ?.copyWith(
+                                    color: IscteTheme.iscteColor,
+                                  ),
+                            )
+                          ],
                         ),
-                        DynamicTextButton(
-                            child: Text(
-                                AppLocalizations.of(context)!.spotChooserScreen,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleLarge
-                                    ?.copyWith(
-                                      color: IscteTheme.iscteColor,
-                                    )),
-                            onPressed: () => Navigator.of(context)
-                                .pushNamed(SpotChooserPage.pageRoute))
-                      ],
+                      ),
                     ),
                   );
                 }

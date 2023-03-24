@@ -6,10 +6,11 @@ import 'package:iscte_spots/models/database/tables/database_puzzle_piece_table.d
 import 'package:iscte_spots/models/puzzle_piece.dart';
 import 'package:iscte_spots/models/spot.dart';
 import 'package:iscte_spots/pages/home/puzzle/puzzle_piece_widget.dart';
+import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 import 'package:iscte_spots/widgets/util/loading.dart';
 
 class PuzzlePage extends StatefulWidget {
-  PuzzlePage({
+  const PuzzlePage({
     Key? key,
     required this.spot,
     required this.constraints,
@@ -53,17 +54,27 @@ class _PuzzlePageState extends State<PuzzlePage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return pieces.isNotEmpty ? Stack(children: pieces) : const LoadingWidget();
+
+    return pieces.isNotEmpty
+        ? Stack(children: [
+            SizedBox.expand(child: Container()),
+            ...pieces,
+            /*Positioned(
+              right: 0,
+              bottom: 0,
+              child: FloatingActionButton(
+                elevation: 0,
+                onPressed: refreshPieces,
+                child: const Icon(Icons.refresh),
+              ),
+            )*/
+          ])
+        : const LoadingWidget();
   }
 
   void refreshPieces() {
     generatePieces(widget.spot);
   }
-/*
-  void rotatePuzzle() {
-    isTurned = !isTurned;
-    generatePieces(widget.image);
-  }*/
 
   void generatePieces(Spot spot) async {
     Image img = Image.network(spot.photoLink);
@@ -80,25 +91,6 @@ class _PuzzlePageState extends State<PuzzlePage>
       imageHeight = widget.constraints.maxHeight;
       imageWidth = widget.constraints.maxHeight * originalSize.aspectRatio;
     }
-
-    /*imageHeight = min(
-        imageWidth * originalSize.aspectRatio,
-        quarterTurns.isEven
-            ? widget.constraints.maxHeight
-            : widget.constraints.maxWidth);
-    if (imageHeight >= widget.constraints.maxHeight) {
-      imageHeight = widget.constraints.maxHeight;
-      imageWidth = imageHeight * originalSize.aspectRatio;
-    } else if (imageWidth >= widget.constraints.maxWidth) {
-      imageWidth = widget.constraints.maxWidth;
-      imageHeight = imageWidth * originalSize.aspectRatio;
-    }*/
-
-    //imageHeight = min(widget.constraints.maxWidth * originalSize.aspectRatio, widget.constraints.maxHeight);
-
-    //imageHeight = widget.constraints.maxHeight *
-    //    widget.constraints.maxWidth /
-    //    originalSize.width;
 
     final Size imageSize = Size(imageWidth, imageHeight);
 
@@ -136,47 +128,19 @@ class _PuzzlePageState extends State<PuzzlePage>
       return !storedPositions.contains(point);
     }).toList();
 
+    if (!mounted) return;
     pieces.clear();
-    pieces.add(SizedBox.expand(child: Container()));
-    pieces.add(Container(
-      decoration: BoxDecoration(
-        color: Colors.brown,
-        border: Border.all(
-          color: Theme.of(context).shadowColor.withAlpha(100),
+    pieces.add(
+      Container(
+        decoration: const BoxDecoration(color: IscteTheme.iscteColorSmooth),
+        child: SizedBox(
+          width: imageSize.width,
+          height: imageSize.height,
         ),
       ),
-      child: SizedBox(
-        width: imageSize.width,
-        height: imageSize.height,
-      ),
-    ));
-    //pieces.addAll(snappedPuzzlePieces);
-    //pieces.addAll(movablePuzzlePieces);
+    );
     pieces.addAll(storedPuzzlePieceWidgets);
     pieces.addAll(notStoredPieces);
-/*    pieces.add(Positioned(
-      right: 0,
-      bottom: 0,
-      child: SpeedDial(
-        child: const Icon(Icons.add),
-        children: [
-          SpeedDialChild(
-              elevation: 0,
-              child: const Icon(
-                Icons.refresh,
-              ),
-              foregroundColor: Theme.of(context).unselectedWidgetColor,
-              onTap: refreshPieces),
-          */ /*
-          SpeedDialChild(
-              child: const Icon(
-                Icons.rotate_right,
-              ),
-              foregroundColor: Theme.of(context).unselectedWidgetColor,
-              onTap: rotatePuzzle),*/ /*
-        ],
-      ),
-    ));*/
     setState(() {});
   }
 

@@ -15,8 +15,8 @@ import 'package:sqflite/sqflite.dart';
 
 class DatabaseHelper {
   static Database? _database;
-  static const _databaseName = "MyDatabase.db";
-  static const _databaseVersion = 15;
+  static const _databaseName = "IscteSpots.db";
+  static const _databaseVersion = 16;
 
   //  singleton class
   DatabaseHelper._privateConstructor();
