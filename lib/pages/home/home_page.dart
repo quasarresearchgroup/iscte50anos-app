@@ -211,7 +211,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     return orientation == Orientation.landscape
         ? null
         : MyAppBar(
-            title: AppLocalizations.of(context)!.puzzleScreen,
+            title: AppLocalizations.of(context)!.appName,
             leading: Row(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -280,7 +280,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   clipBehavior: Clip.hardEdge,
                   children: [
                     buildPuzzleBody(),
-                    const SafeArea(child: LeaderBoardPage()),
+                    const SafeArea(
+                      child: LeaderBoardPage(hasAppBar: false),
+                    ),
                     QRScanPageOpenDay(
                       //changeImage: changeCurrentSpot,
                       completedAllPuzzle: _completedAllPuzzles,

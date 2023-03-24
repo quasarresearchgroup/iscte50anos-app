@@ -30,7 +30,12 @@ void main() {
 class LeaderBoardPage extends StatefulWidget {
   static const pageRoute = "/leaderboard";
 
-  const LeaderBoardPage({Key? key}) : super(key: key);
+  const LeaderBoardPage({
+    Key? key,
+    this.hasAppBar = true,
+  }) : super(key: key);
+
+  final bool hasAppBar;
 
   @override
   State<LeaderBoardPage> createState() => _LeaderBoardPageState();
@@ -85,12 +90,17 @@ class _LeaderBoardPageState extends State<LeaderBoardPage>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Leaderboard",
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                color: IscteTheme
-                    .iscteColor)), //AppLocalizations.of(context)!.quizPageTitle)
-      ),
+      appBar: !widget.hasAppBar
+          ? null
+          : AppBar(
+              title: Text(
+                AppLocalizations.of(context)!.leaderboardPageTitle,
+                style: Theme.of(context)
+                    .textTheme
+                    .titleLarge
+                    ?.copyWith(color: IscteTheme.iscteColor),
+              ), //AppLocalizations.of(context)!.quizPageTitle)
+            ),
       body: NotificationListener<OverscrollIndicatorNotification>(
         onNotification: (overscroll) {
           overscroll.disallowIndicator();

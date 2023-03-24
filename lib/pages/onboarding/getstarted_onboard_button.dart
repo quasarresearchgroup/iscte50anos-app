@@ -20,7 +20,7 @@ class GetStartedOnboard extends StatelessWidget {
         LoggerService.instance.info('Tapped on Get started');
         OnboadingService.storeOnboard();
         if (onLaunch) {
-          Navigator.pushNamed(context, AuthPage.pageRoute);
+          Navigator.pushReplacementNamed(context, AuthPage.pageRoute);
         } else {
           Navigator.pop(context);
         }

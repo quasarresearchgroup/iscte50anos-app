@@ -177,6 +177,7 @@
     "puzzleProgress":"Progress: {progressValue}%",
     "puzzleCompleteDialog":"Now go to the Spot in the photo and scan the QR code you will find there!",
 
+    "leaderboardPageTitle":"Leaderboard",
     "leaderboardNearMeTitle":"Contestants near you",
     "leaderboardAffiliationTitle":"Top 10 by affiliation",
     "leaderboardGlobalTitle":"Top 10 Global",

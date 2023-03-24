@@ -182,6 +182,7 @@
     "puzzleProgress":"Progresso: {progressValue}%",
     "puzzleCompleteDialog":"Agora vai para o Spot da fotografia e digitaliza o código QR que lá encontrarás!",
 
+    "leaderboardPageTitle":"Rankings",
     "leaderboardNearMeTitle":"Contestantes próximos de si",
     "leaderboardAffiliationTitle":"Top 10 por afiliação",
     "leaderboardGlobalTitle":"Top 10 Global",
