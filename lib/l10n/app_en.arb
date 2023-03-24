@@ -162,6 +162,7 @@
     "quizAvailable":"Available quizzes",
     "quizNoneAvailable":"There are no available quizzes at the moment",
     "quizContinueAttempt":"Do you wish to continue this attempt?",
+    "quizFinishedRecommendLeaderboard":"Now that you finished a quiz you should check your position in the leaderboard",
 
     "quizPoints":"Points",
     "quizAttempts":"Tries",
@@ -174,6 +175,18 @@
     "quizQuit":"Do you wish to quit the Quiz?",
 
     "puzzleProgress":"Progress: {progressValue}%",
-    "puzzleCompleteDialog":"Now go to the Spot in the photo and scan the QR code you will find there!"
+    "puzzleCompleteDialog":"Now go to the Spot in the photo and scan the QR code you will find there!",
+
+    "leaderboardNearMeTitle":"Contestants near you",
+    "leaderboardAffiliationTitle":"Top 10 by affiliation",
+    "leaderboardGlobalTitle":"Top 10 Global",
+    "leaderboardPoints":"Points",
+    "leaderboardNearMe":"Near me",
+    "leaderboardAffiliation":"Affiliation",
+    "leaderboardAffiliationDepartment":"Department",
+    "leaderboardNoAffiliation":"No affiliation",
+    "leaderboardGlobal":"Global",
+    "leaderboardAffiliationSelect":"Select the affiliation"
+
 
 }

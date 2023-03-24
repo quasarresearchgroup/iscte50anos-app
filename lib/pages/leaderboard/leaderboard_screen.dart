@@ -5,10 +5,12 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:iscte_spots/services/leaderboard/leaderboard_service.dart';
 import 'package:iscte_spots/helper/constants.dart';
+import 'package:iscte_spots/services/leaderboard/leaderboard_service.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
+import 'package:iscte_spots/widgets/network/error.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 
 //const API_ADDRESS = "http://192.168.1.124";
@@ -84,8 +86,10 @@ class _LeaderBoardPageState extends State<LeaderBoardPage>
     super.build(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-            "Leaderboard"), //AppLocalizations.of(context)!.quizPageTitle)
+        title: Text("Leaderboard",
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                color: IscteTheme
+                    .iscteColor)), //AppLocalizations.of(context)!.quizPageTitle)
       ),
       body: NotificationListener<OverscrollIndicatorNotification>(
         onNotification: (overscroll) {
@@ -99,7 +103,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage>
         ), // _pages[_selectedIndex],
       ),
       bottomNavigationBar: ClipRRect(
-        borderRadius: BorderRadius.only(
+        borderRadius: const BorderRadius.only(
           topLeft: IscteTheme.appbarRadius,
           topRight: IscteTheme.appbarRadius,
         ),
@@ -107,7 +111,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage>
           //type: BottomNavigationBarType.shifting,
           type: BottomNavigationBarType.shifting,
           backgroundColor: Theme.of(context).primaryColor,
-          selectedItemColor: Theme.of(context).selectedRowColor,
+          selectedItemColor: IscteTheme.iscteColor,
           unselectedItemColor: Theme.of(context).unselectedWidgetColor,
           elevation: 8,
           enableFeedback: true,
@@ -121,17 +125,17 @@ class _LeaderBoardPageState extends State<LeaderBoardPage>
             BottomNavigationBarItem(
               icon: const Icon(CupertinoIcons.globe),
               backgroundColor: Theme.of(context).primaryColor,
-              label: 'Global',
+              label: AppLocalizations.of(context)!.leaderboardGlobal,
             ),
             BottomNavigationBarItem(
               icon: const Icon(Icons.group),
               backgroundColor: Theme.of(context).primaryColor,
-              label: 'Afiliação',
+              label: AppLocalizations.of(context)!.leaderboardAffiliation,
             ),
             BottomNavigationBarItem(
               icon: const Icon(Icons.location_on),
               backgroundColor: Theme.of(context).primaryColor,
-              label: 'Próximos',
+              label: AppLocalizations.of(context)!.leaderboardNearMe,
             ),
           ],
         ),
@@ -154,7 +158,9 @@ class _AffiliationLeaderboardState extends State<AffiliationLeaderboard>
   bool firstSearch = false;
   bool canSearch = false;
 
-  Map<String, dynamic> affiliationMap = {"-":["-"]};
+  Map<String, dynamic> affiliationMap = {
+    "-": ["-"]
+  };
   bool readJson = false;
 
   Future<List<dynamic>> fetchLeaderboard() async {
@@ -193,15 +199,16 @@ class _AffiliationLeaderboardState extends State<AffiliationLeaderboard>
 
       HttpClient client = HttpClient();
       client.badCertificateCallback =
-      ((X509Certificate cert, String host, int port) => true);
-      final request = await client.getUrl(Uri.parse(
-          '${BackEndConstants.API_ADDRESS}/api/users/affiliations'));
+          ((X509Certificate cert, String host, int port) => true);
+      final request = await client.getUrl(
+          Uri.parse('${BackEndConstants.API_ADDRESS}/api/users/affiliations'));
       request.headers.add("Authorization", "Token $apiToken");
       final response = await request.close();
 
       if (response.statusCode == 200) {
-        affiliationMap = jsonDecode(await response.transform(utf8.decoder).join());
-        setState((){});
+        affiliationMap =
+            jsonDecode(await response.transform(utf8.decoder).join());
+        setState(() {});
         return "success";
       }
     } catch (e) {
@@ -215,7 +222,7 @@ class _AffiliationLeaderboardState extends State<AffiliationLeaderboard>
     super.initState();
     fetchAffiliationData();
     //loadAffiliationDataFromFile();
-    setState((){});
+    setState(() {});
   }
 
   @override
@@ -226,112 +233,122 @@ class _AffiliationLeaderboardState extends State<AffiliationLeaderboard>
     super.build(context);
     return Column(
       children: [
-        const SizedBox(
+        SizedBox(
           // Container to hold the description
           height: 50,
           child: Center(
-            child: Text("Top 10 por Afiliação",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+            child: Text(
+                AppLocalizations.of(context)!.leaderboardAffiliationTitle,
+                style:
+                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
           ),
         ),
-          Row(
-            children: [
-              const SizedBox(width: 15),
-              Flexible(
-                flex: 1,
-                child: Column(
-                  children: [
-                    const Text("Afiliação"),
-                    DropdownButton(
-                      isExpanded: true,
-                      value: selectedType,
-                      items: (affiliationMap.keys.toList())
-                          .map(
-                            (type) => DropdownMenuItem<String>(
-                                value: type,
-                                child: Text(type,
-                                    style: const TextStyle(fontSize: 13))),
-                          )
-                          .toList(),
-                      selectedItemBuilder: (BuildContext context) {
-                        return affiliationMap.keys.toList().map((type) {
-                          return Center(
-                            child: SizedBox(
-                                width: double.maxFinite,
-                                child: Text(type,
-                                    overflow: TextOverflow.ellipsis,
-                                    textAlign: TextAlign.center,
-                                    style: const TextStyle(fontSize: 13))),
-                          );
-                        }).toList();
-                      },
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          canSearch = false;
-                          selectedType = newValue!;
-                          selectedAffiliation = "-";
-                        });
-                      },
-                    ),
-                  ],
-                ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            const SizedBox(width: 15),
+            Flexible(
+              flex: 1,
+              child: Column(
+                children: [
+                  Text(AppLocalizations.of(context)!.leaderboardAffiliation),
+                  DropdownButton(
+                    isExpanded: true,
+                    value: selectedType,
+                    items: (affiliationMap.keys.toList())
+                        .map(
+                          (type) => DropdownMenuItem<String>(
+                              value: type,
+                              child: Text(type,
+                                  style: const TextStyle(fontSize: 13))),
+                        )
+                        .toList(),
+                    selectedItemBuilder: (BuildContext context) {
+                      return affiliationMap.keys.toList().map((type) {
+                        return Center(
+                          child: SizedBox(
+                              width: double.maxFinite,
+                              child: Text(type,
+                                  overflow: TextOverflow.ellipsis,
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(fontSize: 13))),
+                        );
+                      }).toList();
+                    },
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        canSearch = false;
+                        selectedType = newValue!;
+                        selectedAffiliation = "-";
+                      });
+                    },
+                  ),
+                ],
               ),
-              const SizedBox(width: 15),
-              Flexible(
-                flex: 1,
-                child: Column(
-                  children: [
-                    const Text("Departamento"),
-                    DropdownButton(
-                      isExpanded: true,
-                      value: selectedAffiliation,
-                      items: (affiliationMap[selectedType])
-                          .map<DropdownMenuItem<String>>(
-                            (aff) => DropdownMenuItem<String>(
-                                value: aff,
-                                child: Text(aff,
-                                    style: const TextStyle(fontSize: 13))),
-                          )
-                          .toList(),
-                      selectedItemBuilder: (BuildContext context) {
-                        return (affiliationMap[selectedType] as List<dynamic>)
-                            .map((aff) {
-                          return Center(
-                            child: Text(aff,
-                                overflow: TextOverflow.ellipsis,
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(fontSize: 13)),
-                          );
-                        }).toList();
-                      },
-                      onChanged: (selectedType == "-")
-                          ? null
-                          : (String? newValue) {
-                              if (newValue != "-") {
-                                setState(() {
-                                  canSearch = true;
-                                  firstSearch = true;
-                                  selectedAffiliation = newValue!;
-                                });
-                              }
-                            },
-                    ),
-                  ],
-                ),
+            ),
+            const SizedBox(width: 15),
+            Flexible(
+              flex: 1,
+              child: Column(
+                children: [
+                  Text(AppLocalizations.of(context)!
+                      .leaderboardAffiliationDepartment),
+                  DropdownButton(
+                    isExpanded: true,
+                    value: selectedAffiliation,
+                    items: (affiliationMap[selectedType])
+                        .map<DropdownMenuItem<String>>(
+                          (aff) => DropdownMenuItem<String>(
+                              value: aff,
+                              child: Text(aff,
+                                  style: const TextStyle(fontSize: 13))),
+                        )
+                        .toList(),
+                    selectedItemBuilder: (BuildContext context) {
+                      return (affiliationMap[selectedType] as List<dynamic>)
+                          .map((aff) {
+                        return Center(
+                          child: Text(aff,
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(fontSize: 13)),
+                        );
+                      }).toList();
+                    },
+                    onChanged: (selectedType == "-")
+                        ? null
+                        : (String? newValue) {
+                            if (newValue != "-") {
+                              setState(() {
+                                canSearch = true;
+                                firstSearch = true;
+                                selectedAffiliation = newValue!;
+                              });
+                            }
+                          },
+                  ),
+                ],
               ),
-              const SizedBox(width: 20),
-            ],
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          ),
+            ),
+            const SizedBox(width: 20),
+          ],
+        ),
         if (canSearch)
           Expanded(
               child: LeaderboardList(
-                  key: UniqueKey(), fetchFunction: fetchLeaderboard, showRank: true,))
+            key: UniqueKey(),
+            fetchFunction: fetchLeaderboard,
+            showRank: true,
+          ))
         else if (!firstSearch && readJson)
-          const Expanded(
-              child: Center(
-                  child: Text("Selecione a afiliação pretendida",
-                      style: TextStyle(fontSize: 16)))),
+          Expanded(
+            child: Center(
+              child: Text(
+                AppLocalizations.of(context)!.leaderboardAffiliationSelect,
+                style: const TextStyle(fontSize: 16),
+              ),
+            ),
+          ),
       ],
     );
   }
@@ -343,16 +360,22 @@ class GlobalLeaderboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: const [
+      children: [
         SizedBox(
           // Container to hold the description
           height: 50,
           child: Center(
-            child: Text("Top 10 Global",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+            child: Text(AppLocalizations.of(context)!.leaderboardGlobalTitle,
+                style:
+                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
           ),
         ),
-        Expanded(child: LeaderboardList(fetchFunction: LeaderboardService.fetchGlobalLeaderboard, showRank: true)),
+        const Expanded(
+          child: LeaderboardList(
+            fetchFunction: LeaderboardService.fetchGlobalLeaderboard,
+            showRank: true,
+          ),
+        ),
       ],
     );
   }
@@ -364,16 +387,21 @@ class RelativeLeaderboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: const [
+      children: [
         SizedBox(
           // Container to hold the description
           height: 50,
           child: Center(
-            child: Text("Concorrentes próximos de si",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+            child: Text(AppLocalizations.of(context)!.leaderboardNearMeTitle,
+                style:
+                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
           ),
         ),
-        Expanded(child: LeaderboardList(fetchFunction: LeaderboardService.fetchRelativeLeaderboard, showRank: false,)),
+        const Expanded(
+            child: LeaderboardList(
+          fetchFunction: LeaderboardService.fetchRelativeLeaderboard,
+          showRank: false,
+        )),
       ],
     );
   }
@@ -383,7 +411,8 @@ class LeaderboardList extends StatefulWidget {
   final Future<List<dynamic>> Function() fetchFunction;
   final bool showRank;
 
-  const LeaderboardList({Key? key, required this.fetchFunction, required this.showRank})
+  const LeaderboardList(
+      {Key? key, required this.fetchFunction, required this.showRank})
       : super(key: key);
 
   @override
@@ -431,26 +460,30 @@ class _LeaderboardListState extends State<LeaderboardList> {
                                 style: const TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 16)),
                             subtitle: Text(
-                                "Pontos: ${items[index]["points"]} \nAfiliação: ${items[index]["affiliation_name"]}"),
+                              "${AppLocalizations.of(context)!.leaderboardPoints}: ${items[index]["points"]} "
+                              "\n${AppLocalizations.of(context)!.leaderboardAffiliation}: ${items[index]["affiliation_name"]}",
+                            ),
                             minVerticalPadding: 10.0,
-                            trailing: widget.showRank ? Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
-                                    if (index == 0)
-                                      Image.asset(
-                                          "Resources/Img/LeaderBoardIcons/gold_medal.png")
-                                    else if (index == 1)
-                                      Image.asset(
-                                          "Resources/Img/LeaderBoardIcons/silver_medal.png")
-                                    else if (index == 2)
-                                      Image.asset(
-                                          "Resources/Img/LeaderBoardIcons/bronze_medal.png"),
-                                  const SizedBox(width: 10),
-                                  Text("#${index + 1}",
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 20)),
-                                ]) : null,
+                            trailing: widget.showRank
+                                ? Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                        if (index == 0)
+                                          Image.asset(
+                                              "Resources/Img/LeaderBoardIcons/gold_medal.png")
+                                        else if (index == 1)
+                                          Image.asset(
+                                              "Resources/Img/LeaderBoardIcons/silver_medal.png")
+                                        else if (index == 2)
+                                          Image.asset(
+                                              "Resources/Img/LeaderBoardIcons/bronze_medal.png"),
+                                        const SizedBox(width: 10),
+                                        Text("#${index + 1}",
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 20)),
+                                      ])
+                                : null,
                           ),
                         ),
                       );
@@ -466,24 +499,7 @@ class _LeaderboardListState extends State<LeaderboardList> {
             ),
           ];
         } else if (snapshot.hasError) {
-          children = <Widget>[
-            const Icon(
-              Icons.error_outline,
-              color: Colors.red,
-              size: 60,
-            ),
-            const Padding(
-              padding: EdgeInsets.only(top: 10),
-              child: Text('Ocorreu um erro a descarregar os dados'),
-            ),
-            const Padding(
-              padding: EdgeInsets.all(5.0),
-              child: Text(
-                'Tocar aqui para recarregar',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ),
-          ];
+          children = [DynamicErrorWidget.networkError(context: context)];
         } else {
           children = const <Widget>[
             SizedBox(

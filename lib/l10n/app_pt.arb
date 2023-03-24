@@ -165,6 +165,8 @@
     "quizAvailable":"Quizzes disponíveis",
     "quizNoneAvailable":"Não existem Quizzes disponíveis de momento",
     "quizContinueAttempt":"Deseja continuar esta tentativa de quiz?",
+    "quizFinishedRecommendLeaderboard":"Agora que acabaste o quiz devias ir ver a tua poosição nos rankings",
+
 
     "quizPoints":"Pontos",
     "quizAttempts":"Tentativas",
@@ -178,7 +180,19 @@
     "quizQuit":"Deseja sair do Quiz?",
 
     "puzzleProgress":"Progresso: {progressValue}%",
-    "puzzleCompleteDialog":"Agora vai para o Spot da fotografia e digitaliza o código QR que lá encontrarás!"
+    "puzzleCompleteDialog":"Agora vai para o Spot da fotografia e digitaliza o código QR que lá encontrarás!",
+
+    "leaderboardNearMeTitle":"Contestantes próximos de si",
+    "leaderboardAffiliationTitle":"Top 10 por afiliação",
+    "leaderboardGlobalTitle":"Top 10 Global",
+    "leaderboardPoints":"Pontos",
+    "leaderboardNearMe":"Perto de mim",
+    "leaderboardAffiliation":"Afiliação",
+    "leaderboardAffiliationDepartment":"Departamento",
+    "leaderboardNoAffiliation":"Sem afiliaçao",
+    "leaderboardGlobal":"Global",
+    "leaderboardAffiliationSelect":"Selecione a afiliação pretendida"
+
 
 
 }

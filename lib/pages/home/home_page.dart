@@ -277,9 +277,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               : TabBarView(
                   physics: const NeverScrollableScrollPhysics(),
                   controller: _tabController,
+                  clipBehavior: Clip.hardEdge,
                   children: [
                     buildPuzzleBody(),
-                    const LeaderBoardPage(),
+                    const SafeArea(child: LeaderBoardPage()),
                     QRScanPageOpenDay(
                       //changeImage: changeCurrentSpot,
                       completedAllPuzzle: _completedAllPuzzles,

@@ -5,6 +5,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/models/quiz/answer.dart';
 import 'package:iscte_spots/models/quiz/next_question_fetch_info.dart';
 import 'package:iscte_spots/models/quiz/question.dart';
+import 'package:iscte_spots/pages/leaderboard/leaderboard_screen.dart';
 import 'package:iscte_spots/pages/quiz/answer_widget.dart';
 import 'package:iscte_spots/pages/quiz/question_text_widget.dart';
 import 'package:iscte_spots/pages/quiz/quiz_image.dart';
@@ -337,23 +338,48 @@ class QuizFinishedPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(
-              "${AppLocalizations.of(context)!.quizPointsOfTrial}: ${trial_score}"),
-          DynamicTextButton(
-            onPressed: Navigator.of(context).pop,
-            child: Text(
-              AppLocalizations.of(context)!.back,
-              style: Theme.of(context)
-                  .textTheme
-                  .titleLarge
-                  ?.copyWith(color: IscteTheme.iscteColor),
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              "${AppLocalizations.of(context)!.quizPointsOfTrial}: ${trial_score}",
+              style: Theme.of(context).textTheme.titleLarge,
             ),
-          ),
-        ],
+            Text(AppLocalizations.of(context)!.quizFinishedRecommendLeaderboard,
+                style: Theme.of(context).textTheme.titleMedium),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                DynamicTextButton(
+                  onPressed: Navigator.of(context).pop,
+                  child: Text(
+                    AppLocalizations.of(context)!.back,
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleLarge
+                        ?.copyWith(color: IscteTheme.iscteColor),
+                  ),
+                ),
+                DynamicTextButton(
+                  onPressed: () => Navigator.of(context)
+                      .pushNamed(LeaderBoardPage.pageRoute),
+                  style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStatePropertyAll(IscteTheme.iscteColor)),
+                  child: Text(
+                    AppLocalizations.of(context)!.leaderBoardScreen,
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          color: Colors.white,
+                        ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
