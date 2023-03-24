@@ -8,9 +8,9 @@ import 'package:iscte_spots/services/auth/fenix_login_service.dart';
 import 'package:iscte_spots/services/auth/login_service.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/services/platform_service.dart';
+import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_loading_widget.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_text_button.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
-import 'package:iscte_spots/widgets/util/loading.dart';
 
 bool DONTHAVEACCOUNT = false;
 bool LOGINBUTTON = false;
@@ -223,7 +223,7 @@ class _LoginOpendayState extends State<LoginPage>
     return AnimatedSwitcher(
       duration: widget.animatedSwitcherDuration,
       child: _isLoading
-          ? const LoadingWidget()
+          ? const DynamicLoadingWidget()
           : Padding(
               padding: const EdgeInsets.only(bottom: 10, left: 15, right: 15),
               child: Form(

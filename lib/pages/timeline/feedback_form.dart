@@ -5,10 +5,10 @@ import 'package:iscte_spots/models/timeline/feedback_form_result.dart';
 import 'package:iscte_spots/pages/timeline/state/timeline_state.dart';
 import 'package:iscte_spots/services/timeline/feedback_service.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_icon_button.dart';
+import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_loading_widget.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_snackbar.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_text_button.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
-import 'package:iscte_spots/widgets/util/loading.dart';
 
 class FeedbackFormButon extends StatelessWidget {
   const FeedbackFormButon({
@@ -41,10 +41,10 @@ class FeedbackFormButon extends StatelessWidget {
                         ),
                       );
                     } else {
-                      return const LoadingWidget();
+                      return const DynamicLoadingWidget();
                     }
                   default:
-                    return const LoadingWidget();
+                    return const DynamicLoadingWidget();
                 }
               }),
     );

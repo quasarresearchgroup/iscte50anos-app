@@ -7,8 +7,8 @@ import 'package:iscte_spots/pages/timeline/list_view/intents.dart';
 import 'package:iscte_spots/pages/timeline/list_view/year_timeline__listview.dart';
 import 'package:iscte_spots/pages/timeline/state/timeline_filter_result_state.dart';
 import 'package:iscte_spots/pages/timeline/state/timeline_state.dart';
+import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_loading_widget.dart';
 import 'package:iscte_spots/widgets/network/error.dart';
-import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:logger/logger.dart';
 
 import '../../services/logging/LoggerService.dart';
@@ -227,7 +227,7 @@ class TimelineKeyboardEventWrapper extends StatelessWidget {
                       return DynamicErrorWidget(
                           display: yearListSnapshot.error.toString());
                     } else {
-                      return const LoadingWidget();
+                      return const DynamicLoadingWidget();
                     }
                   }),
             );
@@ -235,7 +235,7 @@ class TimelineKeyboardEventWrapper extends StatelessWidget {
             return DynamicErrorWidget(
                 display: eventsListSnapshot.error.toString());
           } else {
-            return const LoadingWidget();
+            return const DynamicLoadingWidget();
           }
         },
       ),

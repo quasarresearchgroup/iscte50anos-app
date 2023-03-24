@@ -6,7 +6,7 @@ import 'package:iscte_spots/pages/auth/register/register_page.dart';
 import 'package:iscte_spots/pages/home/home_page.dart';
 import 'package:iscte_spots/services/auth/login_service.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
-import 'package:iscte_spots/widgets/util/loading.dart';
+import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_loading_widget.dart';
 import 'package:lottie/lottie.dart';
 
 class AuthPage extends StatefulWidget {
@@ -109,7 +109,7 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
       body: AnimatedSwitcher(
         duration: animatedSwitcherDuration,
         child: _isLoading
-            ? const LoadingWidget()
+            ? const DynamicLoadingWidget()
             : _isLoggedIn
                 ? lottieCompleteLoginBuilder()
                 : TabBarView(

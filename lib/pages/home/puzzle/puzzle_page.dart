@@ -6,8 +6,8 @@ import 'package:iscte_spots/models/database/tables/database_puzzle_piece_table.d
 import 'package:iscte_spots/models/puzzle_piece.dart';
 import 'package:iscte_spots/models/spot.dart';
 import 'package:iscte_spots/pages/home/puzzle/puzzle_piece_widget.dart';
+import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_loading_widget.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
-import 'package:iscte_spots/widgets/util/loading.dart';
 
 class PuzzlePage extends StatefulWidget {
   const PuzzlePage({
@@ -69,7 +69,7 @@ class _PuzzlePageState extends State<PuzzlePage>
               ),
             )*/
           ])
-        : const LoadingWidget();
+        : const DynamicLoadingWidget();
   }
 
   void refreshPieces() {

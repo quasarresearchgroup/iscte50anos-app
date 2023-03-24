@@ -5,10 +5,10 @@ import 'package:iscte_spots/pages/auth/register/registration_error.dart';
 import 'package:iscte_spots/pages/auth/register/school_register_widget.dart';
 import 'package:iscte_spots/services/auth/registration_service.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
+import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_loading_widget.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_text_button.dart';
 import 'package:iscte_spots/widgets/network/error.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
-import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:lottie/lottie.dart';
 
 import 'acount_register_widget.dart';
@@ -177,7 +177,7 @@ class _RegisterPageState extends State<RegisterPage>
         child: AnimatedSwitcher(
           duration: widget.animatedSwitcherDuration,
           child: _isLodading
-              ? const LoadingWidget()
+              ? const DynamicLoadingWidget()
               : Padding(
                   padding: const EdgeInsets.only(bottom: 10),
                   child: Column(

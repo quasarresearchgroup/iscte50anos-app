@@ -13,10 +13,10 @@ import 'package:iscte_spots/services/spotChooser/fetch_all_spots_service.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_alert_dialog.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_back_button.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_icon_button.dart';
+import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_loading_widget.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_snackbar.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_text_button.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
-import 'package:iscte_spots/widgets/util/loading.dart';
 
 import 'spot_chooser_tile.dart';
 
@@ -94,7 +94,7 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
             future: future,
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
-                return const LoadingWidget();
+                return const DynamicLoadingWidget();
               }
               List<Spot> list = snapshot.data!;
               List<Widget> slivers = [];

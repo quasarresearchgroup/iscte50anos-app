@@ -4,7 +4,7 @@ import 'package:iscte_spots/models/timeline/event.dart';
 import 'package:iscte_spots/pages/timeline/events/timeline_tile.dart';
 import 'package:iscte_spots/pages/timeline/web_scroll_behaviour.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
-import 'package:iscte_spots/widgets/util/loading.dart';
+import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_loading_widget.dart';
 
 class EventTimelineListViewBuilder extends StatefulWidget {
   const EventTimelineListViewBuilder({
@@ -106,7 +106,7 @@ class _EventTimelineListViewBuilderState
             );
           }
         } else {
-          return const LoadingWidget();
+          return const DynamicLoadingWidget();
         }
       },
     );

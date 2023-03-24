@@ -3,7 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/helper/helper_methods.dart';
 import 'package:iscte_spots/models/database/tables/database_page_table.dart';
 import 'package:iscte_spots/models/visited_url.dart';
-import 'package:iscte_spots/widgets/util/loading.dart';
+import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_loading_widget.dart';
 
 class VisitedPagesPage extends StatefulWidget {
   const VisitedPagesPage({Key? key}) : super(key: key);
@@ -40,7 +40,7 @@ class _VisitedPagesPageState extends State<VisitedPagesPage> {
               builder: (BuildContext context,
                   AsyncSnapshot<List<VisitedURL>> snapshot) {
                 if (!snapshot.hasData) {
-                  return LoadingWidget(messagesStyle: messagesStyle);
+                  return DynamicLoadingWidget(messagesStyle: messagesStyle);
                 } else {
                   List<VisitedURL> list = snapshot.data!;
                   if (snapshot.data!.isEmpty) {

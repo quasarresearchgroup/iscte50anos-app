@@ -4,8 +4,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:iscte_spots/models/database/tables/database_puzzle_piece_table.dart';
 import 'package:iscte_spots/models/spot.dart';
+import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_loading_widget.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
-import 'package:iscte_spots/widgets/util/loading.dart';
 
 class ChooseSpotTile extends StatefulWidget {
   const ChooseSpotTile({
@@ -41,7 +41,7 @@ class _ChooseSpotTileState extends State<ChooseSpotTile> {
       imageUrl: widget.spot.photoLink,
       progressIndicatorBuilder: (BuildContext context, String string,
           DownloadProgress downloadProgress) {
-        return const LoadingWidget();
+        return const DynamicLoadingWidget();
       },
       imageBuilder: (BuildContext context, ImageProvider imageProvider) {
         return ClipRRect(
@@ -97,7 +97,7 @@ class _ChooseSpotTileState extends State<ChooseSpotTile> {
                                             color: IscteTheme.iscteColor),
                                   );
                                 } else {
-                                  return const LoadingWidget();
+                                  return const DynamicLoadingWidget();
                                 }
                               },
                             ),
