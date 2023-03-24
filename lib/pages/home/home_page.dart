@@ -103,13 +103,44 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     }
     await DynamicAlertDialog.showDynamicDialog(
       context: context,
-      title: Text(AppLocalizations.of(context)!.help),
+      icon: Icon(
+        PlatformService.instance.isIos
+            ? CupertinoIcons.checkmark_seal
+            : Icons.verified_outlined,
+        size: 40,
+      ),
+      title: Text(
+        AppLocalizations.of(context)!.puzzleCompleteDialogTitle,
+        maxLines: 3,
+      ),
       content: Text(AppLocalizations.of(context)!.puzzleCompleteDialog),
       actions: [
         DynamicTextButton(
           onPressed: Navigator.of(context).pop,
-          child: Text(AppLocalizations.of(context)!.confirm),
-        )
+          child: Text(
+              AppLocalizations.of(context)!.puzzleCompleteDialogCancelButton,
+              style: Theme.of(context)
+                  .textTheme
+                  .titleMedium
+                  ?.copyWith(color: IscteTheme.iscteColor)),
+        ),
+        DynamicTextButton(
+          onPressed: () {
+            _tabController.animateTo(widget.scanSpotIndex);
+            Navigator.of(context).pop();
+          },
+          style: const ButtonStyle(
+            backgroundColor: MaterialStatePropertyAll(IscteTheme.iscteColor),
+            foregroundColor: MaterialStatePropertyAll(Colors.white),
+          ),
+          child: Text(
+            AppLocalizations.of(context)!.puzzleCompleteDialogConfirmButton,
+            style: Theme.of(context)
+                .textTheme
+                .titleMedium
+                ?.copyWith(color: Colors.white),
+          ),
+        ),
       ],
     );
 

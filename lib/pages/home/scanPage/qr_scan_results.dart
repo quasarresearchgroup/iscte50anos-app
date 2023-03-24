@@ -10,6 +10,7 @@ import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 
 class QRScanResults extends StatelessWidget {
   static const String pageRoute = "QRScanResults";
+
   QRScanResults({
     Key? key,
     required SpotInfoRequest spotInfoRequest,
@@ -45,7 +46,7 @@ class QRScanResults extends StatelessWidget {
         originalEventsList
             .where((element) => element.dateTime.year == year)
             .toList());
-    List<int> yearsList = await yearsListFutureNotifier.value;
+    //List<int> yearsList = await yearsListFutureNotifier.value;
     yearNotifier.value = year;
     LoggerService.instance.debug(yearNotifier.value);
   }
@@ -63,42 +64,26 @@ class QRScanResults extends StatelessWidget {
         ),
       ),
       body: ValueListenableBuilder<Future<List<int>>>(
-          valueListenable: yearsListFutureNotifier,
-          builder: (context, yearsListFuture, _) {
-            return ValueListenableBuilder<Future<List<Event>>>(
-                valueListenable: eventsListFutureNotifier,
-                builder: (context, eventsListFuture, _) {
-                  return TimelineBody(
-                    isFilterTimeline: false,
-                    eventsListFuture: eventsListFuture,
-                    yearsListFuture: yearsListFuture,
-                    handleEventSelection: (eventId, context) =>
-                        Navigator.of(context).pushNamed(
-                            TimeLineDetailsPage.pageRoute,
-                            arguments: eventId),
-                    changeYearCallback: changeYearCallback,
-                    currentYearNotifier: yearNotifier,
-                  );
-                });
-          })
-      /*Center(
-        child: ListView.builder(
-          itemCount: widget.data.length,
-          itemBuilder: (context, index) {
-            return ListTile(
-              title: Text(widget.data[index].title ?? ""),
-              subtitle: Text(widget.data[index].link),
-              trailing: widget.data[index].contentIcon,
-              onTap: () {
-                if (widget.data[index].link.isNotEmpty) {
-                  HelperMethods.launchURL(widget.data[index].link);
-                }
-              },
-            );
-          },
-        ),
-      )*/
-      ,
+        valueListenable: yearsListFutureNotifier,
+        builder: (context, yearsListFuture, _) {
+          return ValueListenableBuilder<Future<List<Event>>>(
+            valueListenable: eventsListFutureNotifier,
+            builder: (context, eventsListFuture, _) {
+              return TimelineBody(
+                isFilterTimeline: false,
+                eventsListFuture: eventsListFuture,
+                yearsListFuture: yearsListFuture,
+                handleEventSelection: (eventId, context) =>
+                    Navigator.of(context).pushNamed(
+                        TimeLineDetailsPage.pageRoute,
+                        arguments: eventId),
+                changeYearCallback: changeYearCallback,
+                currentYearNotifier: yearNotifier,
+              );
+            },
+          );
+        },
+      ),
     );
   }
 }

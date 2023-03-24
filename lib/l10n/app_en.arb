@@ -115,6 +115,8 @@
     "qrScanPermissionButton": "Give Permission",
     "qrScanErrorAlertDialogContent":"An error occurred during the scan, try again or wait a bit",
     "qrScanErrorAlertDialogTitle":"Scan error",
+    "qrScanResultExplanationDialogTitle": "Here you can study the events relative to the topic.",
+    "qrScanResultExplanationDialogContent": "Questions about these events will be present in you next quiz so be sure to study them.\nTo study them again in the future, you can navigate to the Chronology of the 50 years in the main menu and filter by the topic: {topic}.",
 
     "timelineSearchHint" : "Search here",
     "timelineSearchResults" : "Search results",
@@ -162,7 +164,7 @@
     "quizAvailable":"Available quizzes",
     "quizNoneAvailable":"There are no available quizzes at the moment",
     "quizContinueAttempt":"Do you wish to continue this attempt?",
-    "quizFinishedRecommendLeaderboard":"Now that you finished a quiz you should check your position in the leaderboard",
+    "quizFinishedRecommendLeaderboard":"Now that you finished a quiz you should check your position in the leaderboard.",
 
     "quizPoints":"Points",
     "quizAttempts":"Tries",
@@ -175,7 +177,10 @@
     "quizQuit":"Do you wish to quit the Quiz?",
 
     "puzzleProgress":"Progress: {progressValue}%",
-    "puzzleCompleteDialog":"Now go to the Spot in the photo and scan the QR code you will find there!",
+     "puzzleCompleteDialogTitle":"Congratulations, you completed the puzzle!",
+    "puzzleCompleteDialog":"Now go to the Spot in the photo and scan the QR code you will find there.",
+    "puzzleCompleteDialogConfirmButton":"I am ready to scan!",
+    "puzzleCompleteDialogCancelButton":"I need to see the image a little more",
 
     "leaderboardPageTitle":"Leaderboard",
     "leaderboardNearMeTitle":"Contestants near you",

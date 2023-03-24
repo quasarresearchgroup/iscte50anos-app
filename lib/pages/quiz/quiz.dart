@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/models/quiz/answer.dart';
@@ -10,6 +11,7 @@ import 'package:iscte_spots/pages/quiz/answer_widget.dart';
 import 'package:iscte_spots/pages/quiz/question_text_widget.dart';
 import 'package:iscte_spots/pages/quiz/quiz_image.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
+import 'package:iscte_spots/services/platform_service.dart';
 import 'package:iscte_spots/services/quiz/quiz_service.dart';
 import 'package:iscte_spots/widgets/dialogs/CustomDialogs.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_alert_dialog.dart';
@@ -345,11 +347,16 @@ class QuizFinishedPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
-              "${AppLocalizations.of(context)!.quizPointsOfTrial}: ${trial_score}",
+              "${AppLocalizations.of(context)!.quizPointsOfTrial}: $trial_score",
               style: Theme.of(context).textTheme.titleLarge,
             ),
-            Text(AppLocalizations.of(context)!.quizFinishedRecommendLeaderboard,
-                style: Theme.of(context).textTheme.titleMedium),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 30.0),
+              child: Text(
+                  AppLocalizations.of(context)!
+                      .quizFinishedRecommendLeaderboard,
+                  style: Theme.of(context).textTheme.titleMedium),
+            ),
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -369,11 +376,17 @@ class QuizFinishedPage extends StatelessWidget {
                   style: ButtonStyle(
                       backgroundColor:
                           MaterialStatePropertyAll(IscteTheme.iscteColor)),
-                  child: Text(
-                    AppLocalizations.of(context)!.leaderBoardScreen,
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          color: Colors.white,
-                        ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.leaderboard),
+                      Text(
+                        AppLocalizations.of(context)!.leaderBoardScreen,
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                              color: Colors.white,
+                            ),
+                      ),
+                    ],
                   ),
                 ),
               ],

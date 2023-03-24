@@ -116,7 +116,8 @@
     "qrScanPermissionButton": "Permitir",
     "qrScanErrorAlertDialogContent":"Ocorreu um erro durante o scan, tente outra vez ou tente mais tarde",
     "qrScanErrorAlertDialogTitle":"Erro no scan",
-
+    "qrScanResultExplanationDialogTitle": "Aqui pode estudar os conteudos e eventos relativos a este Tópico",
+    "qrScanResultExplanationDialogContent": "Perguntas sobre estes conteudos vão estar presentes no seu próximo quiz portanto estude-os bem.\nPara os estudar outra vez no futuro, poderá visitar a página da Cronologia dos 50 anos e filtrar pelo tópico: {topic}.",
 
     "timelineSearchHint" : "Pesquise aqui",
     "timelineSearchResults" : "Resultados da pesquisa",
@@ -165,8 +166,7 @@
     "quizAvailable":"Quizzes disponíveis",
     "quizNoneAvailable":"Não existem Quizzes disponíveis de momento",
     "quizContinueAttempt":"Deseja continuar esta tentativa de quiz?",
-    "quizFinishedRecommendLeaderboard":"Agora que acabaste o quiz devias ir ver a tua poosição nos rankings",
-
+    "quizFinishedRecommendLeaderboard":"Agora que acabaste o quiz devias ir ver a tua poosição nos rankings.",
 
     "quizPoints":"Pontos",
     "quizAttempts":"Tentativas",
@@ -180,7 +180,10 @@
     "quizQuit":"Deseja sair do Quiz?",
 
     "puzzleProgress":"Progresso: {progressValue}%",
-    "puzzleCompleteDialog":"Agora vai para o Spot da fotografia e digitaliza o código QR que lá encontrarás!",
+    "puzzleCompleteDialogTitle":"Parabéns, completaste o puzzle!",
+    "puzzleCompleteDialog":"Agora vai para o Spot da fotografia e digitaliza o código QR que lá encontrarás.",
+    "puzzleCompleteDialogConfirmButton":"Estou pronto para scanear",
+    "puzzleCompleteDialogCancelButton":"Preciso de ver a imagem melhor",
 
     "leaderboardPageTitle":"Rankings",
     "leaderboardNearMeTitle":"Contestantes próximos de si",
@@ -193,7 +196,5 @@
     "leaderboardNoAffiliation":"Sem afiliaçao",
     "leaderboardGlobal":"Global",
     "leaderboardAffiliationSelect":"Selecione a afiliação pretendida"
-
-
 
 }

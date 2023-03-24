@@ -325,6 +325,16 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
         actions: [
           DynamicTextButton(
             child: Text(
+              AppLocalizations.of(context)!.qrScanConfirmationCancel,
+              style: Theme.of(context)
+                  .textTheme
+                  .titleMedium
+                  ?.copyWith(color: IscteTheme.iscteColor),
+            ),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          DynamicTextButton(
+            child: Text(
               AppLocalizations.of(context)!.qrScanConfirmationAccept,
               style: Theme.of(context)
                   .textTheme
@@ -335,16 +345,6 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
               _chooseSpotCallback(spot, context);
               Navigator.of(context).pop();
             },
-          ),
-          DynamicTextButton(
-            child: Text(
-              AppLocalizations.of(context)!.qrScanConfirmationCancel,
-              style: Theme.of(context)
-                  .textTheme
-                  .titleMedium
-                  ?.copyWith(color: IscteTheme.iscteColor),
-            ),
-            onPressed: () => Navigator.of(context).pop(),
           ),
         ]);
   }

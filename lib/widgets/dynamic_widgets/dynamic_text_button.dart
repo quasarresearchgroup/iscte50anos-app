@@ -21,7 +21,7 @@ class DynamicTextButton extends StatelessWidget {
             disabledColor:
                 style?.foregroundColor?.resolve({MaterialState.disabled}) ??
                     CupertinoColors.quaternarySystemFill,
-            color: style?.foregroundColor?.resolve({
+            color: style?.backgroundColor?.resolve({
               MaterialState.focused,
               MaterialState.hovered,
               MaterialState.pressed,
@@ -34,14 +34,6 @@ class DynamicTextButton extends StatelessWidget {
             onPressed: onPressed,
             style: style,
             child: child,
-/*            style: ButtonStyle(
-              backgroundColor: style != null
-                  ? MaterialStateProperty.all<Color>(style!)
-                  : null,
-              foregroundColor: style != null
-                  ? MaterialStateProperty.all<Color>(Colors.white)
-                  : null,
-            ),*/
           );
   }
 }
