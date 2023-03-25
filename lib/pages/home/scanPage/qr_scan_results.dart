@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/models/requests/spot_info_request.dart';
 import 'package:iscte_spots/models/timeline/event.dart';
+import 'package:iscte_spots/pages/quiz/quiz_list_menu.dart';
+import 'package:iscte_spots/pages/quiz/quiz_page.dart';
 import 'package:iscte_spots/pages/timeline/details/timeline_details_page.dart';
 import 'package:iscte_spots/pages/timeline/timeline_body.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/services/timeline/timeline_topic_service.dart';
+import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_alert_dialog.dart';
+import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_text_button.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 
 class QRScanResults extends StatelessWidget {
@@ -62,6 +66,50 @@ class QRScanResults extends StatelessWidget {
               .titleLarge
               ?.copyWith(color: IscteTheme.iscteColor),
         ),
+      ),
+      bottomSheet: BottomSheet(
+        enableDrag: false,
+        onClosing: () {},
+        builder: (context) {
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              DynamicTextButton(
+                child: Text(AppLocalizations.of(context)!
+                    .qrScanResultReadyForQuizButton),
+                onPressed: () => DynamicAlertDialog.showDynamicDialog(
+                    context: context,
+                    icon: const Text("🧐", textScaleFactor: 5),
+                    title: Text(AppLocalizations.of(context)!
+                        .qrScanResultReadyForQuizButtonDialogTitle),
+                    content: Text(AppLocalizations.of(context)!
+                        .qrScanResultReadyForQuizButtonDialogContent),
+                    actions: [
+                      DynamicTextButton(
+                          child: Text(AppLocalizations.of(context)!
+                              .qrScanResultReadyForQuizButtonDialogCancelButton),
+                          onPressed: Navigator.of(context).pop),
+                      DynamicTextButton(
+                          onPressed: () => Navigator.of(context)
+                              .popAndPushNamed(QuizMenu.pageRoute),
+                          style: const ButtonStyle(
+                              backgroundColor: MaterialStatePropertyAll(
+                                  IscteTheme.iscteColor),
+                              foregroundColor:
+                                  MaterialStatePropertyAll(Colors.white)),
+                          child: Text(
+                            AppLocalizations.of(context)!
+                                .qrScanResultReadyForQuizButtonDialogContinueButton,
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(color: Colors.white),
+                          ))
+                    ]),
+              ),
+            ],
+          );
+        },
       ),
       body: ValueListenableBuilder<Future<List<int>>>(
         valueListenable: yearsListFutureNotifier,

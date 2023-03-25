@@ -118,6 +118,11 @@
     "qrScanErrorAlertDialogTitle":"Erro no scan",
     "qrScanResultExplanationDialogTitle": "Aqui pode estudar os conteudos e eventos relativos a este Tópico",
     "qrScanResultExplanationDialogContent": "Perguntas sobre estes conteudos vão estar presentes no seu próximo quiz portanto estude-os bem.\nPara os estudar outra vez no futuro, poderá visitar a página da Cronologia dos 50 anos e filtrar pelo tópico: {topic}.",
+    "qrScanResultReadyForQuizButton": "Estás pronto para o quiz?",
+    "qrScanResultReadyForQuizButtonDialogTitle": "Já estudaste os conteudos todos?",
+    "qrScanResultReadyForQuizButtonDialogContent": "Se achares que estás apto para o desafio clica no botão abaixo e começa a responder.",
+    "qrScanResultReadyForQuizButtonDialogContinueButton": "Vamos a isso",
+    "qrScanResultReadyForQuizButtonDialogCancelButton": "Não estou preparado",
 
     "timelineSearchHint" : "Pesquise aqui",
     "timelineSearchResults" : "Resultados da pesquisa",

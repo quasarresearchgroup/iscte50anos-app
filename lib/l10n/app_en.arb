@@ -117,6 +117,11 @@
     "qrScanErrorAlertDialogTitle":"Scan error",
     "qrScanResultExplanationDialogTitle": "Here you can study the events relative to the topic.",
     "qrScanResultExplanationDialogContent": "Questions about these events will be present in you next quiz so be sure to study them.\nTo study them again in the future, you can navigate to the Chronology of the 50 years in the main menu and filter by the topic: {topic}.",
+    "qrScanResultReadyForQuizButton": "Are you ready for the quiz?",
+    "qrScanResultReadyForQuizButtonDialogTitle": "Have you studied all the content?",
+    "qrScanResultReadyForQuizButtonDialogContent": "If you think you are up for the challenge click the button below and start answering.",
+    "qrScanResultReadyForQuizButtonDialogContinueButton": "Let's go",
+    "qrScanResultReadyForQuizButtonDialogCancelButton": "I am not ready",
 
     "timelineSearchHint" : "Search here",
     "timelineSearchResults" : "Search results",
