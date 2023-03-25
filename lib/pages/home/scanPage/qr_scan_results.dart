@@ -75,8 +75,13 @@ class QRScanResults extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               DynamicTextButton(
-                child: Text(AppLocalizations.of(context)!
-                    .qrScanResultReadyForQuizButton),
+                child: Text(
+                  AppLocalizations.of(context)!.qrScanResultReadyForQuizButton,
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleMedium
+                      ?.copyWith(color: IscteTheme.iscteColor),
+                ),
                 onPressed: () => DynamicAlertDialog.showDynamicDialog(
                     context: context,
                     icon: Icon(Icons.menu_book,
@@ -91,6 +96,10 @@ class QRScanResults extends StatelessWidget {
                         child: Text(
                           AppLocalizations.of(context)!
                               .qrScanResultReadyForQuizButtonDialogCancelButton,
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleMedium
+                              ?.copyWith(color: IscteTheme.iscteColor),
                         ),
                       ),
                       DynamicTextButton(

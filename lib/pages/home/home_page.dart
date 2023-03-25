@@ -248,24 +248,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Builder(builder: (context) {
-                  if (!PlatformService.instance.isIos) {
-                    return IconButton(
-                      icon: const Icon(Icons.menu),
-                      onPressed: () {
-                        Scaffold.of(context).openDrawer();
-                      },
-                    );
-                  } else {
-                    return CupertinoButton(
-                      child: const Icon(
-                        Icons.menu,
-                        color: IscteTheme.iscteColor,
-                      ),
-                      onPressed: () {
-                        Scaffold.of(context).openDrawer();
-                      },
-                    );
-                  }
+                  return DynamicIconButton(
+                    onPressed: Scaffold.of(context).openDrawer,
+                    child: const Icon(
+                      Icons.menu,
+                      color: IscteTheme.iscteColor,
+                    ),
+                  );
                 }),
                 if (!PlatformService.instance.isWeb) const FeedbackFormButon(),
               ],
