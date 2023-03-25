@@ -51,8 +51,8 @@ class _ChooseSpotTileState extends State<ChooseSpotTile> {
             children: [
               ImageFiltered(
                 imageFilter: ImageFilter.blur(
-                  sigmaX: isSpotVisited ? 0 : widget.blur,
-                  sigmaY: isSpotVisited ? 0 : widget.blur,
+                  sigmaX: isSpotPuzzleComplete ? 0 : widget.blur,
+                  sigmaY: isSpotPuzzleComplete ? 0 : widget.blur,
                 ),
                 child: InkWell(
                   enableFeedback: true,
@@ -76,9 +76,9 @@ class _ChooseSpotTileState extends State<ChooseSpotTile> {
                   width: 60,
                   height: 40,
                   child: Card(
-                    color: IscteTheme.greyColor.withOpacity(0.2),
+                    color: IscteTheme.greyColor.withOpacity(0.3),
                     child: Center(
-                      child: isSpotPuzzleComplete
+                      child: isSpotVisited
                           ? const Icon(
                               Icons.check,
                               size: 30,
