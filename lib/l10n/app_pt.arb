@@ -116,7 +116,7 @@
     "qrScanPermissionButton": "Permitir",
     "qrScanErrorAlertDialogContent":"Ocorreu um erro durante o scan, tente outra vez ou tente mais tarde",
     "qrScanErrorAlertDialogTitle":"Erro no scan",
-    "qrScanResultExplanationDialogTitle": "Aqui pode estudar os conteudos e eventos relativos a este Tópico",
+    "qrScanResultExplanationDialogTitle": "Aqui pode estudar os conteudos e eventos relativos a {topic}",
     "qrScanResultExplanationDialogContent": "Perguntas sobre estes conteudos vão estar presentes no seu próximo quiz portanto estude-os bem.\nPara os estudar outra vez no futuro, poderá visitar a página da Cronologia dos 50 anos e filtrar pelo tópico: {topic}.",
     "qrScanResultReadyForQuizButton": "Estás pronto para o quiz?",
     "qrScanResultReadyForQuizButtonDialogTitle": "Já estudaste os conteudos todos?",
@@ -138,6 +138,8 @@
     "timelineSelectClearButton" : "Limpar seleção",
     "timelineEventNoData" : "Sem Informação",
     "timelineFilterTopicNoTitleError" : "Sem título",
+    "timelineExplanationAlertDialogContent" : "Na cronologia podes ver todos os eventos que aconteceram na história do ISCTE e do Mundo.\nAtenção, os conteudos de alguns destes eventos podem estar presentes nos quizzes.\n\nDica: usa o filtro no canto superior direito para estudar os eventos de um tópico de cada vez para os memorizares melhor",
+    "timelineExplanationAlertDialogContent" : "In the timeline you can see all the events that happened throughout the history of ISCTE and the World.\nBeware, the content from some of these events will be present in the quizzes.",
 
     "feedbackFormTitle":"Sugestão",
     "feedbackFormNameField":"Nome",

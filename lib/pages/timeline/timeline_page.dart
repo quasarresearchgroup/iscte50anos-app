@@ -41,7 +41,15 @@ class _TimelinePageState extends State<TimelinePage> {
               DynamicIconButton(
                 onPressed: () => DynamicAlertDialog.showDynamicDialog(
                     context: context,
-                    title: Text(AppLocalizations.of(context)!.explanation)),
+                    icon: Icon(
+                      (PlatformService.instance.isIos)
+                          ? CupertinoIcons.question
+                          : Icons.question_mark,
+                      color: IscteTheme.iscteColor,
+                    ),
+                    title: Text(AppLocalizations.of(context)!.explanation),
+                    content: Text(AppLocalizations.of(context)!
+                        .timelineExplanationAlertDialogContent)),
                 child: Icon(
                   (PlatformService.instance.isIos)
                       ? CupertinoIcons.question

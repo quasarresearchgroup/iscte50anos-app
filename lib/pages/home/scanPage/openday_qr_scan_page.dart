@@ -186,23 +186,18 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
             arguments: spotInfoRequest,
           );
           DynamicAlertDialog.showDynamicDialog(
-              context: context,
-              title: Text(AppLocalizations.of(context)!
-                  .qrScanResultExplanationDialogTitle),
-              content: Text(AppLocalizations.of(context)!
+            icon: Icon(Icons.timeline, size: DynamicAlertDialog.iconSize),
+            context: context,
+            title: Text(
+              AppLocalizations.of(context)!.qrScanResultExplanationDialogTitle(
+                  spotInfoRequest.title ?? ""),
+            ),
+            content: Text(
+              AppLocalizations.of(context)!
                   .qrScanResultExplanationDialogContent(
-                      spotInfoRequest.title ?? "")),
-              actions: [
-                DynamicTextButton(
-                    onPressed: Navigator.of(context).pop,
-                    child: Text(
-                      AppLocalizations.of(context)!.confirm,
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleMedium
-                          ?.copyWith(color: IscteTheme.iscteColor),
-                    ))
-              ]);
+                      spotInfoRequest.title ?? ""),
+            ),
+          );
         }
       }
     } on LoginException {

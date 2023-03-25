@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:iscte_spots/services/platform_service.dart';
 
 class DynamicAlertDialog extends StatelessWidget {
+  static double iconSize = 40;
   final List<Widget>? actions;
   final Widget? content;
   final Widget? title;

@@ -115,7 +115,7 @@
     "qrScanPermissionButton": "Give Permission",
     "qrScanErrorAlertDialogContent":"An error occurred during the scan, try again or wait a bit",
     "qrScanErrorAlertDialogTitle":"Scan error",
-    "qrScanResultExplanationDialogTitle": "Here you can study the events relative to the topic.",
+    "qrScanResultExplanationDialogTitle": "Here you can study the events relative to {topic}.",
     "qrScanResultExplanationDialogContent": "Questions about these events will be present in you next quiz so be sure to study them.\nTo study them again in the future, you can navigate to the Chronology of the 50 years in the main menu and filter by the topic: {topic}.",
     "qrScanResultReadyForQuizButton": "Are you ready for the quiz?",
     "qrScanResultReadyForQuizButtonDialogTitle": "Have you studied all the content?",
@@ -137,6 +137,7 @@
     "timelineSelectClearButton" : "Clear selection",
     "timelineEventNoData" : "No data",
     "timelineFilterTopicNoTitleError" : "No title",
+    "timelineExplanationAlertDialogContent" : "In the timeline you can see all the events that happened throughout the history of ISCTE and the World.\nBeware, the content from some of these events will be present in the quizzes.\n\nTip: use the filter in the top right corner to study the events from each topic one at a time, that way they are easily memorized",
 
     "feedbackFormTitle":"Feedback",
     "feedbackFormNameField":"Name",

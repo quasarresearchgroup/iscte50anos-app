@@ -79,16 +79,20 @@ class QRScanResults extends StatelessWidget {
                     .qrScanResultReadyForQuizButton),
                 onPressed: () => DynamicAlertDialog.showDynamicDialog(
                     context: context,
-                    icon: const Text("🧐", textScaleFactor: 5),
+                    icon: Icon(Icons.menu_book,
+                        size: DynamicAlertDialog.iconSize),
                     title: Text(AppLocalizations.of(context)!
                         .qrScanResultReadyForQuizButtonDialogTitle),
                     content: Text(AppLocalizations.of(context)!
                         .qrScanResultReadyForQuizButtonDialogContent),
                     actions: [
                       DynamicTextButton(
-                          child: Text(AppLocalizations.of(context)!
-                              .qrScanResultReadyForQuizButtonDialogCancelButton),
-                          onPressed: Navigator.of(context).pop),
+                        onPressed: Navigator.of(context).pop,
+                        child: Text(
+                          AppLocalizations.of(context)!
+                              .qrScanResultReadyForQuizButtonDialogCancelButton,
+                        ),
+                      ),
                       DynamicTextButton(
                           onPressed: () => Navigator.of(context)
                               .popAndPushNamed(QuizMenu.pageRoute),
