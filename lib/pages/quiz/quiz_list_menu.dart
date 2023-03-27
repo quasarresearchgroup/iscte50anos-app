@@ -173,6 +173,7 @@ class _QuizListState extends State<QuizList> {
                                         left: 10.0, right: 10.0),
                                     child: Card(
                                       child: ExpansionTile(
+                                        iconColor: IscteTheme.iscteColor,
                                         title: Text(
                                           "Quiz ${items[index]["number"].toString()}",
                                           style: Theme.of(context)
@@ -191,18 +192,13 @@ class _QuizListState extends State<QuizList> {
                                         children: [
                                           QuizDetail(
                                             quiz: items[index],
-                                            startQuiz: () {
-                                              setState(() {
-                                                Navigator.of(context).pop();
-                                                startTrial(quizNumber);
-                                              });
-                                            },
-                                            returnToQuizList: () {
-                                              setState(() {
-                                                futureQuizList =
-                                                    fetchFunction();
-                                              });
-                                            },
+                                            startQuiz: () => setState(() {
+                                              Navigator.of(context).pop();
+                                              startTrial(quizNumber);
+                                            }),
+                                            returnToQuizList: () => setState(
+                                                () => futureQuizList =
+                                                    fetchFunction()),
                                           )
                                         ],
                                         //minVerticalPadding: 10.0,

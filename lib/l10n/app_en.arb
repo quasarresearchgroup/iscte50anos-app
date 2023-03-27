@@ -43,7 +43,11 @@
     "profileScreen":"Profile",
     "qrScanResultScreen":"Events from {topic}",
     "spotChooserScreen":"Choose the next spot",
+    "accountDrawerTile":"Account",
 
+    "loginIscteHint":"If you have a fenix account login here:",
+    "loginAdminButton":"Admin login",
+    "loginNotAdminButton":"Are you not an admin?",
     "loginInvalidCredentials":"Invalid Credentials",
     "loginDontHaveAccount":"Dont have an account?",
     "loginRegisterButton":"Sign up!",
@@ -77,7 +81,8 @@
 
     "onboardingPage" : "Onboarding",
     "onboardingTitle1" : "Access to the App",
-    "onboardingText1" : "Use the Credentials given to you by our staff so you can participate in the game using the app.",
+    "opendayonboardingText1" : "Use the Credentials given to you by our staff so you can participate in the game using the app.",
+    "onboardingText1" : "Use the credentials you usually use for accessing fenix so you can participate in the game using the app.",
     "onboardingTitle2" : "The IscteSpots game",
     "onboardingText2" : "In order to get to know Iscte's spots better we set up this game.\nMaybe you will find some interestng places... or some history about our university.",
     "onboardingTitle3" : "Complete the puzzle",
@@ -122,6 +127,8 @@
     "qrScanResultReadyForQuizButtonDialogContent": "If you think you are up for the challenge click the button below and start answering.",
     "qrScanResultReadyForQuizButtonDialogContinueButton": "Let's go",
     "qrScanResultReadyForQuizButtonDialogCancelButton": "I am not ready",
+    "qrScanQuizLevelNotAchievedErrorAlertDialogTitle":"Scan error",
+    "qrScanQuizLevelNotAchievedErrorAlertDialogContent":"You have to answer your last quiz in order to continue scanning a new Spot.",
 
     "timelineSearchHint" : "Search here",
     "timelineSearchResults" : "Search results",
@@ -156,6 +163,7 @@
     "spotChooserRandomConfirmationButton":"Confirm",
     "spotChooserRandomConfirmationContent":"Are you sure you want to choose a random \"Spot\"?\n This will replace you current puzzle with a new one.\n Dont worry, your progress is saved if you want to try again later.",
     "spotChooserNotSpotsStored":"No Spots stored!",
+    "spotChooserConfirmationTitle":"Are you sure you want to choose this spot?",
 
     "settingsViewLicences":"View Licences",
 

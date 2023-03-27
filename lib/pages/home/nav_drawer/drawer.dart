@@ -9,16 +9,25 @@ import 'package:iscte_spots/pages/settings/settings_page.dart';
 import 'package:iscte_spots/pages/spotChooser/spot_chooser_page.dart';
 import 'package:iscte_spots/pages/timeline/timeline_page.dart';
 import 'package:iscte_spots/services/auth/login_service.dart';
+import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 
 class MyNavigationDrawer extends StatelessWidget {
   const MyNavigationDrawer({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final TextStyle? tileTextStyle = Theme.of(context).textTheme.bodyLarge;
     final List<Widget> menuWidgetList = [
       ListTile(
+          leading: const Icon(OnboardingPage.icon),
+          title: Text(AppLocalizations.of(context)!.onboardingPage,
+              style: tileTextStyle),
+          onTap: () =>
+              Navigator.of(context).popAndPushNamed(OnboardingPage.pageRoute)),
+      ListTile(
         leading: const Icon(SpotChooserPage.icon),
-        title: Text(AppLocalizations.of(context)!.spotChooserScreen),
+        title: Text(AppLocalizations.of(context)!.spotChooserScreen,
+            style: tileTextStyle),
         onTap: () {
 //          PageRoutes.animateToPage(context, page: TimelinePage());
           Navigator.of(context).popAndPushNamed(SpotChooserPage.pageRoute);
@@ -26,7 +35,8 @@ class MyNavigationDrawer extends StatelessWidget {
       ),
       ListTile(
         leading: const Icon(TimelinePage.icon),
-        title: Text(AppLocalizations.of(context)!.timelineScreen),
+        title: Text(AppLocalizations.of(context)!.timelineScreen,
+            style: tileTextStyle),
         onTap: () {
 //          PageRoutes.animateToPage(context, page: TimelinePage());
           Navigator.of(context).popAndPushNamed(TimelinePage.pageRoute);
@@ -35,7 +45,7 @@ class MyNavigationDrawer extends StatelessWidget {
 /*
       ListTile(
         leading: const Icon(Icons.touch_app_outlined),
-        title: Text(AppLocalizations.of(context)!.shakerScreen),
+        title: Text(AppLocalizations.of(context)!.shakerScreen,style: tileTextStyle),
         onTap: () {
 //          PageRoutes.animateToPage(context, page: Shaker());
           Navigator.of(context).popAndPushNamed(Shaker.pageRoute);
@@ -43,7 +53,8 @@ class MyNavigationDrawer extends StatelessWidget {
       ),*/
       ListTile(
         leading: const Icon(QuizMenu.icon),
-        title: Text(AppLocalizations.of(context)!.quizScreen),
+        title: Text(AppLocalizations.of(context)!.quizScreen,
+            style: tileTextStyle),
         onTap: () {
           //PageRoutes.animateToPage(context, page: QuizPage());
           Navigator.of(context).popAndPushNamed(QuizMenu.pageRoute);
@@ -51,7 +62,8 @@ class MyNavigationDrawer extends StatelessWidget {
       ),
       ListTile(
         leading: const FaIcon(FlickrPage.icon),
-        title: Text(AppLocalizations.of(context)!.flickrScreen),
+        title: Text(AppLocalizations.of(context)!.flickrScreen,
+            style: tileTextStyle),
         onTap: () {
 //          PageRoutes.animateToPage(context, page: FlickrPage());
           Navigator.of(context).popAndPushNamed(FlickrPage.pageRoute);
@@ -66,29 +78,28 @@ class MyNavigationDrawer extends StatelessWidget {
         },
       ),*/
       ExpansionTile(
+        iconColor: IscteTheme.iscteColor,
         title: Text(
-          "Account",
-          style: Theme.of(context).textTheme.titleMedium,
+          AppLocalizations.of(context)!.accountDrawerTile,
+          style: Theme.of(context).textTheme.bodyLarge,
         ),
         children: [
           ListTile(
               leading: const Icon(ProfilePage.icon),
-              title: Text(AppLocalizations.of(context)!.profileScreen),
+              title: Text(AppLocalizations.of(context)!.profileScreen,
+                  style: tileTextStyle),
               onTap: () =>
                   Navigator.of(context).popAndPushNamed(ProfilePage.pageRoute)),
           ListTile(
               leading: const Icon(SettingsPage.icon),
-              title: Text(AppLocalizations.of(context)!.settingsScreen),
+              title: Text(AppLocalizations.of(context)!.settingsScreen,
+                  style: tileTextStyle),
               onTap: () => Navigator.of(context)
                   .popAndPushNamed(SettingsPage.pageRoute)),
           ListTile(
-              leading: const Icon(OnboardingPage.icon),
-              title: Text(AppLocalizations.of(context)!.onboardingPage),
-              onTap: () => Navigator.of(context)
-                  .popAndPushNamed(OnboardingPage.pageRoute)),
-          ListTile(
               leading: Icon(Icons.adaptive.arrow_back_outlined),
-              title: Text(AppLocalizations.of(context)!.logOutButton),
+              title: Text(AppLocalizations.of(context)!.logOutButton,
+                  style: tileTextStyle),
               onTap: () async => await LoginService.logOut(context)),
         ],
       ),
@@ -109,7 +120,8 @@ class MyNavigationDrawer extends StatelessWidget {
           ),
           Expanded(
             child: SingleChildScrollView(
-              child: Column(children: menuWidgetList),
+              child: Column(
+                  mainAxisSize: MainAxisSize.max, children: menuWidgetList),
             ),
           ),
         ],

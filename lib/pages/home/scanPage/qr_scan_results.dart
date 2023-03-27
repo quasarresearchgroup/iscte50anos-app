@@ -3,7 +3,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/models/requests/spot_info_request.dart';
 import 'package:iscte_spots/models/timeline/event.dart';
 import 'package:iscte_spots/pages/quiz/quiz_list_menu.dart';
-import 'package:iscte_spots/pages/quiz/quiz_page.dart';
 import 'package:iscte_spots/pages/timeline/details/timeline_details_page.dart';
 import 'package:iscte_spots/pages/timeline/timeline_body.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
@@ -75,12 +74,15 @@ class QRScanResults extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               DynamicTextButton(
+                style: const ButtonStyle(
+                    backgroundColor:
+                        MaterialStatePropertyAll(IscteTheme.iscteColor)),
                 child: Text(
                   AppLocalizations.of(context)!.qrScanResultReadyForQuizButton,
                   style: Theme.of(context)
                       .textTheme
-                      .titleMedium
-                      ?.copyWith(color: IscteTheme.iscteColor),
+                      .titleLarge
+                      ?.copyWith(color: Colors.white),
                 ),
                 onPressed: () => DynamicAlertDialog.showDynamicDialog(
                     context: context,

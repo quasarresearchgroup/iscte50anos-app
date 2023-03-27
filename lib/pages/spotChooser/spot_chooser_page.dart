@@ -321,7 +321,7 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
     LoggerService.instance.debug("spotChooserTapCallback");
     await DynamicAlertDialog.showDynamicDialog(
         context: context,
-        title: const Text("Are you sure you want to choose this spot?"),
+        title: Text(AppLocalizations.of(context)!.spotChooserConfirmationTitle),
         actions: [
           DynamicTextButton(
             child: Text(

@@ -205,6 +205,11 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
       if (mounted) {
         LoginService.logOut(context);
       }
+    } on QuizLevelNotAchieved {
+      LoggerService.instance.error("QuizLevelNotAchieved");
+      if (mounted) {
+        await launchQuizLevelNotAchievedErrorDialog(context);
+      }
     } on InvalidQRException {
       LoggerService.instance.error("InvalidQRException");
       if (mounted) {
@@ -270,7 +275,6 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
   }
 
   Future<void> launchQRErrorDialog(context) async {
-    String okButton = "OK";
     await DynamicAlertDialog.showDynamicDialog(
       context: context,
       title: Text(AppLocalizations.of(context)!.qrScanErrorAlertDialogTitle),
@@ -279,7 +283,31 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
       actions: [
         DynamicTextButton(
           child: Text(
-            okButton,
+            AppLocalizations.of(context)!.confirm,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  color: IscteTheme.iscteColor,
+                ),
+          ),
+          onPressed: () {
+            LoggerService.instance.debug("Pressed \"OK\"");
+            Navigator.pop(context);
+          },
+        ),
+      ],
+    );
+  }
+
+  Future<void> launchQuizLevelNotAchievedErrorDialog(context) async {
+    await DynamicAlertDialog.showDynamicDialog(
+      context: context,
+      title: Text(AppLocalizations.of(context)!
+          .qrScanQuizLevelNotAchievedErrorAlertDialogTitle),
+      content: Text(AppLocalizations.of(context)!
+          .qrScanQuizLevelNotAchievedErrorAlertDialogContent),
+      actions: [
+        DynamicTextButton(
+          child: Text(
+            AppLocalizations.of(context)!.confirm,
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   color: IscteTheme.iscteColor,
                 ),

@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/models/quiz/answer.dart';
@@ -11,7 +10,6 @@ import 'package:iscte_spots/pages/quiz/answer_widget.dart';
 import 'package:iscte_spots/pages/quiz/question_text_widget.dart';
 import 'package:iscte_spots/pages/quiz/quiz_image.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
-import 'package:iscte_spots/services/platform_service.dart';
 import 'package:iscte_spots/services/quiz/quiz_service.dart';
 import 'package:iscte_spots/widgets/dialogs/CustomDialogs.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_alert_dialog.dart';
@@ -373,13 +371,13 @@ class QuizFinishedPage extends StatelessWidget {
                 DynamicTextButton(
                   onPressed: () => Navigator.of(context)
                       .pushNamed(LeaderBoardPage.pageRoute),
-                  style: ButtonStyle(
+                  style: const ButtonStyle(
                       backgroundColor:
                           MaterialStatePropertyAll(IscteTheme.iscteColor)),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.leaderboard),
+                      const Icon(Icons.leaderboard, color: Colors.white),
                       Text(
                         AppLocalizations.of(context)!.leaderBoardScreen,
                         style: Theme.of(context).textTheme.titleLarge?.copyWith(

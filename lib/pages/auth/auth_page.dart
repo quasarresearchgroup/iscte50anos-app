@@ -9,10 +9,12 @@ import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_loading_widget.dart';
 import 'package:lottie/lottie.dart';
 
+import 'auth_initial_page.dart';
+
 class AuthPage extends StatefulWidget {
   static const pageRoute = "/auth";
 
-  AuthPage({Key? key}) : super(key: key);
+  const AuthPage({Key? key}) : super(key: key);
 
   @override
   State<AuthPage> createState() => _AuthPageState();
@@ -21,9 +23,10 @@ class AuthPage extends StatefulWidget {
 class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
   bool _isLoggedIn = true;
   bool _isLoading = true;
-  late List<StatefulWidget> _pages;
-  final int _loginIndex = 0;
-  final int _registerIndex = 1;
+  late List<Widget> _pages;
+  final int _initialIndex = 0;
+  final int _loginIndex = 1;
+  final int _registerIndex = 2;
   late TabController _tabController;
   late final AnimationController _lottieController;
   final animatedSwitcherDuration = const Duration(seconds: 1);
@@ -39,7 +42,12 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     _pages = [
+      AuthInitialPage(
+        loggingComplete: loggingComplete,
+        changeToLogIn: changeToLogIn,
+      ),
       LoginPage(
+        changeToAuthInitial: changeToAuthInitial,
         changeToSignUp: changeToSignUp,
         loggingComplete: loggingComplete,
         animatedSwitcherDuration: animatedSwitcherDuration,
@@ -91,11 +99,17 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
   }
 
   void loggingComplete() async {
-    setState(() => _isLoggedIn = true);
+    setState(
+      () => _isLoggedIn = true,
+    );
   }
 
   void changeToSignUp() {
     _tabController.animateTo(_registerIndex);
+  }
+
+  void changeToAuthInitial() {
+    _tabController.animateTo(_initialIndex);
   }
 
   void changeToLogIn() {
@@ -114,7 +128,7 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
                 ? lottieCompleteLoginBuilder()
                 : TabBarView(
                     controller: _tabController,
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     children: _pages,
                   ),
       ),
