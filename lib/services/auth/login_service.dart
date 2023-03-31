@@ -50,27 +50,31 @@ class LoginService {
   }
 
   static Future<bool> isLoggedIn() async {
-    const storage = FlutterSecureStorage();
-    String? username =
-        await storage.read(key: LoginStorageService.usernameStorageLocation);
-    String? password =
-        await storage.read(key: LoginStorageService.passwordStorageLocation);
-    String? token = await storage.read(
-        key: LoginStorageService.backendApiKeyStorageLocation);
-    LoggerService.instance
-        .debug("username : $username ; password : $password; token : $token");
+    try {
+      const storage = FlutterSecureStorage();
+      String? username =
+          await storage.read(key: LoginStorageService.usernameStorageLocation);
+      String? password =
+          await storage.read(key: LoginStorageService.passwordStorageLocation);
+      String? token = await storage.read(
+          key: LoginStorageService.backendApiKeyStorageLocation);
+      LoggerService.instance
+          .debug("username : $username ; password : $password; token : $token");
 
-    if (token != null) return true;
+      if (token != null) return true;
 
-    if (username != null && password != null) {
-      int loginresult = await login(
-        LoginFormResult(
-          username: username,
-          password: password,
-        ),
-      );
-      return loginresult == 200;
-    } else {
+      if (username != null && password != null) {
+        int loginresult = await login(
+          LoginFormResult(
+            username: username,
+            password: password,
+          ),
+        );
+        return loginresult == 200;
+      } else {
+        return false;
+      }
+    } catch (e) {
       return false;
     }
   }
