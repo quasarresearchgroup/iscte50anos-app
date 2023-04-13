@@ -212,15 +212,17 @@ class _QuizState extends State<Quiz> {
                 Text(
                     "${AppLocalizations.of(context)!.quizQuestion} ${questionNumber}/${widget.numQuestions}"),
                 const SizedBox(height: 5),
-                Expanded(
-                  child: QuizImage(
-                    flickrUrl: question.image_link,
-                    onLoadCallback: startTimer,
-                    onErrorCallback: startTimer,
-                    key: ValueKey(question.image_link),
+                if (question.image_link != null)
+                  Expanded(
+                    child: QuizImage(
+                      flickrUrl: question.image_link!,
+                      onLoadCallback: startTimer,
+                      onErrorCallback: startTimer,
+                      key: ValueKey(question.image_link),
+                    ),
                   ),
-                ),
-                QuestionTextWidget(question.text), //Question
+                QuestionTextWidget(
+                    question.text ?? "No question text"), //Question
                 const SizedBox(height: 5),
                 isTimed
                     ? Padding(

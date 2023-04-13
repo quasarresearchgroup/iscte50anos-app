@@ -4,16 +4,19 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:iscte_spots/helper/constants.dart';
 import 'package:iscte_spots/models/quiz/next_question_fetch_info.dart';
+import 'package:iscte_spots/models/quiz/quiz.dart';
 import 'package:iscte_spots/pages/leaderboard/leaderboard_screen.dart';
 import 'package:iscte_spots/services/auth/auth_storage_service.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
+
+import '../../models/quiz/trial.dart';
 
 const API_ADDRESS = BackEndConstants.API_ADDRESS;
 const API_ADDRESS_TEST = "http://192.168.1.66";
 const FLICKR_API_KEY = "c16f27dcc1c8674dd6daa3a26bd24520";
 
 class QuizService {
-  static Future<List<dynamic>> getQuizList() async {
+  static Future<List<Quiz>> getQuizList() async {
     try {
       String? apiToken = await secureStorage.read(
           key: LoginStorageService.backendApiKeyStorageLocation);
@@ -31,8 +34,13 @@ class QuizService {
       final response = await request.close();
 
       if (response.statusCode == 200) {
-        var quizzes = jsonDecode(await response.transform(utf8.decoder).join());
-        LoggerService.instance.debug(quizzes);
+        var decodedJson =
+            jsonDecode(await response.transform(utf8.decoder).join());
+        LoggerService.instance.debug(decodedJson);
+        List<Quiz> quizzes = [];
+        for (var item in decodedJson) {
+          quizzes.add(Quiz.fromJson(item));
+        }
         return quizzes;
       }
     } catch (e) {
@@ -42,7 +50,7 @@ class QuizService {
     throw Exception('Failed to load quiz list');
   }
 
-  static Future<Map> startTrial(int quiz) async {
+  static Future<Trial> startTrial(int quiz) async {
     try {
       String? apiToken = await secureStorage.read(key: "backend_api_key");
       //String? apiToken = "8eb7f1e61ef68a526cf5a1fb6ddb0903bc0678c1";
@@ -62,7 +70,9 @@ class QuizService {
       LoggerService.instance.debug(response);
 
       if (response.statusCode == 201) {
-        return jsonDecode(await response.transform(utf8.decoder).join());
+        var json = jsonDecode(await response.transform(utf8.decoder).join());
+        LoggerService.instance.debug(json);
+        return Trial.fromJson(json);
       }
     } catch (e) {
       LoggerService.instance.debug(e);
@@ -146,7 +156,7 @@ class QuizService {
           'https://www.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=$FLICKR_API_KEY&photo_id=$photoId&format=json&nojsoncallback=1'));
       if (photoData.statusCode == 200) {
         final jsonPhotoData = jsonDecode(photoData.body)["photo"];
-        LoggerService.instance.debug(jsonPhotoData);
+        LoggerService.instance.verbose(jsonPhotoData);
 
         var farm = jsonPhotoData["farm"];
         var server = jsonPhotoData["server"];

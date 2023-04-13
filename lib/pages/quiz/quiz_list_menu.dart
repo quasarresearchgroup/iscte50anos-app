@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:iscte_spots/models/quiz/trial.dart';
 import 'package:iscte_spots/pages/quiz/quiz_page.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_back_button.dart';
@@ -10,6 +11,7 @@ import 'package:iscte_spots/widgets/my_app_bar.dart';
 import 'package:iscte_spots/widgets/network/error.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 
+import '../../models/quiz/quiz.dart';
 import '../../services/quiz/quiz_service.dart';
 import '../../widgets/dialogs/CustomDialogs.dart';
 
@@ -60,7 +62,7 @@ class QuizList extends StatefulWidget {
 
 class _QuizListState extends State<QuizList> {
   final fetchFunction = QuizService.getQuizList;
-  late Future<List<dynamic>> futureQuizList;
+  late Future<List<Quiz>> futureQuizList;
   bool isLoading = false;
 
   bool isTrialLoading = false;
@@ -71,23 +73,20 @@ class _QuizListState extends State<QuizList> {
     futureQuizList = fetchFunction();
   }
 
-  startTrial(int quizNumber) async {
+  Future<void> startTrial(int quizNumber) async {
     isTrialLoading = true;
     try {
-      Map newTrialInfo = await QuizService.startTrial(quizNumber);
+      Trial newTrialInfo = await QuizService.startTrial(quizNumber);
       isTrialLoading = false;
-
-      int newTrialNumber = newTrialInfo["trial_number"];
-      int numQuestions = newTrialInfo["quiz_size"] ?? 0;
-      LoggerService.instance.debug(newTrialInfo);
+      LoggerService.instance.debug(newTrialInfo.toJson());
       if (mounted) {
         Navigator.of(context)
             .push(
           MaterialPageRoute(
             builder: (context) => QuizPage(
               quizNumber: quizNumber,
-              trialNumber: newTrialNumber,
-              numQuestions: numQuestions,
+              trialNumber: newTrialInfo.number,
+              numQuestions: newTrialInfo.quiz_size ?? 0,
             ),
           ),
         )
@@ -137,13 +136,13 @@ class _QuizListState extends State<QuizList> {
                 ),
               ),
               Expanded(
-                child: FutureBuilder(
+                child: FutureBuilder<List<Quiz>>(
                   future: futureQuizList,
                   builder: (context, snapshot) {
-                    List<Widget> children;
                     if (snapshot.hasData) {
-                      var items = snapshot.data as List<dynamic>;
-                      LoggerService.instance.debug(items);
+                      List<Quiz> items = snapshot.data ?? [];
+                      LoggerService.instance.debug(
+                          "quiz list items:\n${items.map((e) => e.toJson())}");
                       return RefreshIndicator(
                         onRefresh: () async {
                           setState(() {
@@ -162,12 +161,10 @@ class _QuizListState extends State<QuizList> {
                                 physics: const AlwaysScrollableScrollPhysics(),
                                 itemCount: items.length,
                                 itemBuilder: (context, index) {
-                                  int quizNumber = items[index]["number"];
-                                  int score = items[index]["score"];
-                                  int trials = items[index]["num_trials"];
-                                  var topicNames = items[index]["topic_names"];
-                                  int numQuestions =
-                                      items[index]["num_questions"] ?? 0;
+                                  int quizNumber = items[index].number;
+                                  int score = items[index].score;
+                                  int trials = items[index].num_trials;
+                                  var topicNames = items[index].topic_names;
                                   return Padding(
                                     padding: const EdgeInsets.only(
                                         left: 10.0, right: 10.0),
@@ -175,7 +172,7 @@ class _QuizListState extends State<QuizList> {
                                       child: ExpansionTile(
                                         iconColor: IscteTheme.iscteColor,
                                         title: Text(
-                                          "Quiz ${items[index]["number"].toString()}",
+                                          "Quiz ${items[index].number}",
                                           style: Theme.of(context)
                                               .textTheme
                                               .titleLarge
@@ -250,11 +247,11 @@ class QuizDetail extends StatelessWidget {
 
   final Function() startQuiz;
   final Function() returnToQuizList;
-  final Map quiz;
+  final Quiz quiz;
 
   @override
   Widget build(BuildContext context) {
-    var trials = quiz["trials"];
+    var trials = quiz.trials;
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: Column(
@@ -269,7 +266,7 @@ class QuizDetail extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                        "${AppLocalizations.of(context)!.quizAttempt}: ${trial["number"]}"),
+                        "${AppLocalizations.of(context)!.quizAttempt}: ${trial.number}"),
                     const SizedBox(
                       height: 5,
                     ),
@@ -277,14 +274,14 @@ class QuizDetail extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           Text(
-                              "${AppLocalizations.of(context)!.quizPoints}: ${trial["is_completed"] ? trial["score"] : "-"}"),
+                              "${AppLocalizations.of(context)!.quizPoints}: ${trial.is_completed ? trial.score : "-"}"),
                           Text(
-                              "${AppLocalizations.of(context)!.quizProgress}: ${trial["progress"]}/${trial["quiz_size"]}"),
+                              "${AppLocalizations.of(context)!.quizProgress}: ${trial.progress}/${trial.quiz_size}"),
                         ]),
                     const SizedBox(
                       height: 5,
                     ),
-                    if (!trial["is_completed"])
+                    if (!trial.is_completed)
                       ElevatedButton(
                         onPressed: () => showYesNoWarningDialog(
                           context: context,
@@ -296,9 +293,9 @@ class QuizDetail extends StatelessWidget {
                                 .push(
                               MaterialPageRoute(
                                 builder: (context) => QuizPage(
-                                  quizNumber: quiz["number"],
-                                  trialNumber: trial["number"],
-                                  numQuestions: trial["quiz_size"],
+                                  quizNumber: quiz.number,
+                                  trialNumber: trial.number,
+                                  numQuestions: trial.quiz_size,
                                 ),
                               ),
                             )
@@ -315,7 +312,7 @@ class QuizDetail extends StatelessWidget {
                   ],
                 );
               }),
-          if (quiz["num_trials"] < MAX_TRIALS)
+          if (quiz.num_trials < quiz.max_num_trials)
             ElevatedButton(
               onPressed: () {
                 showYesNoWarningDialog(

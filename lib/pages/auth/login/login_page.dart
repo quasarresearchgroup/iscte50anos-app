@@ -220,10 +220,11 @@ class _LoginOpendayState extends State<LoginPage>
               "Login error!: statusCode: $statusCode; loginForm: $loginFormResult;");
         }
       }
-    } on SocketException {
+    } on SocketException catch (e) {
       setState(() {
         _connectionError = true;
       });
+      LoggerService.instance.error(e);
       LoggerService.instance.error("SocketException on login!");
     } catch (e) {
       setState(() {

@@ -7,6 +7,11 @@ class Answer {
     required this.id,
   });
 
+  @override
+  String toString() {
+    return 'Answer{text: $text, id: $id}';
+  }
+
   factory Answer.fromJson(Map<String, dynamic> json) => Answer(
         text: json["text"],
         id: json["id"],

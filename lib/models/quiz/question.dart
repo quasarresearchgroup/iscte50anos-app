@@ -6,9 +6,9 @@ enum QuestionType {
 }
 
 class Question {
-  String text;
+  String? text;
   QuestionType type;
-  String image_link;
+  String? image_link;
   String? category;
   List<Answer> choices;
   bool isTimed;
@@ -50,7 +50,7 @@ class Question {
       "category": category,
       "isTimed": isTimed,
       "time": time,
-      "choices": choices,
+      "choices": choices.map((e) => e.toJson()).toList(),
     };
   }
 }
