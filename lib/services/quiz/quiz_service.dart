@@ -8,8 +8,8 @@ import 'package:iscte_spots/models/quiz/quiz.dart';
 import 'package:iscte_spots/pages/leaderboard/leaderboard_screen.dart';
 import 'package:iscte_spots/services/auth/auth_storage_service.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
-
-import '../../models/quiz/trial.dart';
+import 'package:iscte_spots/models/quiz/trial.dart';
+import 'package:iscte_spots/services/quiz/quiz_exceptions.dart';
 
 const API_ADDRESS = BackEndConstants.API_ADDRESS;
 const API_ADDRESS_TEST = "http://192.168.1.66";
@@ -81,6 +81,36 @@ class QuizService {
     throw Exception('Failed to start trial');
   }
 
+  static Future<Trial> getTrial(int quizNumber, int trialNumber) async {
+    try {
+      String? apiToken = await secureStorage.read(key: "backend_api_key");
+      //String? apiToken = "8eb7f1e61ef68a526cf5a1fb6ddb0903bc0678c1";
+
+      HttpClient client = HttpClient();
+      client.badCertificateCallback =
+          ((X509Certificate cert, String host, int port) => true);
+
+      //final request = await client.postUrl(
+      //  Uri.parse('${BackEndConstants.API_ADDRESS}/api/quizzes/$quiz'));
+      final request = await client.getUrl(Uri.parse(
+          '$API_ADDRESS/api/quizzes/$quizNumber/trials/$trialNumber'));
+
+      request.headers.add("Authorization", "Token $apiToken");
+      request.headers.set('content-type', 'application/json');
+      final response = await request.close();
+      LoggerService.instance.debug("statusCode ${response.statusCode}");
+      var json = jsonDecode(await response.transform(utf8.decoder).join());
+      LoggerService.instance.debug(json);
+      return Trial.fromJson(json);
+    } catch (e) {
+      LoggerService.instance.debug(e);
+      rethrow;
+    }
+    throw TrialFailedContinue();
+  }
+
+  @Deprecated(
+      "Now gets all questions at the start of a quiz instead of requesting each one by one")
   static Future<NextQuestionFetchInfo> getNextQuestion(
     int quiz,
     int trial,
@@ -110,7 +140,7 @@ class QuizService {
     throw Exception('Failed to obtain next question');
   }
 
-  static Future<bool> answerQuestion(
+  static Future<void> answerQuestion(
       int quiz, int trial, int question, Map answer) async {
     try {
       String? apiToken = await secureStorage.read(key: "backend_api_key");
@@ -127,20 +157,32 @@ class QuizService {
       request.add(utf8.encode(json.encode(answer)));
       final response = await request.close();
 
-      /*var response = await http.post(
-          Uri.parse(
-              '$API_ADDRESS/api/quizzes/$quiz/trials/$trial/questions/$question/answer'),
-          headers: {
-            "Authorization": "Token $apiToken",
-            "Content-Type": 'application/json; charset=utf-8'
-          },
-          body: jsonEncode(answer));*/
-
-      return response.statusCode == 201;
-      //return jsonDecode(await response.transform(utf8.decoder).join());
-      return true;
+      var decodedJson =
+          jsonDecode(await response.transform(utf8.decoder).join());
+      LoggerService.instance.debug(decodedJson);
+      switch (response.statusCode) {
+        case 201:
+          LoggerService.instance.debug("Success in submitting answer");
+          break;
+        case 400:
+          if (decodedJson["status"] ==
+              TrialQuestionAlreadyAnsweredException().errorMessage) {
+            throw TrialQuestionAlreadyAnsweredException();
+          } else if (decodedJson["status"] ==
+              TrialQuestionNotAccessedException().errorMessage) {
+            throw TrialQuestionNotAccessedException();
+          } else if (decodedJson["status"] ==
+              TriaAnswerTimeExpired().errorMessage) {
+            throw TriaAnswerTimeExpired();
+          }
+          throw TrialFailedSubmitAnswer();
+        case 404:
+          throw TrialQuizNotExistException();
+        default:
+          throw TrialFailedSubmitAnswer();
+      }
     } catch (e) {
-      LoggerService.instance.debug(e);
+      LoggerService.instance.error(e);
       rethrow;
     }
   }

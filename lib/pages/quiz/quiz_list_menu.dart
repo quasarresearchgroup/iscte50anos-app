@@ -73,33 +73,47 @@ class _QuizListState extends State<QuizList> {
     futureQuizList = fetchFunction();
   }
 
-  Future<void> startTrial(int quizNumber) async {
+  void _trialCallbackAux({required Trial trial, required int quizNumber}) {
+    isTrialLoading = false;
+    LoggerService.instance.debug(trial.toJson());
+    if (mounted) {
+      Navigator.of(context)
+          .push(
+        MaterialPageRoute(
+          builder: (context) => QuizPage(
+            quizNumber: quizNumber,
+            trial: trial,
+          ),
+        ),
+      )
+          .then((_) {
+        setState(() {
+          futureQuizList = fetchFunction();
+        });
+      });
+    }
+  }
+
+  Future<void> continueTrialCallback(
+      {required int quizNumber, required int trialNumber}) async {
     isTrialLoading = true;
     try {
-      Trial newTrialInfo = await QuizService.startTrial(quizNumber);
-      isTrialLoading = false;
-      LoggerService.instance.debug(newTrialInfo.toJson());
-      if (mounted) {
-        Navigator.of(context)
-            .push(
-          MaterialPageRoute(
-            builder: (context) => QuizPage(
-              quizNumber: quizNumber,
-              trialNumber: newTrialInfo.number,
-              numQuestions: newTrialInfo.quiz_size ?? 0,
-            ),
-          ),
-        )
-            .then((value) {
-          setState(() {
-            futureQuizList = fetchFunction();
-          });
-        });
-      }
+      Trial trial = await QuizService.getTrial(quizNumber, trialNumber);
+      _trialCallbackAux(trial: trial, quizNumber: quizNumber);
     } catch (e) {
-      setState(() {
-        isTrialLoading = false;
-      });
+      LoggerService.instance.error(e);
+      setState(() => isTrialLoading = false);
+    }
+  }
+
+  Future<void> startTrialCallback({required int quizNumber}) async {
+    isTrialLoading = true;
+    try {
+      Trial newTrial = await QuizService.startTrial(quizNumber);
+      _trialCallbackAux(trial: newTrial, quizNumber: quizNumber);
+    } catch (e) {
+      LoggerService.instance.error(e);
+      setState(() => isTrialLoading = false);
     }
   }
 
@@ -164,7 +178,7 @@ class _QuizListState extends State<QuizList> {
                                   int quizNumber = items[index].number;
                                   int score = items[index].score;
                                   int trials = items[index].num_trials;
-                                  var topicNames = items[index].topic_names;
+                                  String topicNames = items[index].topic_names;
                                   return Padding(
                                     padding: const EdgeInsets.only(
                                         left: 10.0, right: 10.0),
@@ -189,10 +203,9 @@ class _QuizListState extends State<QuizList> {
                                         children: [
                                           QuizDetail(
                                             quiz: items[index],
-                                            startQuiz: () => setState(() {
-                                              Navigator.of(context).pop();
-                                              startTrial(quizNumber);
-                                            }),
+                                            startQuiz: startTrialCallback,
+                                            continueQuizCallback:
+                                                continueTrialCallback,
                                             returnToQuizList: () => setState(
                                                 () => futureQuizList =
                                                     fetchFunction()),
@@ -241,17 +254,20 @@ class QuizDetail extends StatelessWidget {
   const QuizDetail({
     Key? key,
     required this.startQuiz,
+    required this.continueQuizCallback,
     required this.quiz,
     required this.returnToQuizList,
   }) : super(key: key);
 
-  final Function() startQuiz;
+  final Function({required int quizNumber}) startQuiz;
+  final Function({required int quizNumber, required int trialNumber})
+      continueQuizCallback;
   final Function() returnToQuizList;
   final Quiz quiz;
 
   @override
   Widget build(BuildContext context) {
-    var trials = quiz.trials;
+    List<TrialInfo> trials = quiz.trials;
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: Column(
@@ -261,7 +277,7 @@ class QuizDetail extends StatelessWidget {
               physics: const NeverScrollableScrollPhysics(),
               itemCount: trials.length,
               itemBuilder: (context, index) {
-                var trial = trials[index];
+                TrialInfo trial = trials[index];
                 return Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -287,21 +303,12 @@ class QuizDetail extends StatelessWidget {
                           context: context,
                           text:
                               AppLocalizations.of(context)!.quizContinueAttempt,
-                          methodOnYes: () {
+                          methodOnYes: () async {
                             Navigator.of(context).pop();
-                            Navigator.of(context)
-                                .push(
-                              MaterialPageRoute(
-                                builder: (context) => QuizPage(
-                                  quizNumber: quiz.number,
-                                  trialNumber: trial.number,
-                                  numQuestions: trial.quiz_size,
-                                ),
-                              ),
-                            )
-                                .then((value) {
-                              returnToQuizList();
-                            });
+                            await continueQuizCallback(
+                              quizNumber: quiz.number,
+                              trialNumber: trial.number,
+                            );
                           },
                         ),
                         child: Text(AppLocalizations.of(context)!.quizContinue),
@@ -318,7 +325,10 @@ class QuizDetail extends StatelessWidget {
                 showYesNoWarningDialog(
                   context: context,
                   text: AppLocalizations.of(context)!.quizBeginAttemptWarning,
-                  methodOnYes: startQuiz,
+                  methodOnYes: () async {
+                    Navigator.of(context).pop();
+                    await startQuiz(quizNumber: quiz.number);
+                  },
                 );
               },
               child: Text(AppLocalizations.of(context)!.quizBeginAttempt),

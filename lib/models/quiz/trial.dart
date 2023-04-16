@@ -1,8 +1,11 @@
 import 'package:iscte_spots/models/quiz/question.dart';
 
 class Trial {
+  ///Number of the trial
   int number;
-  int? quiz_size;
+
+  ///Number of questions inside each trial of a quiz
+  int quiz_size;
   List<TrialQuestion> questions;
 
   Trial(
