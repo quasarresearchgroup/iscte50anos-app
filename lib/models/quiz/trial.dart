@@ -17,7 +17,7 @@ class Trial {
   }
 
   factory Trial.fromJson(Map<String, dynamic> json) => Trial(
-        number: json["number"],
+        number: json["trial_number"],
         quiz_size: json["quiz_size"],
         questions: (json["questions"] as List<dynamic>)
             .map((e) => TrialQuestion.fromJson(e))

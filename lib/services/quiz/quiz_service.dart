@@ -75,7 +75,7 @@ class QuizService {
         return Trial.fromJson(json);
       }
     } catch (e) {
-      LoggerService.instance.debug(e);
+      LoggerService.instance.error(e);
       rethrow;
     }
     throw Exception('Failed to start trial');
@@ -109,6 +109,7 @@ class QuizService {
     throw TrialFailedContinue();
   }
 
+/*
   @Deprecated(
       "Now gets all questions at the start of a quiz instead of requesting each one by one")
   static Future<NextQuestionFetchInfo> getNextQuestion(
@@ -139,7 +140,60 @@ class QuizService {
     }
     throw Exception('Failed to obtain next question');
   }
+*/
 
+  static Future<int> answerTrial(
+      int quizId, int trialId, Map answersMap) async {
+    try {
+      String? apiToken = await secureStorage.read(key: "backend_api_key");
+
+      HttpClient client = HttpClient();
+      client.badCertificateCallback =
+          ((X509Certificate cert, String host, int port) => true);
+
+      http.Response response = await http.post(
+        Uri.parse('$API_ADDRESS/api/quizzes/$quizId/trials/$trialId/answer'),
+        headers: <String, String>{
+          "Authorization": "Token $apiToken",
+          'content-type': 'application/json; charset=utf-8',
+        },
+        body: jsonEncode(answersMap),
+      );
+
+      var decodedJson = await jsonDecode(utf8.decode(response.bodyBytes));
+
+      LoggerService.instance.debug(decodedJson);
+      switch (response.statusCode) {
+        case 201:
+          int score = decodedJson["trial_score"];
+          LoggerService.instance
+              .debug("Success in submitting answer, score:$score");
+          return score;
+        case 400:
+          LoggerService.instance.error(decodedJson);
+          if (decodedJson["status"] ==
+              TrialQuestionAlreadyAnsweredException().errorMessage) {
+            throw TrialQuestionAlreadyAnsweredException();
+          } else if (decodedJson["status"] ==
+              TrialQuestionNotAccessedException().errorMessage) {
+            throw TrialQuestionNotAccessedException();
+          } else if (decodedJson["status"] ==
+              TriaAnswerTimeExpired().errorMessage) {
+            throw TriaAnswerTimeExpired();
+          }
+          throw TrialFailedSubmitAnswer();
+        case 404:
+          throw TrialQuizNotExistException();
+        default:
+          throw TrialFailedSubmitAnswer();
+      }
+    } catch (e) {
+      LoggerService.instance.error(e);
+      rethrow;
+    }
+  }
+
+/*
   static Future<void> answerQuestion(
       int quiz, int trial, int question, Map answer) async {
     try {
@@ -186,6 +240,7 @@ class QuizService {
       rethrow;
     }
   }
+*/
 
   static Future<String> getPhotoURLfromQuizFlickrURL(String url) async {
     try {

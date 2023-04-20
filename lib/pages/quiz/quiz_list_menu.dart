@@ -297,7 +297,7 @@ class QuizDetail extends StatelessWidget {
                     const SizedBox(
                       height: 5,
                     ),
-                    if (!trial.is_completed)
+/*                    if (!trial.is_completed)
                       ElevatedButton(
                         onPressed: () => showYesNoWarningDialog(
                           context: context,
@@ -312,7 +312,7 @@ class QuizDetail extends StatelessWidget {
                           },
                         ),
                         child: Text(AppLocalizations.of(context)!.quizContinue),
-                      ),
+                      ),*/
                     const Divider(
                       thickness: 2,
                     ),

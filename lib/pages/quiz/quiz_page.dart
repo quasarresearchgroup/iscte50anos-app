@@ -4,17 +4,17 @@ import 'package:iscte_spots/models/quiz/trial.dart';
 import 'package:iscte_spots/pages/quiz/question_widget.dart';
 import 'package:iscte_spots/pages/quiz/quiz_finished_page.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
+import 'package:iscte_spots/services/quiz/quiz_service.dart';
 import 'package:iscte_spots/services/quiz/trial_controller.dart';
 
 import 'package:iscte_spots/widgets/dialogs/CustomDialogs.dart';
 
 class QuizPage extends StatefulWidget {
-  final int quizNumber;
   final TrialController trialController;
 
   QuizPage({
     Key? key,
-    required this.quizNumber,
+    required int quizNumber,
     required Trial trial,
   })  : trialController = TrialController(trial: trial, quizNumber: quizNumber),
         super(key: key);
@@ -26,8 +26,34 @@ class QuizPage extends StatefulWidget {
 }
 
 class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
+  Future<int>? trial_score;
   late TabController tabController = TabController(
       length: widget.trialController.trial.questions.length + 1, vsync: this);
+
+  void nextButtonUiCallback(Iterable<int> selectedAnswerIds, int questionId) {
+    LoggerService.instance.debug("nextButtonCallback!");
+    widget.trialController.addAllAnswers(selectedAnswerIds, questionId);
+    tabController.animateTo(tabController.index + 1);
+  }
+
+  void finishQuizButtonUiCallback(
+      Iterable<int> selectedAnswerIds, int questionId) {
+    LoggerService.instance.debug(
+        "finishQuizButtonUiCallback! : ${widget.trialController.asnwersToJson()} ");
+    widget.trialController.addAllAnswers(selectedAnswerIds, questionId);
+    Future<int> bruh = answerTrial();
+    setState(() {
+      trial_score = bruh;
+    });
+    tabController.animateTo(tabController.index + 1);
+  }
+
+  Future<int> answerTrial() {
+    return QuizService.answerTrial(
+        widget.trialController.quizNumber,
+        widget.trialController.trial.number,
+        widget.trialController.asnwersToJson());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,22 +78,20 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
             padding: const EdgeInsets.all(5.0),
             child: TabBarView(
               controller: tabController,
-              physics: const AlwaysScrollableScrollPhysics(),
+              physics: const NeverScrollableScrollPhysics(),
               children: [
                 ...widget.trialController.trial.questions
                     .map((TrialQuestion e) => QuestionWidget(
                           trialController: widget.trialController,
                           trialQuestion: e,
-                          nextButtonCallback:
-                              (Iterable<int> selectedAnswerIds) {
-                            LoggerService.instance.debug("nextButtonCallback!");
-                            widget.trialController
-                                .addAllAnswers(selectedAnswerIds);
-                            tabController.animateTo(tabController.index + 1);
-                          },
+                          nextButtonCallback: nextButtonUiCallback,
+                          finishQuizButtonCallback: finishQuizButtonUiCallback,
                         ))
                     .toList(),
-                const QuizFinishedPage(trial_score: 0),
+                QuizFinishedPage(
+                  trial_score: trial_score,
+                  errorCallback: answerTrial,
+                ),
               ],
             ),
           ),

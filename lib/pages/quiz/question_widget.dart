@@ -9,14 +9,11 @@ import 'package:iscte_spots/models/quiz/trial.dart';
 import 'package:iscte_spots/pages/quiz/answer_widget.dart';
 import 'package:iscte_spots/pages/quiz/quiz_image.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
-import 'package:iscte_spots/services/quiz/quiz_exceptions.dart';
-import 'package:iscte_spots/services/quiz/quiz_service.dart';
 import 'package:iscte_spots/services/quiz/trial_controller.dart';
 import 'package:iscte_spots/widgets/dialogs/CustomDialogs.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_alert_dialog.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_text_button.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
-import 'package:logger/logger.dart';
 
 class QuestionWidget extends StatefulWidget {
   QuestionWidget({
@@ -24,12 +21,16 @@ class QuestionWidget extends StatefulWidget {
     required this.trialController,
     required this.trialQuestion,
     required this.nextButtonCallback,
+    required this.finishQuizButtonCallback,
   })  : question = trialQuestion.question,
         super(key: key);
   final TrialQuestion trialQuestion;
   final TrialController trialController;
   final Question question;
-  final Null Function(Iterable<int> selectedAnswers) nextButtonCallback;
+  final void Function(Iterable<int> selectedAnswers, int questionId)
+      nextButtonCallback;
+  final void Function(Iterable<int> selectedAnswers, int questionId)
+      finishQuizButtonCallback;
 
   @override
   State<QuestionWidget> createState() => _QuestionWidgetState();
@@ -38,13 +39,10 @@ class QuestionWidget extends StatefulWidget {
 class _QuestionWidgetState extends State<QuestionWidget> {
   final List<int> selectedAnswerIds = [];
   Timer? timer;
-  late double answer_time = widget.question.time;
+  late double answer_time = widget.question.time * 1000;
+  late bool isTimed = widget.question.isTimed;
+  late double countdown = answer_time;
 
-  bool submitting = false;
-
-  bool isTimed = true;
-
-  double countdown = 10000;
   final ButtonStyle buttonStyle = ButtonStyle(
     foregroundColor: MaterialStateProperty.resolveWith(
       (Set<MaterialState> states) {
@@ -87,10 +85,8 @@ class _QuestionWidgetState extends State<QuestionWidget> {
     countdown = 1;
   }
 
-  void startTimer({required double time, required bool isTimed}) {
-    if (!isTimed) return;
-
-    LoggerService.instance.debug("Starting QuestionTimer");
+  void startTimer({required double time}) {
+    LoggerService.instance.info("Starting QuestionTimer");
     timer?.cancel();
     countdown = time;
     timer = Timer.periodic(const Duration(milliseconds: 10), (timer) {
@@ -160,12 +156,10 @@ class _QuestionWidgetState extends State<QuestionWidget> {
         Expanded(
           child: QuizImage(
             flickrUrl: widget.question.image_link!,
-            onLoadCallback: () => startTimer(
-                isTimed: widget.question.isTimed,
-                time: widget.question.time * 1000),
-            onErrorCallback: () => startTimer(
-                isTimed: widget.question.isTimed,
-                time: widget.question.time * 1000),
+            onLoadCallback: () =>
+                !isTimed ? null : startTimer(time: widget.question.time * 1000),
+            onErrorCallback: () =>
+                !isTimed ? null : startTimer(time: widget.question.time * 1000),
             key: ValueKey(widget.question.image_link),
           ),
         ),
@@ -176,6 +170,8 @@ class _QuestionWidgetState extends State<QuestionWidget> {
             ? Padding(
                 padding: const EdgeInsets.only(left: 10.0, right: 10.0),
                 child: LinearProgressIndicator(
+                  color: IscteTheme.iscteColor,
+                  backgroundColor: IscteTheme.iscteColorSmooth,
                   value: countdown / answer_time,
                   semanticsLabel: 'Linear progress indicator',
                 ),
@@ -189,56 +185,60 @@ class _QuestionWidgetState extends State<QuestionWidget> {
             answerId: answer.id,
             isMultipleChoice: widget.question.type == QuestionType.multiple,
             selectedAnswers: selectedAnswerIds,
-            disabled: countdown <= 0 || submitting,
+            disabled: countdown <= 0,
           );
         }).toList(),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // ----- Next button -----
-            DynamicTextButton(
-              onPressed: !isTimed
-                  ? null
-                  : selectedAnswerIds.isNotEmpty
-                      ? () async => widget.nextButtonCallback(selectedAnswerIds)
-                      : () async {
-/*                          bool success =
-                              await submitAnswer(widget.trialQuestion.number);
-                          LoggerService.instance
-                              .debug("nextQuestionButtonCallback-> $success");
-                          if (!success) return;*/
-                          setState(() {
-                            showYesNoWarningDialog(
-                              context: context,
-                              text: AppLocalizations.of(context)!
-                                  .quizProgressNoAnswer,
-                              methodOnYes: () {
-                                setState(() {
-                                  Navigator.of(context).pop();
-                                  widget.nextButtonCallback(selectedAnswerIds);
-                                  // futureQuestion = getNextQuestion();
-                                });
-                              },
-                            );
-                          });
-                        },
-              style: buttonStyle,
-              child: submitting
-                  ? const SizedBox(
-                      width: 10,
-                      height: 10,
-                      child: CircularProgressIndicator.adaptive(
-                        strokeWidth: 2,
-                      ),
-                    )
-                  : Text(
-                      AppLocalizations.of(context)!.quizNext,
-                    ),
-            ),
+            Builder(builder: (context) {
+              bool isNextButton = widget.trialQuestion.number <
+                  widget.trialController.trial.quiz_size;
+              return DynamicTextButton(
+                onPressed: () =>
+                    nextButtonQuestionUiCallback(context, !isNextButton),
+                style: buttonStyle,
+                child: Text(
+                  isNextButton
+                      ? AppLocalizations.of(context)!.quizNext
+                      : AppLocalizations.of(context)!.quizFinish,
+                ),
+              );
+            }),
           ],
         )
       ],
     );
+  }
+
+  void nextButtonQuestionUiCallback(BuildContext context, bool isFinishButton) {
+    timer?.cancel();
+    if (selectedAnswerIds.isNotEmpty) {
+      if (isFinishButton) {
+        widget.finishQuizButtonCallback(selectedAnswerIds, widget.question.id);
+      } else {
+        widget.nextButtonCallback(selectedAnswerIds, widget.question.id);
+      }
+      ;
+    } else {
+      showYesNoWarningDialog(
+        context: context,
+        text: AppLocalizations.of(context)!.quizProgressNoAnswer,
+        methodOnYes: () {
+          setState(() {
+            Navigator.of(context).pop();
+            if (isFinishButton) {
+              widget.finishQuizButtonCallback(
+                  selectedAnswerIds, widget.question.id);
+            } else {
+              widget.nextButtonCallback(selectedAnswerIds, widget.question.id);
+            }
+            ;
+          });
+        },
+      );
+    }
   }
 }
 

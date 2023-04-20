@@ -175,6 +175,7 @@
     "quizTimerEndNoAnswerTitle":"O tempo acabou!",
     "quizTimerEndNoAnswer":"Não selecionou nenhuma resposta!\nNão receberá pontos por esta questão.",
     "quizNext":"Seguinte",
+    "quizFinish":"Acabar o Quiz",
     "quizGenerating":"A gerando o seu quiz, por favor aguarde",
     "quizAvailable":"Quizzes disponíveis",
     "quizNoneAvailable":"Não existem Quizzes disponíveis de momento",
