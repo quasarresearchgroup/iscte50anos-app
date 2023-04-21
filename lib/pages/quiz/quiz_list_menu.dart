@@ -158,6 +158,7 @@ class _QuizListState extends State<QuizList> {
                       LoggerService.instance.debug(
                           "quiz list items:\n${items.map((e) => e.toJson())}");
                       return RefreshIndicator(
+                        color: IscteTheme.iscteColor,
                         onRefresh: () async {
                           setState(() {
                             if (!isLoading) {

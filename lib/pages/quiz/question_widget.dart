@@ -1,19 +1,18 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/models/quiz/answer.dart';
 import 'package:iscte_spots/models/quiz/question.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/models/quiz/trial.dart';
 import 'package:iscte_spots/pages/quiz/answer_widget.dart';
-import 'package:iscte_spots/pages/quiz/quiz_image.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/services/quiz/trial_controller.dart';
 import 'package:iscte_spots/widgets/dialogs/CustomDialogs.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_alert_dialog.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_text_button.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
+import 'package:pinch_zoom/pinch_zoom.dart';
 
 class QuestionWidget extends StatefulWidget {
   QuestionWidget({
@@ -22,11 +21,13 @@ class QuestionWidget extends StatefulWidget {
     required this.trialQuestion,
     required this.nextButtonCallback,
     required this.finishQuizButtonCallback,
+    required this.precachedQuestionImage,
   })  : question = trialQuestion.question,
         super(key: key);
   final TrialQuestion trialQuestion;
   final TrialController trialController;
   final Question question;
+  final Image precachedQuestionImage;
   final void Function(Iterable<int> selectedAnswers, int questionId)
       nextButtonCallback;
   final void Function(Iterable<int> selectedAnswers, int questionId)
@@ -105,40 +106,16 @@ class _QuestionWidgetState extends State<QuestionWidget> {
     });
   }
 
-/*
-  Future<bool> submitAnswer(int question) async {
-    setState(() {
-      submitting = true;
-    });
-    bool success = false;
+  @override
+  void initState() {
+    super.initState();
 
-    try {
-      Map answer = {"choices": selectedAnswerIds};
-      LoggerService.instance.debug(answer);
-      await QuizService.answerQuestion(
-        widget.trialController.quizNumber,
-        widget.trialController.trial.number,
-        question,
-        answer,
-      );
-      stopTimer();
-      success = true;
-    } on QuizException catch (e) {
-      success = false;
-      LoggerService.instance.error(e);
-    } finally {
-      setState(() {
-        submitting = false;
-      });
-    }
-    setState(() {});
-    return success;
-  }*/
-
-  /* void submitQuestionButtonCallback() =>
-      countdown <= 0 || selectedAnswerIds.isEmpty || submitted || submitting
-          ? null
-          : () => submitAnswer(widget.trialQuestion.number);*/
+    widget.precachedQuestionImage.image
+        .resolve(const ImageConfiguration())
+        .addListener(ImageStreamListener((image, synchronousCall) {
+      if (isTimed) startTimer(time: answer_time);
+    }));
+  }
 
   @override
   void dispose() {
@@ -151,17 +128,21 @@ class _QuestionWidgetState extends State<QuestionWidget> {
     return Column(
       children: [
         Text(
-            "${AppLocalizations.of(context)!.quizQuestion} ${widget.trialQuestion.number}/${widget.trialController.trial.quiz_size}"),
+          "${AppLocalizations.of(context)!.quizQuestion} ${widget.trialQuestion.number}/${widget.trialController.trial.quiz_size}",
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
         const SizedBox(height: 5),
         Expanded(
-          child: QuizImage(
+          child: PinchZoom(child: widget.precachedQuestionImage)
+          /*QuizImage(
             flickrUrl: widget.question.image_link!,
             onLoadCallback: () =>
                 !isTimed ? null : startTimer(time: widget.question.time * 1000),
             onErrorCallback: () =>
                 !isTimed ? null : startTimer(time: widget.question.time * 1000),
             key: ValueKey(widget.question.image_link),
-          ),
+          )*/
+          ,
         ),
         QuestionTextWidget(widget.question.text ?? "No question text"),
         //Question
@@ -234,7 +215,6 @@ class _QuestionWidgetState extends State<QuestionWidget> {
             } else {
               widget.nextButtonCallback(selectedAnswerIds, widget.question.id);
             }
-            ;
           });
         },
       );
@@ -250,11 +230,12 @@ class QuestionTextWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: double.infinity,
+      width: MediaQuery.of(context).size.width,
       margin: const EdgeInsets.all(10),
       child: Text(
         questionText,
-        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        style: Theme.of(context).textTheme.titleLarge,
+        maxLines: 10,
         textAlign: TextAlign.center,
       ), //Text
     ); //Container

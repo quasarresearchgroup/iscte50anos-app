@@ -9,7 +9,7 @@ class Question {
   int id;
   String? text;
   QuestionType type;
-  String? image_link;
+  String image_link;
   String? category;
   List<Answer> choices;
   bool isTimed;

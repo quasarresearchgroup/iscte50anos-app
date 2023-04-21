@@ -180,7 +180,7 @@
     "quizAvailable":"Quizzes disponíveis",
     "quizNoneAvailable":"Não existem Quizzes disponíveis de momento",
     "quizContinueAttempt":"Deseja continuar esta tentativa de quiz?",
-    "quizFinishedRecommendLeaderboard":"Agora que acabaste o quiz devias ir ver a tua poosição nos rankings.",
+    "quizFinishedRecommendLeaderboard":"Agora que acabaste o quiz devias ir ver a tua posição nos rankings.",
 
     "quizPoints":"Pontos",
     "quizAttempts":"Tentativas",
@@ -191,7 +191,15 @@
     "quizBeginAttemptWarning":"Continue",
     "quizBeginAttemptWarning":"Deseja iniciar uma tentativa de Quiz?\n(Certifique-se que tem uma ligação de Internet estável)",
     "quizBeginAttempt":"Iniciar nova tentativa",
-    "quizQuit":"Deseja sair do Quiz?",
+    "quizQuit":"Deseja sair do Quiz?\nNão receberá quaisquer pontos por esta tentativa",
+    "quizFinishPageErrorTitle":"Erro ao submeter a sua tentativa",
+    "quizFinishPageErrorResubmitText":"Toque aqui para ressubmenter",
+
+    "trialQuizNotExistException": "Essa tentativa não existe"  ,
+    "trialAlreadyAnsweredException": "Já submeteu resposta para esta tentativa" ,
+    "trialInvalidAnswerException":  "Respostas inválidas",
+    "trialFailedSubmitAnswer": "Erro a submeter as respostas",
+
 
     "puzzleProgress":"Progresso: {progressValue}%",
     "puzzleCompleteDialogTitle":"Parabéns, completaste o puzzle!",

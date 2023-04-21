@@ -10,20 +10,28 @@ class TrialQuizNotExistException extends QuizException {
   TrialQuizNotExistException();
 }
 
-class TrialQuestionAlreadyAnsweredException extends QuizException {
+class TrialAlreadyAnsweredException extends QuizException {
   static int statusCode = 400;
   @override
-  final String errorMessage = "Question already answered";
+  final String errorMessage = "Trial already answered";
 
-  TrialQuestionAlreadyAnsweredException();
+  TrialAlreadyAnsweredException();
 }
 
-class TrialQuestionNotAccessedException extends QuizException {
+class TrialInvalidAnswerException extends QuizException {
   static int statusCode = 400;
   @override
-  final String errorMessage = "Question was not accessed";
+  final String errorMessage = "Invalid answer";
 
-  TrialQuestionNotAccessedException();
+  TrialInvalidAnswerException();
+}
+
+class TrialInvalidBodyException extends QuizException {
+  static int statusCode = 400;
+  @override
+  final String errorMessage = "Invalid body";
+
+  TrialInvalidBodyException();
 }
 
 class TrialFailedContinue extends QuizException {
