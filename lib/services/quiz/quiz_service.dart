@@ -34,10 +34,10 @@ class QuizService {
       request.headers.add("Authorization", "Token $apiToken");
       final response = await request.close();
 
+      var decodedJson =
+          jsonDecode(await response.transform(utf8.decoder).join());
+      LoggerService.instance.debug(decodedJson);
       if (response.statusCode == 200) {
-        var decodedJson =
-            jsonDecode(await response.transform(utf8.decoder).join());
-        LoggerService.instance.debug(decodedJson);
         List<Quiz> quizzes = [];
         for (var item in decodedJson) {
           quizzes.add(Quiz.fromJson(item));
