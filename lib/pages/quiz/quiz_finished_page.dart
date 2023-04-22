@@ -23,6 +23,8 @@ class QuizFinishedPage extends StatefulWidget {
 }
 
 class _QuizFinishedPageState extends State<QuizFinishedPage> {
+  bool resubmitting = false;
+
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -60,17 +62,27 @@ class _QuizFinishedPageState extends State<QuizFinishedPage> {
                     AppLocalizations.of(context)!.quizFinishPageErrorTitle,
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
-                  DynamicErrorWidget(
-                    display: displayMessage,
-                    onRefresh: () => setState(() {
-                      widget.trial_score = widget.errorCallback();
-                    }),
-                    refreshText: Text(
-                      AppLocalizations.of(context)!
-                          .quizFinishPageErrorResubmitText,
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                  ),
+                  resubmitting
+                      ? const DynamicLoadingWidget()
+                      : DynamicErrorWidget(
+                          display: displayMessage,
+                          onRefresh: () async {
+                            try {
+                              setState(() {
+                                resubmitting = true;
+                                widget.trial_score = widget.errorCallback();
+                              });
+                              await widget.trial_score;
+                            } finally {
+                              setState(() => resubmitting = false);
+                            }
+                          },
+                          refreshText: Text(
+                            AppLocalizations.of(context)!
+                                .quizFinishPageErrorResubmitText,
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
+                        ),
                 ],
               );
             } else {

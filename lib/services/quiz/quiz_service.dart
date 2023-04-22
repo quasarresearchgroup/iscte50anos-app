@@ -45,7 +45,7 @@ class QuizService {
         return quizzes;
       }
     } catch (e) {
-      LoggerService.instance.debug(e);
+      LoggerService.instance.error(e);
       rethrow;
     }
     throw Exception('Failed to load quiz list');
