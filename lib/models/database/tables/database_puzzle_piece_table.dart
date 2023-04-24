@@ -1,11 +1,9 @@
-import 'package:flutter/foundation.dart';
+import 'package:iscte_spots/models/database/database_helper.dart';
 import 'package:iscte_spots/models/database/tables/database_spot_table.dart';
 import 'package:iscte_spots/models/puzzle_piece.dart';
 import 'package:iscte_spots/pages/home/puzzle/puzzle_page.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:sqflite/sqflite.dart';
-
-import '../database_helper.dart';
 
 class DatabasePuzzlePieceTable {
   static const table = 'puzzlePieceTable';
@@ -40,7 +38,7 @@ class DatabasePuzzlePieceTable {
       $columnMaxColumn INTEGER NOT NULL,
       $columnLeft REAL NOT NULL,
       $columnTop REAL NOT NULL,
-      PRIMARY KEY( $columnRow,  $columnColumn ),
+      PRIMARY KEY( $columnSpotId, $columnRow,  $columnColumn ),
       FOREIGN KEY (`$columnSpotId`) REFERENCES `${DatabaseSpotTable.table}` (`${DatabaseSpotTable.columnId}`)
       )
     ''');

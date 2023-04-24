@@ -2,8 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:iscte_spots/models/database/tables/database_puzzle_piece_table.dart';
 import 'package:iscte_spots/models/puzzle_piece.dart';
 import 'package:iscte_spots/models/spot.dart';
-import 'package:iscte_spots/services/shared_prefs_service.dart';
 import 'package:iscte_spots/pages/home/puzzle/puzzle_page.dart';
+import 'package:iscte_spots/services/shared_prefs_service.dart';
 
 class PuzzleState {
   PuzzleState._privateConstructor()

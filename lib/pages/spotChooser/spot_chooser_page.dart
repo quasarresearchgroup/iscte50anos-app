@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:iscte_spots/models/database/tables/database_spot_table.dart';
+import 'package:iscte_spots/models/database/tables/database_spot_tablle_piece.dart';
 import 'package:iscte_spots/models/spot.dart';
 import 'package:iscte_spots/pages/home/state/PuzzleState.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
