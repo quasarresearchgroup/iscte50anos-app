@@ -50,7 +50,7 @@ class SpotsRequestService {
           spotsList.add(
               Spot(id: item["id"], photoLink: item["location_photo_link"]));
         }
-        await DatabaseSpotTable.addBatch(spotsList);
+        await DatabaseSpotTable.sync(spotsList);
         return;
       } else {
         throw Exception("General error on request");

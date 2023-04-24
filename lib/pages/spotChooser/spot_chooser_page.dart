@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:iscte_spots/models/database/tables/database_spot_tablle_piece.dart';
 import 'package:iscte_spots/models/spot.dart';
 import 'package:iscte_spots/pages/home/state/PuzzleState.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
@@ -18,6 +17,7 @@ import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_snackbar.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_text_button.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 
+import '../../models/database/tables/database_spot_table.dart';
 import 'spot_chooser_tile.dart';
 
 void main() async {
@@ -64,7 +64,7 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
           //       backgroundColor: Theme.of(context).primaryColor,
           //       child: const Icon(Icons.refresh),
           //       onTap: () {
-          //         refreshCallback(context);
+          //         _refreshCallback(context);
           //       },
           //     ),
           //     SpeedDialChild(
@@ -73,6 +73,33 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
           //       onTap: () async {
           //         await DatabasePuzzlePieceTable.removeALL();
           //         await DatabaseSpotTable.removeALL();
+          //         setState(() {
+          //           future = DatabaseSpotTable.getAll();
+          //         });
+          //       },
+          //     ),
+          //     SpeedDialChild(
+          //       backgroundColor: Colors.orange,
+          //       child: const Icon(Icons.delete_outline),
+          //       onTap: () async {
+          //         List<Spot> spots = await DatabaseSpotTable.getAll();
+          //         await DatabaseSpotTable.remove(spots.last.id);
+          //         setState(() {
+          //           future = DatabaseSpotTable.getAll();
+          //         });
+          //       },
+          //     ),
+          //     SpeedDialChild(
+          //       backgroundColor: Colors.green,
+          //       child: const Icon(Icons.add),
+          //       onTap: () async {
+          //         await DatabaseSpotTable.add(
+          //           Spot(
+          //             id: 1000,
+          //             photoLink:
+          //                 "https://media.istockphoto.com/id/1221460597/photo/yellow-vintage-tram-on-the-street-in-lisbon-portugal.jpg?s=612x612&w=0&k=20&c=E5LVWw2DH5fHsDadmyiH5KbEfWO_El1vfra1vxLZP74=",
+          //           ),
+          //         );
           //         setState(() {
           //           future = DatabaseSpotTable.getAll();
           //         });

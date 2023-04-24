@@ -53,7 +53,7 @@ class DatabaseSpotTable {
     return contentList;
   }
 
-  static void add(Spot spot) async {
+  static Future<void> add(Spot spot) async {
     DatabaseHelper instance = DatabaseHelper.instance;
     Database db = await instance.database;
     db.insert(
@@ -77,6 +77,51 @@ class DatabaseSpotTable {
     }
     LoggerService.instance.debug("Inserted: $spots into $table as batch");
     batch.commit();
+  }
+
+  ///Method that syncs the database with the received list of spots, it updates all the spots in the db with the new info from the list, deletes any on the db that dont exist on the received list from the arguments and adds any new spot into the db
+  static Future<void> sync(List<Spot> newSpots) async {
+    List<int> newSpotsIds = newSpots.map((e) => e.id).toList();
+    DatabaseHelper instance = DatabaseHelper.instance;
+    List<Spot> existingSpots = await getAll();
+    List<int> existingSpotsIds = existingSpots.map((e) => e.id).toList();
+
+    if (existingSpots.isEmpty) {
+      await addBatch(newSpots);
+      return;
+    }
+
+    //determine which spots to delete
+    List<Spot> spotsToDelete =
+        existingSpots.where((spot) => !newSpotsIds.contains(spot.id)).toList();
+
+    //determine which spots to update
+    List<Spot> spotsToUpdate = existingSpots.where((spot) {
+      bool spotInBothLists = newSpotsIds.contains(spot.id);
+      if (!spotInBothLists) return false;
+
+      Spot existingSpot = existingSpots[existingSpots.indexOf(spot)];
+      Spot newSpot = newSpots[newSpotsIds.indexOf(spot.id)];
+
+      return existingSpot.id == newSpot.id &&
+          existingSpot.photoLink == newSpot.photoLink;
+    }).toList();
+    //determine which spots to add
+    List<Spot> spotsToAdd =
+        newSpots.where((spot) => !existingSpotsIds.contains(spot.id)).toList();
+    LoggerService.instance.debug(
+        "spotsToDelete: $spotsToDelete \nspotsToUpdate: $spotsToUpdate \nspotsToAdd: $spotsToAdd");
+
+    await addBatch(spotsToAdd);
+    for (Spot spot in spotsToDelete) {
+      await remove(spot.id);
+    }
+    for (Spot spot in spotsToUpdate) {
+      await update(spot);
+    }
+
+    LoggerService.instance
+        .debug("synced: $newSpots into $table\n result: ${await getAll()}");
   }
 
   static Future<int> update(Spot spot) async {

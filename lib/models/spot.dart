@@ -17,6 +17,23 @@ class Spot {
     return 'Spot{id: $id, photoLink: $photoLink, visited: $visited}';
   }
 
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Spot &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          photoLink == other.photoLink &&
+          visited == other.visited &&
+          puzzleComplete == other.puzzleComplete;
+
+  @override
+  int get hashCode =>
+      id.hashCode ^
+      photoLink.hashCode ^
+      visited.hashCode ^
+      puzzleComplete.hashCode;
+
   factory Spot.fromMap(Map<String, dynamic> json) => Spot(
         id: json[DatabaseSpotTable.columnId],
         photoLink: json[DatabaseSpotTable.columnPhotoLink],
