@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 
 class AnswerWidget extends StatelessWidget {
   final Function(int, bool) selectHandler;
@@ -7,29 +8,37 @@ class AnswerWidget extends StatelessWidget {
   final int answerId;
 
   final bool isMultipleChoice;
-  final bool enabled;
-  final List<int> selectedAnswers;
+  final bool disabled;
+  final Iterable<int> selectedAnswers;
 
-  const AnswerWidget(this.selectHandler, this.answerText, this.answerId,
-      this.isMultipleChoice, this.selectedAnswers, this.enabled,
-      {Key? key})
-      : super(key: key);
+  const AnswerWidget({
+    required this.selectHandler,
+    required this.answerText,
+    required this.answerId,
+    required this.isMultipleChoice,
+    required this.selectedAnswers,
+    required this.disabled,
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return !isMultipleChoice
         ? Card(
-            child: RadioListTile(
+            child: RadioListTile<int>(
               key: ValueKey(answerId),
               title: Text(answerText),
+              activeColor: IscteTheme.iscteColor,
               dense: true,
+              toggleable: true,
               value: answerId,
-              onChanged: enabled
+              onChanged:
+                  disabled ? null : (_) => selectHandler(answerId, false),
+              groupValue: selectedAnswers.isEmpty
                   ? null
-                  : (value) {
-                      selectHandler(value as int, false);
-                    },
-              groupValue: selectedAnswers.isEmpty ? -1 : selectedAnswers[0],
+                  : selectedAnswers.contains(answerId)
+                      ? answerId
+                      : null,
               visualDensity: const VisualDensity(horizontal: -4),
             ),
           )
@@ -39,7 +48,7 @@ class AnswerWidget extends StatelessWidget {
               title: Text(answerText),
               controlAffinity: ListTileControlAffinity.leading,
               dense: true,
-              onChanged: enabled
+              onChanged: disabled
                   ? null
                   : (bool? value) {
                       selectHandler(answerId, true);

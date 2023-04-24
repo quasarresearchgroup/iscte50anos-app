@@ -6,7 +6,8 @@ enum QuestionType {
 }
 
 class Question {
-  String text;
+  int id;
+  String? text;
   QuestionType type;
   String image_link;
   String? category;
@@ -15,6 +16,7 @@ class Question {
   double time;
 
   Question({
+    required this.id,
     required this.text,
     required this.type,
     required this.image_link,
@@ -26,10 +28,11 @@ class Question {
 
   @override
   String toString() {
-    return 'Question{text: $text, type: $type, image_link: $image_link, category: $category, choices: $choices, isTimed: $isTimed, time: $time}';
+    return 'Question{id: $id, text: $text, type: $type, image_link: $image_link, category: $category, choices: $choices, isTimed: $isTimed, time: $time}';
   }
 
   factory Question.fromJson(Map<String, dynamic> json) => Question(
+        id: json["id"],
         text: json["text"],
         type:
             json["type"] == "S" ? QuestionType.singular : QuestionType.multiple,
@@ -44,13 +47,14 @@ class Question {
 
   Map<String, dynamic> toJson() {
     return {
+      "id": id,
       "text": text,
       "type": type,
       "image_link": image_link,
       "category": category,
       "isTimed": isTimed,
       "time": time,
-      "choices": choices,
+      "choices": choices.map((e) => e.toJson()).toList(),
     };
   }
 }

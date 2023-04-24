@@ -122,8 +122,9 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
         Positioned(
           bottom: mediaQuerySize.height * 0.2,
           child: QRControlButtons(
-              controlsDecoration: controlsDecoration,
-              qrController: qrController),
+            controlsDecoration: controlsDecoration,
+            qrController: qrController,
+          ),
         ),
         if (_requesting)
           const Center(

@@ -122,16 +122,16 @@ class QRScanService {
     request.headers.add("Authorization", "Token $apiToken");
 
     final response = await request.close();
+    var responseDecoded =
+        jsonDecode(await response.transform(utf8.decoder).join());
+
+    LoggerService.instance.debug(responseDecoded);
 
     if (response.statusCode == 403) {
       throw LoginException();
     } else if (response.statusCode == 404) {
       throw InvalidQRException();
     } else {
-      var responseDecoded =
-          jsonDecode(await response.transform(utf8.decoder).join());
-
-      LoggerService.instance.debug(responseDecoded);
       try {
         if (responseDecoded["title"] != null &&
             responseDecoded["content"] != null) {

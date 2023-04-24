@@ -10,11 +10,13 @@ class DynamicLoadingWidget extends StatelessWidget {
     this.messagesStyle = const TextStyle(),
     this.color = IscteTheme.iscteColor,
     this.valueColor,
+    this.progress,
     this.strokeWidth = 3,
   }) : super(key: key);
 
   final TextStyle messagesStyle;
   final Color color;
+  final double? progress;
   final Animation<Color?>? valueColor;
   final double strokeWidth;
   @override
@@ -22,6 +24,7 @@ class DynamicLoadingWidget extends StatelessWidget {
     if (!PlatformService.instance.isIos) {
       return Center(
         child: CircularProgressIndicator(
+          value: progress,
           color: color,
           strokeWidth: strokeWidth,
           valueColor: valueColor,
