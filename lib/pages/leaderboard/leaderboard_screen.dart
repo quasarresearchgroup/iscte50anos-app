@@ -443,7 +443,6 @@ class RelativeLeaderboard extends StatelessWidget {
             child: LeaderboardList(
           fetchFunction: LeaderboardService.fetchRelativeLeaderboard,
           showRank: false,
-          isRelativeToMiddle: true,
         )),
       ],
     );
@@ -454,13 +453,11 @@ class LeaderboardList extends StatefulWidget {
   final Future<List<dynamic>> Function(BuildContext context) fetchFunction;
   final bool showRank;
   //Used to highlight the user in the "near me" leaderboard page
-  final bool isRelativeToMiddle;
 
   const LeaderboardList({
     Key? key,
     required this.fetchFunction,
     required this.showRank,
-    this.isRelativeToMiddle = false,
   }) : super(key: key);
 
   @override
@@ -500,12 +497,19 @@ class _LeaderboardListState extends State<LeaderboardList> {
                     physics: const AlwaysScrollableScrollPhysics(),
                     itemCount: items.length,
                     itemBuilder: (context, index) {
+                      bool isMainUser = items[index]["is_user"] ?? false;
                       return Padding(
                         padding: const EdgeInsets.only(left: 10.0, right: 10.0),
                         child: Card(
                           child: ListTile(
                             title: Text(items[index]["name"].toString(),
-                                style: Theme.of(context).textTheme.titleLarge),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleLarge
+                                    ?.copyWith(
+                                        color: isMainUser
+                                            ? IscteTheme.iscteColor
+                                            : null)),
                             subtitle: Text(
                               "${AppLocalizations.of(context)!.leaderboardPoints}: ${items[index]["points"]} "
                               "\n${AppLocalizations.of(context)!.leaderboardAffiliation}: ${items[index]["affiliation_name"]}",
