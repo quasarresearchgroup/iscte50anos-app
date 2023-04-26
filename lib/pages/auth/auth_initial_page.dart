@@ -1,10 +1,6 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:iscte_spots/services/auth/fenix_login_service.dart';
-import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/services/platform_service.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_text_button.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
@@ -13,9 +9,11 @@ class AuthInitialPage extends StatelessWidget {
   const AuthInitialPage({
     Key? key,
     required this.changeToLogIn,
+    required this.iscteLoginCallback,
     required this.loggingComplete,
   }) : super(key: key);
   final void Function() changeToLogIn;
+  final Future<void> Function() iscteLoginCallback;
 
   final void Function() loggingComplete;
 
@@ -43,7 +41,7 @@ class AuthInitialPage extends StatelessWidget {
                   style: ButtonStyle(
                       backgroundColor:
                           MaterialStateProperty.all(IscteTheme.iscteColor)),
-                  onPressed: _iscteLoginCallback,
+                  onPressed: iscteLoginCallback,
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -85,20 +83,5 @@ class AuthInitialPage extends StatelessWidget {
         ),
       ],
     );
-  }
-
-  Future<void> _iscteLoginCallback() async {
-    try {
-      bool loginSuccess = await IscteLoginService.login();
-      if (loginSuccess) {
-        loggingComplete();
-      } else {
-        LoggerService.instance.error("Iscte Login error!:");
-      }
-    } on SocketException {
-      LoggerService.instance.error("SocketException on login!");
-    } catch (e) {
-      LoggerService.instance.error(e);
-    }
   }
 }
