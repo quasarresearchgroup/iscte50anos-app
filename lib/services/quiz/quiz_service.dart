@@ -1,12 +1,15 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:iscte_spots/helper/constants.dart';
 import 'package:iscte_spots/models/quiz/quiz.dart';
 import 'package:iscte_spots/models/quiz/trial.dart';
 import 'package:iscte_spots/pages/leaderboard/leaderboard_screen.dart';
 import 'package:iscte_spots/services/auth/auth_storage_service.dart';
+import 'package:iscte_spots/services/auth/exceptions.dart';
+import 'package:iscte_spots/services/auth/login_service.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/services/quiz/quiz_exceptions.dart';
 
@@ -17,10 +20,10 @@ const ISCTE_DEFAULT_QUESTION_IMAGE_URL =
     "https://www.iscte-iul.pt/assets/files/2021/12/07/1638876926013_logo_50_anos_main.png";
 
 class QuizService {
-  static Future<List<Quiz>> getQuizList() async {
+  static Future<List<Quiz>> getQuizList(BuildContext context) async {
     try {
-      String? apiToken = await secureStorage.read(
-          key: LoginStorageService.backendApiKeyStorageLocation);
+      String apiToken = await LoginStorageService.getBackendApiKey();
+
       //String? apiToken = "8eb7f1e61ef68a526cf5a1fb6ddb0903bc0678c1";
 
       HttpClient client = HttpClient();
@@ -37,7 +40,10 @@ class QuizService {
       var decodedJson =
           jsonDecode(await response.transform(utf8.decoder).join());
       LoggerService.instance.debug(decodedJson);
-      if (response.statusCode == 200) {
+      if (response.statusCode == 403) {
+        LoginService.logOut(context);
+        throw LoginException();
+      } else if (response.statusCode == 200) {
         List<Quiz> quizzes = [];
         for (var item in decodedJson) {
           quizzes.add(Quiz.fromJson(item));

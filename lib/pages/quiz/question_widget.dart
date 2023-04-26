@@ -194,30 +194,30 @@ class _QuestionWidgetState extends State<QuestionWidget> {
   }
 
   void nextButtonQuestionUiCallback(BuildContext context, bool isFinishButton) {
-    timer?.cancel();
+    //timer?.cancel();
     if (selectedAnswerIds.isNotEmpty) {
-      if (isFinishButton) {
-        widget.finishQuizButtonCallback(selectedAnswerIds, widget.question.id);
-      } else {
-        widget.nextButtonCallback(selectedAnswerIds, widget.question.id);
-      }
-      ;
-    } else {
+      _nextButtonQuestionUCallbackAux(isFinishButton);
+    } else if (selectedAnswerIds.isEmpty && countdown > 0) {
       showYesNoWarningDialog(
         context: context,
         text: AppLocalizations.of(context)!.quizProgressNoAnswer,
         methodOnYes: () {
           setState(() {
             Navigator.of(context).pop();
-            if (isFinishButton) {
-              widget.finishQuizButtonCallback(
-                  selectedAnswerIds, widget.question.id);
-            } else {
-              widget.nextButtonCallback(selectedAnswerIds, widget.question.id);
-            }
+            _nextButtonQuestionUCallbackAux(isFinishButton);
           });
         },
       );
+    } else {
+      _nextButtonQuestionUCallbackAux(isFinishButton);
+    }
+  }
+
+  void _nextButtonQuestionUCallbackAux(bool isFinishButton) {
+    if (isFinishButton) {
+      widget.finishQuizButtonCallback(selectedAnswerIds, widget.question.id);
+    } else {
+      widget.nextButtonCallback(selectedAnswerIds, widget.question.id);
     }
   }
 }

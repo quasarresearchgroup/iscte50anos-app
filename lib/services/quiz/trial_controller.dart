@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:iscte_spots/models/quiz/trial.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
 
@@ -12,19 +10,22 @@ class TrialController {
 
   TrialController({required this.quizNumber, required this.trial});
 
-  Map<String, dynamic> asnwersToJson() => {
-        "answers": _selectedAnswers.keys
-            .map(
-              (int key) => {
-                "question_id": key,
-                "choices": _selectedAnswers[key]?.toList(),
-              },
-            )
-            .toList()
-      };
+  Map<String, dynamic> asnwersToJson() {
+    Map<String, List<Map<String, dynamic>>> json;
+    json = {"answers": []};
+
+    for (var key in _selectedAnswers.keys) {
+      if (_selectedAnswers[key] != null && _selectedAnswers[key]!.isNotEmpty) {
+        json["answers"]?.add({
+          "question_id": key,
+          "choices": _selectedAnswers[key]?.toList(),
+        });
+      }
+    }
+    return json;
+  }
 
   void addAnswer(int answerId, int questionId) {
-    //_selectedAnswers.putIfAbsent(questionId, () => []);
     if (_selectedAnswers[questionId] != null) {
       _selectedAnswers[questionId]!.add(answerId);
     } else {

@@ -142,7 +142,7 @@ class _FeedbackFormState extends State<FeedbackForm> {
                   MaterialStateProperty.all(IscteTheme.iscteColor)),
           child: Text(
             AppLocalizations.of(context)!.feedbackFormSubmit,
-            style: base?.copyWith(color: Colors.white),
+            style: textstyle,
           ),
         ),
         DynamicTextButton(
@@ -152,7 +152,7 @@ class _FeedbackFormState extends State<FeedbackForm> {
                   MaterialStateProperty.all(IscteTheme.iscteColor)),
           child: Text(
             AppLocalizations.of(context)!.feedbackFormCancel,
-            style: base?.copyWith(color: Colors.white),
+            style: base,
           ),
         )
       ],

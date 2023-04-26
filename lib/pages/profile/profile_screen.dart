@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:iscte_spots/helper/constants.dart';
 import 'package:iscte_spots/pages/profile/placeholder.dart';
@@ -30,7 +31,7 @@ class ProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyAppBar(
-        title: "Perfil", //AppLocalizations.of(context)!.quizPageTitle)
+        title: AppLocalizations.of(context)!.profileScreen,
         leading: DynamicBackIconButton(),
       ),
       body: NotificationListener<OverscrollIndicatorNotification>(
@@ -64,7 +65,8 @@ class _ProfileState extends State<Profile> {
     LoggerService.instance.debug("fetching profile");
     try {
       isLoading = true;
-      String? apiToken = await secureStorage.read(key: LoginStorageService.backendApiKeyStorageLocation);
+      String? apiToken = await secureStorage.read(
+          key: LoginStorageService.backendApiKeyStorageLocation);
       //String? apiToken = "8eb7f1e61ef68a526cf5a1fb6ddb0903bc0678c1";
       LoggerService.instance.debug(apiToken);
       HttpClient client = HttpClient();
@@ -78,8 +80,9 @@ class _ProfileState extends State<Profile> {
 
       if (response.statusCode == 200) {
         return jsonDecode(await response.transform(utf8.decoder).join());
-      }else{
-        LoggerService.instance.error("status code: ${jsonDecode(await response.transform(utf8.decoder).join())}");
+      } else {
+        LoggerService.instance.error(
+            "status code: ${jsonDecode(await response.transform(utf8.decoder).join())}");
       }
     } catch (e) {
       LoggerService.instance.error(e);

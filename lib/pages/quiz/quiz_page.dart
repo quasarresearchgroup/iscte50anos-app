@@ -27,11 +27,12 @@ class QuizPage extends StatefulWidget {
 }
 
 class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
-  Future<int>? trial_score;
+  Future<int>? trialScore;
   late TabController tabController = TabController(
       length: widget.trialController.trial.questions.length + 1, vsync: this);
   late Future<List<Image>> cachedImages = getCachedImages();
   int cachedImagesCounter = 0;
+  bool submitted = false;
 
   void nextButtonUiCallback(Iterable<int> selectedAnswerIds, int questionId) {
     LoggerService.instance.debug("nextButtonCallback!");
@@ -45,16 +46,18 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
         "finishQuizButtonUiCallback! : ${widget.trialController.asnwersToJson()} ");
     widget.trialController.addAllAnswers(selectedAnswerIds, questionId);
     setState(() {
-      trial_score = answerTrial();
+      trialScore = answerTrial();
     });
     tabController.animateTo(tabController.index + 1);
   }
 
   Future<int> answerTrial() {
-    return QuizService.answerTrial(
+    Future<int> trialScore = QuizService.answerTrial(
         widget.trialController.quizNumber,
         widget.trialController.trial.number,
         widget.trialController.asnwersToJson());
+    trialScore.then((value) => setState(() => submitted = true));
+    return trialScore;
   }
 
   Future<List<Image>> getCachedImages() async {
@@ -101,17 +104,19 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async {
-        showYesNoWarningDialog(
-          context: context,
-          text: AppLocalizations.of(context)!.quizQuit,
-          methodOnYes: () {
-            Navigator.of(context).pop(); //Exit dialog
-            Navigator.of(context).pop();
-          },
-        );
-        return false;
-      },
+      onWillPop: submitted
+          ? null
+          : () async {
+              showYesNoWarningDialog(
+                context: context,
+                text: AppLocalizations.of(context)!.quizQuit,
+                methodOnYes: () {
+                  Navigator.of(context).pop(); //Exit dialog
+                  Navigator.of(context).pop();
+                },
+              );
+              return false;
+            },
       child: Scaffold(
         /*   appBar: AppBar(
           title: Text(AppLocalizations.of(context)?.quizPageTitle ?? "Quiz"),
@@ -144,7 +149,7 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
                                   ))
                               .toList(),
                           QuizFinishedPage(
-                            trial_score: trial_score,
+                            trial_score: trialScore,
                             errorCallback: answerTrial,
                           ),
                         ],

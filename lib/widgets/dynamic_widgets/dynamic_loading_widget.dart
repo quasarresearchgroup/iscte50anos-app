@@ -23,12 +23,26 @@ class DynamicLoadingWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     if (!PlatformService.instance.isIos) {
       return Center(
-        child: CircularProgressIndicator(
-          value: progress,
-          color: color,
-          strokeWidth: strokeWidth,
-          valueColor: valueColor,
-        ),
+        child: progress != null
+            ? TweenAnimationBuilder<double>(
+                duration: const Duration(milliseconds: 250),
+                curve: Curves.easeInOut,
+                tween: Tween<double>(
+                  begin: 0,
+                  end: progress,
+                ),
+                builder: (context, value, _) => CircularProgressIndicator(
+                  value: value,
+                  color: color,
+                  strokeWidth: strokeWidth,
+                  valueColor: valueColor,
+                ),
+              )
+            : CircularProgressIndicator(
+                color: color,
+                strokeWidth: strokeWidth,
+                valueColor: valueColor,
+              ),
       );
     } else {
       return CupertinoActivityIndicator(color: color);

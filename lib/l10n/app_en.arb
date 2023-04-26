@@ -61,7 +61,7 @@
     "registrationPasswordMustMatch":"Passwords must match",
     "registrationEmail":"email",
     "registrationPassword":"password",
-    "registrationConfirmPassword":"confirm password",
+    "registrationConfirmPassword":"confirm your password",
     "registrationName":"name",
     "registrationLastName":"last name",
     "registrationAccountStep":"Account",
@@ -170,15 +170,15 @@
     "quizPointsOfTrial":"Attempt score",
     "quizGeoQuestion":"Explore the Campus (Question without time limit):",
     "quizQuestion":"Question",
-    "quizProgressNoAnswer":"Do you wish to proceed without answering?",
+    "quizProgressNoAnswer":"Do you want to proceed without answering?",
     "quizTimerEndNoAnswerTitle":"Time's up!",
     "quizTimerEndNoAnswer":"You did not select any answer!\nYou will not receive any points for this question.",
     "quizNext":"Next",
     "quizFinish":"Finish the Quiz",
-    "quizGenerating":"Generating quiz, please wait",
+    "quizGenerating":"We are creating your quiz",
     "quizAvailable":"Available quizzes",
     "quizNoneAvailable":"There are no available quizzes at the moment",
-    "quizContinueAttempt":"Do you wish to continue this attempt?",
+    "quizContinueAttempt":"Do you want to continue this attempt?",
     "quizFinishedRecommendLeaderboard":"Now that you finished a quiz you should check your position in the leaderboard.",
 
     "quizPoints":"Points",
@@ -187,9 +187,9 @@
     "quizTopics":"Topics",
     "quizProgress":"Progress",
     "quizContinue":"Continue",
-    "quizBeginAttemptWarning":"Do you wish to begin a new attempt at the Quiz?\n(Make sure you have a stable internet connection)",
+    "quizBeginAttemptWarning":"Do you want to begin a new attempt at the Quiz?\n(Make sure you have a stable internet connection)",
     "quizBeginAttempt":"Begin a new attempt",
-    "quizQuit":"Do you wish to quit the Quiz?\nYou will not receive any points from this trial",
+    "quizQuit":"Do you want to quit the Quiz?\nYou will not receive any points from this trial",
     "quizFinishPageErrorTitle":"Error while submitting your trial",
     "quizFinishPageErrorResubmitText":"Touch here to resubmit",
 
@@ -214,7 +214,10 @@
     "leaderboardAffiliationDepartment":"Department",
     "leaderboardNoAffiliation":"No affiliation",
     "leaderboardGlobal":"Global",
-    "leaderboardAffiliationSelect":"Select the affiliation"
-
+    "leaderboardAffiliationSelect":"Select the affiliation",
+    "leaderboardAffiliationAllDropdown":"Everyone",
+    "leaderboardAffiliationNoneDropdown":"-",
+    "leaderboardDepartmentAllDropdown":"Everyone",
+    "leaderboardDepartmentNoneDropdown":"-"
 
 }

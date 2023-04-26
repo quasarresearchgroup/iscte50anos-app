@@ -70,7 +70,7 @@ class _QuizListState extends State<QuizList> {
   @override
   void initState() {
     super.initState();
-    futureQuizList = fetchFunction();
+    futureQuizList = fetchFunction(context);
   }
 
   void _trialCallbackAux({required Trial trial, required int quizNumber}) {
@@ -88,7 +88,7 @@ class _QuizListState extends State<QuizList> {
       )
           .then((_) {
         setState(() {
-          futureQuizList = fetchFunction();
+          futureQuizList = fetchFunction(context);
         });
       });
     }
@@ -162,7 +162,7 @@ class _QuizListState extends State<QuizList> {
                         onRefresh: () async {
                           setState(() {
                             if (!isLoading) {
-                              futureQuizList = fetchFunction();
+                              futureQuizList = fetchFunction(context);
                             }
                           });
                         },
@@ -185,6 +185,7 @@ class _QuizListState extends State<QuizList> {
                                         left: 10.0, right: 10.0),
                                     child: Card(
                                       child: ExpansionTile(
+                                        initiallyExpanded: trials <= 0,
                                         iconColor: IscteTheme.iscteColor,
                                         title: Text(
                                           "Quiz ${items[index].number}",
@@ -192,7 +193,9 @@ class _QuizListState extends State<QuizList> {
                                               .textTheme
                                               .titleLarge
                                               ?.copyWith(
-                                                color: IscteTheme.iscteColor,
+                                                color: trials <= 0
+                                                    ? IscteTheme.iscteColor
+                                                    : null,
                                               ),
                                         ),
                                         subtitle: Text(
@@ -209,7 +212,7 @@ class _QuizListState extends State<QuizList> {
                                                 continueTrialCallback,
                                             returnToQuizList: () => setState(
                                                 () => futureQuizList =
-                                                    fetchFunction()),
+                                                    fetchFunction(context)),
                                           )
                                         ],
                                         //minVerticalPadding: 10.0,
@@ -231,7 +234,7 @@ class _QuizListState extends State<QuizList> {
                     } else if (snapshot.hasError) {
                       return DynamicErrorWidget(onRefresh: () {
                         setState(() {
-                          futureQuizList = fetchFunction();
+                          futureQuizList = fetchFunction(context);
                         });
                       });
                     } else {

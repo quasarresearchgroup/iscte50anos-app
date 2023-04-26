@@ -34,7 +34,6 @@ class _QuizFinishedPageState extends State<QuizFinishedPage> {
           future: widget.trial_score,
           builder: (context, AsyncSnapshot<int> snapshot) {
             Widget child;
-            LoggerService.instance.debug("snapshot data: ${snapshot.data}");
             if (snapshot.hasData && snapshot.data != null) {
               child = QuizFinishedSuccess(points: snapshot.data!);
             } else if (snapshot.hasError) {
@@ -85,6 +84,7 @@ class _QuizFinishedPageState extends State<QuizFinishedPage> {
                         ),
                 ],
               );
+              LoggerService.instance.debug("snapshot data: ${snapshot.data}");
             } else {
               child = const DynamicLoadingWidget();
             }

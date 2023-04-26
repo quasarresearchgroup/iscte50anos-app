@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:iscte_spots/helper/constants.dart';
+import 'package:iscte_spots/services/auth/auth_storage_service.dart';
 import 'package:iscte_spots/services/leaderboard/leaderboard_service.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/widgets/network/error.dart';
@@ -173,23 +174,26 @@ class _AffiliationLeaderboardState extends State<AffiliationLeaderboard>
   };
   bool readJson = false;
 
-  Future<List<dynamic>> fetchLeaderboard() async {
+  Future<List<dynamic>> fetchLeaderboard(BuildContext context) async {
     try {
-      String? apiToken = await secureStorage.read(key: "backend_api_key");
+      String apiToken = await LoginStorageService.getBackendApiKey();
 
       HttpClient client = HttpClient();
       client.badCertificateCallback =
           ((X509Certificate cert, String host, int port) => true);
       final request = await client.getUrl(Uri.parse(
-          '${BackEndConstants.API_ADDRESS}/api/users/leaderboard?type=${selectedType}&affiliation=$selectedAffiliation'));
+          '${BackEndConstants.API_ADDRESS}/api/users/leaderboard?type=$selectedType&affiliation=$selectedAffiliation'));
       request.headers.add("Authorization", "Token $apiToken");
       final response = await request.close();
+      var json = jsonDecode(await response.transform(utf8.decoder).join());
 
+      LoggerService.instance.debug(json);
       if (response.statusCode == 200) {
-        return jsonDecode(await response.transform(utf8.decoder).join());
+        return json;
       }
     } catch (e) {
-      print(e);
+      LoggerService.instance.error(e);
+      rethrow;
     }
     throw Exception('Failed to load leaderboard');
   }
@@ -269,7 +273,14 @@ class _AffiliationLeaderboardState extends State<AffiliationLeaderboard>
                         .map(
                           (type) => DropdownMenuItem<String>(
                               value: type,
-                              child: Text(type,
+                              child: Text(
+                                  type == "*"
+                                      ? AppLocalizations.of(context)!
+                                          .leaderboardAffiliationAllDropdown
+                                      : type == "-"
+                                          ? AppLocalizations.of(context)!
+                                              .leaderboardAffiliationNoneDropdown
+                                          : type,
                                   style: const TextStyle(fontSize: 13))),
                         )
                         .toList(),
@@ -278,7 +289,14 @@ class _AffiliationLeaderboardState extends State<AffiliationLeaderboard>
                         return Center(
                           child: SizedBox(
                               width: double.maxFinite,
-                              child: Text(type,
+                              child: Text(
+                                  type == "*"
+                                      ? AppLocalizations.of(context)!
+                                          .leaderboardAffiliationAllDropdown
+                                      : type == "-"
+                                          ? AppLocalizations.of(context)!
+                                              .leaderboardAffiliationNoneDropdown
+                                          : type,
                                   overflow: TextOverflow.ellipsis,
                                   textAlign: TextAlign.center,
                                   style: const TextStyle(fontSize: 13))),
@@ -310,7 +328,14 @@ class _AffiliationLeaderboardState extends State<AffiliationLeaderboard>
                         .map<DropdownMenuItem<String>>(
                           (aff) => DropdownMenuItem<String>(
                               value: aff,
-                              child: Text(aff,
+                              child: Text(
+                                  aff == "*"
+                                      ? AppLocalizations.of(context)!
+                                          .leaderboardDepartmentAllDropdown
+                                      : aff == "-"
+                                          ? AppLocalizations.of(context)!
+                                              .leaderboardDepartmentNoneDropdown
+                                          : aff,
                                   style: const TextStyle(fontSize: 13))),
                         )
                         .toList(),
@@ -318,7 +343,14 @@ class _AffiliationLeaderboardState extends State<AffiliationLeaderboard>
                       return (affiliationMap[selectedType] as List<dynamic>)
                           .map((aff) {
                         return Center(
-                          child: Text(aff,
+                          child: Text(
+                              aff == "*"
+                                  ? AppLocalizations.of(context)!
+                                      .leaderboardDepartmentAllDropdown
+                                  : aff == "-"
+                                      ? AppLocalizations.of(context)!
+                                          .leaderboardDepartmentNoneDropdown
+                                      : aff,
                               overflow: TextOverflow.ellipsis,
                               textAlign: TextAlign.center,
                               style: const TextStyle(fontSize: 13)),
@@ -411,6 +443,7 @@ class RelativeLeaderboard extends StatelessWidget {
             child: LeaderboardList(
           fetchFunction: LeaderboardService.fetchRelativeLeaderboard,
           showRank: false,
+          isRelativeToMiddle: true,
         )),
       ],
     );
@@ -418,12 +451,17 @@ class RelativeLeaderboard extends StatelessWidget {
 }
 
 class LeaderboardList extends StatefulWidget {
-  final Future<List<dynamic>> Function() fetchFunction;
+  final Future<List<dynamic>> Function(BuildContext context) fetchFunction;
   final bool showRank;
+  //Used to highlight the user in the "near me" leaderboard page
+  final bool isRelativeToMiddle;
 
-  const LeaderboardList(
-      {Key? key, required this.fetchFunction, required this.showRank})
-      : super(key: key);
+  const LeaderboardList({
+    Key? key,
+    required this.fetchFunction,
+    required this.showRank,
+    this.isRelativeToMiddle = false,
+  }) : super(key: key);
 
   @override
   _LeaderboardListState createState() => _LeaderboardListState();
@@ -436,7 +474,7 @@ class _LeaderboardListState extends State<LeaderboardList> {
   @override
   void initState() {
     super.initState();
-    futureLeaderboard = widget.fetchFunction();
+    futureLeaderboard = widget.fetchFunction(context);
   }
 
   @override
@@ -451,7 +489,7 @@ class _LeaderboardListState extends State<LeaderboardList> {
             onRefresh: () async {
               setState(() {
                 if (!isLoading) {
-                  futureLeaderboard = widget.fetchFunction();
+                  futureLeaderboard = widget.fetchFunction(context);
                 }
               });
             },
@@ -467,8 +505,7 @@ class _LeaderboardListState extends State<LeaderboardList> {
                         child: Card(
                           child: ListTile(
                             title: Text(items[index]["name"].toString(),
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 16)),
+                                style: Theme.of(context).textTheme.titleLarge),
                             subtitle: Text(
                               "${AppLocalizations.of(context)!.leaderboardPoints}: ${items[index]["points"]} "
                               "\n${AppLocalizations.of(context)!.leaderboardAffiliation}: ${items[index]["affiliation_name"]}",
@@ -523,7 +560,7 @@ class _LeaderboardListState extends State<LeaderboardList> {
           onTap: () {
             setState(() {
               if (!isLoading) {
-                futureLeaderboard = widget.fetchFunction();
+                futureLeaderboard = widget.fetchFunction(context);
               }
             });
           },
