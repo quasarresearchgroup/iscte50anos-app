@@ -6,6 +6,7 @@ import 'package:iscte_spots/models/requests/topic_request.dart';
 import 'package:iscte_spots/models/spot.dart';
 import 'package:iscte_spots/pages/home/scanPage/qr_scan_camera_controls.dart';
 import 'package:iscte_spots/pages/home/scanPage/qr_scan_results.dart';
+import 'package:iscte_spots/pages/home/scanPage/scanner_overlay_painter.dart';
 import 'package:iscte_spots/services/auth/exceptions.dart';
 import 'package:iscte_spots/services/auth/login_service.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
@@ -18,10 +19,10 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class QRScanPageOpenDay extends StatefulWidget {
-  const QRScanPageOpenDay(
-      {Key? key /*, required this.changeImage*/,
-      required this.completedAllPuzzle})
-      : super(key: key);
+  const QRScanPageOpenDay({
+    Key? key /*, required this.changeImage*/,
+    required this.completedAllPuzzle,
+  }) : super(key: key);
 
   //final void Function(Future<SpotRequest> request) changeImage;
   final void Function() completedAllPuzzle;
@@ -42,8 +43,6 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
   Decoration controlsDecoration = BoxDecoration(
       borderRadius: BorderRadius.circular(8), color: Colors.white24);
 
-  int _lastScan = 0;
-  final int _scanCooldown = 4000;
   String? qrScanResult;
   bool _requesting = false;
   late Future<bool> cameraPermission;
@@ -107,9 +106,10 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
                                 Text(AppLocalizations.of(context)!
                                     .qrScanPermissionText),
                                 DynamicTextButton(
-                                    onPressed: openAppSettings,
-                                    child: Text(AppLocalizations.of(context)!
-                                        .qrScanPermissionButton))
+                                  onPressed: openAppSettings,
+                                  child: Text(AppLocalizations.of(context)!
+                                      .qrScanPermissionButton),
+                                )
                               ],
                             ),
                           ), //TODO
@@ -120,7 +120,16 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
               })),
         ),
         Positioned(
-          bottom: mediaQuerySize.height * 0.2,
+          width: mediaQuerySize.width,
+          height: mediaQuerySize.height,
+          child: SafeArea(
+            child: CustomPaint(
+              painter: ScannerOverlay(),
+            ),
+          ),
+        ),
+        Positioned(
+          bottom: mediaQuerySize.height * 0.1,
           child: QRControlButtons(
             controlsDecoration: controlsDecoration,
             qrController: qrController,
