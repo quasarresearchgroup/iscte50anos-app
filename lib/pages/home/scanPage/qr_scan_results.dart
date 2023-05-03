@@ -105,21 +105,26 @@ class QRScanResults extends StatelessWidget {
                         ),
                       ),
                       DynamicTextButton(
-                          onPressed: () => Navigator.of(context)
-                              .popAndPushNamed(QuizMenu.pageRoute),
-                          style: const ButtonStyle(
-                              backgroundColor: MaterialStatePropertyAll(
-                                  IscteTheme.iscteColor),
-                              foregroundColor:
-                                  MaterialStatePropertyAll(Colors.white)),
-                          child: Text(
-                            AppLocalizations.of(context)!
-                                .qrScanResultReadyForQuizButtonDialogContinueButton,
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium
-                                ?.copyWith(color: Colors.white),
-                          ))
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          Navigator.of(context)
+                              .pushReplacementNamed(QuizMenu.pageRoute);
+                        },
+                        style: const ButtonStyle(
+                          backgroundColor:
+                              MaterialStatePropertyAll(IscteTheme.iscteColor),
+                          foregroundColor:
+                              MaterialStatePropertyAll(Colors.white),
+                        ),
+                        child: Text(
+                          AppLocalizations.of(context)!
+                              .qrScanResultReadyForQuizButtonDialogContinueButton,
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleMedium
+                              ?.copyWith(color: Colors.white),
+                        ),
+                      )
                     ]),
               ),
             ],

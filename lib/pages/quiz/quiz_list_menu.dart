@@ -7,6 +7,7 @@ import 'package:iscte_spots/models/quiz/trial.dart';
 import 'package:iscte_spots/pages/quiz/quiz_page.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_back_button.dart';
+import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_text_button.dart';
 import 'package:iscte_spots/widgets/my_app_bar.dart';
 import 'package:iscte_spots/widgets/network/error.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
@@ -324,18 +325,29 @@ class QuizDetail extends StatelessWidget {
                 );
               }),
           if (quiz.num_trials < quiz.max_num_trials)
-            ElevatedButton(
-              onPressed: () {
-                showYesNoWarningDialog(
-                  context: context,
-                  text: AppLocalizations.of(context)!.quizBeginAttemptWarning,
-                  methodOnYes: () async {
-                    Navigator.of(context).pop();
-                    await startQuiz(quizNumber: quiz.number);
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                DynamicTextButton(
+                  child: Text("Study for the quiz"),
+                  onPressed: () => throw UnimplementedError(),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    showYesNoWarningDialog(
+                      context: context,
+                      text:
+                          AppLocalizations.of(context)!.quizBeginAttemptWarning,
+                      methodOnYes: () async {
+                        Navigator.of(context).pop();
+                        await startQuiz(quizNumber: quiz.number);
+                      },
+                    );
                   },
-                );
-              },
-              child: Text(AppLocalizations.of(context)!.quizBeginAttempt),
+                  child: Text(AppLocalizations.of(context)!.quizBeginAttempt),
+                )
+              ],
             )
         ],
       ),

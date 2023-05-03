@@ -129,13 +129,17 @@ class _QuestionWidgetState extends State<QuestionWidget> {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        const SizedBox(height: 15),
         Text(
           "${AppLocalizations.of(context)!.quizQuestion} ${widget.trialQuestion.number}/${widget.trialController.trial.quiz_size}",
           style: Theme.of(context).textTheme.titleLarge,
         ),
         const SizedBox(height: 5),
         Expanded(
-          child: PinchZoom(child: widget.precachedQuestionImage)
+          child: PinchZoom(
+            resetDuration: const Duration(minutes: 1),
+            child: widget.precachedQuestionImage,
+          )
           /*QuizImage(
             flickrUrl: widget.question.image_link!,
             onLoadCallback: () =>

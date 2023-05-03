@@ -79,7 +79,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               _lottieController.reset();
               _showSucessPage = false;
             });
-            _tabController.animateTo(widget.puzzleIndex);
+            navigateBackToPuzzle();
           });
         }
       },
@@ -91,6 +91,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     super.dispose();
     _confettiController.dispose();
     _lottieController.dispose();
+  }
+
+  void navigateBackToPuzzle() {
+    _tabController.animateTo(widget.puzzleIndex);
   }
 
   completePuzzleCallback() async {
@@ -126,7 +130,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         ),
         DynamicTextButton(
           onPressed: () {
-            _tabController.animateTo(widget.scanSpotIndex);
+            navigateBackToPuzzle();
             Navigator.of(context).pop();
           },
           style: const ButtonStyle(
@@ -155,7 +159,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   void _completedAllPuzzles() async {
     await SharedPrefsService.storeCompletedAllPuzzles();
-    _tabController.animateTo(widget.puzzleIndex);
+    navigateBackToPuzzle();
   }
 
   @override
@@ -176,7 +180,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     return Scaffold(
       extendBodyBehindAppBar: true,
       extendBody: true,
-      drawer: const MyNavigationDrawer(),
+      drawer: MyNavigationDrawer(
+          navigateBackToPuzzleCallback: navigateBackToPuzzle),
       appBar: buildAppBar(orientation, challengeCompleteBool),
       bottomNavigationBar:
           (challengeCompleteBool || orientation == Orientation.landscape)
@@ -304,8 +309,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       child: LeaderBoardPage(hasAppBar: false),
                     ),
                     QRScanPageOpenDay(
+                      navigateBackToPuzzleCallback: navigateBackToPuzzle,
                       //changeImage: changeCurrentSpot,
-                      completedAllPuzzle: _completedAllPuzzles,
+                      //completedAllPuzzle: _completedAllPuzzles,
                     ),
                   ],
                 ),
@@ -370,19 +376,20 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     backgroundColor: IscteTheme.greyColor,
                                   ),
                                 ),
-                                SizedBox(height: 10),
-                                DynamicTextButton(
-                                  child: Text(
-                                    "Choose a new Spot",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleMedium
-                                        ?.copyWith(
-                                          color: IscteTheme.iscteColor,
-                                        ),
-                                  ),
-                                  onPressed: () => throw UnimplementedError(),
-                                )
+                                const SizedBox(height: 10),
+                                if (progress == 1)
+                                  DynamicTextButton(
+                                    child: Text(
+                                      "Choose a new Spot",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium
+                                          ?.copyWith(
+                                            color: IscteTheme.iscteColor,
+                                          ),
+                                    ),
+                                    onPressed: () => throw UnimplementedError(),
+                                  )
                               ],
                             );
                           }),
