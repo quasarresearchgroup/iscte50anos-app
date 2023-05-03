@@ -3,8 +3,8 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:iscte_spots/models/database/tables/database_spot_table.dart';
 import 'package:iscte_spots/models/spot.dart';
+import 'package:iscte_spots/pages/home/state/PuzzleState.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/services/platform_service.dart';
 import 'package:iscte_spots/services/shared_prefs_service.dart';
@@ -12,11 +12,12 @@ import 'package:iscte_spots/services/spotChooser/fetch_all_spots_service.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_alert_dialog.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_back_button.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_icon_button.dart';
+import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_loading_widget.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_snackbar.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_text_button.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
-import 'package:iscte_spots/widgets/util/loading.dart';
 
+import '../../models/database/tables/database_spot_table.dart';
 import 'spot_chooser_tile.dart';
 
 void main() async {
@@ -63,7 +64,7 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
           //       backgroundColor: Theme.of(context).primaryColor,
           //       child: const Icon(Icons.refresh),
           //       onTap: () {
-          //         refreshCallback(context);
+          //         _refreshCallback(context);
           //       },
           //     ),
           //     SpeedDialChild(
@@ -72,6 +73,33 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
           //       onTap: () async {
           //         await DatabasePuzzlePieceTable.removeALL();
           //         await DatabaseSpotTable.removeALL();
+          //         setState(() {
+          //           future = DatabaseSpotTable.getAll();
+          //         });
+          //       },
+          //     ),
+          //     SpeedDialChild(
+          //       backgroundColor: Colors.orange,
+          //       child: const Icon(Icons.delete_outline),
+          //       onTap: () async {
+          //         List<Spot> spots = await DatabaseSpotTable.getAll();
+          //         await DatabaseSpotTable.remove(spots.last.id);
+          //         setState(() {
+          //           future = DatabaseSpotTable.getAll();
+          //         });
+          //       },
+          //     ),
+          //     SpeedDialChild(
+          //       backgroundColor: Colors.green,
+          //       child: const Icon(Icons.add),
+          //       onTap: () async {
+          //         await DatabaseSpotTable.add(
+          //           Spot(
+          //             id: 1000,
+          //             photoLink:
+          //                 "https://media.istockphoto.com/id/1221460597/photo/yellow-vintage-tram-on-the-street-in-lisbon-portugal.jpg?s=612x612&w=0&k=20&c=E5LVWw2DH5fHsDadmyiH5KbEfWO_El1vfra1vxLZP74=",
+          //           ),
+          //         );
           //         setState(() {
           //           future = DatabaseSpotTable.getAll();
           //         });
@@ -93,7 +121,7 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
             future: future,
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
-                return const LoadingWidget();
+                return const DynamicLoadingWidget();
               }
               List<Spot> list = snapshot.data!;
               List<Widget> slivers = [];
@@ -182,7 +210,8 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
                               : Icons.question_mark_rounded,
                           color: IscteTheme.iscteColor,
                         ),
-                        onPressed: () => _displayHelpDialog(context)),
+                        onPressed: () =>
+                            _displaySpotChooserExplanationDialog(context)),
                   ],
                 ),
         ),
@@ -222,7 +251,8 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
                         : Icons.question_mark_rounded,
                     color: IscteTheme.iscteColor,
                   ),
-                  onPressed: () => _displayHelpDialog(context)),
+                  onPressed: () =>
+                      _displaySpotChooserExplanationDialog(context)),
           ],
           flexibleSpace: FlexibleSpaceBar(
             title: Text(
@@ -242,10 +272,10 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
     }
   }
 
-  void _displayHelpDialog(BuildContext context) {
+  void _displaySpotChooserExplanationDialog(BuildContext context) {
     DynamicAlertDialog.showDynamicDialog(
       context: context,
-      title: Text(AppLocalizations.of(context)!.help),
+      title: Text(AppLocalizations.of(context)!.explanation),
       content: Text(AppLocalizations.of(context)!.spotChooserHelpDialogContent),
     );
   }
@@ -276,7 +306,7 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
                 (e) => ChooseSpotTile(
                   spot: e,
                   blur: BLUR,
-                  chooseSpotCallback: _chooseSpotCallback,
+                  chooseSpotCallback: spotChooserTapCallback,
                 ),
               )
               .toList())
@@ -298,10 +328,10 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
             DynamicTextButton(
                 child: Text(AppLocalizations.of(context)!
                     .spotChooserRandomConfirmationButton),
-                onPressed: () {
-                  _chooseSpotCallback(
+                onPressed: () async {
+                  await _chooseSpotCallback(
                       list[Random().nextInt(list.length)], context);
-                  Navigator.of(context).pop();
+                  if (mounted) Navigator.of(context).pop();
                 })
           ]);
     } else {
@@ -314,13 +344,47 @@ class _SpotChooserPageState extends State<SpotChooserPage> {
     }
   }
 
+  Future<void> spotChooserTapCallback(Spot spot, BuildContext context) async {
+    LoggerService.instance.debug("spotChooserTapCallback");
+    await DynamicAlertDialog.showDynamicDialog(
+        context: context,
+        title: Text(AppLocalizations.of(context)!.spotChooserConfirmationTitle),
+        actions: [
+          DynamicTextButton(
+            child: Text(
+              AppLocalizations.of(context)!.qrScanConfirmationCancel,
+              style: Theme.of(context)
+                  .textTheme
+                  .titleMedium
+                  ?.copyWith(color: IscteTheme.iscteColor),
+            ),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          DynamicTextButton(
+            child: Text(
+              AppLocalizations.of(context)!.qrScanConfirmationAccept,
+              style: Theme.of(context)
+                  .textTheme
+                  .titleMedium
+                  ?.copyWith(color: IscteTheme.iscteColor),
+            ),
+            onPressed: () {
+              _chooseSpotCallback(spot, context);
+              Navigator.of(context).pop();
+            },
+          ),
+        ]);
+  }
+
 //TODO remove from ui page into own service
   Future<void> _chooseSpotCallback(Spot spot, BuildContext context) async {
-    LoggerService.instance.debug("choosing new spot $spot");
-    SharedPrefsService.storeCurrentSpot(spot);
     //await DatabasePuzzlePieceTable.removeALL();
-    if (mounted) {
-      Navigator.of(context).pop();
-    }
+
+    LoggerService.instance.debug("choosing new spot $spot");
+    await SharedPrefsService.storeCurrentSpot(spot);
+    await PuzzleState.changeSpot(spot.id);
+    //await DatabasePuzzlePieceTable.removeALL();
+    if (!mounted) return;
+    Navigator.of(context).pop();
   }
 }

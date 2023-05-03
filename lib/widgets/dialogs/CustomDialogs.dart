@@ -2,22 +2,35 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_alert_dialog.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_text_button.dart';
+import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 
-void showYesNoWarningDialog({
+Future<void> showYesNoWarningDialog({
   required BuildContext context,
   required String text,
   Function()? methodOnYes,
   Function()? methodOnNo,
-}) {
-  DynamicAlertDialog.showDynamicDialog(
+}) async {
+  await DynamicAlertDialog.showDynamicDialog(
     context: context,
     actions: [
       DynamicTextButton(
           onPressed: methodOnNo ?? Navigator.of(context).pop,
-          child: Text(AppLocalizations.of(context)!.no)),
+          child: Text(
+            AppLocalizations.of(context)!.no,
+            style: Theme.of(context)
+                .textTheme
+                .titleMedium
+                ?.copyWith(color: IscteTheme.iscteColor),
+          )),
       DynamicTextButton(
           onPressed: methodOnYes,
-          child: Text(AppLocalizations.of(context)!.yes))
+          child: Text(
+            AppLocalizations.of(context)!.yes,
+            style: Theme.of(context)
+                .textTheme
+                .titleMedium
+                ?.copyWith(color: IscteTheme.iscteColor),
+          ))
     ],
     title: Text(
       AppLocalizations.of(context)!.warningTitle,

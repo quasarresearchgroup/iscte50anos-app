@@ -5,10 +5,10 @@ import 'package:iscte_spots/models/database/tables/database_puzzle_piece_table.d
 import 'package:iscte_spots/models/puzzle_piece.dart';
 import 'package:iscte_spots/models/spot.dart';
 
+import '../state/PuzzleState.dart';
 import 'clipped_piece_widget.dart';
 
 class PuzzlePieceWidget extends StatefulWidget {
-
   final Spot spot;
   final Size imageSize;
   final Function bringToTop;
@@ -190,7 +190,7 @@ class PuzzlePieceWidgetState extends State<PuzzlePieceWidget> {
     }
     widget.sendToBack(widget);
 
-    await DatabasePuzzlePieceTable.add(PuzzlePiece(
+    PuzzlePiece puzzlePiece = PuzzlePiece(
       row: widget.row,
       column: widget.col,
       maxRow: widget.maxRow,
@@ -198,7 +198,8 @@ class PuzzlePieceWidgetState extends State<PuzzlePieceWidget> {
       top: top!,
       left: left!,
       spotID: widget.spot.id,
-    ));
+    );
+    PuzzleState.snapPuzzlePiece(puzzlePiece);
 
     List<PuzzlePiece> listPuzzlePieces =
         await DatabasePuzzlePieceTable.getAllFromSpot(widget.spot.id);

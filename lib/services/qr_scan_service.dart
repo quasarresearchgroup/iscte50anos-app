@@ -15,6 +15,8 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import 'auth/auth_storage_service.dart';
 import 'auth/login_service.dart';
 
+class QuizLevelNotAchieved implements Exception {}
+
 class QRScanService {
 /*
   static Future<String> extractData(final String url) async {
@@ -85,9 +87,10 @@ class QRScanService {
             return SpotInfoRequest(
               id: responseDecoded["id"],
               title: responseDecoded["title"],
+              visited: responseDecoded["visited"] ?? false,
             );
           } else {
-            LoggerService.instance.debug("No title in spotInfoRequest");
+            LoggerService.instance.error("No title in spotInfoRequest");
           }
         }
         throw Exception("Bad response");
@@ -119,16 +122,16 @@ class QRScanService {
     request.headers.add("Authorization", "Token $apiToken");
 
     final response = await request.close();
+    var responseDecoded =
+        jsonDecode(await response.transform(utf8.decoder).join());
+
+    LoggerService.instance.debug(responseDecoded);
 
     if (response.statusCode == 403) {
       throw LoginException();
     } else if (response.statusCode == 404) {
       throw InvalidQRException();
     } else {
-      var responseDecoded =
-          jsonDecode(await response.transform(utf8.decoder).join());
-
-      LoggerService.instance.debug(responseDecoded);
       try {
         if (responseDecoded["title"] != null &&
             responseDecoded["content"] != null) {
@@ -141,6 +144,11 @@ class QRScanService {
             title: responseDecoded["title"],
             contentList: contentList,
           );
+        } else if (responseDecoded["status"] != null) {
+          if (responseDecoded["status"] ==
+              "The quiz for this level was not completed") {
+            throw QuizLevelNotAchieved();
+          }
         }
         throw Exception("Response without title or content keys");
       } on SocketException {

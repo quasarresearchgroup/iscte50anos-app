@@ -5,7 +5,7 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:iscte_spots/helper/image_manipulation.dart';
 import 'package:iscte_spots/pages/home/splashScreen/moving_widget.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
-import 'package:iscte_spots/widgets/util/loading.dart';
+import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_loading_widget.dart';
 
 /*
 class Shaker extends StatefulWidget {
@@ -146,15 +146,15 @@ class _GravityPlaneState extends State<GravityPlane> {
             builder:
                 (BuildContext context, AsyncSnapshot<List<Widget>> snapshot) {
               if (snapshot.hasData && (snapshot.data?.isNotEmpty ?? false)) {
-                  //remove native splash screen is here to allow the GravityPlane to fully load behind the native splash screen
-                  FlutterNativeSplash.remove();
+                //remove native splash screen is here to allow the GravityPlane to fully load behind the native splash screen
+                FlutterNativeSplash.remove();
 
-                  return Stack(
-                    children: snapshot.data!,
-                  );
-                } else {
-                  return const Center(child: LoadingWidget());
-                }
+                return Stack(
+                  children: snapshot.data!,
+                );
+              } else {
+                return const Center(child: DynamicLoadingWidget());
+              }
             });
       },
     );

@@ -40,7 +40,7 @@ class _MyAppBarState extends State<MyAppBar> {
     Widget? middle = widget.title != null
         ? Text(
             widget.title!,
-            overflow: TextOverflow.ellipsis,
+            overflow: TextOverflow.fade,
             style: PlatformService.instance.isIos
                 ? const TextStyle(color: IscteTheme.iscteColor)
                 : Theme.of(context).textTheme.titleLarge?.copyWith(
@@ -51,6 +51,7 @@ class _MyAppBarState extends State<MyAppBar> {
     return !PlatformService.instance.isIos
         ? AppBar(
             leadingWidth: 100,
+            titleSpacing: 0,
             automaticallyImplyLeading: widget.automaticallyImplyLeading,
             iconTheme: Theme.of(context)
                 .iconTheme

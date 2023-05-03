@@ -3,12 +3,15 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:iscte_spots/models/quiz/trial.dart';
 import 'package:iscte_spots/pages/quiz/quiz_page.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_back_button.dart';
 import 'package:iscte_spots/widgets/my_app_bar.dart';
 import 'package:iscte_spots/widgets/network/error.dart';
+import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 
+import '../../models/quiz/quiz.dart';
 import '../../services/quiz/quiz_service.dart';
 import '../../widgets/dialogs/CustomDialogs.dart';
 
@@ -59,7 +62,7 @@ class QuizList extends StatefulWidget {
 
 class _QuizListState extends State<QuizList> {
   final fetchFunction = QuizService.getQuizList;
-  late Future<List<dynamic>> futureQuizList;
+  late Future<List<Quiz>> futureQuizList;
   bool isLoading = false;
 
   bool isTrialLoading = false;
@@ -67,39 +70,50 @@ class _QuizListState extends State<QuizList> {
   @override
   void initState() {
     super.initState();
-    futureQuizList = fetchFunction();
+    futureQuizList = fetchFunction(context);
   }
 
-  startTrial(int quizNumber) async {
+  void _trialCallbackAux({required Trial trial, required int quizNumber}) {
+    isTrialLoading = false;
+    LoggerService.instance.debug(trial.toJson());
+    if (mounted) {
+      Navigator.of(context)
+          .push(
+        MaterialPageRoute(
+          builder: (context) => QuizPage(
+            quizNumber: quizNumber,
+            trial: trial,
+          ),
+        ),
+      )
+          .then((_) {
+        setState(() {
+          futureQuizList = fetchFunction(context);
+        });
+      });
+    }
+  }
+
+  Future<void> continueTrialCallback(
+      {required int quizNumber, required int trialNumber}) async {
     isTrialLoading = true;
     try {
-      Map newTrialInfo = await QuizService.startTrial(quizNumber);
-      isTrialLoading = false;
-
-      int newTrialNumber = newTrialInfo["trial_number"];
-      int numQuestions = newTrialInfo["quiz_size"] ?? 0;
-      LoggerService.instance.debug(newTrialInfo);
-      if (mounted) {
-        Navigator.of(context)
-            .push(
-          MaterialPageRoute(
-            builder: (context) => QuizPage(
-              quizNumber: quizNumber,
-              trialNumber: newTrialNumber,
-              numQuestions: numQuestions,
-            ),
-          ),
-        )
-            .then((value) {
-          setState(() {
-            futureQuizList = fetchFunction();
-          });
-        });
-      }
+      Trial trial = await QuizService.getTrial(quizNumber, trialNumber);
+      _trialCallbackAux(trial: trial, quizNumber: quizNumber);
     } catch (e) {
-      setState(() {
-        isTrialLoading = false;
-      });
+      LoggerService.instance.error(e);
+      setState(() => isTrialLoading = false);
+    }
+  }
+
+  Future<void> startTrialCallback({required int quizNumber}) async {
+    isTrialLoading = true;
+    try {
+      Trial newTrial = await QuizService.startTrial(quizNumber);
+      _trialCallbackAux(trial: newTrial, quizNumber: quizNumber);
+    } catch (e) {
+      LoggerService.instance.error(e);
+      setState(() => isTrialLoading = false);
     }
   }
 
@@ -136,18 +150,19 @@ class _QuizListState extends State<QuizList> {
                 ),
               ),
               Expanded(
-                child: FutureBuilder(
+                child: FutureBuilder<List<Quiz>>(
                   future: futureQuizList,
                   builder: (context, snapshot) {
-                    List<Widget> children;
                     if (snapshot.hasData) {
-                      var items = snapshot.data as List<dynamic>;
-                      LoggerService.instance.debug(items);
+                      List<Quiz> items = snapshot.data ?? [];
+                      LoggerService.instance.debug(
+                          "quiz list items:\n${items.map((e) => e.toJson())}");
                       return RefreshIndicator(
+                        color: IscteTheme.iscteColor,
                         onRefresh: () async {
                           setState(() {
                             if (!isLoading) {
-                              futureQuizList = fetchFunction();
+                              futureQuizList = fetchFunction(context);
                             }
                           });
                         },
@@ -161,42 +176,43 @@ class _QuizListState extends State<QuizList> {
                                 physics: const AlwaysScrollableScrollPhysics(),
                                 itemCount: items.length,
                                 itemBuilder: (context, index) {
-                                  int quizNumber = items[index]["number"];
-                                  int score = items[index]["score"];
-                                  int trials = items[index]["num_trials"];
-                                  var topicNames = items[index]["topic_names"];
-                                  int numQuestions =
-                                      items[index]["num_questions"] ?? 0;
+                                  int quizNumber = items[index].number;
+                                  int score = items[index].score;
+                                  int trials = items[index].num_trials;
+                                  String topicNames = items[index].topic_names;
                                   return Padding(
                                     padding: const EdgeInsets.only(
                                         left: 10.0, right: 10.0),
                                     child: Card(
                                       child: ExpansionTile(
+                                        initiallyExpanded: trials <= 0,
+                                        iconColor: IscteTheme.iscteColor,
                                         title: Text(
-                                          "Quiz ${items[index]["number"].toString()}",
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16,
-                                          ),
+                                          "Quiz ${items[index].number}",
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .titleLarge
+                                              ?.copyWith(
+                                                color: trials <= 0
+                                                    ? IscteTheme.iscteColor
+                                                    : null,
+                                              ),
                                         ),
                                         subtitle: Text(
-                                            "${AppLocalizations.of(context)!.quizPoints}: ${score} \n${AppLocalizations.of(context)!.quizAttempts}: ${trials}"
-                                            "\n${AppLocalizations.of(context)!.quizTopics}: ${topicNames}"),
+                                            "${AppLocalizations.of(context)!.quizPoints}: $score \n${AppLocalizations.of(context)!.quizAttempts}: $trials"
+                                            "\n${AppLocalizations.of(context)!.quizTopics}: $topicNames",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyMedium),
                                         children: [
                                           QuizDetail(
                                             quiz: items[index],
-                                            startQuiz: () {
-                                              setState(() {
-                                                Navigator.of(context).pop();
-                                                startTrial(quizNumber);
-                                              });
-                                            },
-                                            returnToQuizList: () {
-                                              setState(() {
-                                                futureQuizList =
-                                                    fetchFunction();
-                                              });
-                                            },
+                                            startQuiz: startTrialCallback,
+                                            continueQuizCallback:
+                                                continueTrialCallback,
+                                            returnToQuizList: () => setState(
+                                                () => futureQuizList =
+                                                    fetchFunction(context)),
                                           )
                                         ],
                                         //minVerticalPadding: 10.0,
@@ -218,7 +234,7 @@ class _QuizListState extends State<QuizList> {
                     } else if (snapshot.hasError) {
                       return DynamicErrorWidget(onRefresh: () {
                         setState(() {
-                          futureQuizList = fetchFunction();
+                          futureQuizList = fetchFunction(context);
                         });
                       });
                     } else {
@@ -242,17 +258,20 @@ class QuizDetail extends StatelessWidget {
   const QuizDetail({
     Key? key,
     required this.startQuiz,
+    required this.continueQuizCallback,
     required this.quiz,
     required this.returnToQuizList,
   }) : super(key: key);
 
-  final Function() startQuiz;
+  final Function({required int quizNumber}) startQuiz;
+  final Function({required int quizNumber, required int trialNumber})
+      continueQuizCallback;
   final Function() returnToQuizList;
-  final Map quiz;
+  final Quiz quiz;
 
   @override
   Widget build(BuildContext context) {
-    var trials = quiz["trials"];
+    List<TrialInfo> trials = quiz.trials;
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: Column(
@@ -262,12 +281,12 @@ class QuizDetail extends StatelessWidget {
               physics: const NeverScrollableScrollPhysics(),
               itemCount: trials.length,
               itemBuilder: (context, index) {
-                var trial = trials[index];
+                TrialInfo trial = trials[index];
                 return Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                        "${AppLocalizations.of(context)!.quizAttempt}: ${trial["number"]}"),
+                        "${AppLocalizations.of(context)!.quizAttempt}: ${trial.number}"),
                     const SizedBox(
                       height: 5,
                     ),
@@ -275,51 +294,45 @@ class QuizDetail extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           Text(
-                              "${AppLocalizations.of(context)!.quizPoints}: ${trial["is_completed"] ? trial["score"] : "-"}"),
+                              "${AppLocalizations.of(context)!.quizPoints}: ${trial.is_completed ? trial.score : "-"}"),
                           Text(
-                              "${AppLocalizations.of(context)!.quizProgress}: ${trial["progress"]}/${trial["quiz_size"]}"),
+                              "${AppLocalizations.of(context)!.quizProgress}: ${trial.progress}/${trial.quiz_size}"),
                         ]),
                     const SizedBox(
                       height: 5,
                     ),
-                    if (!trial["is_completed"])
+/*                    if (!trial.is_completed)
                       ElevatedButton(
                         onPressed: () => showYesNoWarningDialog(
                           context: context,
                           text:
                               AppLocalizations.of(context)!.quizContinueAttempt,
-                          methodOnYes: () {
+                          methodOnYes: () async {
                             Navigator.of(context).pop();
-                            Navigator.of(context)
-                                .push(
-                              MaterialPageRoute(
-                                builder: (context) => QuizPage(
-                                  quizNumber: quiz["number"],
-                                  trialNumber: trial["number"],
-                                  numQuestions: trial["quiz_size"],
-                                ),
-                              ),
-                            )
-                                .then((value) {
-                              returnToQuizList();
-                            });
+                            await continueQuizCallback(
+                              quizNumber: quiz.number,
+                              trialNumber: trial.number,
+                            );
                           },
                         ),
                         child: Text(AppLocalizations.of(context)!.quizContinue),
-                      ),
+                      ),*/
                     const Divider(
                       thickness: 2,
                     ),
                   ],
                 );
               }),
-          if (quiz["num_trials"] < MAX_TRIALS)
+          if (quiz.num_trials < quiz.max_num_trials)
             ElevatedButton(
               onPressed: () {
                 showYesNoWarningDialog(
                   context: context,
                   text: AppLocalizations.of(context)!.quizBeginAttemptWarning,
-                  methodOnYes: startQuiz,
+                  methodOnYes: () async {
+                    Navigator.of(context).pop();
+                    await startQuiz(quizNumber: quiz.number);
+                  },
                 );
               },
               child: Text(AppLocalizations.of(context)!.quizBeginAttempt),

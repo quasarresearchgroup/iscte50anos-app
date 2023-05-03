@@ -1,6 +1,7 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
 
+import 'exceptions.dart';
 
 class LoginStorageService {
   static const String backendApiKeyStorageLocation = 'backend_api_key';
@@ -18,6 +19,16 @@ class LoginStorageService {
     LoggerService.instance.debug("Stored user credentials in secure storage");
   }
 
+  static Future<String> getBackendApiKey() async {
+    const secureStorage = FlutterSecureStorage();
+    String? key = await secureStorage.read(key: "backend_api_key");
+    if (key == null) {
+      throw LoginException();
+    }
+    LoggerService.instance.debug("Get api key");
+    return key;
+  }
+
   static deleteUserCredentials() async {
     const storage = FlutterSecureStorage();
     await storage.delete(key: LoginStorageService.backendApiKeyStorageLocation);
@@ -27,17 +38,20 @@ class LoginStorageService {
   }
 }
 
-class IscteLoginStorageService{
-  static const String _backendApiKeyStorageLocation = LoginStorageService.backendApiKeyStorageLocation;
+class IscteLoginStorageService {
+  static const String _backendApiKeyStorageLocation =
+      LoginStorageService.backendApiKeyStorageLocation;
   static const String refreshTokenStorageLocation = 'refresh_token';
 
   static storeFenixLogInCredenials(
-      {required String? refreshToken,
-        required String? apiKey}) async {
+      {required String? refreshToken, required String? apiKey}) async {
     const secureStorage = FlutterSecureStorage();
-    await secureStorage.write(key: _backendApiKeyStorageLocation, value: apiKey);
-    await secureStorage.write(key: refreshTokenStorageLocation, value: refreshToken);
-    LoggerService.instance.debug("Stored Fenix user credentials in secure storage");
+    await secureStorage.write(
+        key: _backendApiKeyStorageLocation, value: apiKey);
+    await secureStorage.write(
+        key: refreshTokenStorageLocation, value: refreshToken);
+    LoggerService.instance
+        .debug("Stored Fenix user credentials in secure storage");
   }
 
   static deleteUserCredentials() async {

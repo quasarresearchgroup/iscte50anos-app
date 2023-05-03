@@ -49,13 +49,15 @@ class TopicsFilterWidget extends StatelessWidget {
         style: titleStyle,
       );
       var selectAllBtn = DynamicTextButton(
-        style: IscteTheme.greyColor,
+        style: ButtonStyle(
+            foregroundColor: MaterialStateProperty.all(IscteTheme.iscteColor)),
         onPressed: _selectAllTopics,
         child: Text(AppLocalizations.of(context)!.timelineSelectAllButton,
             style: titleStyle),
       );
       var clearAllBtn = DynamicTextButton(
-        style: IscteTheme.greyColor,
+        style: ButtonStyle(
+            foregroundColor: MaterialStateProperty.all(IscteTheme.iscteColor)),
         onPressed: _clearTopicsList,
         child: Text(
           AppLocalizations.of(context)!.timelineSelectClearButton,

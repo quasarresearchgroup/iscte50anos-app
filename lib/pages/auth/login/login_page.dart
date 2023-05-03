@@ -1,19 +1,21 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/models/auth/login_form_result.dart';
-import 'package:iscte_spots/services/auth/fenix_login_service.dart';
 import 'package:iscte_spots/services/auth/login_service.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
+import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_loading_widget.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_text_button.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
-import 'package:iscte_spots/widgets/util/loading.dart';
+
+bool DONTHAVEACCOUNT = false;
+bool LOGINBUTTON = true;
 
 class LoginPage extends StatefulWidget {
   LoginPage({
     Key? key,
+    required this.changeToAuthInitial,
     required this.changeToSignUp,
     required this.loggingComplete,
     required this.animatedSwitcherDuration,
@@ -25,6 +27,7 @@ class LoginPage extends StatefulWidget {
   final TextEditingController passwordController = TextEditingController();
   final void Function() loggingComplete;
   final void Function() changeToSignUp;
+  final void Function() changeToAuthInitial;
   final Duration animatedSwitcherDuration;
 }
 
@@ -52,6 +55,85 @@ class _LoginOpendayState extends State<LoginPage>
       return AppLocalizations.of(context)!.loginNoTextError;
     }
     return null;
+  }
+
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return AnimatedSwitcher(
+      duration: widget.animatedSwitcherDuration,
+      child: _isLoading
+          ? const DynamicLoadingWidget()
+          : Padding(
+              padding: const EdgeInsets.only(bottom: 10, left: 15, right: 15),
+              child: Form(
+                key: _loginFormkey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Flexible(
+                      flex: 9,
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            if (LOGINBUTTON) ...generateFormFields(),
+                            generateFormButtons(),
+                          ]),
+                    ),
+                    if (DONTHAVEACCOUNT)
+                      Flexible(
+                        flex: 1,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(AppLocalizations.of(context)!
+                                .loginDontHaveAccount),
+                            DynamicTextButton(
+                              onPressed: widget.changeToSignUp,
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(Icons.adaptive.arrow_forward),
+                                  Text(
+                                    AppLocalizations.of(context)!
+                                        .loginRegisterButton,
+                                  )
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    Flexible(
+                      flex: 1,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text("Não és um admin?"),
+                          DynamicTextButton(
+                            onPressed: widget.changeToAuthInitial,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.adaptive.arrow_back),
+                                Text(
+                                  AppLocalizations.of(context)!.back,
+                                )
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+    );
   }
 
   List<Widget> generateFormFields() {
@@ -93,75 +175,26 @@ class _LoginOpendayState extends State<LoginPage>
   }
 
   Widget generateFormButtons() {
-    return Column(children: [
-      DynamicTextButton(
-        style: IscteTheme.iscteColor,
-        onPressed: _loginCallback,
-        child: Text(
-          AppLocalizations.of(context)!.loginScreen,
-          style: Theme.of(context)
-              .textTheme
-              .titleMedium
-              ?.copyWith(color: Colors.white),
-        ),
-      ),
-      DynamicTextButton(
-        style: IscteTheme.iscteColor,
-        onPressed: _iscteLoginCallback,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.lock),
-            Text(
-              "Login Iscte", //TODO
-              style: Theme.of(context)
-                  .textTheme
-                  .titleMedium
-                  ?.copyWith(color: Colors.white),
+    return Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          if (LOGINBUTTON)
+            DynamicTextButton(
+              style: const ButtonStyle(
+                  backgroundColor:
+                      MaterialStatePropertyAll(IscteTheme.iscteColor)),
+              onPressed: _loginCallback,
+              child: Text(
+                AppLocalizations.of(context)!.loginScreen,
+                style: Theme.of(context)
+                    .textTheme
+                    .titleMedium
+                    ?.copyWith(color: Colors.white),
+              ),
             ),
-          ],
-        ),
-      ),
-    ]);
-  }
-
-  Future<void> _iscteLoginCallback() async {
-    setState(() {
-      _loginError = false;
-      _generalError = false;
-      _isLoading = true;
-    });
-    try {
-      bool loginSuccess = await IscteLoginService.login();
-      if (loginSuccess) {
-        widget.loggingComplete();
-      } else {
-        setState(() {
-          _loginError = true;
-        });
-
-        LoggerService.instance.error("Iscte Login error!:");
-      }
-    } on SocketException {
-      setState(() {
-        _connectionError = true;
-      });
-      LoggerService.instance.error("SocketException on login!");
-    } on PlatformException catch (e) {
-      LoggerService.instance.error(e);
-      setState(() {
-        _loginError = true;
-      });
-    } catch (e) {
-      setState(() {
-        _generalError = true;
-      });
-      LoggerService.instance.error(e);
-    }
-
-    setState(() {
-      _isLoading = false;
-    });
+          if (LOGINBUTTON) const SizedBox(height: 10),
+        ]);
   }
 
   Future<void> _loginCallback() async {
@@ -176,9 +209,7 @@ class _LoginOpendayState extends State<LoginPage>
           username: widget.userNameController.text,
           password: widget.passwordController.text,
         );
-        int statusCode = await LoginService.login(
-          loginFormResult,
-        );
+        int statusCode = await LoginService.login(loginFormResult);
         if (statusCode == 200) {
           widget.loggingComplete();
         } else {
@@ -189,10 +220,11 @@ class _LoginOpendayState extends State<LoginPage>
               "Login error!: statusCode: $statusCode; loginForm: $loginFormResult;");
         }
       }
-    } on SocketException {
+    } on SocketException catch (e) {
       setState(() {
         _connectionError = true;
       });
+      LoggerService.instance.error(e);
       LoggerService.instance.error("SocketException on login!");
     } catch (e) {
       setState(() {
@@ -205,62 +237,4 @@ class _LoginOpendayState extends State<LoginPage>
       _isLoading = false;
     });
   }
-
-  @override
-  Widget build(BuildContext context) {
-    super.build(context);
-    return AnimatedSwitcher(
-      duration: widget.animatedSwitcherDuration,
-      child: _isLoading
-          ? const LoadingWidget()
-          : Padding(
-              padding: const EdgeInsets.only(bottom: 10, left: 15, right: 15),
-              child: Form(
-                key: _loginFormkey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Flexible(
-                      flex: 9,
-                      child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            ...generateFormFields(),
-                            generateFormButtons()
-                          ]),
-                    ),
-                    /*
-                    Flexible(
-                      flex: 1,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(AppLocalizations.of(context)!
-                              .loginDontHaveAccount),
-                          DynamicTextButton(
-                            onPressed: widget.changeToSignUp,
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(Icons.adaptive.arrow_forward),
-                                Text(
-                                  AppLocalizations.of(context)!
-                                      .loginRegisterButton,
-                                )
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                    ),*/
-                  ],
-                ),
-              ),
-            ),
-    );
-  }
-
-  @override
-  bool get wantKeepAlive => true;
 }

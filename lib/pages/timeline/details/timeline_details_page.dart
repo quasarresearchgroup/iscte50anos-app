@@ -9,10 +9,10 @@ import 'package:iscte_spots/services/flickr/flickr_url_converter_service.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/services/timeline/timeline_event_service.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_back_button.dart';
+import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_loading_widget.dart';
 import 'package:iscte_spots/widgets/my_app_bar.dart';
 import 'package:iscte_spots/widgets/network/error.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
-import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:logger/logger.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
@@ -169,11 +169,11 @@ class _TimeLineDetailsPageState extends State<TimeLineDetailsPage> {
                         });
                       });
                     } else {
-                      return const LoadingWidget();
+                      return const DynamicLoadingWidget();
                     }
                   });
             } else {
-              return const LoadingWidget();
+              return const DynamicLoadingWidget();
             }
           }),
     );
@@ -288,12 +288,12 @@ class _TimelineDetailGridContentState extends State<TimelineDetailGridContent> {
                 fadeInDuration: const Duration(seconds: 3),
                 progressIndicatorBuilder: (BuildContext context, String url,
                         DownloadProgress progress) =>
-                    const LoadingWidget(),
+                    const DynamicLoadingWidget(),
               );
             } else if (snapshot.hasError) {
               return DynamicErrorWidget(onRefresh: () {});
             } else {
-              return const LoadingWidget();
+              return const DynamicLoadingWidget();
             }
           });
     } else {
@@ -303,7 +303,7 @@ class _TimelineDetailGridContentState extends State<TimelineDetailGridContent> {
         fadeInDuration: const Duration(seconds: 3),
         progressIndicatorBuilder:
             (BuildContext context, String url, DownloadProgress progress) =>
-                const LoadingWidget(),
+                const DynamicLoadingWidget(),
       );
     }
   }

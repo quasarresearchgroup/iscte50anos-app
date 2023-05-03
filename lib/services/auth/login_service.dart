@@ -50,27 +50,31 @@ class LoginService {
   }
 
   static Future<bool> isLoggedIn() async {
-    const storage = FlutterSecureStorage();
-    String? username =
-        await storage.read(key: LoginStorageService.usernameStorageLocation);
-    String? password =
-        await storage.read(key: LoginStorageService.passwordStorageLocation);
-    String? token = await storage.read(
-        key: LoginStorageService.backendApiKeyStorageLocation);
-    LoggerService.instance
-        .debug("username : $username ; password : $password; token : $token");
+    try {
+      const storage = FlutterSecureStorage();
+      String? username =
+          await storage.read(key: LoginStorageService.usernameStorageLocation);
+      String? password =
+          await storage.read(key: LoginStorageService.passwordStorageLocation);
+      String? token = await storage.read(
+          key: LoginStorageService.backendApiKeyStorageLocation);
+      LoggerService.instance
+          .debug("username : $username ; password : $password; token : $token");
 
-    if (token != null) return true;
+      if (token != null) return true;
 
-    if (username != null && password != null) {
-      int loginresult = await login(
-        LoginFormResult(
-          username: username,
-          password: password,
-        ),
-      );
-      return loginresult == 200;
-    } else {
+      if (username != null && password != null) {
+        int loginresult = await login(
+          LoginFormResult(
+            username: username,
+            password: password,
+          ),
+        );
+        return loginresult == 200;
+      } else {
+        return false;
+      }
+    } catch (e) {
       return false;
     }
   }
@@ -99,8 +103,8 @@ class LoginService {
     await IscteLoginService.logout();
     await LoginStorageService.deleteUserCredentials();
     await OnboadingService.removeOnboard();
-    Navigator.of(context).popUntil(ModalRoute.withName(AuthPage.pageRoute));
-    Navigator.of(context).pushNamed(AuthPage.pageRoute);
+    Navigator.of(context).popUntil((route) => route.isFirst);
+    Navigator.of(context).pushReplacementNamed(AuthPage.pageRoute);
 
     //NavigationService.popToFirst();
     //NavigationService.pushNamed(AuthPage.pageRoute);

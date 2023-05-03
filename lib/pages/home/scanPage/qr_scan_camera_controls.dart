@@ -24,13 +24,11 @@ class QRControlButtons extends StatelessWidget {
                     onPressed: () async {
                       await qrController!.toggleTorch();
                     },
-                    icon: (qrController!.torchEnabled != null)
-                        ? Icon(
-                            qrController!.torchEnabled!
-                                ? Icons.flash_off
-                                : Icons.flash_on,
-                          )
-                        : Container()),
+                    icon: Icon(
+                      qrController!.torchEnabled
+                          ? Icons.flash_off
+                          : Icons.flash_on,
+                    )),
                 IconButton(
                   onPressed: () async {
                     await qrController?.switchCamera();

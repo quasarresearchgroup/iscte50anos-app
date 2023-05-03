@@ -5,6 +5,7 @@ import 'package:iscte_spots/pages/timeline/feedback_form.dart';
 import 'package:iscte_spots/pages/timeline/filter/timeline_filter_page.dart';
 import 'package:iscte_spots/pages/timeline/timeline_body.dart';
 import 'package:iscte_spots/services/platform_service.dart';
+import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_alert_dialog.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_icon_button.dart';
 import 'package:iscte_spots/widgets/my_app_bar.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
@@ -34,20 +35,40 @@ class _TimelinePageState extends State<TimelinePage> {
         leading:
             PlatformService.instance.isWeb ? const FeedbackFormButon() : null,
         trailing: Builder(
-            builder: (context) => Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    DynamicIconButton(
-                      onPressed: Scaffold.of(context).openEndDrawer,
-                      child: Icon(
-                        (PlatformService.instance.isIos)
-                            ? CupertinoIcons.search
-                            : Icons.search,
-                        color: IscteTheme.iscteColor,
-                      ),
+          builder: (context) => Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              DynamicIconButton(
+                onPressed: () => DynamicAlertDialog.showDynamicDialog(
+                    context: context,
+                    icon: Icon(
+                      (PlatformService.instance.isIos)
+                          ? CupertinoIcons.question
+                          : Icons.question_mark,
+                      color: IscteTheme.iscteColor,
                     ),
-                  ],
-                )),
+                    title: Text(AppLocalizations.of(context)!.explanation),
+                    content: Text(AppLocalizations.of(context)!
+                        .timelineExplanationAlertDialogContent)),
+                child: Icon(
+                  (PlatformService.instance.isIos)
+                      ? CupertinoIcons.question
+                      : Icons.question_mark,
+                  color: IscteTheme.iscteColor,
+                ),
+              ),
+              DynamicIconButton(
+                onPressed: Scaffold.of(context).openEndDrawer,
+                child: Icon(
+                  (PlatformService.instance.isIos)
+                      ? CupertinoIcons.search
+                      : Icons.search,
+                  color: IscteTheme.iscteColor,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
       endDrawer: Drawer(
         width: width > 400

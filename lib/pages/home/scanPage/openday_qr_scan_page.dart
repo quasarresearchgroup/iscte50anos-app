@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/models/database/tables/database_spot_table.dart';
@@ -10,29 +9,34 @@ import 'package:iscte_spots/pages/home/scanPage/qr_scan_results.dart';
 import 'package:iscte_spots/services/auth/exceptions.dart';
 import 'package:iscte_spots/services/auth/login_service.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
-import 'package:iscte_spots/services/platform_service.dart';
 import 'package:iscte_spots/services/qr_scan_service.dart';
+import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_alert_dialog.dart';
+import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_loading_widget.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_text_button.dart';
-import 'package:iscte_spots/widgets/util/loading.dart';
+import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:synchronized/synchronized.dart';
 
 class QRScanPageOpenDay extends StatefulWidget {
-  QRScanPageOpenDay(
+  const QRScanPageOpenDay(
       {Key? key /*, required this.changeImage*/,
       required this.completedAllPuzzle})
       : super(key: key);
+
   //final void Function(Future<SpotRequest> request) changeImage;
   final void Function() completedAllPuzzle;
+
   @override
   State<StatefulWidget> createState() => QRScanPageOpenDayState();
 }
 
 class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
   final qrKey = GlobalKey(debugLabel: 'QR');
-  MobileScannerController? qrController = MobileScannerController(
+  MobileScannerController qrController = MobileScannerController(
     facing: CameraFacing.back,
+    autoStart: true,
+    detectionTimeoutMs: 4000,
+    detectionSpeed: DetectionSpeed.normal,
     torchEnabled: false,
   );
   Decoration controlsDecoration = BoxDecoration(
@@ -52,17 +56,13 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
 
   @override
   void dispose() {
-    qrController?.dispose();
+    qrController.dispose();
     super.dispose();
   }
 
   @override
   Future<void> reassemble() async {
     super.reassemble();
-  }
-
-  void onQRViewCreated(Barcode newCode, MobileScannerArguments? args) {
-    checkLaunchBarcode(context, newCode);
   }
 
   @override
@@ -122,15 +122,13 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
         Positioned(
           bottom: mediaQuerySize.height * 0.2,
           child: QRControlButtons(
-              controlsDecoration: controlsDecoration,
-              qrController: qrController),
+            controlsDecoration: controlsDecoration,
+            qrController: qrController,
+          ),
         ),
         if (_requesting)
-          SizedBox(
-            width: mediaQuerySize.width,
-            height: mediaQuerySize.height,
-            //color: Theme.of(context).primaryColor.withOpacity(0.9),
-            child: const LoadingWidget(
+          const Center(
+            child: DynamicLoadingWidget(
               strokeWidth: 10,
             ),
           ),
@@ -138,197 +136,197 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
     );
   }
 
-  void checkLaunchBarcode(BuildContext context, Barcode barcode) {
-    var lock = Lock();
+  Future<void> checkLaunchBarcode(
+      BuildContext context, BarcodeCapture barcode) async {
+    if (_requesting) {
+      LoggerService.instance.debug("try scanning again later!");
+      return;
+    }
 
-    lock.synchronized(
-      () async {
-        int now = DateTime.now().millisecondsSinceEpoch;
-        try {
-          if (now - _lastScan >= _scanCooldown && !_requesting) {
-            setState(() => _requesting = true);
-            LoggerService.instance.debug("scanned new code");
+    try {
+      setState(() {
+        _requesting = true;
+      });
+      LoggerService.instance.debug("scanned new code");
 
-            SpotInfoRequest spotInfoRequest =
-                await QRScanService.spotInfoRequest(
-              context: context,
-              barcode: barcode,
-            );
-            LoggerService.instance.debug(spotInfoRequest);
-            bool continueScan;
-            if (mounted) {
-              continueScan = await launchConfirmationDialog(
-                context,
-                spotInfoRequest.title ?? "",
-              );
-            } else {
-              continueScan = false;
-            }
+      SpotInfoRequest spotInfoRequest = await QRScanService.spotInfoRequest(
+        context: context,
+        barcode: barcode.barcodes.first,
+      );
+      LoggerService.instance.debug(spotInfoRequest);
+      bool continueScan = false;
+      if (mounted) {
+        continueScan = await launchConfirmationDialog(
+          context,
+          spotInfoRequest,
+        );
+      }
+      LoggerService.instance.debug("continueScan: $continueScan");
 
-            if (continueScan && spotInfoRequest.id != null) {
-              _lastScan = now;
-
-              List<Spot> spots = (await DatabaseSpotTable.getAllWithIds(
-                  [spotInfoRequest.id!]));
-              if (spots.isNotEmpty) {
-                Spot spot = spots.first;
-                if (!spot.visited) {
-                  spot.visited = true;
-                  await DatabaseSpotTable.update(spot);
-                }
-              }
-              if (mounted) {
-                TopicRequest topicRequestCompleted =
-                    await QRScanService.topicRequest(
-                        context: context, topicID: spotInfoRequest.id!);
-
-                LoggerService.instance
-                    .debug("spotInfoRequest: $topicRequestCompleted");
-              }
-
-              if (mounted) {
-                Navigator.of(context).pushNamed(
-                  QRScanResults.pageRoute,
-                  arguments: spotInfoRequest,
-                );
-              }
-            }
-          } else {
-            LoggerService.instance.debug("try scanning again later!");
+      if (continueScan && spotInfoRequest.id != null) {
+        List<Spot> spots =
+            (await DatabaseSpotTable.getAllWithIds([spotInfoRequest.id!]));
+        if (spots.isNotEmpty) {
+          Spot spot = spots.first;
+          if (!spot.visited) {
+            spot.visited = true;
+            await DatabaseSpotTable.update(spot);
           }
-        } on LoginException {
-          LoggerService.instance.error("LoginException");
-          LoginService.logOut(context);
-        } on InvalidQRException {
-          LoggerService.instance.error("InvalidQRException");
-          launchQRErrorDialog(context);
-        } catch (e) {
-          LoggerService.instance.error(e);
-          launchQRErrorDialog(context);
         }
-        setState(() => _requesting = false);
-      },
-    );
+        if (mounted) {
+          TopicRequest topicRequestCompleted = await QRScanService.topicRequest(
+              context: context, topicID: spotInfoRequest.id!);
+
+          LoggerService.instance
+              .debug("spotInfoRequest: $topicRequestCompleted");
+        }
+
+        if (mounted) {
+          Navigator.of(context).pushNamed(
+            QRScanResults.pageRoute,
+            arguments: spotInfoRequest,
+          );
+          DynamicAlertDialog.showDynamicDialog(
+            icon: Icon(Icons.timeline, size: DynamicAlertDialog.iconSize),
+            context: context,
+            title: Text(
+              AppLocalizations.of(context)!.qrScanResultExplanationDialogTitle(
+                  spotInfoRequest.title ?? ""),
+            ),
+            content: Text(
+              AppLocalizations.of(context)!
+                  .qrScanResultExplanationDialogContent(
+                      spotInfoRequest.title ?? ""),
+            ),
+          );
+        }
+      }
+    } on LoginException {
+      LoggerService.instance.error("LoginException");
+      if (mounted) {
+        LoginService.logOut(context);
+      }
+    } on QuizLevelNotAchieved {
+      LoggerService.instance.error("QuizLevelNotAchieved");
+      if (mounted) {
+        await launchQuizLevelNotAchievedErrorDialog(context);
+      }
+    } on InvalidQRException {
+      LoggerService.instance.error("InvalidQRException");
+      if (mounted) {
+        await launchQRErrorDialog(context);
+      }
+    } catch (e) {
+      LoggerService.instance.error(e);
+      if (mounted) {
+        await launchQRErrorDialog(context);
+      }
+    }
+
+    setState(() {
+      _requesting = false;
+    });
   }
 
-  Future<bool> launchConfirmationDialog(context, String topicTitle) async {
+  Future<bool> launchConfirmationDialog(
+      context, SpotInfoRequest spotInfo) async {
     bool continueScan = false;
 
-    if (PlatformService.instance.isIos) {
-      await showCupertinoDialog(
-          context: context,
-          builder: (context) {
-            return CupertinoAlertDialog(
-              title: Text(AppLocalizations.of(context)!.qrScanConfirmation),
-              content: Text(topicTitle),
-              actions: [
-                CupertinoButton(
-                  child: Text(
-                      AppLocalizations.of(context)!.qrScanConfirmationCancel),
-                  onPressed: () {
-                    LoggerService.instance.debug("Pressed \"CANCEL\"");
-                    continueScan = false;
-                    Navigator.pop(context);
-                  },
-                ),
-                CupertinoButton(
-                  child: Text(
-                      AppLocalizations.of(context)!.qrScanConfirmationAccept),
-                  onPressed: () {
-                    LoggerService.instance.debug("Pressed \"ACCEPT\"");
-                    continueScan = true;
-                    Navigator.pop(context);
-                  },
-                ),
-              ],
-            );
-          });
-    } else {
-      await showDialog(
+    await DynamicAlertDialog.showDynamicDialog(
         context: context,
-        barrierDismissible: false,
-        builder: ((BuildContext context) {
-          return AlertDialog(
-            title: Text(AppLocalizations.of(context)!.qrScanConfirmation),
-            content: Text(topicTitle),
-            actions: [
-              TextButton(
-                child: Text(
-                    AppLocalizations.of(context)!.qrScanConfirmationCancel),
-                onPressed: () {
-                  LoggerService.instance.debug("Pressed \"CANCEL\"");
-                  continueScan = false;
-                  Navigator.pop(context);
-                },
-              ),
-              TextButton(
-                child: Text(
-                    AppLocalizations.of(context)!.qrScanConfirmationAccept),
-                onPressed: () {
-                  LoggerService.instance.debug("Pressed \"ACCEPT\"");
-                  continueScan = true;
-                  Navigator.pop(context);
-                },
-              ),
-            ],
-          );
-        }),
-      );
-    }
+        title: Text(
+          spotInfo.visited
+              ? AppLocalizations.of(context)!
+                  .qrScanConfirmationVisited(spotInfo.title ?? "")
+              : AppLocalizations.of(context)!
+                  .qrScanConfirmation(spotInfo.title ?? ""),
+        ),
+        actions: [
+          DynamicTextButton(
+            child: Text(
+              AppLocalizations.of(context)!.qrScanConfirmationCancel,
+              style: Theme.of(context)
+                  .textTheme
+                  .titleMedium
+                  ?.copyWith(color: IscteTheme.iscteColor),
+            ),
+            onPressed: () {
+              LoggerService.instance.debug("Pressed \"CANCEL\"");
+              continueScan = false;
+              Navigator.pop(context);
+            },
+          ),
+          DynamicTextButton(
+            child: Text(
+              AppLocalizations.of(context)!.qrScanConfirmationAccept,
+              style: Theme.of(context)
+                  .textTheme
+                  .titleMedium
+                  ?.copyWith(color: IscteTheme.iscteColor),
+            ),
+            onPressed: () {
+              LoggerService.instance.debug("Pressed \"ACCEPT\"");
+              continueScan = true;
+              Navigator.pop(context);
+            },
+          )
+        ]);
+
     return continueScan;
   }
 
   Future<void> launchQRErrorDialog(context) async {
-    String scanErrorTitle = "Erro no scan";
-    String alertContent =
-        "Ocorreu um erro durante o scan, tente outra vez ou tente mais tarde";
-    String okButton = "OK";
-
-    if (PlatformService.instance.isIos) {
-      await showCupertinoDialog(
-          context: context,
-          builder: (context) {
-            return CupertinoAlertDialog(
-              title: Text(scanErrorTitle),
-              content: Text(alertContent),
-              actions: [
-                CupertinoButton(
-                  child: Text(okButton), //TODO
-                  onPressed: () {
-                    LoggerService.instance.debug("Pressed \"OK\"");
-                    Navigator.pop(context);
-                  },
+    await DynamicAlertDialog.showDynamicDialog(
+      context: context,
+      title: Text(AppLocalizations.of(context)!.qrScanErrorAlertDialogTitle),
+      content:
+          Text(AppLocalizations.of(context)!.qrScanErrorAlertDialogContent),
+      actions: [
+        DynamicTextButton(
+          child: Text(
+            AppLocalizations.of(context)!.confirm,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  color: IscteTheme.iscteColor,
                 ),
-              ],
-            );
-          });
-    } else {
-      await showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: ((BuildContext context) {
-          return AlertDialog(
-            title: Text(scanErrorTitle),
-            content: Text(alertContent),
-            actions: [
-              TextButton(
-                child: Text(okButton),
-                onPressed: () {
-                  LoggerService.instance.debug("Pressed \"OK\"");
-                  Navigator.pop(context);
-                },
-              ),
-            ],
-          );
-        }),
-      );
-    }
+          ),
+          onPressed: () {
+            LoggerService.instance.debug("Pressed \"OK\"");
+            Navigator.pop(context);
+          },
+        ),
+      ],
+    );
+  }
+
+  Future<void> launchQuizLevelNotAchievedErrorDialog(context) async {
+    await DynamicAlertDialog.showDynamicDialog(
+      context: context,
+      title: Text(AppLocalizations.of(context)!
+          .qrScanQuizLevelNotAchievedErrorAlertDialogTitle),
+      content: Text(AppLocalizations.of(context)!
+          .qrScanQuizLevelNotAchievedErrorAlertDialogContent),
+      actions: [
+        DynamicTextButton(
+          child: Text(
+            AppLocalizations.of(context)!.confirm,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  color: IscteTheme.iscteColor,
+                ),
+          ),
+          onPressed: () {
+            LoggerService.instance.debug("Pressed \"OK\"");
+            Navigator.pop(context);
+          },
+        ),
+      ],
+    );
   }
 
   Widget myQRView(BuildContext context) => MobileScanner(
         key: qrKey,
-        allowDuplicates: false,
         controller: qrController,
-        onDetect: onQRViewCreated,
+        onDetect: (BarcodeCapture newCode) async {
+          await checkLaunchBarcode(context, newCode);
+        },
       );
 }

@@ -27,6 +27,15 @@ class _OnboardingPageState extends State<OnboardingPage>
   late final Tween<Offset> _offsetTween;
   final Duration animDuration = const Duration(milliseconds: 500);
 
+  List<Color> colorBackgrounds = [
+    const Color.fromRGBO(13, 194, 167, 1),
+    const Color.fromRGBO(91, 13, 194, 1),
+    const Color.fromRGBO(45, 169, 150, 1),
+    const Color.fromRGBO(91, 13, 194, 1),
+    const Color.fromRGBO(13, 194, 167, 1),
+    IscteTheme.iscteColor,
+  ];
+
   @override
   void initState() {
     _controller = AnimationController(
@@ -118,6 +127,7 @@ class _OnboardingPageState extends State<OnboardingPage>
         top: Text(
           AppLocalizations.of(context)!.onboardingTitle1,
           textScaleFactor: 2,
+          style: const TextStyle(color: Colors.white),
         ),
         center: Lottie.network(
           //"https://assets8.lottiefiles.com/packages/lf20_97qzkt8d.json"),
@@ -127,14 +137,16 @@ class _OnboardingPageState extends State<OnboardingPage>
         bottom: Text(
           AppLocalizations.of(context)!.onboardingText1,
           textScaleFactor: 1.5,
+          style: const TextStyle(color: Colors.white),
         ),
         bottomSheetHeight: bottomSheetHeight,
-        color: Colors.cyan,
+        color: colorBackgrounds[0],
       ),
       OnboardTile(
         top: Text(
           AppLocalizations.of(context)!.onboardingTitle2,
           textScaleFactor: 2,
+          style: const TextStyle(color: Colors.white),
         ),
         center: Image.asset(
           "Resources/Img/Campus/campus-iscte-3.jpg",
@@ -143,14 +155,16 @@ class _OnboardingPageState extends State<OnboardingPage>
         bottom: Text(
           AppLocalizations.of(context)!.onboardingText2,
           textScaleFactor: 1.5,
+          style: const TextStyle(color: Colors.white),
         ),
         bottomSheetHeight: bottomSheetHeight,
-        color: Colors.blue,
+        color: colorBackgrounds[1],
       ),
       OnboardTile(
         top: Text(
           AppLocalizations.of(context)!.onboardingTitle3,
           textScaleFactor: 2,
+          style: const TextStyle(color: Colors.white),
         ),
         center: Lottie.network(
           "https://assets7.lottiefiles.com/packages/lf20_ykxkplzg.json",
@@ -160,14 +174,16 @@ class _OnboardingPageState extends State<OnboardingPage>
         bottom: Text(
           AppLocalizations.of(context)!.onboardingText3,
           textScaleFactor: 1.5,
+          style: const TextStyle(color: Colors.white),
         ),
         bottomSheetHeight: bottomSheetHeight,
-        color: IscteTheme.iscteColor,
+        color: colorBackgrounds[2],
       ),
       OnboardTile(
         top: Text(
           AppLocalizations.of(context)!.onboardingTitle4,
           textScaleFactor: 2,
+          style: const TextStyle(color: Colors.white),
         ),
         center: Lottie.network(
           "https://assets9.lottiefiles.com/packages/lf20_smcd09k7.json",
@@ -176,14 +192,16 @@ class _OnboardingPageState extends State<OnboardingPage>
         bottom: Text(
           AppLocalizations.of(context)!.onboardingText4,
           textScaleFactor: 1.5,
+          style: const TextStyle(color: Colors.white),
         ),
         bottomSheetHeight: bottomSheetHeight,
-        color: Colors.deepOrange,
+        color: colorBackgrounds[3],
       ),
       OnboardTile(
         top: Text(
           AppLocalizations.of(context)!.onboardingTitle5,
           textScaleFactor: 2,
+          style: const TextStyle(color: Colors.white),
         ),
         center: Lottie.network(
           "https://assets7.lottiefiles.com/packages/lf20_bq55cmov.json",
@@ -192,14 +210,16 @@ class _OnboardingPageState extends State<OnboardingPage>
         bottom: Text(
           AppLocalizations.of(context)!.onboardingText5,
           textScaleFactor: 1.5,
+          style: const TextStyle(color: Colors.white),
         ),
         bottomSheetHeight: bottomSheetHeight,
-        color: Colors.purple,
+        color: colorBackgrounds[4],
       ),
       OnboardTile(
         top: Text(
           AppLocalizations.of(context)!.onboardingTitle6,
           textScaleFactor: 2,
+          style: const TextStyle(color: Colors.white),
         ),
         center: Lottie.network(
           "https://assets1.lottiefiles.com/packages/lf20_0YHgFn.json",
@@ -208,9 +228,10 @@ class _OnboardingPageState extends State<OnboardingPage>
         bottom: Text(
           AppLocalizations.of(context)!.onboardingText6,
           textScaleFactor: 1.5,
+          style: const TextStyle(color: Colors.white),
         ),
         bottomSheetHeight: bottomSheetHeight,
-        color: Colors.green,
+        color: colorBackgrounds[5],
       ),
     ];
   }

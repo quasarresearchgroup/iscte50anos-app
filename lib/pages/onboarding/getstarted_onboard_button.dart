@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/pages/auth/auth_page.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
@@ -7,12 +6,12 @@ import 'package:iscte_spots/services/onboard_service.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 
 class GetStartedOnboard extends StatelessWidget {
-  GetStartedOnboard({
+  const GetStartedOnboard({
     Key? key,
     required this.onLaunch,
   }) : super(key: key);
 
-  bool onLaunch;
+  final bool onLaunch;
 
   @override
   Widget build(BuildContext context) {
@@ -20,11 +19,10 @@ class GetStartedOnboard extends StatelessWidget {
       onTap: () {
         LoggerService.instance.info('Tapped on Get started');
         OnboadingService.storeOnboard();
-        //PageRoutes.animateToPage(context, page: const AuthPage());
         if (onLaunch) {
-          Navigator.popAndPushNamed(context, AuthPage.pageRoute);
+          Navigator.pushReplacementNamed(context, AuthPage.pageRoute);
         } else {
-          Navigator.pushNamed(context, AuthPage.pageRoute);
+          Navigator.pop(context);
         }
       },
       child: SizedBox.expand(

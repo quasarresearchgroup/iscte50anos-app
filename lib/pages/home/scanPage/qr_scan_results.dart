@@ -2,14 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/models/requests/spot_info_request.dart';
 import 'package:iscte_spots/models/timeline/event.dart';
+import 'package:iscte_spots/pages/quiz/quiz_list_menu.dart';
 import 'package:iscte_spots/pages/timeline/details/timeline_details_page.dart';
 import 'package:iscte_spots/pages/timeline/timeline_body.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/services/timeline/timeline_topic_service.dart';
+import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_alert_dialog.dart';
+import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_text_button.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 
 class QRScanResults extends StatelessWidget {
   static const String pageRoute = "QRScanResults";
+
   QRScanResults({
     Key? key,
     required SpotInfoRequest spotInfoRequest,
@@ -45,7 +49,7 @@ class QRScanResults extends StatelessWidget {
         originalEventsList
             .where((element) => element.dateTime.year == year)
             .toList());
-    List<int> yearsList = await yearsListFutureNotifier.value;
+    //List<int> yearsList = await yearsListFutureNotifier.value;
     yearNotifier.value = year;
     LoggerService.instance.debug(yearNotifier.value);
   }
@@ -62,43 +66,87 @@ class QRScanResults extends StatelessWidget {
               ?.copyWith(color: IscteTheme.iscteColor),
         ),
       ),
+      bottomSheet: BottomSheet(
+        enableDrag: false,
+        onClosing: () {},
+        builder: (context) {
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              DynamicTextButton(
+                style: const ButtonStyle(
+                    backgroundColor:
+                        MaterialStatePropertyAll(IscteTheme.iscteColor)),
+                child: Text(
+                  AppLocalizations.of(context)!.qrScanResultReadyForQuizButton,
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleLarge
+                      ?.copyWith(color: Colors.white),
+                ),
+                onPressed: () => DynamicAlertDialog.showDynamicDialog(
+                    context: context,
+                    icon: Icon(Icons.menu_book,
+                        size: DynamicAlertDialog.iconSize),
+                    title: Text(AppLocalizations.of(context)!
+                        .qrScanResultReadyForQuizButtonDialogTitle),
+                    content: Text(AppLocalizations.of(context)!
+                        .qrScanResultReadyForQuizButtonDialogContent),
+                    actions: [
+                      DynamicTextButton(
+                        onPressed: Navigator.of(context).pop,
+                        child: Text(
+                          AppLocalizations.of(context)!
+                              .qrScanResultReadyForQuizButtonDialogCancelButton,
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleMedium
+                              ?.copyWith(color: IscteTheme.iscteColor),
+                        ),
+                      ),
+                      DynamicTextButton(
+                          onPressed: () => Navigator.of(context)
+                              .popAndPushNamed(QuizMenu.pageRoute),
+                          style: const ButtonStyle(
+                              backgroundColor: MaterialStatePropertyAll(
+                                  IscteTheme.iscteColor),
+                              foregroundColor:
+                                  MaterialStatePropertyAll(Colors.white)),
+                          child: Text(
+                            AppLocalizations.of(context)!
+                                .qrScanResultReadyForQuizButtonDialogContinueButton,
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(color: Colors.white),
+                          ))
+                    ]),
+              ),
+            ],
+          );
+        },
+      ),
       body: ValueListenableBuilder<Future<List<int>>>(
-          valueListenable: yearsListFutureNotifier,
-          builder: (context, yearsListFuture, _) {
-            return ValueListenableBuilder<Future<List<Event>>>(
-                valueListenable: eventsListFutureNotifier,
-                builder: (context, eventsListFuture, _) {
-                  return TimelineBody(
-                    isFilterTimeline: false,
-                    eventsListFuture: eventsListFuture,
-                    yearsListFuture: yearsListFuture,
-                    handleEventSelection: (eventId, context) =>
-                        Navigator.of(context).pushNamed(
-                            TimeLineDetailsPage.pageRoute,
-                            arguments: eventId),
-                    changeYearCallback: changeYearCallback,
-                    currentYearNotifier: yearNotifier,
-                  );
-                });
-          })
-      /*Center(
-        child: ListView.builder(
-          itemCount: widget.data.length,
-          itemBuilder: (context, index) {
-            return ListTile(
-              title: Text(widget.data[index].title ?? ""),
-              subtitle: Text(widget.data[index].link),
-              trailing: widget.data[index].contentIcon,
-              onTap: () {
-                if (widget.data[index].link.isNotEmpty) {
-                  HelperMethods.launchURL(widget.data[index].link);
-                }
-              },
-            );
-          },
-        ),
-      )*/
-      ,
+        valueListenable: yearsListFutureNotifier,
+        builder: (context, yearsListFuture, _) {
+          return ValueListenableBuilder<Future<List<Event>>>(
+            valueListenable: eventsListFutureNotifier,
+            builder: (context, eventsListFuture, _) {
+              return TimelineBody(
+                isFilterTimeline: false,
+                eventsListFuture: eventsListFuture,
+                yearsListFuture: yearsListFuture,
+                handleEventSelection: (eventId, context) =>
+                    Navigator.of(context).pushNamed(
+                        TimeLineDetailsPage.pageRoute,
+                        arguments: eventId),
+                changeYearCallback: changeYearCallback,
+                currentYearNotifier: yearNotifier,
+              );
+            },
+          );
+        },
+      ),
     );
   }
 }

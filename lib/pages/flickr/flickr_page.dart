@@ -11,8 +11,8 @@ import 'package:iscte_spots/services/flickr/flickr_iscte_album_service.dart';
 import 'package:iscte_spots/services/flickr/flickr_service.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_back_button.dart';
+import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_loading_widget.dart';
 import 'package:iscte_spots/widgets/my_app_bar.dart';
-import 'package:iscte_spots/widgets/util/loading.dart';
 import 'package:iscte_spots/widgets/util/overlays.dart';
 
 class FlickrPage extends StatefulWidget {
@@ -124,7 +124,7 @@ class _FlickrPageState extends State<FlickrPage> {
               padding: const EdgeInsets.all(10.0),
               child: Center(
                   child: fetching
-                      ? const LoadingWidget()
+                      ? const DynamicLoadingWidget()
                       : networkError
                           ? const Icon(
                               Icons.signal_wifi_connected_no_internet_4)
@@ -148,7 +148,7 @@ class _FlickrPageState extends State<FlickrPage> {
                     ? Center(
                         child:
                             Text(AppLocalizations.of(context)!.noMoreDataError))
-                    : const LoadingWidget())
+                    : const DynamicLoadingWidget())
             : LayoutBuilder(
                 builder: (BuildContext context, BoxConstraints constraints) {
                   return SizedBox(
@@ -163,7 +163,7 @@ class _FlickrPageState extends State<FlickrPage> {
                       },
                       itemBuilder: (context, index) {
                         return index == fetchedPhotosets.length
-                            ? const LoadingWidget()
+                            ? const DynamicLoadingWidget()
                             : FlickrCard(
                                 isActivePage: activePage == index,
                                 indexedPhotoset: fetchedPhotosets[index],

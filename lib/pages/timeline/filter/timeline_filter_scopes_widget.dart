@@ -62,14 +62,16 @@ class ScopesFilterWidget extends StatelessWidget {
       );
 
       DynamicTextButton selectAllBtn = DynamicTextButton(
-        style: IscteTheme.greyColor,
+        style: ButtonStyle(
+            foregroundColor: MaterialStateProperty.all(IscteTheme.iscteColor)),
         onPressed: _selectAllScopesCallback,
         child: Text(AppLocalizations.of(context)!.timelineSelectAllButton,
             style: titleStyle),
       );
 
       DynamicTextButton clearAllBtn = DynamicTextButton(
-        style: IscteTheme.greyColor,
+        style: ButtonStyle(
+            foregroundColor: MaterialStateProperty.all(IscteTheme.iscteColor)),
         onPressed: _clearScopesListCallback,
         child: Text(AppLocalizations.of(context)!.timelineSelectClearButton,
             style: titleStyle),

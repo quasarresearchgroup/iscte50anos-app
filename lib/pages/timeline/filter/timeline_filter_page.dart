@@ -15,7 +15,7 @@ import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_text_field.dart';
 import 'package:iscte_spots/widgets/network/error.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 
-import '../../../widgets/util/loading.dart';
+import '../../../widgets/dynamic_widgets/dynamic_loading_widget.dart';
 
 class TimelineFilterPage extends StatefulWidget {
   const TimelineFilterPage({
@@ -113,7 +113,7 @@ class _TimelineFilterPageState extends State<TimelineFilterPage> {
                         display: AppLocalizations.of(context)!.generalError),
                   );
                 } else {
-                  return const Center(child: LoadingWidget());
+                  return const Center(child: DynamicLoadingWidget());
                 }
               },
             ),
@@ -162,17 +162,21 @@ class _TimelineFilterPageState extends State<TimelineFilterPage> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 DynamicTextButton(
-                  style: IscteTheme.iscteColor,
+                  style: ButtonStyle(
+                      foregroundColor:
+                          MaterialStateProperty.all(IscteTheme.iscteColor)),
                   onPressed: () => _submitSelection(context),
                   child:
                       Text(AppLocalizations.of(context)!.timelineSearchButton),
                 ),
                 DynamicTextButton(
-                  style: IscteTheme.greyColor,
+                  style: ButtonStyle(
+                      foregroundColor:
+                          MaterialStateProperty.all(IscteTheme.iscteColor)),
                   onPressed: TimelineState.clearFilter,
                   child: Text(
                     AppLocalizations.of(context)!.timelineSelectClearButton,
-                    style: TextStyle(color: Colors.black),
+                    style: const TextStyle(color: Colors.black),
                   ),
                 ),
               ],
