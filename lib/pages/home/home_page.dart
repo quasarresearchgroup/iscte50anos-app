@@ -336,8 +336,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               },
                             ),
                             IscteConfetti(
-                              confettiController: _confettiController,
-                            )
+                                confettiController: _confettiController),
                           ],
                         ),
                       ),
@@ -347,6 +346,16 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             return Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
+                                Text(
+                                  AppLocalizations.of(context)!
+                                      .puzzleProgress((progress * 100).round()),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleMedium
+                                      ?.copyWith(
+                                        color: IscteTheme.iscteColor,
+                                      ),
+                                ),
                                 TweenAnimationBuilder<double>(
                                   duration: const Duration(milliseconds: 250),
                                   curve: Curves.easeInOut,
@@ -361,15 +370,18 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     backgroundColor: IscteTheme.greyColor,
                                   ),
                                 ),
-                                Text(
-                                  AppLocalizations.of(context)!
-                                      .puzzleProgress((progress * 100).round()),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .titleMedium
-                                      ?.copyWith(
-                                        color: IscteTheme.iscteColor,
-                                      ),
+                                SizedBox(height: 10),
+                                DynamicTextButton(
+                                  child: Text(
+                                    "Choose a new Spot",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium
+                                        ?.copyWith(
+                                          color: IscteTheme.iscteColor,
+                                        ),
+                                  ),
+                                  onPressed: () => throw UnimplementedError(),
                                 )
                               ],
                             );
