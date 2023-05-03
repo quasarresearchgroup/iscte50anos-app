@@ -388,7 +388,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                             color: IscteTheme.iscteColor,
                                           ),
                                     ),
-                                    onPressed: () => throw UnimplementedError(),
+                                    onPressed: () => Navigator.of(context)
+                                        .pushNamed(SpotChooserPage.pageRoute),
                                   )
                               ],
                             );
