@@ -168,7 +168,7 @@
     "settingsViewLicences":"Ver licenças",
 
     "quizPointsOfTrial":"Pontuação da tentativa",
-    "quizGeoQuestion":"Explorar o Campus (Pergunta sem limite de tempo):",
+    "quizGeoQuestion":"Explorar o Campus (pergunta sem limite de tempo):",
     "quizQuestion":"Pergunta",
     "quizProgressNoAnswer":"Queres avançar sem responder?",
     "quizTimerEndNoAnswerTitle":"O tempo acabou!",
@@ -206,7 +206,7 @@
     "puzzleCompleteDialogCancelButton":"Preciso de ver a imagem melhor",
 
     "leaderboardPageTitle":"Rankings",
-    "leaderboardNearMeTitle":"Contestantes próximos de si",
+    "leaderboardNearMeTitle":"Participantes próximos de si",
     "leaderboardAffiliationTitle":"Top 10 por afiliação",
     "leaderboardGlobalTitle":"Top 10 Global",
     "leaderboardPoints":"Pontos",

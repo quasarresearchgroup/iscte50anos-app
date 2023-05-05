@@ -23,6 +23,7 @@ import 'package:iscte_spots/widgets/my_bottom_bar.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 import 'package:iscte_spots/widgets/util/overlays.dart';
 
+import '../../widgets/dynamic_widgets/dynamic_progress_indicator.dart';
 import '../timeline/feedback_form.dart';
 import 'widgets/completed_challenge_widget.dart';
 
@@ -370,7 +371,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     end: progress,
                                   ),
                                   builder: (context, value, _) =>
-                                      LinearProgressIndicator(
+                                      DynamicProgressIndicator(
                                     value: value,
                                     color: IscteTheme.iscteColor,
                                     backgroundColor: IscteTheme.greyColor,

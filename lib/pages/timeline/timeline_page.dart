@@ -85,7 +85,8 @@ class _TimelinePageState extends State<TimelinePage> {
       ),
       persistentFooterAlignment: AlignmentDirectional.bottomStart,
       persistentFooterButtons: [
-        if (MediaQuery.of(context).size.height < 700)
+        if (MediaQuery.of(context).size.height < 700 &&
+            PlatformService.instance.isWeb)
           Image.asset(
             "Resources/Img/Logo/rgb_iscte_pt_horizontal.png",
             height: kToolbarHeight + 25,

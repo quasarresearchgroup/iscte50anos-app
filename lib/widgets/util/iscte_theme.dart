@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class IscteTheme {
   static const Color iscteColor = Color.fromRGBO(13, 40, 194, 1);
-  static const Color iscteColorSmooth = Color.fromRGBO(153, 166, 241, 1.0);
+  static const Color iscteColorSmooth = Color.fromRGBO(153, 166, 241, 1);
 
   //static const Color iscteColorSmooth = Color(0xFF00A4FF);
   static const Color greyColor = Color.fromRGBO(245, 244, 242, 1);

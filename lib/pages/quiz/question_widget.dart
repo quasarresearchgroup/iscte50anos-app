@@ -12,6 +12,7 @@ import 'package:iscte_spots/services/platform_service.dart';
 import 'package:iscte_spots/services/quiz/trial_controller.dart';
 import 'package:iscte_spots/widgets/dialogs/CustomDialogs.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_alert_dialog.dart';
+import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_progress_indicator.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_text_button.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 import 'package:pinch_zoom/pinch_zoom.dart';
@@ -159,18 +160,18 @@ class _QuestionWidgetState extends State<QuestionWidget> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Flexible(
+/*                  Flexible(
                     flex: 5,
                     child: Padding(
                       padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-                      child: LinearProgressIndicator(
+                      child: DynamicProgressIndicator(
                         color: IscteTheme.iscteColorSmooth,
                         backgroundColor: IscteTheme.iscteColor,
                         value: 1 - (countdown / answer_time),
                         semanticsLabel: 'Linear progress',
                       ),
                     ),
-                  ),
+                  ),*/
                   Flexible(
                     flex: 1,
                     child: Icon(
@@ -183,9 +184,11 @@ class _QuestionWidgetState extends State<QuestionWidget> {
                     flex: 5,
                     child: Padding(
                       padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-                      child: LinearProgressIndicator(
+                      child: DynamicProgressIndicator(
                         color: IscteTheme.iscteColor,
-                        backgroundColor: IscteTheme.iscteColorSmooth,
+                        //backgroundColor: Colors.transparent,
+                        backgroundColor:
+                            IscteTheme.iscteColorSmooth.withOpacity(0.2),
                         value: countdown / answer_time,
                         semanticsLabel: 'Linear progress',
                       ),

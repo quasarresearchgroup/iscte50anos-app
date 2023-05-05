@@ -292,13 +292,14 @@ class QuizDetail extends StatelessWidget {
                       height: 5,
                     ),
                     Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Text(
-                              "${AppLocalizations.of(context)!.quizPoints}: ${trial.is_completed ? trial.score : "-"}"),
-                          Text(
-                              "${AppLocalizations.of(context)!.quizProgress}: ${trial.progress}/${trial.quiz_size}"),
-                        ]),
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Text(
+                            "${AppLocalizations.of(context)!.quizPoints}: ${trial.score}"),
+                        Text(
+                            "${AppLocalizations.of(context)!.quizProgress}: ${trial.progress}/${trial.quiz_size}"),
+                      ],
+                    ),
                     const SizedBox(
                       height: 5,
                     ),
@@ -330,7 +331,7 @@ class QuizDetail extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 DynamicTextButton(
-                  child: Text("Study for the quiz"),
+                  child: Text("Study for the quiz"), //TODO
                   onPressed: () => throw UnimplementedError(),
                 ),
                 ElevatedButton(
