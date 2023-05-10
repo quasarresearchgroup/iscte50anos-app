@@ -5,8 +5,8 @@ import 'package:iscte_spots/models/requests/spot_info_request.dart';
 import 'package:iscte_spots/models/requests/topic_request.dart';
 import 'package:iscte_spots/models/spot.dart';
 import 'package:iscte_spots/pages/home/scanPage/qr_scan_camera_controls.dart';
-import 'package:iscte_spots/pages/home/scanPage/qr_scan_results.dart';
 import 'package:iscte_spots/pages/home/scanPage/scanner_overlay_painter.dart';
+import 'package:iscte_spots/pages/home/scanPage/timeline_study_quiz_page.dart';
 import 'package:iscte_spots/services/auth/exceptions.dart';
 import 'package:iscte_spots/services/auth/login_service.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
@@ -196,7 +196,7 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
         if (!mounted) return;
 
         Navigator.of(context).pushNamed(
-          QRScanResults.pageRoute,
+          TimelineStudyForQuiz.pageRoute,
           arguments: spotInfoRequest,
         );
         widget.navigateBackToPuzzleCallback();

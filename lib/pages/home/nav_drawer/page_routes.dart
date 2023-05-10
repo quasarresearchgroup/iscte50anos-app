@@ -3,8 +3,8 @@ import 'package:iscte_spots/models/requests/spot_info_request.dart';
 import 'package:iscte_spots/pages/auth/auth_page.dart';
 import 'package:iscte_spots/pages/flickr/flickr_page.dart';
 import 'package:iscte_spots/pages/home/home_page.dart';
-import 'package:iscte_spots/pages/home/scanPage/qr_scan_results.dart';
 import 'package:iscte_spots/pages/home/scanPage/scanned_list_page.dart';
+import 'package:iscte_spots/pages/home/scanPage/timeline_study_quiz_page.dart';
 import 'package:iscte_spots/pages/leaderboard/leaderboard_screen.dart';
 import 'package:iscte_spots/pages/onboarding/onboarding_page.dart';
 import 'package:iscte_spots/pages/profile/profile_screen.dart';
@@ -50,8 +50,8 @@ class PageRouter {
         return OnboardingPage(
           onLaunch: false,
         );
-      case QRScanResults.pageRoute:
-        return QRScanResults(
+      case TimelineStudyForQuiz.pageRoute:
+        return TimelineStudyForQuiz(
           spotInfoRequest: argument as SpotInfoRequest,
         );
       case SpotChooserPage.pageRoute:

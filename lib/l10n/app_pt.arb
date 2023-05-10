@@ -41,7 +41,7 @@
     "registerScreen":"Registar",
     "loginScreen":"Entrar",
     "profileScreen":"Perfil",
-    "qrScanResultScreen":"Eventos de {topic}",
+    "qrScanResultScreen":"Cronologia de estudo",
     "spotChooserScreen":"Escolhe o próximo spot",
     "accountDrawerTile":"Conta",
 
@@ -188,6 +188,7 @@
     "quizProgress":"Progresso",
     "quizContinue":"Continuar",
     "quizBeginAttemptWarning":"Desejas iniciar uma tentativa de Quiz?\n(Certifica-te que tens uma ligação de Internet estável)",
+    "quizStudyForQuiz":"Estudar para o quiz",
     "quizBeginAttempt":"Iniciar nova tentativa",
     "quizQuit":"Desejas sair do Quiz?\nNão receberás quaisquer pontos por esta tentativa",
     "quizFinishPageErrorTitle":"Erro ao submeter a sua tentativa",

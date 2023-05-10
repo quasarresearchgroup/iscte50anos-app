@@ -1,9 +1,11 @@
+import 'package:iscte_spots/services/logging/LoggerService.dart';
+
 class Quiz {
   int number;
   int max_num_trials;
   int num_trials;
   int score;
-  String topic_names;
+  List<String> topic_names;
   List<TrialInfo> trials;
 
   Quiz({
@@ -20,16 +22,19 @@ class Quiz {
     return 'Quiz{number: $number, max_num_trials: $max_num_trials, num_trials: $num_trials, score: $score, topic_names: $topic_names, trials: $trials}';
   }
 
-  factory Quiz.fromJson(Map<String, dynamic> json) => Quiz(
-        number: json["number"],
-        max_num_trials: json["max_num_trials"],
-        num_trials: json["num_trials"],
-        score: json["score"],
-        topic_names: json["topic_names"],
-        trials: (json["trials"] as List<dynamic>)
-            .map((e) => TrialInfo.fromJson(e))
-            .toList(),
-      );
+  factory Quiz.fromJson(Map<String, dynamic> json) {
+    LoggerService.instance.debug(json);
+    return Quiz(
+      number: json["number"],
+      max_num_trials: json["max_num_trials"],
+      num_trials: json["num_trials"],
+      score: json["score"],
+      topic_names: (json["topic_names"] as String).split(";"),
+      trials: (json["trials"] as List<dynamic>)
+          .map((e) => TrialInfo.fromJson(e))
+          .toList(),
+    );
+  }
 
   Map<String, dynamic> toJson() {
     return {
@@ -37,7 +42,7 @@ class Quiz {
       "max_num_trials": max_num_trials,
       "num_trials": num_trials,
       "score": score,
-      "topic_names": topic_names,
+      "topic_names": topic_names.join("; "),
       "trials": trials.map((e) => e.toJson()).toList(),
     };
   }

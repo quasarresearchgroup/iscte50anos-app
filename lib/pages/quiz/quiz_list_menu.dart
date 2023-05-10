@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:iscte_spots/models/quiz/trial.dart';
+import 'package:iscte_spots/models/timeline/topic.dart';
 import 'package:iscte_spots/pages/quiz/quiz_page.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_back_button.dart';
@@ -13,8 +14,10 @@ import 'package:iscte_spots/widgets/network/error.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 
 import '../../models/quiz/quiz.dart';
+import '../../models/timeline/timeline_filter_params.dart';
 import '../../services/quiz/quiz_service.dart';
 import '../../widgets/dialogs/CustomDialogs.dart';
+import '../home/scanPage/timeline_study_quiz_page.dart';
 
 //const API_ADDRESS = "http://192.168.1.124";
 
@@ -180,7 +183,9 @@ class _QuizListState extends State<QuizList> {
                                   int quizNumber = items[index].number;
                                   int score = items[index].score;
                                   int trials = items[index].num_trials;
-                                  String topicNames = items[index].topic_names;
+                                  List<String> topicNames =
+                                      items[index].topic_names;
+
                                   return Padding(
                                     padding: const EdgeInsets.only(
                                         left: 10.0, right: 10.0),
@@ -200,11 +205,12 @@ class _QuizListState extends State<QuizList> {
                                               ),
                                         ),
                                         subtitle: Text(
-                                            "${AppLocalizations.of(context)!.quizPoints}: $score \n${AppLocalizations.of(context)!.quizAttempts}: $trials"
-                                            "\n${AppLocalizations.of(context)!.quizTopics}: $topicNames",
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodyMedium),
+                                          "${AppLocalizations.of(context)!.quizPoints}: $score \n${AppLocalizations.of(context)!.quizAttempts}: $trials"
+                                          "\n${AppLocalizations.of(context)!.quizTopics}: ${topicNames.join("; ")}",
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyMedium,
+                                        ),
                                         children: [
                                           QuizDetail(
                                             quiz: items[index],
@@ -332,7 +338,13 @@ class QuizDetail extends StatelessWidget {
               children: [
                 DynamicTextButton(
                   child: Text("Study for the quiz"), //TODO
-                  onPressed: () => throw UnimplementedError(),
+                  onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => TimelineStudyForQuiz.fromFilter(
+                        filterParams: TimelineFilterParams(
+                            topics: quiz.topic_names
+                                .map((e) => Topic(id: 0, title: e))
+                                .toSet())),
+                  )),
                 ),
                 ElevatedButton(
                   onPressed: () {

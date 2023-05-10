@@ -41,7 +41,7 @@
     "registerScreen":"Sign In",
     "loginScreen":"Login",
     "profileScreen":"Profile",
-    "qrScanResultScreen":"Events from {topic}",
+    "qrScanResultScreen":"Study chronology",
     "spotChooserScreen":"Choose the next spot",
     "accountDrawerTile":"Account",
 
@@ -188,6 +188,7 @@
     "quizProgress":"Progress",
     "quizContinue":"Continue",
     "quizBeginAttemptWarning":"Do you want to begin a new attempt at the Quiz?\n(Make sure you have a stable internet connection)",
+    "quizStudyForQuiz":"Study for the quiz",
     "quizBeginAttempt":"Begin a new attempt",
     "quizQuit":"Do you want to quit the Quiz?\nYou will not receive any points from this trial",
     "quizFinishPageErrorTitle":"Error while submitting your trial",
