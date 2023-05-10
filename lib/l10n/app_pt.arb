@@ -179,7 +179,7 @@
     "quizAvailable":"Quizzes disponíveis",
     "quizNoneAvailable":"Não existem Quizzes disponíveis de momento",
     "quizContinueAttempt":"Desejas continuar esta tentativa de quiz?",
-    "quizFinishedRecommendLeaderboard":"Agora que acabaste o quiz devias ir ver a tua posição nos rankings.",
+    "quizFinishedRecommendLeaderboard":"Agora que acabaste o quiz devias ir ver a tua posição nos rankings.\n\nOu escolhe um novo spot para voltares a fazer scans.",
 
     "quizPoints":"Pontos",
     "quizAttempts":"Tentativas",

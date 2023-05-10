@@ -378,20 +378,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   ),
                                 ),
                                 const SizedBox(height: 10),
-                                if (progress == 1)
-                                  DynamicTextButton(
-                                    child: Text(
-                                      "Choose a new Spot",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleMedium
-                                          ?.copyWith(
-                                            color: IscteTheme.iscteColor,
-                                          ),
-                                    ),
-                                    onPressed: () => Navigator.of(context)
-                                        .pushNamed(SpotChooserPage.pageRoute),
-                                  )
                               ],
                             );
                           }),

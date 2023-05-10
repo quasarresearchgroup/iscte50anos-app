@@ -179,7 +179,7 @@
     "quizAvailable":"Available quizzes",
     "quizNoneAvailable":"There are no available quizzes at the moment",
     "quizContinueAttempt":"Do you want to continue this attempt?",
-    "quizFinishedRecommendLeaderboard":"Now that you finished a quiz you should check your position in the leaderboard.",
+    "quizFinishedRecommendLeaderboard":"Now that you finished a quiz you should check your position in the leaderboard.\n\nOr choose a new spot to start scanning again.",
 
     "quizPoints":"Points",
     "quizAttempts":"Tries",

@@ -1,6 +1,9 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/pages/leaderboard/leaderboard_screen.dart';
+import 'package:iscte_spots/pages/spotChooser/spot_chooser_page.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/services/quiz/quiz_exceptions.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_loading_widget.dart';
@@ -108,53 +111,125 @@ class QuizFinishedSuccess extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Text(
-          "${AppLocalizations.of(context)!.quizPointsOfTrial}: ${points}",
-          style: Theme.of(context).textTheme.titleLarge,
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 30.0),
-          child: Text(
-              AppLocalizations.of(context)!.quizFinishedRecommendLeaderboard,
-              style: Theme.of(context).textTheme.titleMedium),
-        ),
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            DynamicTextButton(
-              onPressed: Navigator.of(context).pop,
-              child: Text(
-                AppLocalizations.of(context)!.back,
-                style: Theme.of(context)
-                    .textTheme
-                    .titleLarge
-                    ?.copyWith(color: IscteTheme.iscteColor),
+        Flexible(
+          flex: 9,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Column(
+                children: [
+                  Text(
+                    "${AppLocalizations.of(context)!.quizPointsOfTrial}:",
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Icon(
+                        Icons.star,
+                        size: math.min(MediaQuery.of(context).size.width,
+                                MediaQuery.of(context).size.height) *
+                            0.3,
+                      ),
+                      Text(
+                        points.toString(),
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleLarge
+                            ?.copyWith(color: Colors.white),
+                      ),
+                    ],
+                  )
+                ],
               ),
-            ),
-            DynamicTextButton(
-              onPressed: () =>
-                  Navigator.of(context).pushNamed(LeaderBoardPage.pageRoute),
-              style: const ButtonStyle(
-                  backgroundColor:
-                      MaterialStatePropertyAll(IscteTheme.iscteColor)),
-              child: Row(
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                child: Text(
+                    AppLocalizations.of(context)!
+                        .quizFinishedRecommendLeaderboard,
+                    style: Theme.of(context).textTheme.titleLarge),
+              ),
+              Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.leaderboard, color: Colors.white),
-                  Text(
-                    AppLocalizations.of(context)!.leaderBoardScreen,
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          color: Colors.white,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      DynamicTextButton(
+                        style: const ButtonStyle(
+                            backgroundColor: MaterialStatePropertyAll(
+                                IscteTheme.iscteColor)),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(SpotChooserPage.icon,
+                                color: Colors.white),
+                            Text(
+                              "Choose a new Spot",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleLarge
+                                  ?.copyWith(
+                                    color: Colors.white,
+                                  ),
+                            )
+                          ],
                         ),
+                        onPressed: () {
+                          Navigator.of(context).pushNamedAndRemoveUntil(
+                              SpotChooserPage.pageRoute,
+                              (route) => route.isFirst);
+                        },
+                      ),
+                      DynamicTextButton(
+                        onPressed: () => Navigator.of(context)
+                            .pushNamedAndRemoveUntil(LeaderBoardPage.pageRoute,
+                                (route) => route.isFirst),
+                        style: const ButtonStyle(
+                          backgroundColor:
+                              MaterialStatePropertyAll(IscteTheme.iscteColor),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(LeaderBoardPage.icon,
+                                color: Colors.white),
+                            Text(
+                              AppLocalizations.of(context)!.leaderBoardScreen,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleLarge
+                                  ?.copyWith(
+                                    color: Colors.white,
+                                  ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
-            ),
-          ],
-        )
+            ],
+          ),
+        ),
+        Flexible(
+            flex: 1,
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: DynamicTextButton(
+                onPressed: Navigator.of(context).pop,
+                child: Text(
+                  AppLocalizations.of(context)!.back,
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleLarge
+                      ?.copyWith(color: IscteTheme.iscteColor),
+                ),
+              ),
+            ))
       ],
     );
   }

@@ -30,6 +30,7 @@ void main() {
 
 class LeaderBoardPage extends StatefulWidget {
   static const pageRoute = "/leaderboard";
+  static const IconData icon = Icons.leaderboard;
 
   const LeaderBoardPage({
     Key? key,
