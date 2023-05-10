@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:iscte_spots/services/quiz/quiz_service.dart';
 import 'package:iscte_spots/widgets/network/error.dart';
 import 'package:pinch_zoom/pinch_zoom.dart';

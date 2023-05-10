@@ -3,12 +3,12 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/pages/home/home_page.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
 
-
 class Result extends StatelessWidget {
   final int resultScore;
   final Function() resetHandler;
 
-  Result(this.resultScore, this.resetHandler, {Key? key}) : super(key: key);
+  const Result(this.resultScore, this.resetHandler, {Key? key})
+      : super(key: key);
 
 //Remark Logic
   String get resultPhrase {

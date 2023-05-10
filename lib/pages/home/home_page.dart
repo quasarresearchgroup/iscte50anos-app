@@ -7,7 +7,7 @@ import 'package:iscte_spots/models/spot.dart';
 import 'package:iscte_spots/pages/home/nav_drawer/drawer.dart';
 import 'package:iscte_spots/pages/home/puzzle/puzzle_page.dart';
 import 'package:iscte_spots/pages/home/scanPage/openday_qr_scan_page.dart';
-import 'package:iscte_spots/pages/home/state/PuzzleState.dart';
+import 'package:iscte_spots/pages/home/state/puzzle_state.dart';
 import 'package:iscte_spots/pages/home/widgets/sucess_scan_widget.dart';
 import 'package:iscte_spots/pages/leaderboard/leaderboard_screen.dart';
 import 'package:iscte_spots/pages/spotChooser/spot_chooser_page.dart';
@@ -294,7 +294,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 500),
       child: challengeCompleteBool
-          ? CompletedChallengeWidget()
+          ? const CompletedChallengeWidget()
           : _showSucessPage
               ? SucessScanWidget(
                   confettiController: _confettiController,

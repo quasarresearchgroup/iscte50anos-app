@@ -10,7 +10,7 @@ import 'package:iscte_spots/pages/quiz/answer_widget.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/services/platform_service.dart';
 import 'package:iscte_spots/services/quiz/trial_controller.dart';
-import 'package:iscte_spots/widgets/dialogs/CustomDialogs.dart';
+import 'package:iscte_spots/widgets/dialogs/custom_dialogs.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_alert_dialog.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_progress_indicator.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_text_button.dart';

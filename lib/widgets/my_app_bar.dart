@@ -5,7 +5,7 @@ import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_back_button.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 
 class MyAppBar extends StatefulWidget with PreferredSizeWidget {
-  MyAppBar({
+  const MyAppBar({
     Key? key,
     this.trailing,
     this.title,
@@ -14,11 +14,11 @@ class MyAppBar extends StatefulWidget with PreferredSizeWidget {
     this.automaticallyImplyLeading = false,
   }) : super(key: key);
 
-  Widget? trailing;
-  String? title;
-  Widget? leading;
-  Widget? middle;
-  bool automaticallyImplyLeading;
+  final Widget? trailing;
+  final String? title;
+  final Widget? leading;
+  final Widget? middle;
+  final bool automaticallyImplyLeading;
 
   @override
   State<MyAppBar> createState() => _MyAppBarState();

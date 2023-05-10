@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
 
-
 class OpenDayNotificationService {
-  
-
   static Future<void> showLoginErrorOverlay(BuildContext context) async {
     _openDayErrorSnackbar(
         context: context,
@@ -67,7 +63,7 @@ class OpenDayNotificationService {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         duration: const Duration(seconds: 3),
-        backgroundColor: Theme.of(context).errorColor,
+        backgroundColor: Theme.of(context).colorScheme.error,
 /*        action: SnackBarAction(
             label: 'Ok',
             textColor: Theme.of(context).selectedRowColor,

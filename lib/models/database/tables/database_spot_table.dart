@@ -82,7 +82,6 @@ class DatabaseSpotTable {
   ///Method that syncs the database with the received list of spots, it updates all the spots in the db with the new info from the list, deletes any on the db that dont exist on the received list from the arguments and adds any new spot into the db
   static Future<void> sync(List<Spot> newSpots) async {
     List<int> newSpotsIds = newSpots.map((e) => e.id).toList();
-    DatabaseHelper instance = DatabaseHelper.instance;
     List<Spot> existingSpots = await getAll();
     List<int> existingSpotsIds = existingSpots.map((e) => e.id).toList();
 

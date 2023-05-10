@@ -18,7 +18,7 @@ import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 
 //const API_ADDRESS_PROD = "https://194.210.120.48";
 //const API_ADDRESS_TEST = "http://192.168.1.124";
-const API_ADDRESS_TEST = "http://192.168.1.66";
+//const API_ADDRESS_TEST_LATEST_USED = "http://192.168.1.66";
 
 const FlutterSecureStorage secureStorage = FlutterSecureStorage();
 
@@ -160,10 +160,10 @@ class AffiliationLeaderboard extends StatefulWidget {
   const AffiliationLeaderboard({Key? key}) : super(key: key);
 
   @override
-  _AffiliationLeaderboardState createState() => _AffiliationLeaderboardState();
+  AffiliationLeaderboardState createState() => AffiliationLeaderboardState();
 }
 
-class _AffiliationLeaderboardState extends State<AffiliationLeaderboard>
+class AffiliationLeaderboardState extends State<AffiliationLeaderboard>
     with AutomaticKeepAliveClientMixin {
   String selectedType = "-";
   String selectedAffiliation = "-";
@@ -462,10 +462,10 @@ class LeaderboardList extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _LeaderboardListState createState() => _LeaderboardListState();
+  LeaderboardListState createState() => LeaderboardListState();
 }
 
-class _LeaderboardListState extends State<LeaderboardList> {
+class LeaderboardListState extends State<LeaderboardList> {
   late Future<List<dynamic>> futureLeaderboard;
   bool isLoading = false;
 
@@ -545,9 +545,9 @@ class _LeaderboardListState extends State<LeaderboardList> {
         } else if (snapshot.connectionState != ConnectionState.done) {
           children = const <Widget>[
             SizedBox(
-              child: CircularProgressIndicator.adaptive(),
               width: 60,
               height: 60,
+              child: CircularProgressIndicator.adaptive(),
             ),
           ];
         } else if (snapshot.hasError) {
@@ -555,9 +555,9 @@ class _LeaderboardListState extends State<LeaderboardList> {
         } else {
           children = const <Widget>[
             SizedBox(
-              child: CircularProgressIndicator.adaptive(),
               width: 60,
               height: 60,
+              child: CircularProgressIndicator.adaptive(),
             ),
           ];
         }

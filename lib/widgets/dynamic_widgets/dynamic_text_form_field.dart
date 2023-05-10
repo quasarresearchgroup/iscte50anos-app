@@ -33,7 +33,7 @@ class DynamicTextFormField extends StatelessWidget {
             textAlign: textAlign,
             obscureText: obscureText,
             controller: controller,
-            decoration: BoxDecoration(),
+            decoration: const BoxDecoration(),
             validator: validator,
             textInputAction: textInputAction,
             style: style,
@@ -45,7 +45,7 @@ class DynamicTextFormField extends StatelessWidget {
             controller: controller,
             textAlignVertical: textAlignVertical,
             textAlign: textAlign,
-            decoration: InputDecoration(),
+            decoration: const InputDecoration(),
             validator: validator,
             textInputAction: textInputAction,
           );

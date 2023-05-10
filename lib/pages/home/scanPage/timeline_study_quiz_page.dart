@@ -60,9 +60,9 @@ class TimelineStudyForQuiz extends StatelessWidget {
   }
 
   final bool navigateBack;
-  late String topicString;
+  late final String topicString;
   late final Iterable<String> topicNames;
-  late Future<List<Event>> originalEventsListFuture;
+  late final Future<List<Event>> originalEventsListFuture;
   late final ValueNotifier<Future<List<Event>>> eventsListFutureNotifier;
   late final ValueNotifier<Future<List<int>>> yearsListFutureNotifier;
   final ValueNotifier<int?> yearNotifier;

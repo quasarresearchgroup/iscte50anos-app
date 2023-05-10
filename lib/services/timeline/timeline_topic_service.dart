@@ -8,7 +8,8 @@ import 'package:iscte_spots/services/logging/LoggerService.dart';
 
 class TimelineTopicService {
   static Future<List<Event>> fetchEvents(
-      {List<int> topicIds = const [], List<String> scopes = const []}) async {
+      {Iterable<int> topicIds = const [],
+      Iterable<String> scopes = const []}) async {
     LoggerService.instance.debug("$topicIds; $scopes");
 
     try {

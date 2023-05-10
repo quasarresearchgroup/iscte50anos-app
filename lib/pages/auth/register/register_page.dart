@@ -14,7 +14,7 @@ import 'package:lottie/lottie.dart';
 import 'acount_register_widget.dart';
 
 class RegisterPage extends StatefulWidget {
-  RegisterPage({
+  const RegisterPage({
     Key? key,
     required this.changeToLogIn,
     required this.loggingComplete,
@@ -23,7 +23,7 @@ class RegisterPage extends StatefulWidget {
 
   @override
   State<RegisterPage> createState() => _RegisterPageState();
-  void Function() changeToLogIn;
+  final void Function() changeToLogIn;
   final void Function() loggingComplete;
   final Duration animatedSwitcherDuration;
 }

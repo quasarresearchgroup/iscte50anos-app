@@ -5,7 +5,7 @@ class ShimmerLoading extends StatefulWidget {
     Key? key,
     required this.isLoading,
     required this.child,
-  });
+  }) : super(key: key);
 
   final bool isLoading;
   final Widget child;
@@ -103,7 +103,7 @@ class Shimmer extends StatefulWidget {
     Key? key,
     required this.linearGradient,
     this.child,
-  });
+  }) : super(key: key);
 
   final LinearGradient linearGradient;
   final Widget? child;

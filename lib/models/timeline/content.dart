@@ -1,5 +1,4 @@
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:logger/logger.dart';
 
 enum ContentType {
   doc,
@@ -34,8 +33,6 @@ class Content {
   final ContentType? type;
   final int? eventId;
   final bool? validated;
-
-  static Logger _logger = Logger();
 
   @override
   String toString() {

@@ -136,7 +136,7 @@ class _AccountRegisterFormState extends State<AccountRegisterForm> {
                 });
               },
               icon: AnimatedSwitcher(
-                duration: Duration(milliseconds: 500),
+                duration: const Duration(milliseconds: 500),
                 child: Icon(
                   _hidePassword ? Icons.visibility : Icons.visibility_off,
                   key: UniqueKey(),
@@ -170,7 +170,7 @@ class _AccountRegisterFormState extends State<AccountRegisterForm> {
               child: Padding(
                 padding: const EdgeInsets.only(top: 8.0),
                 child: AnimatedSwitcher(
-                  duration: Duration(milliseconds: 500),
+                  duration: const Duration(milliseconds: 500),
                   child: Icon(
                     _hidePasswordConfirm
                         ? Icons.visibility
