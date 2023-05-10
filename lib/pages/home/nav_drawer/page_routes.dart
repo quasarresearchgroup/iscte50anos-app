@@ -3,7 +3,6 @@ import 'package:iscte_spots/models/requests/spot_info_request.dart';
 import 'package:iscte_spots/pages/auth/auth_page.dart';
 import 'package:iscte_spots/pages/flickr/flickr_page.dart';
 import 'package:iscte_spots/pages/home/home_page.dart';
-import 'package:iscte_spots/pages/home/scanPage/scanned_list_page.dart';
 import 'package:iscte_spots/pages/home/scanPage/timeline_study_quiz_page.dart';
 import 'package:iscte_spots/pages/leaderboard/leaderboard_screen.dart';
 import 'package:iscte_spots/pages/onboarding/onboarding_page.dart';
@@ -23,7 +22,7 @@ class PageRouter {
       case HomePage.pageRoute:
         return HomePage();
       case AuthPage.pageRoute:
-        return AuthPage();
+        return const AuthPage();
       case TimelinePage.pageRoute:
         return const TimelinePage();
       case TimeLineDetailsPage.pageRoute:
@@ -42,10 +41,10 @@ class PageRouter {
         return const QuizMenu();
       case ProfilePage.pageRoute:
         return ProfilePage();
-      case VisitedPagesPage.pageRoute:
-        return const VisitedPagesPage();
+      //case VisitedPagesPage.pageRoute:
+      //  return const VisitedPagesPage();
       case SettingsPage.pageRoute:
-        return SettingsPage();
+        return const SettingsPage();
       case OnboardingPage.pageRoute:
         return OnboardingPage(
           onLaunch: false,

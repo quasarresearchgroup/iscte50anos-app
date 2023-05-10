@@ -24,8 +24,8 @@ class ClippedPieceWidget extends StatelessWidget {
     return SizedBox(
       width: width,
       child: ClipPath(
-        child: image,
         clipper: PuzzlePieceClipper(row, col, maxRow, maxCol),
+        child: image,
       ),
     );
   }

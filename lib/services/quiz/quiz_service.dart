@@ -113,7 +113,6 @@ class QuizService {
       LoggerService.instance.debug(e);
       rethrow;
     }
-    throw TrialFailedContinue();
   }
 
   static Future<int> answerTrial(

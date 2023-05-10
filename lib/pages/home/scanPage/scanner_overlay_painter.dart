@@ -25,12 +25,6 @@ class ScannerOverlay extends CustomPainter {
 
     final math.Point<double> leftTopCorner =
         math.Point<double>(centerX - squareSide / 2, centerY - squareSide / 2);
-    final Rect leftTopRect = Rect.fromLTRB(
-        leftTopCorner.x,
-        leftTopCorner.y,
-        leftTopCorner.x + squareInnerSideLength,
-        leftTopCorner.y + squareInnerSideLength);
-
     final math.Point<double> leftBotCorner =
         math.Point<double>(centerX - squareSide / 2, centerY + squareSide / 2);
     final math.Point<double> rightTopCorner =
@@ -130,41 +124,5 @@ class ScannerOverlay extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
     return false;
-  }
-}
-
-void main() async {
-  runApp(const CustomPaintTest());
-}
-
-class CustomPaintTest extends StatelessWidget {
-  const CustomPaintTest({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-        primarySwatch: Colors.indigo,
-      ),
-      home: CustomPaintHome(),
-    );
-  }
-}
-
-class CustomPaintHome extends StatelessWidget {
-  const CustomPaintHome({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
-        decoration: BoxDecoration(color: Theme.of(context).primaryColor),
-        child: CustomPaint(
-          painter: ScannerOverlay(),
-        ),
-      ),
-    );
   }
 }

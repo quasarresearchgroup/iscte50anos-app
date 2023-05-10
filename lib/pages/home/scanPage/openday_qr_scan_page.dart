@@ -175,9 +175,9 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
       }
       LoggerService.instance.debug("continueScan: $continueScan");
 
-      if (continueScan && spotInfoRequest.id != null) {
+      if (continueScan) {
         List<Spot> spots =
-            (await DatabaseSpotTable.getAllWithIds([spotInfoRequest.id!]));
+            (await DatabaseSpotTable.getAllWithIds([spotInfoRequest.id]));
         if (spots.isNotEmpty) {
           Spot spot = spots.first;
           if (!spot.visited) {
@@ -187,7 +187,7 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
         }
         if (mounted) {
           TopicRequest topicRequestCompleted = await QRScanService.topicRequest(
-              context: context, topicID: spotInfoRequest.id!);
+              context: context, topicID: spotInfoRequest.id);
 
           LoggerService.instance
               .debug("spotInfoRequest: $topicRequestCompleted");
@@ -206,12 +206,12 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
           icon: Icon(Icons.timeline, size: DynamicAlertDialog.iconSize),
           context: context,
           title: Text(
-            AppLocalizations.of(context)!.qrScanResultExplanationDialogTitle(
-                spotInfoRequest.title ?? ""),
+            AppLocalizations.of(context)!
+                .qrScanResultExplanationDialogTitle(spotInfoRequest.title),
           ),
           content: Text(
-            AppLocalizations.of(context)!.qrScanResultExplanationDialogContent(
-                spotInfoRequest.title ?? ""),
+            AppLocalizations.of(context)!
+                .qrScanResultExplanationDialogContent(spotInfoRequest.title),
           ),
         );
       }
@@ -251,9 +251,9 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
         title: Text(
           spotInfo.visited
               ? AppLocalizations.of(context)!
-                  .qrScanConfirmationVisited(spotInfo.title ?? "")
+                  .qrScanConfirmationVisited(spotInfo.title)
               : AppLocalizations.of(context)!
-                  .qrScanConfirmation(spotInfo.title ?? ""),
+                  .qrScanConfirmation(spotInfo.title),
         ),
         actions: [
           DynamicTextButton(

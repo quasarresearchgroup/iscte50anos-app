@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:iscte_spots/services/platform_service.dart';
 
 class DynamicTextField extends StatelessWidget {
@@ -31,7 +30,7 @@ class DynamicTextField extends StatelessWidget {
             style: style,
             controller: controller,
             placeholderStyle: placeholderStyle,
-            decoration: BoxDecoration(color: Colors.transparent),
+            decoration: const BoxDecoration(color: Colors.transparent),
             textAlignVertical: TextAlignVertical.center,
           )
         : TextField(
@@ -44,6 +43,5 @@ class DynamicTextField extends StatelessWidget {
               hintStyle: placeholderStyle,
             ),
           );
-    ;
   }
 }

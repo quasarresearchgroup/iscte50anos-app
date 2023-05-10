@@ -1,7 +1,5 @@
 import 'package:confetti/confetti.dart';
-import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:iscte_spots/widgets/iscte_confetti_widget.dart';
@@ -26,7 +24,7 @@ class SucessScanWidget extends StatelessWidget {
           child: Card(
             color: Colors.green.shade700,
             margin: const EdgeInsets.all(50.0),
-            shape: RoundedRectangleBorder(
+            shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(IscteTheme.appbarRadius)),
             child: Column(
               mainAxisSize: MainAxisSize.min,

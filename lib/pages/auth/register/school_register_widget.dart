@@ -7,15 +7,15 @@ import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_loading_widget.dart'
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 
 class SchoolRegisterForm extends StatefulWidget {
-  SchoolRegisterForm({
+  const SchoolRegisterForm({
     Key? key,
     required this.chosenAffiliationType,
     required this.chosenAffiliationName,
     required this.formKey,
     required this.errorCode,
   }) : super(key: key);
-  ValueNotifier<String> chosenAffiliationType;
-  ValueNotifier<String> chosenAffiliationName;
+  final ValueNotifier<String> chosenAffiliationType;
+  final ValueNotifier<String> chosenAffiliationName;
   final GlobalKey<FormState> formKey;
   final RegistrationError errorCode;
 
@@ -85,7 +85,7 @@ class _SchoolRegisterFormState extends State<SchoolRegisterForm> {
   InputDecoration buildInputDecoration({required String hint}) {
     return InputDecoration(
       contentPadding: const EdgeInsets.only(left: 25, right: 25),
-      border: UnderlineInputBorder(
+      border: const UnderlineInputBorder(
           //border: OutlineInputBorder(
           borderRadius: BorderRadius.all(IscteTheme.appbarRadius)),
       hintText: hint,

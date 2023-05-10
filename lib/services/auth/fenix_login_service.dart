@@ -114,7 +114,7 @@ class IscteLoginService {
   static Future<void> logout() async {
     IscteLoginStorageService.deleteUserCredentials();
     const url = 'https://$IDP_DOMAIN/oauth2/v1/logout';
-    final response = await http.get(
+    await http.get(
       Uri.parse(url),
     );
   }

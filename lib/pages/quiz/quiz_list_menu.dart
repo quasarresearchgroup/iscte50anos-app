@@ -16,7 +16,7 @@ import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 import '../../models/quiz/quiz.dart';
 import '../../models/timeline/timeline_filter_params.dart';
 import '../../services/quiz/quiz_service.dart';
-import '../../widgets/dialogs/CustomDialogs.dart';
+import '../../widgets/dialogs/custom_dialogs.dart';
 import '../home/scanPage/timeline_study_quiz_page.dart';
 
 //const API_ADDRESS = "http://192.168.1.124";
@@ -61,10 +61,10 @@ class QuizList extends StatefulWidget {
   const QuizList({Key? key}) : super(key: key);
 
   @override
-  _QuizListState createState() => _QuizListState();
+  QuizListState createState() => QuizListState();
 }
 
-class _QuizListState extends State<QuizList> {
+class QuizListState extends State<QuizList> {
   final fetchFunction = QuizService.getQuizList;
   late Future<List<Quiz>> futureQuizList;
   bool isLoading = false;
@@ -337,7 +337,7 @@ class QuizDetail extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 DynamicTextButton(
-                  child: Text("Study for the quiz"), //TODO
+                  child: const Text("Study for the quiz"), //TODO
                   onPressed: () => Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => TimelineStudyForQuiz.fromFilter(
                         filterParams: TimelineFilterParams(

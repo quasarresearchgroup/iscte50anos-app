@@ -108,7 +108,7 @@ class _FlickAlbumPageState extends State<FlickAlbumPage> {
                             fadeInDuration: const Duration(seconds: 3),
                             progressIndicatorBuilder: (BuildContext context,
                                     String url, DownloadProgress progress) =>
-                                DynamicLoadingWidget()),
+                                const DynamicLoadingWidget()),
                       )
                     : noMoreData
                         ? Center(

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:iscte_spots/helper/datetime_extension.dart';
 
 class EventTimelineIndicator extends StatelessWidget {
-  EventTimelineIndicator({
+  const EventTimelineIndicator({
     Key? key,
     required this.isEven,
     required this.time,

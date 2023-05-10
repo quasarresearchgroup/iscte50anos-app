@@ -4,7 +4,7 @@ import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:lottie/lottie.dart';
 
 class CompletedChallengeWidget extends StatefulWidget {
-  CompletedChallengeWidget({Key? key}) : super(key: key);
+  const CompletedChallengeWidget({Key? key}) : super(key: key);
 
   @override
   State<CompletedChallengeWidget> createState() =>
@@ -13,7 +13,6 @@ class CompletedChallengeWidget extends StatefulWidget {
 
 class _CompletedChallengeWidgetState extends State<CompletedChallengeWidget>
     with SingleTickerProviderStateMixin {
-  bool _loading = true;
   late AnimationController _animationController;
 
   @override

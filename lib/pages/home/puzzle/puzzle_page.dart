@@ -25,10 +25,10 @@ class PuzzlePage extends StatefulWidget {
   final Function completeCallback;
 
   @override
-  _PuzzlePageState createState() => _PuzzlePageState();
+  PuzzlePageState createState() => PuzzlePageState();
 }
 
-class _PuzzlePageState extends State<PuzzlePage>
+class PuzzlePageState extends State<PuzzlePage>
     with AutomaticKeepAliveClientMixin {
   final List<Widget> pieces = [];
 
