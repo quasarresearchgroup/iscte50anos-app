@@ -56,7 +56,10 @@ class TimelineStudyForQuiz extends StatelessWidget {
             }).toList()));
 
     topicString = filterParams.topics.map((e) => e.title).join("; ");
-    topicNames = filterParams.topics.map((e) => e.title ?? "").toSet();
+    topicNames = filterParams.topics
+        .where((e) => e.title != null)
+        .map((e) => e.title ?? "")
+        .toSet();
   }
 
   final bool navigateBack;
@@ -88,91 +91,87 @@ class TimelineStudyForQuiz extends StatelessWidget {
         enableDrag: false,
         onClosing: () {},
         builder: (context) {
-          return Row(
+          return Column(
+            mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SingleChildScrollView(
-                    //clipBehavior: Clip.hardEdge,
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: topicNames
-                          .map((e) => Chip(
-                                label: Text(e,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleLarge
-                                        ?.copyWith(
-                                            color: IscteTheme.iscteColor)),
-                              ))
-                          .toList(),
-                    ),
-                  ),
-                  DynamicTextButton(
-                    style: const ButtonStyle(
-                        backgroundColor:
-                            MaterialStatePropertyAll(IscteTheme.iscteColor)),
-                    child: Text(
-                      AppLocalizations.of(context)!
-                          .qrScanResultReadyForQuizButton,
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleLarge
-                          ?.copyWith(color: Colors.white),
-                    ),
-                    onPressed: () => DynamicAlertDialog.showDynamicDialog(
-                        context: context,
-                        icon: Icon(Icons.menu_book,
-                            size: DynamicAlertDialog.iconSize),
-                        title: Text(AppLocalizations.of(context)!
-                            .qrScanResultReadyForQuizButtonDialogTitle),
-                        content: Text(AppLocalizations.of(context)!
-                            .qrScanResultReadyForQuizButtonDialogContent),
-                        actions: [
-                          DynamicTextButton(
-                            onPressed: Navigator.of(context).pop,
-                            child: Text(
-                              AppLocalizations.of(context)!
-                                  .qrScanResultReadyForQuizButtonDialogCancelButton,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleMedium
-                                  ?.copyWith(color: IscteTheme.iscteColor),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                clipBehavior: Clip.antiAliasWithSaveLayer,
+                child: Row(
+                  children: topicNames
+                      .map((e) => Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 4.0),
+                            child: Chip(
+                              label: Text(e,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleLarge
+                                      ?.copyWith(color: IscteTheme.iscteColor)),
                             ),
-                          ),
-                          DynamicTextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                              if (navigateBack) {
-                                Navigator.of(context).pop();
-                              } else {
-                                Navigator.of(context)
-                                    .pushReplacementNamed(QuizMenu.pageRoute);
-                              }
-                            },
-                            style: const ButtonStyle(
-                              backgroundColor: MaterialStatePropertyAll(
-                                  IscteTheme.iscteColor),
-                              foregroundColor:
-                                  MaterialStatePropertyAll(Colors.white),
-                            ),
-                            child: Text(
-                              AppLocalizations.of(context)!
-                                  .qrScanResultReadyForQuizButtonDialogContinueButton,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleMedium
-                                  ?.copyWith(color: Colors.white),
-                            ),
-                          )
-                        ]),
-                  ),
-                ],
+                          ))
+                      .toList(),
+                ),
+              ),
+              DynamicTextButton(
+                style: const ButtonStyle(
+                    backgroundColor:
+                        MaterialStatePropertyAll(IscteTheme.iscteColor)),
+                child: Text(
+                  AppLocalizations.of(context)!.qrScanResultReadyForQuizButton,
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleLarge
+                      ?.copyWith(color: Colors.white),
+                ),
+                onPressed: () => DynamicAlertDialog.showDynamicDialog(
+                    context: context,
+                    icon: Icon(Icons.menu_book,
+                        size: DynamicAlertDialog.iconSize),
+                    title: Text(AppLocalizations.of(context)!
+                        .qrScanResultReadyForQuizButtonDialogTitle),
+                    content: Text(AppLocalizations.of(context)!
+                        .qrScanResultReadyForQuizButtonDialogContent),
+                    actions: [
+                      DynamicTextButton(
+                        onPressed: Navigator.of(context).pop,
+                        child: Text(
+                          AppLocalizations.of(context)!
+                              .qrScanResultReadyForQuizButtonDialogCancelButton,
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleMedium
+                              ?.copyWith(color: IscteTheme.iscteColor),
+                        ),
+                      ),
+                      DynamicTextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          if (navigateBack) {
+                            Navigator.of(context).pop();
+                          } else {
+                            Navigator.of(context)
+                                .pushReplacementNamed(QuizMenu.pageRoute);
+                          }
+                        },
+                        style: const ButtonStyle(
+                          backgroundColor:
+                              MaterialStatePropertyAll(IscteTheme.iscteColor),
+                          foregroundColor:
+                              MaterialStatePropertyAll(Colors.white),
+                        ),
+                        child: Text(
+                          AppLocalizations.of(context)!
+                              .qrScanResultReadyForQuizButtonDialogContinueButton,
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleMedium
+                              ?.copyWith(color: Colors.white),
+                        ),
+                      )
+                    ]),
               ),
             ],
           );
