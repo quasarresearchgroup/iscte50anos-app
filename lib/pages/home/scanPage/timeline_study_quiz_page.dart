@@ -69,6 +69,7 @@ class TimelineStudyForQuiz extends StatelessWidget {
   late final ValueNotifier<Future<List<Event>>> eventsListFutureNotifier;
   late final ValueNotifier<Future<List<int>>> yearsListFutureNotifier;
   final ValueNotifier<int?> yearNotifier;
+  final ScrollController topicScrollController = ScrollController();
 
   Future<void> changeYearCallback(int year) async {
     List<Event> originalEventsList = await originalEventsListFuture;
@@ -87,93 +88,106 @@ class TimelineStudyForQuiz extends StatelessWidget {
       appBar: MyAppBar(title: AppLocalizations.of(context)!.qrScanResultScreen),
       bottomSheet: BottomSheet(
         elevation: 0,
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.transparent.withOpacity(0),
         enableDrag: false,
         onClosing: () {},
         builder: (context) {
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                clipBehavior: Clip.antiAliasWithSaveLayer,
-                child: Row(
-                  children: topicNames
-                      .map((e) => Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 4.0),
-                            child: Chip(
-                              label: Text(e,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .titleLarge
-                                      ?.copyWith(color: IscteTheme.iscteColor)),
-                            ),
-                          ))
-                      .toList(),
+          return SizedBox(
+            width: MediaQuery.of(context).size.width,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Scrollbar(
+                  controller: topicScrollController,
+                  thumbVisibility: true,
+                  interactive: false,
+                  child: SingleChildScrollView(
+                    controller: topicScrollController,
+                    scrollDirection: Axis.horizontal,
+                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                    child: Row(
+                      children: topicNames
+                          .map((e) => Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 4.0),
+                                child: Chip(
+                                  label: Text(
+                                    e,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleLarge
+                                        ?.copyWith(
+                                            color: IscteTheme.iscteColor),
+                                  ),
+                                ),
+                              ))
+                          .toList(),
+                    ),
+                  ),
                 ),
-              ),
-              DynamicTextButton(
-                style: const ButtonStyle(
-                    backgroundColor:
-                        MaterialStatePropertyAll(IscteTheme.iscteColor)),
-                child: Text(
-                  AppLocalizations.of(context)!.qrScanResultReadyForQuizButton,
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleLarge
-                      ?.copyWith(color: Colors.white),
-                ),
-                onPressed: () => DynamicAlertDialog.showDynamicDialog(
-                    context: context,
-                    icon: Icon(Icons.menu_book,
-                        size: DynamicAlertDialog.iconSize),
-                    title: Text(AppLocalizations.of(context)!
-                        .qrScanResultReadyForQuizButtonDialogTitle),
-                    content: Text(AppLocalizations.of(context)!
-                        .qrScanResultReadyForQuizButtonDialogContent),
-                    actions: [
-                      DynamicTextButton(
-                        onPressed: Navigator.of(context).pop,
-                        child: Text(
-                          AppLocalizations.of(context)!
-                              .qrScanResultReadyForQuizButtonDialogCancelButton,
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleMedium
-                              ?.copyWith(color: IscteTheme.iscteColor),
+                DynamicTextButton(
+                  style: const ButtonStyle(
+                      backgroundColor:
+                          MaterialStatePropertyAll(IscteTheme.iscteColor)),
+                  child: Text(
+                    AppLocalizations.of(context)!
+                        .qrScanResultReadyForQuizButton,
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleLarge
+                        ?.copyWith(color: Colors.white),
+                  ),
+                  onPressed: () => DynamicAlertDialog.showDynamicDialog(
+                      context: context,
+                      icon: Icon(Icons.menu_book,
+                          size: DynamicAlertDialog.iconSize),
+                      title: Text(AppLocalizations.of(context)!
+                          .qrScanResultReadyForQuizButtonDialogTitle),
+                      content: Text(AppLocalizations.of(context)!
+                          .qrScanResultReadyForQuizButtonDialogContent),
+                      actions: [
+                        DynamicTextButton(
+                          onPressed: Navigator.of(context).pop,
+                          child: Text(
+                            AppLocalizations.of(context)!
+                                .qrScanResultReadyForQuizButtonDialogCancelButton,
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(color: IscteTheme.iscteColor),
+                          ),
                         ),
-                      ),
-                      DynamicTextButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                          if (navigateBack) {
+                        DynamicTextButton(
+                          onPressed: () {
                             Navigator.of(context).pop();
-                          } else {
-                            Navigator.of(context)
-                                .pushReplacementNamed(QuizMenu.pageRoute);
-                          }
-                        },
-                        style: const ButtonStyle(
-                          backgroundColor:
-                              MaterialStatePropertyAll(IscteTheme.iscteColor),
-                          foregroundColor:
-                              MaterialStatePropertyAll(Colors.white),
-                        ),
-                        child: Text(
-                          AppLocalizations.of(context)!
-                              .qrScanResultReadyForQuizButtonDialogContinueButton,
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleMedium
-                              ?.copyWith(color: Colors.white),
-                        ),
-                      )
-                    ]),
-              ),
-            ],
+                            if (navigateBack) {
+                              Navigator.of(context).pop();
+                            } else {
+                              Navigator.of(context)
+                                  .pushReplacementNamed(QuizMenu.pageRoute);
+                            }
+                          },
+                          style: const ButtonStyle(
+                            backgroundColor:
+                                MaterialStatePropertyAll(IscteTheme.iscteColor),
+                            foregroundColor:
+                                MaterialStatePropertyAll(Colors.white),
+                          ),
+                          child: Text(
+                            AppLocalizations.of(context)!
+                                .qrScanResultReadyForQuizButtonDialogContinueButton,
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(color: Colors.white),
+                          ),
+                        )
+                      ]),
+                ),
+              ],
+            ),
           );
         },
       ),

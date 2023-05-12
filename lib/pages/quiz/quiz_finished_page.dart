@@ -154,8 +154,10 @@ class QuizFinishedSuccess extends StatelessWidget {
               Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Row(
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       DynamicTextButton(
                         style: const ButtonStyle(
@@ -167,7 +169,7 @@ class QuizFinishedSuccess extends StatelessWidget {
                             const Icon(SpotChooserPage.icon,
                                 color: Colors.white),
                             Text(
-                              "Choose a new Spot",
+                              AppLocalizations.of(context)!.spotChooserScreen,
                               style: Theme.of(context)
                                   .textTheme
                                   .titleLarge

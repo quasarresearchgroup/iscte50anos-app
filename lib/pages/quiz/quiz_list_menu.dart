@@ -146,6 +146,9 @@ class QuizListState extends State<QuizList> {
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 List<Quiz> items = snapshot.data ?? [];
+                List<ScrollController> scrollControllers =
+                    items.map((e) => ScrollController()).toList();
+
                 LoggerService.instance
                     .debug("quiz list items:\n${items.map((e) => e.toJson())}");
                 return RefreshIndicator(
@@ -163,7 +166,6 @@ class QuizListState extends State<QuizList> {
                               AppLocalizations.of(context)!.quizNoneAvailable),
                         )
                       : ListView.builder(
-                          //shrinkWrap: true,
                           physics: const AlwaysScrollableScrollPhysics(),
                           itemCount: items.length,
                           itemBuilder: (context, index) {
@@ -204,30 +206,37 @@ class QuizListState extends State<QuizList> {
                                             .textTheme
                                             .bodyMedium,
                                       ),
-                                      SingleChildScrollView(
-                                        scrollDirection: Axis.horizontal,
-                                        clipBehavior:
-                                            Clip.antiAliasWithSaveLayer,
-                                        child: Row(
-                                          children: topics
-                                              .where((e) => e.title != null)
-                                              .map(
-                                                (e) => Padding(
-                                                  padding: const EdgeInsets
-                                                      .symmetric(
-                                                    horizontal: 4.0,
-                                                  ),
-                                                  child: Chip(
-                                                    label: Text(
-                                                      e.title ?? "",
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .bodyMedium,
+                                      Scrollbar(
+                                        thumbVisibility: true,
+                                        controller: scrollControllers[index],
+                                        scrollbarOrientation:
+                                            ScrollbarOrientation.bottom,
+                                        child: SingleChildScrollView(
+                                          controller: scrollControllers[index],
+                                          scrollDirection: Axis.horizontal,
+                                          clipBehavior:
+                                              Clip.antiAliasWithSaveLayer,
+                                          child: Row(
+                                            children: topics
+                                                .where((e) => e.title != null)
+                                                .map(
+                                                  (e) => Padding(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                      horizontal: 4.0,
+                                                    ),
+                                                    child: Chip(
+                                                      label: Text(
+                                                        e.title ?? "",
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .bodyMedium,
+                                                      ),
                                                     ),
                                                   ),
-                                                ),
-                                              )
-                                              .toList(),
+                                                )
+                                                .toList(),
+                                          ),
                                         ),
                                       ),
                                     ],
@@ -360,16 +369,19 @@ class QuizDetail extends StatelessWidget {
                 crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
                   DynamicTextButton(
-                    child: const Text("Study for the quiz"), //TODO
-                    onPressed: () =>
-                        Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => TimelineStudyForQuiz.fromFilter(
+                    child: Text(AppLocalizations.of(context)!.quizStudyForQuiz),
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => TimelineStudyForQuiz.fromFilter(
                           filterParams: TimelineFilterParams(
-                              topics: quiz.topics
-                                  .map((Topic e) =>
-                                      Topic(id: e.id, title: e.title))
-                                  .toSet())),
-                    )),
+                            topics: quiz.topics
+                                .map((Topic e) =>
+                                    Topic(id: e.id, title: e.title))
+                                .toSet(),
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                   ElevatedButton(
                     onPressed: () {
