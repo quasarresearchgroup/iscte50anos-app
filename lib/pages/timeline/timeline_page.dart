@@ -14,7 +14,7 @@ class TimelinePage extends StatefulWidget {
   const TimelinePage({Key? key}) : super(key: key);
   static const String pageRoute = "timeline";
   static const ValueKey pageKey = ValueKey(pageRoute);
-  static const IconData icon = Icons.timeline;
+  static const IconData icon = Icons.timeline_sharp;
 
   @override
   State<TimelinePage> createState() => _TimelinePageState();

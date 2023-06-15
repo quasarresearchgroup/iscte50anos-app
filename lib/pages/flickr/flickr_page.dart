@@ -17,7 +17,7 @@ import 'package:iscte_spots/widgets/util/overlays.dart';
 
 class FlickrPage extends StatefulWidget {
   static const pageRoute = "/flickr";
-  static const IconData icon = FontAwesomeIcons.flickr;
+  static const IconData icon = FontAwesomeIcons.book;
 
   final FlickrIscteAlbumService flickrService = FlickrIscteAlbumService();
   final PageController _pageController = PageController(viewportFraction: 0.8);
