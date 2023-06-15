@@ -47,9 +47,12 @@ class FLickrPhotosetService extends FlickrService {
             _controller.sink.add(flickrPhoto);
           }
           currentPage++;
-          if (counter < perPage) {
-            _controller.sink.addError(FlickrService.noDataError);
+          if (counter == 0) {
+            _controller.sink.addError(FlickrServiceNoDataException);
+          } else if (counter < perPage) {
+            _controller.sink.addError(FlickrServiceNoMoreDataException);
           }
+
           stopFetch();
         } else {
           LoggerService.instance.debug("Error ${response.statusCode}");

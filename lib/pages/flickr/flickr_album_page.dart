@@ -43,8 +43,12 @@ class _FlickAlbumPageState extends State<FlickAlbumPage> {
         }
       });
     }, onError: (error) {
-      LoggerService.instance.debug(error);
-      noMoreData = error == FlickrService.noDataError;
+      LoggerService.instance.error(error);
+      if (error == FlickrServiceNoDataException) {
+        noMoreData = true;
+      } else if (error == FlickrServiceNoMoreDataException) {
+        noMoreData = true;
+      }
     });
     widget.listViewController.addListener(() {
       //LoggerService.instance.debug(

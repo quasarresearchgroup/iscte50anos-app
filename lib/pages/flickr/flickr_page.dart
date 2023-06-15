@@ -64,8 +64,12 @@ class _FlickrPageState extends State<FlickrPage> {
       });
     }, onError: (error) {
       LoggerService.instance.error(error);
-      showNetworkErrorOverlay(context);
-      noMoreData = error == FlickrService.noDataError;
+      if (error == FlickrServiceNoDataException) {
+        showNetworkErrorOverlay(context);
+        noMoreData = true;
+      } else if (error == FlickrServiceNoMoreDataException) {
+        noMoreData = true;
+      }
     });
   }
 
