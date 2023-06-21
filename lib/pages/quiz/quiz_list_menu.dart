@@ -23,7 +23,6 @@ import '../home/scanPage/timeline_study_quiz_page.dart';
 
 //const API_ADDRESS_PROD = "https://194.210.120.48";
 //const API_ADDRESS_TEST = "http://192.168.1.124";
-const MAX_TRIALS = 3;
 
 const FlutterSecureStorage secureStorage = FlutterSecureStorage();
 
