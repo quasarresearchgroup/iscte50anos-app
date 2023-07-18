@@ -18,7 +18,7 @@ class MyBottomBar extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _MyBottomBarState createState() => _MyBottomBarState();
+  MyBottomBarState createState() => MyBottomBarState();
 
   static const FaIcon puzzleIcon = FaIcon(FontAwesomeIcons.puzzlePiece);
   static const Icon scanIcon = Icon(Icons.search);
@@ -43,7 +43,7 @@ class MyBottomBar extends StatefulWidget {
   }
 }
 
-class _MyBottomBarState extends State<MyBottomBar> {
+class MyBottomBarState extends State<MyBottomBar> {
   late int currentIndex;
 
   @override

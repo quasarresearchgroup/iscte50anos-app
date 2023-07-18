@@ -6,8 +6,7 @@ import 'package:iscte_spots/helper/box_size.dart';
 import 'package:motion_sensors/motion_sensors.dart';
 
 class MovingPiece extends StatefulWidget {
-
-  MovingPiece({
+  const MovingPiece({
     Key? key,
     required this.child,
     required this.weight,
@@ -16,7 +15,7 @@ class MovingPiece extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _MovingPieceState createState() => _MovingPieceState();
+  MovingPieceState createState() => MovingPieceState();
 
   static const int standartSpeed = 100;
 
@@ -27,7 +26,7 @@ class MovingPiece extends StatefulWidget {
   final double maxaccel = 50;
 }
 
-class _MovingPieceState extends State<MovingPiece> {
+class MovingPieceState extends State<MovingPiece> {
   double top = 0;
   double left = 0;
   double pitch = 0;

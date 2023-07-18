@@ -12,7 +12,7 @@ class SettingsPage extends StatefulWidget {
   static const pageRoute = "/settings";
   static const IconData icon = Icons.settings;
 
-  SettingsPage({Key? key}) : super(key: key);
+  const SettingsPage({Key? key}) : super(key: key);
 
   @override
   State<SettingsPage> createState() => _SettingsPageState();
@@ -40,7 +40,7 @@ class _SettingsPageState extends State<SettingsPage> {
         leading: const DynamicBackIconButton(),
       ),
       body: ListView(
-        children: [
+        children: const [
           IscteAboutListTile(),
 /*          ExpansionTile(
             title: const Text("Shared Preferences"),
@@ -67,7 +67,7 @@ class _SettingsPageState extends State<SettingsPage> {
 }
 
 class IscteAboutListTile extends StatelessWidget {
-  IscteAboutListTile({Key? key}) : super(key: key);
+  const IscteAboutListTile({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -134,12 +134,6 @@ class DynamicAboutListTile extends StatelessWidget {
               ),
             ]);
       },
-    );
-    return AboutListTile(
-      icon: const Icon(Icons.info),
-      applicationName: applicationName,
-      applicationVersion: yaml['version'],
-      applicationLegalese: "legalese",
     );
   }
 }

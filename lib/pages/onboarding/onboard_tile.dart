@@ -26,13 +26,9 @@ class _OnboardTileState extends State<OnboardTile> {
   void initState() {
     super.initState();
     for (int i = 0; i < textOpacity.length; i++) {
-      var future = Future.delayed(
+      Future.delayed(
         Duration(milliseconds: 500 * i),
-        () {
-          setState(() {
-            textOpacity[i] = 1;
-          });
-        },
+        () => setState(() => textOpacity[i] = 1),
       ).onError((error, stackTrace) => null);
     }
   }

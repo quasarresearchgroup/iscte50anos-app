@@ -8,7 +8,7 @@ Future<void> showNetworkErrorOverlay(BuildContext context) async {
   LoggerService.instance.error("Inserted Network error overlay");
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
-      backgroundColor: Theme.of(context).errorColor,
+      backgroundColor: Theme.of(context).colorScheme.error,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
             topLeft: Radius.circular(20), topRight: Radius.circular(20)),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:iscte_spots/models/timeline/event.dart';
 import 'package:iscte_spots/pages/timeline/events/event_timeline_indicator.dart';
-import 'package:iscte_spots/pages/timeline/events/inverd_T_clipper.dart';
+import 'package:iscte_spots/pages/timeline/events/inverted_t_clipper.dart';
 import 'package:iscte_spots/pages/timeline/events/timeline_information_child.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 

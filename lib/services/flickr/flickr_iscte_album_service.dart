@@ -15,7 +15,7 @@ class FlickrIscteAlbumService extends FlickrService {
   Stream<FlickrPhotoset> get stream => _controller.stream;
   //List<FlickrPhotoset> photosetsInstanceList = [];
   int currentPage = 1;
-  final int perPage = 25;
+  final int perPage = 10;
 
   Future<void> fetch() async {
     assert(!fetching);
@@ -32,6 +32,7 @@ class FlickrIscteAlbumService extends FlickrService {
           LoggerService.instance.debug("Started fetching image urls");
           startFetch();
           final jsonResponse = jsonDecode(response.body);
+          LoggerService.instance.debug(jsonResponse);
           var photosets = jsonResponse["photosets"]["photoset"];
 
           int counter = 0;
@@ -49,10 +50,13 @@ class FlickrIscteAlbumService extends FlickrService {
             );
             LoggerService.instance.debug(flickrPhotoset);
             _controller.sink.add(flickrPhotoset);
+            counter++;
           }
           currentPage++;
-          if (counter < perPage) {
-            _controller.sink.addError(FlickrService.noDataError);
+          if (counter == 0) {
+            _controller.sink.addError(FlickrServiceNoDataException);
+          } else if (counter < perPage) {
+            _controller.sink.addError(FlickrServiceNoMoreDataException);
           }
           stopFetch();
         } else {

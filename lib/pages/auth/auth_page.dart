@@ -168,7 +168,7 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
             //fit: BoxFit.contain,
             controller: _lottieController,
             onLoaded: (LottieComposition composition) {
-              TickerFuture forward = _lottieController.forward();
+              _lottieController.forward();
             },
           )
         ],

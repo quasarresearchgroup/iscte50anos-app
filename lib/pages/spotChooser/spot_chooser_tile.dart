@@ -73,7 +73,7 @@ class _ChooseSpotTileState extends State<ChooseSpotTile> {
                 right: 10,
                 top: 10,
                 child: SizedBox(
-                  width: 60,
+                  width: 80,
                   height: 40,
                   child: Card(
                     color: IscteTheme.greyColor.withOpacity(0.3),
@@ -95,6 +95,7 @@ class _ChooseSpotTileState extends State<ChooseSpotTile> {
                                         .titleLarge
                                         ?.copyWith(
                                             color: IscteTheme.iscteColor),
+                                    maxLines: 1,
                                   );
                                 } else {
                                   return const DynamicLoadingWidget();

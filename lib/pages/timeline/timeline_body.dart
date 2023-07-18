@@ -37,13 +37,15 @@ class TimelineKeyboardEventWrapper extends StatelessWidget {
   TimelineKeyboardEventWrapper({
     Key? key,
     required this.isFilterTimeline,
-  }) : super(key: key);
+  })  : hoveredEventIndexNotifier = ValueNotifier(null),
+        hoveredYearIndexNotifier = ValueNotifier(null),
+        super(key: key);
 
   ///Bool variable for determining which state object to be called down the widget tree: TimelineState or TimelineFilterResultsState
   final bool isFilterTimeline;
 
-  final ValueNotifier<int?> hoveredEventIndexNotifier = ValueNotifier(null);
-  final ValueNotifier<int?> hoveredYearIndexNotifier = ValueNotifier(null);
+  final ValueNotifier<int?> hoveredEventIndexNotifier;
+  final ValueNotifier<int?> hoveredYearIndexNotifier;
   int? lastYearIndex;
 
   void navigateToEvent(int eventId, BuildContext context) {
@@ -244,7 +246,7 @@ class TimelineKeyboardEventWrapper extends StatelessWidget {
 }
 
 class TimelineBody extends StatelessWidget {
-  TimelineBody({
+  const TimelineBody({
     Key? key,
     required this.yearsListFuture,
     required this.eventsListFuture,
@@ -256,7 +258,7 @@ class TimelineBody extends StatelessWidget {
     this.hoveredEventIndexNotifier,
     this.hoveredYearIndexNotifier,
     this.keyboardScrollCallback,
-  }) : super(key: key) {}
+  }) : super(key: key);
 
   final void Function(bool, List<int>)? changeHoveredYearCallback;
   final void Function(PointerSignalEvent)? keyboardScrollCallback;

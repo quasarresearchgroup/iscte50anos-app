@@ -4,22 +4,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:iscte_spots/models/quiz/trial.dart';
+import 'package:iscte_spots/models/timeline/topic.dart';
 import 'package:iscte_spots/pages/quiz/quiz_page.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_back_button.dart';
+import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_text_button.dart';
 import 'package:iscte_spots/widgets/my_app_bar.dart';
 import 'package:iscte_spots/widgets/network/error.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 
 import '../../models/quiz/quiz.dart';
+import '../../models/timeline/timeline_filter_params.dart';
 import '../../services/quiz/quiz_service.dart';
-import '../../widgets/dialogs/CustomDialogs.dart';
+import '../../widgets/dialogs/custom_dialogs.dart';
+import '../home/scanPage/timeline_study_quiz_page.dart';
 
 //const API_ADDRESS = "http://192.168.1.124";
 
 //const API_ADDRESS_PROD = "https://194.210.120.48";
 //const API_ADDRESS_TEST = "http://192.168.1.124";
-const MAX_TRIALS = 3;
 
 const FlutterSecureStorage secureStorage = FlutterSecureStorage();
 
@@ -39,7 +42,7 @@ class QuizMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyAppBar(
-        title: AppLocalizations.of(context)!.quizPageTitle,
+        title: AppLocalizations.of(context)!.quizAvailable,
         leading: const DynamicBackIconButton(),
       ),
       body: NotificationListener<OverscrollIndicatorNotification>(
@@ -57,10 +60,10 @@ class QuizList extends StatefulWidget {
   const QuizList({Key? key}) : super(key: key);
 
   @override
-  _QuizListState createState() => _QuizListState();
+  QuizListState createState() => QuizListState();
 }
 
-class _QuizListState extends State<QuizList> {
+class QuizListState extends State<QuizList> {
   final fetchFunction = QuizService.getQuizList;
   late Future<List<Quiz>> futureQuizList;
   bool isLoading = false;
@@ -137,119 +140,149 @@ class _QuizListState extends State<QuizList> {
               ],
             ),
           )
-        : Column(
-            children: [
-              SizedBox(
-                // Container to hold the description
-                height: 50,
-                child: Center(
-                  child: Text(
-                    AppLocalizations.of(context)!.quizAvailable,
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
-                ),
-              ),
-              Expanded(
-                child: FutureBuilder<List<Quiz>>(
-                  future: futureQuizList,
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      List<Quiz> items = snapshot.data ?? [];
-                      LoggerService.instance.debug(
-                          "quiz list items:\n${items.map((e) => e.toJson())}");
-                      return RefreshIndicator(
-                        color: IscteTheme.iscteColor,
-                        onRefresh: () async {
-                          setState(() {
-                            if (!isLoading) {
-                              futureQuizList = fetchFunction(context);
-                            }
-                          });
-                        },
-                        child: items.isEmpty
-                            ? Center(
-                                child: Text(AppLocalizations.of(context)!
-                                    .quizNoneAvailable),
-                              )
-                            : ListView.builder(
-                                //shrinkWrap: true,
-                                physics: const AlwaysScrollableScrollPhysics(),
-                                itemCount: items.length,
-                                itemBuilder: (context, index) {
-                                  int quizNumber = items[index].number;
-                                  int score = items[index].score;
-                                  int trials = items[index].num_trials;
-                                  String topicNames = items[index].topic_names;
-                                  return Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 10.0, right: 10.0),
-                                    child: Card(
-                                      child: ExpansionTile(
-                                        initiallyExpanded: trials <= 0,
-                                        iconColor: IscteTheme.iscteColor,
-                                        title: Text(
-                                          "Quiz ${items[index].number}",
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .titleLarge
-                                              ?.copyWith(
-                                                color: trials <= 0
-                                                    ? IscteTheme.iscteColor
-                                                    : null,
-                                              ),
-                                        ),
-                                        subtitle: Text(
-                                            "${AppLocalizations.of(context)!.quizPoints}: $score \n${AppLocalizations.of(context)!.quizAttempts}: $trials"
-                                            "\n${AppLocalizations.of(context)!.quizTopics}: $topicNames",
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodyMedium),
-                                        children: [
-                                          QuizDetail(
-                                            quiz: items[index],
-                                            startQuiz: startTrialCallback,
-                                            continueQuizCallback:
-                                                continueTrialCallback,
-                                            returnToQuizList: () => setState(
-                                                () => futureQuizList =
-                                                    fetchFunction(context)),
-                                          )
-                                        ],
-                                        //minVerticalPadding: 10.0,
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                      );
-                    } else if (snapshot.connectionState !=
-                        ConnectionState.done) {
-                      return const Center(
-                        child: SizedBox(
-                          width: 60,
-                          height: 60,
-                          child: CircularProgressIndicator.adaptive(),
-                        ),
-                      );
-                    } else if (snapshot.hasError) {
-                      return DynamicErrorWidget(onRefresh: () {
-                        setState(() {
-                          futureQuizList = fetchFunction(context);
-                        });
-                      });
-                    } else {
-                      return const Center(
-                        child: SizedBox(
-                          width: 60,
-                          height: 60,
-                          child: CircularProgressIndicator.adaptive(),
-                        ),
-                      );
-                    }
+        : FutureBuilder<List<Quiz>>(
+            future: futureQuizList,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                List<Quiz> items = snapshot.data ?? [];
+                List<ScrollController> scrollControllers =
+                    items.map((e) => ScrollController()).toList();
+
+                LoggerService.instance
+                    .debug("quiz list items:\n${items.map((e) => e.toJson())}");
+                return RefreshIndicator(
+                  color: IscteTheme.iscteColor,
+                  onRefresh: () async {
+                    setState(() {
+                      if (!isLoading) {
+                        futureQuizList = fetchFunction(context);
+                      }
+                    });
                   },
-                ),
-              ),
-            ],
+                  child: items.isEmpty
+                      ? Center(
+                          child: Text(
+                              AppLocalizations.of(context)!.quizNoneAvailable),
+                        )
+                      : ListView.builder(
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          itemCount: items.length,
+                          itemBuilder: (context, index) {
+                            int quizNumber = items[index].number;
+                            int score = items[index].score;
+                            int trials = items[index].num_trials;
+                            List<Topic> topics = items[index].topics;
+
+                            return Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 10.0, right: 10.0),
+                              child: Card(
+                                elevation: 3,
+                                child: ExpansionTile(
+                                  initiallyExpanded: trials <= 0,
+                                  iconColor: IscteTheme.iscteColor,
+
+                                  title: Text(
+                                    "Quiz ${items[index].number}",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleLarge
+                                        ?.copyWith(
+                                          color: trials <= 0
+                                              ? IscteTheme.iscteColor
+                                              : null,
+                                        ),
+                                  ),
+                                  subtitle: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "${AppLocalizations.of(context)!.quizPoints}: $score \n${AppLocalizations.of(context)!.quizAttempts}: $trials",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium,
+                                      ),
+                                      Scrollbar(
+                                        thumbVisibility: true,
+                                        controller: scrollControllers[index],
+                                        scrollbarOrientation:
+                                            ScrollbarOrientation.bottom,
+                                        child: SingleChildScrollView(
+                                          controller: scrollControllers[index],
+                                          scrollDirection: Axis.horizontal,
+                                          clipBehavior:
+                                              Clip.antiAliasWithSaveLayer,
+                                          child: Row(
+                                            children: topics
+                                                .where((e) => e.title != null)
+                                                .map(
+                                                  (e) => Padding(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                      horizontal: 4.0,
+                                                    ),
+                                                    child: Chip(
+                                                      label: Text(
+                                                        e.title ?? "",
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .bodyMedium,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                )
+                                                .toList(),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  children: [
+                                    QuizDetail(
+                                      quiz: items[index],
+                                      startQuiz: startTrialCallback,
+                                      continueQuizCallback:
+                                          continueTrialCallback,
+                                      returnToQuizList: () => setState(
+                                        () => futureQuizList =
+                                            fetchFunction(context),
+                                      ),
+                                    )
+                                  ],
+                                  //minVerticalPadding: 10.0,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                );
+              } else if (snapshot.connectionState != ConnectionState.done) {
+                return const Center(
+                  child: SizedBox(
+                    width: 60,
+                    height: 60,
+                    child: CircularProgressIndicator.adaptive(),
+                  ),
+                );
+              } else if (snapshot.hasError) {
+                return DynamicErrorWidget(onRefresh: () {
+                  setState(() {
+                    futureQuizList = fetchFunction(context);
+                  });
+                });
+              } else {
+                return const Center(
+                  child: SizedBox(
+                    width: 60,
+                    height: 60,
+                    child: CircularProgressIndicator.adaptive(),
+                  ),
+                );
+              }
+            },
           );
   }
 }
@@ -291,13 +324,14 @@ class QuizDetail extends StatelessWidget {
                       height: 5,
                     ),
                     Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Text(
-                              "${AppLocalizations.of(context)!.quizPoints}: ${trial.is_completed ? trial.score : "-"}"),
-                          Text(
-                              "${AppLocalizations.of(context)!.quizProgress}: ${trial.progress}/${trial.quiz_size}"),
-                        ]),
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Text(
+                            "${AppLocalizations.of(context)!.quizPoints}: ${trial.score}"),
+                        Text(
+                            "${AppLocalizations.of(context)!.quizProgress}: ${trial.progress}/${trial.quiz_size}"),
+                      ],
+                    ),
                     const SizedBox(
                       height: 5,
                     ),
@@ -324,18 +358,46 @@ class QuizDetail extends StatelessWidget {
                 );
               }),
           if (quiz.num_trials < quiz.max_num_trials)
-            ElevatedButton(
-              onPressed: () {
-                showYesNoWarningDialog(
-                  context: context,
-                  text: AppLocalizations.of(context)!.quizBeginAttemptWarning,
-                  methodOnYes: () async {
-                    Navigator.of(context).pop();
-                    await startQuiz(quizNumber: quiz.number);
-                  },
-                );
-              },
-              child: Text(AppLocalizations.of(context)!.quizBeginAttempt),
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: Wrap(
+                alignment: WrapAlignment.spaceBetween,
+                direction: Axis.horizontal,
+                spacing: 20,
+                runSpacing: 20,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  DynamicTextButton(
+                    child: Text(AppLocalizations.of(context)!.quizStudyForQuiz),
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => TimelineStudyForQuiz.fromFilter(
+                          filterParams: TimelineFilterParams(
+                            topics: quiz.topics
+                                .map((Topic e) =>
+                                    Topic(id: e.id, title: e.title))
+                                .toSet(),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      showYesNoWarningDialog(
+                        context: context,
+                        text: AppLocalizations.of(context)!
+                            .quizBeginAttemptWarning,
+                        methodOnYes: () async {
+                          Navigator.of(context).pop();
+                          await startQuiz(quizNumber: quiz.number);
+                        },
+                      );
+                    },
+                    child: Text(AppLocalizations.of(context)!.quizBeginAttempt),
+                  )
+                ],
+              ),
             )
         ],
       ),

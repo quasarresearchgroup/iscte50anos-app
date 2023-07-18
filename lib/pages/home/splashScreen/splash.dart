@@ -8,10 +8,11 @@ import 'package:iscte_spots/pages/home/splashScreen/shake.dart';
 import 'package:iscte_spots/pages/onboarding/onboarding_page.dart';
 import 'package:iscte_spots/services/auth/login_service.dart';
 import 'package:iscte_spots/services/onboard_service.dart';
+import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 import 'package:page_transition/page_transition.dart';
 
 class SplashScreen extends StatefulWidget {
-  SplashScreen({Key? key}) : super(key: key);
+  const SplashScreen({Key? key}) : super(key: key);
   @override
   State<SplashScreen> createState() => _SplashScreenState();
 }
@@ -36,7 +37,7 @@ class _SplashScreenState extends State<SplashScreen> {
     return isLoggedIn
         ? HomePage()
         : isOnboarded
-            ? AuthPage()
+            ? const AuthPage()
             : OnboardingPage(
                 onLaunch: true,
               );
@@ -44,17 +45,21 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    //return const Home();
+    //return HomePage();
 
     return AnimatedSplashScreen.withScreenFunction(
+      backgroundColor: IscteTheme.iscteColor,
       splash: Scaffold(
         body: Container(
           decoration: BoxDecoration(color: Theme.of(context).primaryColor),
           child: GravityPlane(
-              image: Image.asset('Resources/Img/Campus/campus-iscte-3.jpg')),
+              //image: Image.asset('Resources/Img/Campus/campus-iscte-3.jpg')),
+              image: Image.asset(
+                  'Resources/Img/Logo/logo_50anos_iscte_cores_rgb.png')),
         ),
       ),
-      duration: 5000,
+      centered: true,
+      duration: 0,
       splashIconSize: 1000,
       splashTransition: SplashTransition.fadeTransition,
       pageTransitionType: PageTransitionType.fade,

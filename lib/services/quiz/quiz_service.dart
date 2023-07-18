@@ -113,7 +113,6 @@ class QuizService {
       LoggerService.instance.debug(e);
       rethrow;
     }
-    throw TrialFailedContinue();
   }
 
   static Future<int> answerTrial(
@@ -179,7 +178,7 @@ class QuizService {
           'https://www.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=$FLICKR_API_KEY&photo_id=$photoId&format=json&nojsoncallback=1'));
       if (photoData.statusCode == 200) {
         final jsonPhotoData = jsonDecode(photoData.body)["photo"];
-        LoggerService.instance.verbose(jsonPhotoData);
+        //LoggerService.instance.verbose(jsonPhotoData);
 
         var farm = jsonPhotoData["farm"];
         var server = jsonPhotoData["server"];

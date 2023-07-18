@@ -2,10 +2,10 @@ class SpotInfoRequest {
   SpotInfoRequest({
     required this.title,
     required this.visited,
-    this.id,
+    required this.id,
   });
-  final String? title;
-  final int? id;
+  final String title;
+  final int id;
   final bool visited;
 
   @override

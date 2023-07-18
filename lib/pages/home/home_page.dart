@@ -7,7 +7,7 @@ import 'package:iscte_spots/models/spot.dart';
 import 'package:iscte_spots/pages/home/nav_drawer/drawer.dart';
 import 'package:iscte_spots/pages/home/puzzle/puzzle_page.dart';
 import 'package:iscte_spots/pages/home/scanPage/openday_qr_scan_page.dart';
-import 'package:iscte_spots/pages/home/state/PuzzleState.dart';
+import 'package:iscte_spots/pages/home/state/puzzle_state.dart';
 import 'package:iscte_spots/pages/home/widgets/sucess_scan_widget.dart';
 import 'package:iscte_spots/pages/leaderboard/leaderboard_screen.dart';
 import 'package:iscte_spots/pages/spotChooser/spot_chooser_page.dart';
@@ -23,6 +23,7 @@ import 'package:iscte_spots/widgets/my_bottom_bar.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 import 'package:iscte_spots/widgets/util/overlays.dart';
 
+import '../../widgets/dynamic_widgets/dynamic_progress_indicator.dart';
 import '../timeline/feedback_form.dart';
 import 'widgets/completed_challenge_widget.dart';
 
@@ -79,7 +80,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               _lottieController.reset();
               _showSucessPage = false;
             });
-            _tabController.animateTo(widget.puzzleIndex);
+            navigateBackToPuzzle();
           });
         }
       },
@@ -91,6 +92,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     super.dispose();
     _confettiController.dispose();
     _lottieController.dispose();
+  }
+
+  void navigateBackToPuzzle() {
+    _tabController.animateTo(widget.puzzleIndex);
   }
 
   completePuzzleCallback() async {
@@ -126,7 +131,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         ),
         DynamicTextButton(
           onPressed: () {
-            _tabController.animateTo(widget.scanSpotIndex);
+            navigateBackToPuzzle();
             Navigator.of(context).pop();
           },
           style: const ButtonStyle(
@@ -155,7 +160,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   void _completedAllPuzzles() async {
     await SharedPrefsService.storeCompletedAllPuzzles();
-    _tabController.animateTo(widget.puzzleIndex);
+    navigateBackToPuzzle();
   }
 
   @override
@@ -176,7 +181,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     return Scaffold(
       extendBodyBehindAppBar: true,
       extendBody: true,
-      drawer: const MyNavigationDrawer(),
+      drawer: MyNavigationDrawer(
+          navigateBackToPuzzleCallback: navigateBackToPuzzle),
       appBar: buildAppBar(orientation, challengeCompleteBool),
       bottomNavigationBar:
           (challengeCompleteBool || orientation == Orientation.landscape)
@@ -288,7 +294,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 500),
       child: challengeCompleteBool
-          ? CompletedChallengeWidget()
+          ? const CompletedChallengeWidget()
           : _showSucessPage
               ? SucessScanWidget(
                   confettiController: _confettiController,
@@ -304,8 +310,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       child: LeaderBoardPage(hasAppBar: false),
                     ),
                     QRScanPageOpenDay(
+                      navigateBackToPuzzleCallback: navigateBackToPuzzle,
                       //changeImage: changeCurrentSpot,
-                      completedAllPuzzle: _completedAllPuzzles,
+                      //completedAllPuzzle: _completedAllPuzzles,
                     ),
                   ],
                 ),
@@ -336,8 +343,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               },
                             ),
                             IscteConfetti(
-                              confettiController: _confettiController,
-                            )
+                                confettiController: _confettiController),
                           ],
                         ),
                       ),
@@ -347,20 +353,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             return Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                TweenAnimationBuilder<double>(
-                                  duration: const Duration(milliseconds: 250),
-                                  curve: Curves.easeInOut,
-                                  tween: Tween<double>(
-                                    begin: 0,
-                                    end: progress,
-                                  ),
-                                  builder: (context, value, _) =>
-                                      LinearProgressIndicator(
-                                    value: value,
-                                    color: IscteTheme.iscteColor,
-                                    backgroundColor: IscteTheme.greyColor,
-                                  ),
-                                ),
                                 Text(
                                   AppLocalizations.of(context)!
                                       .puzzleProgress((progress * 100).round()),
@@ -370,7 +362,22 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                       ?.copyWith(
                                         color: IscteTheme.iscteColor,
                                       ),
-                                )
+                                ),
+                                TweenAnimationBuilder<double>(
+                                  duration: const Duration(milliseconds: 250),
+                                  curve: Curves.easeInOut,
+                                  tween: Tween<double>(
+                                    begin: 0,
+                                    end: progress,
+                                  ),
+                                  builder: (context, value, _) =>
+                                      DynamicProgressIndicator(
+                                    value: value,
+                                    color: IscteTheme.iscteColor,
+                                    backgroundColor: IscteTheme.greyColor,
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
                               ],
                             );
                           }),

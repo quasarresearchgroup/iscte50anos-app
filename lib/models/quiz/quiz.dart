@@ -1,9 +1,12 @@
+import 'package:iscte_spots/models/timeline/topic.dart';
+import 'package:iscte_spots/services/logging/LoggerService.dart';
+
 class Quiz {
   int number;
   int max_num_trials;
   int num_trials;
   int score;
-  String topic_names;
+  List<Topic> topics;
   List<TrialInfo> trials;
 
   Quiz({
@@ -11,25 +14,30 @@ class Quiz {
     required this.max_num_trials,
     required this.num_trials,
     required this.score,
-    required this.topic_names,
+    required this.topics,
     required this.trials,
   });
 
   @override
   String toString() {
-    return 'Quiz{number: $number, max_num_trials: $max_num_trials, num_trials: $num_trials, score: $score, topic_names: $topic_names, trials: $trials}';
+    return 'Quiz{number: $number, max_num_trials: $max_num_trials, num_trials: $num_trials, score: $score, topic_names: $topics, trials: $trials}';
   }
 
-  factory Quiz.fromJson(Map<String, dynamic> json) => Quiz(
-        number: json["number"],
-        max_num_trials: json["max_num_trials"],
-        num_trials: json["num_trials"],
-        score: json["score"],
-        topic_names: json["topic_names"],
-        trials: (json["trials"] as List<dynamic>)
-            .map((e) => TrialInfo.fromJson(e))
-            .toList(),
-      );
+  factory Quiz.fromJson(Map<String, dynamic> json) {
+    LoggerService.instance.debug(json);
+    return Quiz(
+      number: json["number"],
+      max_num_trials: json["max_num_trials"],
+      num_trials: json["num_trials"],
+      score: json["score"],
+      topics: (json["topics"] as List<dynamic>)
+          .map((e) => Topic.fromJson(e))
+          .toList(),
+      trials: (json["trials"] as List<dynamic>)
+          .map((e) => TrialInfo.fromJson(e))
+          .toList(),
+    );
+  }
 
   Map<String, dynamic> toJson() {
     return {
@@ -37,7 +45,7 @@ class Quiz {
       "max_num_trials": max_num_trials,
       "num_trials": num_trials,
       "score": score,
-      "topic_names": topic_names,
+      "topics": topics.map((e) => e.toJson()).toList(),
       "trials": trials.map((e) => e.toJson()).toList(),
     };
   }

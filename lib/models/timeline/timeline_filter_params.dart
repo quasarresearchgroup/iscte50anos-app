@@ -33,7 +33,7 @@ class TimelineFilterParams {
 
   TimelineFilterParams setsearchText(Set<Topic> value) {
     return TimelineFilterParams(
-        topics: value, searchText: this.searchText, scopes: this._scopes);
+        topics: value, searchText: searchText, scopes: _scopes);
   }
 
   bool isTopicsEmpty() => _topics.isEmpty;

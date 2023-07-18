@@ -5,7 +5,8 @@ import 'package:iscte_spots/models/requests/spot_info_request.dart';
 import 'package:iscte_spots/models/requests/topic_request.dart';
 import 'package:iscte_spots/models/spot.dart';
 import 'package:iscte_spots/pages/home/scanPage/qr_scan_camera_controls.dart';
-import 'package:iscte_spots/pages/home/scanPage/qr_scan_results.dart';
+import 'package:iscte_spots/pages/home/scanPage/scanner_overlay_painter.dart';
+import 'package:iscte_spots/pages/home/scanPage/timeline_study_quiz_page.dart';
 import 'package:iscte_spots/services/auth/exceptions.dart';
 import 'package:iscte_spots/services/auth/login_service.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
@@ -18,13 +19,16 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class QRScanPageOpenDay extends StatefulWidget {
-  const QRScanPageOpenDay(
-      {Key? key /*, required this.changeImage*/,
-      required this.completedAllPuzzle})
-      : super(key: key);
+  const QRScanPageOpenDay({
+    Key? key,
+    required this.navigateBackToPuzzleCallback,
+    //required this.changeImage,
+    //required this.completedAllPuzzle,
+  }) : super(key: key);
 
   //final void Function(Future<SpotRequest> request) changeImage;
-  final void Function() completedAllPuzzle;
+  //final void Function() completedAllPuzzle;
+  final void Function() navigateBackToPuzzleCallback;
 
   @override
   State<StatefulWidget> createState() => QRScanPageOpenDayState();
@@ -42,8 +46,6 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
   Decoration controlsDecoration = BoxDecoration(
       borderRadius: BorderRadius.circular(8), color: Colors.white24);
 
-  int _lastScan = 0;
-  final int _scanCooldown = 4000;
   String? qrScanResult;
   bool _requesting = false;
   late Future<bool> cameraPermission;
@@ -107,9 +109,10 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
                                 Text(AppLocalizations.of(context)!
                                     .qrScanPermissionText),
                                 DynamicTextButton(
-                                    onPressed: openAppSettings,
-                                    child: Text(AppLocalizations.of(context)!
-                                        .qrScanPermissionButton))
+                                  onPressed: openAppSettings,
+                                  child: Text(AppLocalizations.of(context)!
+                                      .qrScanPermissionButton),
+                                )
                               ],
                             ),
                           ), //TODO
@@ -120,7 +123,16 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
               })),
         ),
         Positioned(
-          bottom: mediaQuerySize.height * 0.2,
+          width: mediaQuerySize.width,
+          height: mediaQuerySize.height,
+          child: SafeArea(
+            child: CustomPaint(
+              painter: ScannerOverlay(),
+            ),
+          ),
+        ),
+        Positioned(
+          bottom: mediaQuerySize.height * 0.1,
           child: QRControlButtons(
             controlsDecoration: controlsDecoration,
             qrController: qrController,
@@ -163,9 +175,9 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
       }
       LoggerService.instance.debug("continueScan: $continueScan");
 
-      if (continueScan && spotInfoRequest.id != null) {
+      if (continueScan) {
         List<Spot> spots =
-            (await DatabaseSpotTable.getAllWithIds([spotInfoRequest.id!]));
+            (await DatabaseSpotTable.getAllWithIds([spotInfoRequest.id]));
         if (spots.isNotEmpty) {
           Spot spot = spots.first;
           if (!spot.visited) {
@@ -175,31 +187,33 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
         }
         if (mounted) {
           TopicRequest topicRequestCompleted = await QRScanService.topicRequest(
-              context: context, topicID: spotInfoRequest.id!);
+              context: context, topicID: spotInfoRequest.id);
 
           LoggerService.instance
               .debug("spotInfoRequest: $topicRequestCompleted");
         }
 
-        if (mounted) {
-          Navigator.of(context).pushNamed(
-            QRScanResults.pageRoute,
-            arguments: spotInfoRequest,
-          );
-          DynamicAlertDialog.showDynamicDialog(
-            icon: Icon(Icons.timeline, size: DynamicAlertDialog.iconSize),
-            context: context,
-            title: Text(
-              AppLocalizations.of(context)!.qrScanResultExplanationDialogTitle(
-                  spotInfoRequest.title ?? ""),
-            ),
-            content: Text(
-              AppLocalizations.of(context)!
-                  .qrScanResultExplanationDialogContent(
-                      spotInfoRequest.title ?? ""),
-            ),
-          );
-        }
+        if (!mounted) return;
+
+        Navigator.of(context).pushNamed(
+          TimelineStudyForQuiz.pageRoute,
+          arguments: spotInfoRequest,
+        );
+        widget.navigateBackToPuzzleCallback();
+
+        if (!mounted) return;
+        await DynamicAlertDialog.showDynamicDialog(
+          icon: Icon(Icons.timeline, size: DynamicAlertDialog.iconSize),
+          context: context,
+          title: Text(
+            AppLocalizations.of(context)!
+                .qrScanResultExplanationDialogTitle(spotInfoRequest.title),
+          ),
+          content: Text(
+            AppLocalizations.of(context)!
+                .qrScanResultExplanationDialogContent(spotInfoRequest.title),
+          ),
+        );
       }
     } on LoginException {
       LoggerService.instance.error("LoginException");
@@ -221,11 +235,11 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
       if (mounted) {
         await launchQRErrorDialog(context);
       }
+    } finally {
+      setState(() {
+        _requesting = false;
+      });
     }
-
-    setState(() {
-      _requesting = false;
-    });
   }
 
   Future<bool> launchConfirmationDialog(
@@ -237,9 +251,9 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
         title: Text(
           spotInfo.visited
               ? AppLocalizations.of(context)!
-                  .qrScanConfirmationVisited(spotInfo.title ?? "")
+                  .qrScanConfirmationVisited(spotInfo.title)
               : AppLocalizations.of(context)!
-                  .qrScanConfirmation(spotInfo.title ?? ""),
+                  .qrScanConfirmation(spotInfo.title),
         ),
         actions: [
           DynamicTextButton(

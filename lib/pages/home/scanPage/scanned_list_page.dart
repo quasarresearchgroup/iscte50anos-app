@@ -1,3 +1,4 @@
+/*
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/helper/helper_methods.dart';
@@ -10,10 +11,10 @@ class VisitedPagesPage extends StatefulWidget {
   static const pageRoute = "/pages";
 
   @override
-  _VisitedPagesPageState createState() => _VisitedPagesPageState();
+  VisitedPagesPageState createState() => VisitedPagesPageState();
 }
 
-class _VisitedPagesPageState extends State<VisitedPagesPage> {
+class VisitedPagesPageState extends State<VisitedPagesPage> {
   @override
   Widget build(BuildContext context) {
     TextStyle messagesStyle =
@@ -98,3 +99,4 @@ class NoPagesVisited extends StatelessWidget {
     ));
   }
 }
+*/

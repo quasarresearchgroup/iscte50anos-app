@@ -79,16 +79,16 @@ class _ShakerState extends State<Shaker> {
 }
 */
 class GravityPlane extends StatefulWidget {
-  GravityPlane({Key? key, required this.image}) : super(key: key);
+  const GravityPlane({Key? key, required this.image}) : super(key: key);
   final Image image;
   final int rows = 7;
   final int cols = 7;
 
   @override
-  _GravityPlaneState createState() => _GravityPlaneState();
+  GravityPlaneState createState() => GravityPlaneState();
 }
 
-class _GravityPlaneState extends State<GravityPlane> {
+class GravityPlaneState extends State<GravityPlane> {
   Future<List<MovingPiece>>? pieces;
   late int lastDeltaTime;
 

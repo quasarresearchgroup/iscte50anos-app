@@ -17,7 +17,7 @@ import 'package:iscte_spots/widgets/util/overlays.dart';
 
 class FlickrPage extends StatefulWidget {
   static const pageRoute = "/flickr";
-  static const IconData icon = FontAwesomeIcons.flickr;
+  static const IconData icon = FontAwesomeIcons.book;
 
   final FlickrIscteAlbumService flickrService = FlickrIscteAlbumService();
   final PageController _pageController = PageController(viewportFraction: 0.8);
@@ -64,8 +64,12 @@ class _FlickrPageState extends State<FlickrPage> {
       });
     }, onError: (error) {
       LoggerService.instance.error(error);
-      showNetworkErrorOverlay(context);
-      noMoreData = error == FlickrService.noDataError;
+      if (error == FlickrServiceNoDataException) {
+        showNetworkErrorOverlay(context);
+        noMoreData = true;
+      } else if (error == FlickrServiceNoMoreDataException) {
+        noMoreData = true;
+      }
     });
   }
 

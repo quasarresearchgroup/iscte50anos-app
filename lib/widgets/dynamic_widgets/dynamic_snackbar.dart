@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter/widgets.dart';
 import 'package:iscte_spots/services/platform_service.dart';
 
 class DynamicSnackBar {

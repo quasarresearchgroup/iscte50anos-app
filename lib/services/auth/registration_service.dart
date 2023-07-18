@@ -13,7 +13,7 @@ class RegistrationService {
       'Resources/Affiliations/openday_affiliations.json';
 
   static Future<Map<String, dynamic>> getSchoolAffiliations() async {
-    await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(const Duration(seconds: 1));
 
     try {
       final String file = await rootBundle.loadString(AfiliationsFile);
@@ -77,14 +77,14 @@ class RegistrationService {
         LoggerService.instance
             .debug("Created new user with token: $responseApiToken");
 
-      LoginStorageService.storeLogInCredenials(
-        username: registrationFormResult.username,
-        password: registrationFormResult.password,
-        apiKey: responseApiToken,
-      );
-      responseRegistrationError = RegistrationError.noError;
-    }
-    client.close();
+        LoginStorageService.storeLogInCredenials(
+          username: registrationFormResult.username,
+          password: registrationFormResult.password,
+          apiKey: responseApiToken,
+        );
+        responseRegistrationError = RegistrationError.noError;
+      }
+      client.close();
 
       LoggerService.instance.debug(
           "response error code: $responseRegistrationError ; code: ${responseRegistrationError.code}");

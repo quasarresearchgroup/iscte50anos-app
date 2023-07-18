@@ -12,8 +12,11 @@ import 'package:iscte_spots/services/auth/login_service.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
 
 class MyNavigationDrawer extends StatelessWidget {
-  const MyNavigationDrawer({Key? key}) : super(key: key);
-
+  const MyNavigationDrawer({
+    Key? key,
+    required this.navigateBackToPuzzleCallback,
+  }) : super(key: key);
+  final void Function() navigateBackToPuzzleCallback;
   @override
   Widget build(BuildContext context) {
     final TextStyle? tileTextStyle = Theme.of(context).textTheme.bodyLarge;
@@ -22,14 +25,17 @@ class MyNavigationDrawer extends StatelessWidget {
           leading: const Icon(OnboardingPage.icon),
           title: Text(AppLocalizations.of(context)!.onboardingPage,
               style: tileTextStyle),
-          onTap: () =>
-              Navigator.of(context).popAndPushNamed(OnboardingPage.pageRoute)),
+          onTap: () {
+            navigateBackToPuzzleCallback();
+            Navigator.of(context).popAndPushNamed(OnboardingPage.pageRoute);
+          }),
       ListTile(
         leading: const Icon(SpotChooserPage.icon),
         title: Text(AppLocalizations.of(context)!.spotChooserScreen,
             style: tileTextStyle),
         onTap: () {
 //          PageRoutes.animateToPage(context, page: TimelinePage());
+          navigateBackToPuzzleCallback();
           Navigator.of(context).popAndPushNamed(SpotChooserPage.pageRoute);
         },
       ),
@@ -39,6 +45,7 @@ class MyNavigationDrawer extends StatelessWidget {
             style: tileTextStyle),
         onTap: () {
 //          PageRoutes.animateToPage(context, page: TimelinePage());
+          navigateBackToPuzzleCallback();
           Navigator.of(context).popAndPushNamed(TimelinePage.pageRoute);
         },
       ),
@@ -57,6 +64,7 @@ class MyNavigationDrawer extends StatelessWidget {
             style: tileTextStyle),
         onTap: () {
           //PageRoutes.animateToPage(context, page: QuizPage());
+          navigateBackToPuzzleCallback();
           Navigator.of(context).popAndPushNamed(QuizMenu.pageRoute);
         },
       ),
@@ -66,6 +74,7 @@ class MyNavigationDrawer extends StatelessWidget {
             style: tileTextStyle),
         onTap: () {
 //          PageRoutes.animateToPage(context, page: FlickrPage());
+          navigateBackToPuzzleCallback();
           Navigator.of(context).popAndPushNamed(FlickrPage.pageRoute);
         },
       ),
@@ -88,19 +97,26 @@ class MyNavigationDrawer extends StatelessWidget {
               leading: const Icon(ProfilePage.icon),
               title: Text(AppLocalizations.of(context)!.profileScreen,
                   style: tileTextStyle),
-              onTap: () =>
-                  Navigator.of(context).popAndPushNamed(ProfilePage.pageRoute)),
+              onTap: () {
+                navigateBackToPuzzleCallback();
+                Navigator.of(context).popAndPushNamed(ProfilePage.pageRoute);
+              }),
           ListTile(
               leading: const Icon(SettingsPage.icon),
               title: Text(AppLocalizations.of(context)!.settingsScreen,
                   style: tileTextStyle),
-              onTap: () => Navigator.of(context)
-                  .popAndPushNamed(SettingsPage.pageRoute)),
+              onTap: () {
+                navigateBackToPuzzleCallback();
+                Navigator.of(context).popAndPushNamed(SettingsPage.pageRoute);
+              }),
           ListTile(
               leading: Icon(Icons.adaptive.arrow_back_outlined),
               title: Text(AppLocalizations.of(context)!.logOutButton,
                   style: tileTextStyle),
-              onTap: () async => await LoginService.logOut(context)),
+              onTap: () async {
+                navigateBackToPuzzleCallback();
+                await LoginService.logOut(context);
+              }),
         ],
       ),
     ];
