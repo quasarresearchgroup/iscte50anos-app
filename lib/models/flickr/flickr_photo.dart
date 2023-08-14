@@ -7,6 +7,7 @@ class FlickrPhoto {
     required this.farm,
     this.isPrimary,
   });
+
   //<photo id="2484" secret="123456" server="1" title="my photo" isprimary="0" />
   String id;
   String secret;

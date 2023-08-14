@@ -269,6 +269,7 @@ class _TimelineDetailGridContentState extends State<TimelineDetailGridContent> {
         ),
       );
       controller.loadVideo(widget.content.link);
+
       widget.addVideoControllerCallback(controller);
 
       child = YoutubePlayer(

@@ -5,6 +5,7 @@ class TopicRequest {
     required this.title,
     required this.contentList,
   });
+
   final String? title;
   final List<Content>? contentList;
 

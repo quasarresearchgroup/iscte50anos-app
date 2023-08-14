@@ -5,7 +5,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
 
 Future<void> showNetworkErrorOverlay(BuildContext context) async {
-  LoggerService.instance.error("Inserted Network error overlay");
+  LoggerService.instance.info("Inserted Network error overlay");
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
       backgroundColor: Theme.of(context).colorScheme.error,
@@ -22,7 +22,7 @@ Future<void> showNetworkErrorOverlay(BuildContext context) async {
       ),
     ),
   );
-  LoggerService.instance.error("Removed Network error overlay");
+  LoggerService.instance.info("Removed Network error overlay");
 }
 
 Future<void> showHelpOverlay(

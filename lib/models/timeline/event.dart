@@ -64,9 +64,10 @@ class Event {
   final EventScope? scope;
   bool visited;
   int contentCount;
+
   //final List<Topic> topics;
 
-  static Logger logger = Logger();
+  //static Logger logger = Logger();
 
   @override
   String toString() {

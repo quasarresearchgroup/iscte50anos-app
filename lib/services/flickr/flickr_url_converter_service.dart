@@ -5,9 +5,7 @@ import 'package:iscte_spots/models/flickr/flickr_photo.dart';
 import 'package:iscte_spots/services/flickr/flickr_service.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
 
-
 class FlickrUrlConverterService {
-
   static Future<FlickrPhoto> getPhotofromFlickrURL(String url) async {
     assert(url.isNotEmpty);
     try {
@@ -24,18 +22,20 @@ class FlickrUrlConverterService {
         var photoSecret = jsonPhotoData["secret"];
         var photoTitle = jsonPhotoData["title"]["_content"];
 
-        return FlickrPhoto(
+        FlickrPhoto flickrPhoto = FlickrPhoto(
           farm: farm,
           server: server,
           id: photoid,
           secret: photoSecret,
           title: photoTitle,
         );
+        LoggerService.instance.verbose(flickrPhoto);
+        return flickrPhoto;
       } else {
         throw Exception(photoData.statusCode);
       }
     } catch (e) {
-      LoggerService.instance.debug(e);
+      LoggerService.instance.error(e);
       rethrow;
     }
   }

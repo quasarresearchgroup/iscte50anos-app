@@ -6,6 +6,7 @@ import 'package:iscte_spots/models/timeline/event.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
 
 class TimelineEventService {
+
   static Future<List<Event>> fetchAllEvents() async {
     try {
       http.Response response = await http.get(

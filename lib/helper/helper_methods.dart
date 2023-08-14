@@ -3,13 +3,8 @@ import 'package:url_launcher/url_launcher.dart';
 
 class HelperMethods {
   static launchURL(String url) async {
-
-    //if (await   (url)) {
     LoggerService.instance.debug("url: $url");
     await launchUrl(Uri.parse(url));
-    //} else {
-    //  throw 'Could not launch $url';
-    //}
   }
 
   static Duration deltaTime(DateTime lastDeltaTime) {
