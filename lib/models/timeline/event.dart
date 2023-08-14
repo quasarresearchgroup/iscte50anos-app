@@ -3,9 +3,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:iscte_spots/models/timeline/content.dart';
 import 'package:iscte_spots/models/timeline/topic.dart';
 import 'package:iscte_spots/pages/timeline/rouded_timeline_icon.dart';
+import 'package:iscte_spots/services/logging/LoggerService.dart';
 import 'package:iscte_spots/services/timeline/timeline_content_service.dart';
 import 'package:iscte_spots/services/timeline/timeline_topic_service.dart';
-import 'package:logger/logger.dart';
 
 enum EventScope {
   iscte,
@@ -32,7 +32,7 @@ EventScope? decodeEventScopefromString(String? input) {
         element.name.toLowerCase() ==
         input?.replaceFirst("?scope=", "").toLowerCase());
   } on StateError {
-    Logger().e("Error on :$input");
+    LoggerService.instance.error("Error on :$input");
     return null;
   }
 }
@@ -42,7 +42,7 @@ EventScope? eventScopefromString(String? input) {
     return EventScope.values.firstWhere(
         (element) => element.name.toLowerCase() == input?.toLowerCase());
   } on StateError {
-    Logger().e("Error on :$input");
+    LoggerService.instance.error("Error on :$input");
     return null;
   }
 }

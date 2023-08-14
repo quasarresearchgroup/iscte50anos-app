@@ -5,7 +5,9 @@ import 'package:iscte_spots/models/flickr/flickr_photo.dart';
 import 'package:iscte_spots/services/flickr/flickr_service.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
 
+
 class FlickrUrlConverterService {
+
   static Future<FlickrPhoto> getPhotofromFlickrURL(String url) async {
     assert(url.isNotEmpty);
     try {

@@ -7,6 +7,7 @@ import 'package:iscte_spots/models/timeline/topic.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
 
 class TimelineTopicService {
+
   static Future<List<Event>> fetchEvents(
       {Iterable<int> topicIds = const [],
       Iterable<String> scopes = const []}) async {

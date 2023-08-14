@@ -34,6 +34,7 @@ class Content {
   final int? eventId;
   final bool? validated;
 
+
   @override
   String toString() {
     return 'Content{id: $id, title: $title, link: $link, type: $type, eventId: $eventId, validated: $validated}';

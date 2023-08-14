@@ -5,6 +5,7 @@ import 'package:iscte_spots/helper/constants.dart';
 import 'package:iscte_spots/models/timeline/content.dart';
 import 'package:iscte_spots/services/logging/LoggerService.dart';
 
+
 class TimelineContentService {
   static Future<List<Content>> fetchContents({required int eventId}) async {
     String uri = '${BackEndConstants.API_ADDRESS}/api/events/$eventId/contents';
