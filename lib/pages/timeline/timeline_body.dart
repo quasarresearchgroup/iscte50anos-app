@@ -9,7 +9,6 @@ import 'package:iscte_spots/pages/timeline/state/timeline_filter_result_state.da
 import 'package:iscte_spots/pages/timeline/state/timeline_state.dart';
 import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_loading_widget.dart';
 import 'package:iscte_spots/widgets/network/error.dart';
-import 'package:logger/logger.dart';
 
 import '../../services/logging/LoggerService.dart';
 import 'details/timeline_details_page.dart';
@@ -74,8 +73,8 @@ class TimelineKeyboardEventWrapper extends StatelessWidget {
   }
 
   void changeHoveredEvent(bool increase, List<Event> eventsList) {
-    Logger()
-        .i("increase: $increase ; widget.filteredEvents?.length $eventsList");
+    LoggerService.instance.info(
+        "increase: $increase ; widget.filteredEvents?.length $eventsList");
 
     int index = hoveredEventIndexNotifier.value != null
         ? increase

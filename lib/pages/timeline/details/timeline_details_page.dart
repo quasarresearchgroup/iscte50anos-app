@@ -13,7 +13,6 @@ import 'package:iscte_spots/widgets/dynamic_widgets/dynamic_loading_widget.dart'
 import 'package:iscte_spots/widgets/my_app_bar.dart';
 import 'package:iscte_spots/widgets/network/error.dart';
 import 'package:iscte_spots/widgets/util/iscte_theme.dart';
-import 'package:logger/logger.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
 class TimeLineDetailsPage extends StatefulWidget {
@@ -31,7 +30,6 @@ class TimeLineDetailsPage extends StatefulWidget {
 
 class _TimeLineDetailsPageState extends State<TimeLineDetailsPage> {
   final double textweight = 2;
-  final Logger _logger = Logger();
   late final Future<Event> event;
   late final Future<String> eventTitle;
   final List<YoutubePlayerController> _videoControllers = [];
@@ -108,7 +106,7 @@ class _TimeLineDetailsPageState extends State<TimeLineDetailsPage> {
                         }
                       }
 
-                      _logger.d(
+                      LoggerService.instance.debug(
                           "event: $snapshotEvent\ndata:${snapshot.data!}\nlistContents: $listContents\ngridContents: $gridContents");
                       double mediaQuerryWidth =
                           MediaQuery.of(context).size.width;
@@ -205,12 +203,11 @@ class TimelineDetailListContent extends StatelessWidget {
 
   final bool isEven;
   final Content content;
-  final Logger _logger = Logger();
   @override
   Widget build(BuildContext context) {
     return ListTile(
       onTap: () {
-        _logger.d("Tapped $content");
+        LoggerService.instance.debug("Tapped $content");
         if (content.link.isNotEmpty) {
           HelperMethods.launchURL(content.link);
         }
