@@ -12,3 +12,4 @@ Repositório da app para os 50 anos do ISCTE
 ![Choose Next Spot](Resources/Screenshots/chooseNextSpot.png)
 ![Quiz Complete](Resources/Screenshots/quiz_complete.png)
 ![Quiz List](Resources/Screenshots/quiz_list.png)
+![Quiz Question](Resources/Screenshots/quiz_question.png)
