@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iscte_spots/models/database/tables/database_spot_table.dart';
 import 'package:iscte_spots/models/requests/spot_info_request.dart';
-import 'package:iscte_spots/models/requests/topic_request.dart';
 import 'package:iscte_spots/models/spot.dart';
 import 'package:iscte_spots/pages/home/scanPage/qr_scan_camera_controls.dart';
 import 'package:iscte_spots/pages/home/scanPage/scanner_overlay_painter.dart';
@@ -185,13 +184,13 @@ class QRScanPageOpenDayState extends State<QRScanPageOpenDay> {
             await DatabaseSpotTable.update(spot);
           }
         }
-        if (mounted) {
-          TopicRequest topicRequestCompleted = await QRScanService.topicRequest(
-              context: context, topicID: spotInfoRequest.id);
-
-          LoggerService.instance
-              .debug("spotInfoRequest: $topicRequestCompleted");
-        }
+        // if (mounted) {
+        //   TopicRequest topicRequestCompleted = await QRScanService.topicRequest(
+        //       context: context, topicID: spotInfoRequest.id);
+        //
+        //   LoggerService.instance
+        //       .debug("spotInfoRequest: $topicRequestCompleted");
+        // }
 
         if (!mounted) return;
 
